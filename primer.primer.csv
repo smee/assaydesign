@@ -1,0 +1,21 @@
+"SBE-ID";"5' Sequenz (in 5'->3')";"Definitiver Hairpin 5'";"SNP Variante";"3' Sequenz (in 5' -> 3')";"Definitiver Hairpin 3'";"PCR Produkt";"Feste Photolinkerposition (leer, wenn egal)";"feste MultiplexID";"Ausgeschlossene Primer";"Primer wird verwendet as-is
+zdtg;AGTGTTGTGAACCTTGTCATA;;ACGT;;;;;;;true;;
+423;CAAAGGGCCTCTGGCTGC;;AC;;;;13;;;true;;
+3452y4aer;GAGGAAGGTAAATGGTCCACAT;;CG;;;;;;;true;;
+car;GGGCAGTGGTACTGAAGAAGAA;;ACGT;;;;11;;;true;;
+asfd;CCTCCGTTGTTCTCAGGGA;;ACT;;;;14;;;true;;
+;CAGGAAGGGAACAGAGAGGAA;;ACGT;;;;;;;true;;
+;GTCAATGGAGGAATCCCATATT;;ACGT;;;;;;;true;;
+;ACGGTGTCTGGCTCAGGG;;ACGT;;;;;;;true;;
+;TGCAGAGCCCACACGTGT;;ACGT;;;;;;;true;;
+;TGACTCCTTTCCAGAAGTTA;;ACGT;;;;;;;true;;
+;ACCTAAACTTGGGAGAACATTGT;;ACGT;;;;;;;true;;
+;CTGGAGAAAGGAGGAAAGA;;ACGT;;;;;;;true;;
+;CAAGTATGTGCACAATCATATGAGA;;ACGT;;;;;;;true;;
+;AAATGAGAAGTATCGTCCCCAC;;ACGT;;;;;;;true;;
+;TCACATGTTCAGTGTAGTTTTA;;ACGT;;;;;;;true;;
+;TGGTGCAAGTTAAATTCACAA;;ACGT;;;;;;;true;;
+;CCAGAAAAATGGAAAGCACTGT;;ACGT;;;;;;;true;;
+;AAGACACCGAGAATGAGCTTTAA;;ACGT;;;;;;;true;;
+;AAAGGGACATAAGGATGACAAAA;;ACGT;;;;;;;true;;
+;TCTCCTTCCCCGCTTCAG;;ACGT;;;;;;;true;;
