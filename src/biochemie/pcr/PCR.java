@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import biochemie.pcr.io.PCRConfig;
@@ -52,6 +53,7 @@ public class PCR {
 	boolean exonOn=false;
 
 	private int maxscore = 100;
+    private final int MAXNUM=1000;//anzahl der primerpaare, die jeweils eingelesen werden sollen
 
 	public PCR(String[] args) {
 		//Einlesen der Konfiguration
@@ -149,13 +151,16 @@ public class PCR {
 		StringTokenizer st = new StringTokenizer(config.getProperty("INFILES"));
 		final int primernum=config.getInteger("PRIMER_NUM_RETURN",30);
 		int counter=0;
-		
+		String outfilename=config.getProperty("OUTFILE");
+        if(null == outfilename || 0 == outfilename.length()) {
+            outfilename=biochemie.util.Helper.dateFunc()+".txt";
+        }
 		while (st.hasMoreTokens()) {
 			String file = st.nextToken();
 			if(PCR.debug)
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
-			int solutions=runAnalysis(file);
+			int solutions=runAnalysis(file,outfilename);
 			counter+=solutions;
 			if(counter >= primernum)
 				break;   //genug loesungen gefunden, also ferdsch :)
@@ -164,7 +169,7 @@ public class PCR {
 	/**
 	 * Starte die eigentliche Arbeit. Liefert die Anzahl gefundener Loesungen.
 	 */
-	private int runAnalysis(String filename) throws IOException {
+	private int runAnalysis(String filename, String outfilename) throws IOException {
 		if(PCR.debug) {
 			System.out.println("Verwende folgende Parameter: "+this);
         }
@@ -180,93 +185,20 @@ public class PCR {
 //			blatObj.setSequence(config.getProperty("SEQUENCE"));
 //		}
         //Starte Module
-        PrimerPair[] pps=null;
-        java.util.List survivorsList= null;
+
         FileWriter debugout=null;
-        String outfilename=config.getProperty("OUTFILE");
+        
         boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);
-        if(null == outfilename || 0 == outfilename.length()) {
-            outfilename=biochemie.util.Helper.dateFunc()+".txt";
-        }
+
         if(PCR.debug) {
 	            if(outputcsv)
 	            	outfilename += ".csv";
-                debugout=new FileWriter("not_ok_"+outfilename);
+                debugout=new FileWriter("not_ok_"+outfilename,true);
                 if(outputcsv)
                 	debugout.write(PrimerPair.getCSVHeaderLine());
                 debugout.write("\n");
         }
-        int maxNum=1000;
-        int index=-1;
-    	String line=null;
-        while(null != (pps = primer3.getNextResults(maxNum))){
-            index++;
-    		if(gcdiffOn) {
-    			if(PCR.verbose)
-    				System.out.println("Analysiere GC-Differenz...");
-    			gcdiffObj.calcScores(pps);
-    		}
-    		if(snpOn) {
-    			if(PCR.verbose)
-    				System.out.println("Analysiere SNPs...");
-    			snpObj.calcScores(pps);
-    		}
-    		if(hairOn) {
-    			if(PCR.verbose)
-    				System.out.println("Analysiere Sekundaerstruktur auf Hairpins...");
-    			hairanalysisObj.calcScores(pps);
-    		}
-            if(homoOn) {
-                if(PCR.verbose)
-                    System.out.println("Analysiere Sekundaerstruktur auf Homodimer...");
-                homoanalysisObj.calcScores(pps);
-            }
-            if(crossOn) {
-                if(PCR.verbose)
-                    System.out.println("Analysiere Sekundaerstruktur auf Crossdimer...");
-                crossanalysisObj.calcScores(pps);
-            }
-    		if(repOn) {
-    			if(PCR.verbose)
-    				System.out.println("Analysiere repetetive Sequenzen...");
-    			repseqObj.calcScores(pps);
-    		}
-    		if(exonOn) {
-    			if(PCR.verbose)
-    				System.out.println("Teste, ob PCR-Produkte Exon/Intron-Grenze enthalten...");
-    			exonObj.calcScores(pps);
-    		}
-            countAndMarkSuccessfulPairs(pps);
-            if(null == survivorsList)
-                survivorsList=new ArrayList();
-
-            for(int i=0;i<pps.length;i++) {
-                if(pps[i].okay){
-                    survivorsList.add(pps[i]);
-                }else if(PCR.debug) {
-                		if(!outputcsv)
-                			line="\nNr. "+(maxNum*index+i+1)+'\n'+pps[i].toString();
-                		else
-                			line=pps[i].toCSVString(maxNum*index+i+1);
-                        debugout.write(line);
-                        debugout.write("\n");
-                    }
-            }
-        }
-        final int solutionsCont=survivorsList.size();
-
-        pps=(PrimerPair[])survivorsList.toArray(new PrimerPair[0]);
-		if (blatOn) {
-			try {
-				blatObj.calcScores(pps);
-			} catch (BlatException e) {
-				System.err.println("Probleme beim Zugriff auf BLAT-Site");
-				System.err.println("Fehlermeldung: " + e.getMessage());
-				System.err.println("BLAT-Modul DEAKTIVIERT!");
-				blatOn= false;
-			}
-		}
-		countAndMarkSuccessfulPairs(pps);
+ 
 
 		File outfile=new File(outfilename);
 		FileWriter out=new FileWriter(outfile);
@@ -274,14 +206,17 @@ public class PCR {
 			out.write(PrimerPair.getCSVHeaderLine());
 			out.write("\n");
 		}
-
-    	int count=1;
+		PrimerPair[] pps=doTheFilterBoogie(primer3);
+        final int solutioncount=countAndMarkSuccessfulPairs(pps);
+    	
+        int count=1;
+        String line=null;
 		for(int i=0;i<pps.length;i++) {
 			if(pps[i].okay) {
         		if(!outputcsv)
         			line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
         		else
-        			line=pps[i].toCSVString(maxNum*index+i+1);
+        			line=pps[i].toCSVString(i+1);
 				out.write(line);
 				out.write("\n");
 			}else{
@@ -300,7 +235,7 @@ public class PCR {
         if(PCR.verbose) {
             System.out.println("Fertig mit "+filename);
         }
-        return solutionsCont;
+        return solutioncount;
 	}
 
 	private int countAndMarkSuccessfulPairs(PrimerPair[] pps) {
@@ -313,7 +248,79 @@ public class PCR {
 		}
 		return count;
 	}
+	/**
+     * Liest nacheinander Paare aus dem Ergebnisfile von primer3 ein und schickt sie durch die Filter.
+	 * @param primer3
+	 * @return
+	 */
+        private PrimerPair[] doTheFilterBoogie(Primer3Manager primer3) {
+            PrimerPair[] pps=null;
+            java.util.List allPairs= null;
+   
+            int index=-1;
+            String line=null;
+            while(null != (pps = primer3.getNextResults(MAXNUM))){
+                index++;
+                if(gcdiffOn) {
+                    if(PCR.verbose)
+                        System.out.println("Analysiere GC-Differenz...");
+                    gcdiffObj.calcScores(pps);
+                }
+                if(snpOn) {
+                    if(PCR.verbose)
+                        System.out.println("Analysiere SNPs...");
+                    snpObj.calcScores(pps);
+                }
+                if(hairOn) {
+                    if(PCR.verbose)
+                        System.out.println("Analysiere Sekundaerstruktur auf Hairpins...");
+                    hairanalysisObj.calcScores(pps);
+                }
+                if(homoOn) {
+                    if(PCR.verbose)
+                        System.out.println("Analysiere Sekundaerstruktur auf Homodimer...");
+                    homoanalysisObj.calcScores(pps);
+                }
+                if(crossOn) {
+                    if(PCR.verbose)
+                        System.out.println("Analysiere Sekundaerstruktur auf Crossdimer...");
+                    crossanalysisObj.calcScores(pps);
+                }
+                if(repOn) {
+                    if(PCR.verbose)
+                        System.out.println("Analysiere repetetive Sequenzen...");
+                    repseqObj.calcScores(pps);
+                }
+                if(exonOn) {
+                    if(PCR.verbose)
+                        System.out.println("Teste, ob PCR-Produkte Exon/Intron-Grenze enthalten...");
+                    exonObj.calcScores(pps);
+                }
+                countAndMarkSuccessfulPairs(pps);
+                if(null == allPairs)
+                    allPairs=new ArrayList();
 
+                for(int i=0;i<pps.length;i++) {
+                    if(pps[i].okay){
+                        allPairs.add(pps[i]);
+                    }
+                }
+            }
+            final int solutionsCont=allPairs.size();
+
+            pps=(PrimerPair[])allPairs.toArray(new PrimerPair[0]);
+            if (blatOn) {
+                try {
+                    blatObj.calcScores(pps);//alle paare gleichzeitig, weil ja eh die gesamte Seq. an BLAT geschickt wird.
+                } catch (BlatException e) {
+                    System.err.println("Probleme beim Zugriff auf BLAT-Site");
+                    System.err.println("Fehlermeldung: " + e.getMessage());
+                    System.err.println("BLAT-Modul DEAKTIVIERT!");
+                    blatOn= false;
+                }
+            }
+            return pps;
+        }
 
 	public String toString() {
 		return config.toString();
