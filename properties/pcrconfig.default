@@ -1,0 +1,171 @@
+#  Diese bzw. andere Configfiles müssen folgende Standards beachten:
+#   - Kommentare beginnen mit "#" und enden mit einem Zeilenumbruch
+#   - Groß-/Kleinschreibung der Parameternames beachten
+#   - Bei Pfadangaben bitte statt '\' '\\' benutzen!
+#
+#  TODO:
+#		- Pfade und Dateinamen als Parameter
+#		- endgültige BLAT-Fassung (momentan komplett deaktiviert!)
+#		- verbindliches Ausgabeformat
+#		- verdenglischung ferdsch machn
+#
+
+# Parameter:
+# ----------
+
+# Allgemeines
+# -----------
+#
+
+#proxy einstellungen
+USEPROXY=true
+PROXYHOST=139.18.233.236
+PROXYPORT=8080 
+
+#Namen der primer3files, in der reihenfolge, in der sie verwendet werden sollen. (getrennt durch  Space, in den namen duerfen also keine Leerzeichen vorkommen!)
+INFILES=01standard/test.in  02standard/test.in  03standard/test.in  04standard/test.in  05standard/test.in
+
+#Ausgabe als csv-File (true) oder false
+OUTPUT_CSV=true
+
+#zusaetzlicher Dateiname fuer die Ausgabedatei (wenn leer, dann werden datum+zeit verwendet)
+OUTFILE=
+
+#Seq. wird an jeden Primer am 5'-Ende angehaengt, bevor dieser weiterverarbeitet wird
+FESTE5SEQ=AAAA
+
+#soll spaeter raus
+DEBUG=true
+
+# Format: start, length : Alles aus der Sequenz von start bis start+length muss von den primern umschlossen sein
+TARGET=200, 50
+
+# Anzahl von pcrprimern, die primer3 maximal liefern soll
+PRIMER_NUM_RETURN=1000
+
+# Modulparameter:
+# ----------------
+#
+
+#untere Grenze für Produkt von GC-Differenz und Produktgröße
+PARAM_GCDIFF_LOWER_BOUND=2000
+
+#obere Grenze für Produkt von GC-Differenz und Produktgröße
+PARAM_GCDIFF_UPPER_BOUND=8000
+
+#Primer liegt zu mehr als X% in einer rep. Seq. -> rauswerf
+#ausser, es wäre der letzte
+PARAM_REPETETIVE_SEQ=40
+
+
+#wenn true fallen alle Paare raus, bei denen das nicht der Fall ist.
+PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER=true
+
+#Length of the flanking sequences of the wanted snp
+PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED=25
+
+#Position of the interesting SNP
+PARAM_SNP_OF_INTEREST=
+
+#es muss mindestens eine Exon/Intron-Grenze zwischen den Primern liegen
+PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER=true
+
+
+#BLAT specifics:
+# -------------
+
+#extended BLAT, if the PCR-product is greater than...
+PERFORM_BLAT_WITH_BOTH_SIDES_INDEPENDENTLY_IF_PCR_LARGER_THAN=500
+
+#BLAT-Analysis on
+BLAT=true
+
+BLAT_SINGLE=true
+BLAT_BOTH=true
+
+#which assembly to use
+ASSEMBLY=hg16
+
+#Wenn sich die BLAT-Seite http://genome.ucsc.edu/cgi-bin/hgBlat ändert, schaltet sich BLAT ab,
+#da sich das Format der Ausgabe geändert haben könnte. Wenn sicher ist, das dies nicht der Fall ist,
+#kann mit BLAT_HASHCODE der neue Hashcode für die Seite eingegeben werden, so dass das BLAT-Modul wieder
+#funktioniert.
+#ACHTUNG: Wenn sich das Format der Ein- bzw. Ausgabe geändert hat, sind die Ergebnisse des BLAT-Moduls
+#nicht gültig, in diesem Falle muss das Modul geändert werden.
+BLAT_HASHCODE=1951623651
+
+
+#bei extended-bothblat ist bothtreffer, wenn beide hits max. ... entfernt voneinander
+#Achtung: Die Distanz darf nicht groesser sein als die Laenge des PCRproduktes,
+#da ja min ein BOTHMatch gefunden werden muss, naemlich der orginale.
+MIN_ACCEPTED_MISSPRIMING_PRIMER_DISTANCE=3000
+
+#Schalter fuer die Module:
+# -------------------------
+
+HAIR=true
+HOMO=true
+REP=true
+CROSS=true
+
+#analysis of the GC-difference on
+GCDIFF=true
+
+#analysis of unwanted SNPs on
+SNP=true
+
+
+#Sek.structure modules:
+# ---------------------
+
+PARAM_CROSS_MIN_BINDING=4
+PARAM_CROSS_WINDOW_SIZE=6
+
+PARAM_HAIRPIN_MIN_BINDING=4
+PARAM_HAIRPIN_WINDOW_SIZE=6
+
+PARAM_HOMO_MIN_BINDING=4
+PARAM_HOMO_WINDOW_SIZE=6
+
+
+
+# Penalitypoints:
+# ------------
+# (Ein Primerpaar wird bei >MAXSCORE Punkten rausgeworfen)
+
+#Punktzahl für Cut-Off
+SCORE_MAXSCORE=100
+
+#Sequenz mit BLAT nochmal gefunden
+SCORE_BLAT_FOUND_SEQ=100
+
+#nur ein primer mit BLAT gefunden
+SCORE_BLAT_FOUND_PRIMER=50
+
+#SNP liegt am 3'-Ende bzw. bis zu zwei Basen davor
+SCORE_SNP_END=100
+
+#gibt Strafpunkte an, wenn ein SNP 3,4,5... Basen von 3'-Ende entfernt liegt
+SCORE_SNP_DISTANCES=50 40 30 20 10
+
+#es liegt keine Exon-Intron-Grenze zwischen den Primern
+SCORE_NO_EXON_INTRON_BETWEEN_PRIMER=100
+
+#Listen:
+#-------
+
+#gibt Indizes der unerwünschten SNPs in der Sequenz an, Indizes beginnen bei 1
+SNP_LIST=3291 4352 2645 6101 561 5202 4381 2039 6080 5843 5337 3647 5222 4348 6102 5930 4453 341 4774 4286 5302 3584 
+
+#Liste der repetetiven Sequenzen der Form: start,länge
+REP_SEQ_LIST=2473,17 668,11 3290,29 6108,34 863,168 4222,8 4020,42 4998,24 3528,8 2473,172 3140,85 3290,29 3252,67 5551,53 1522,159 4023,29 3007,22 4998,49 6108,28 5402,158 2914,169 3637,18 2411,49 2412,41 2130,311 
+
+#Liste der Exons der Form: start,ende
+EXONS=5031,5141 4714,4824 3921,3951 5719,6072 1,1362 6168,6335 
+
+#DNASequenz, um die es geht.
+SEQUENCE=tgctgtttacccattaaagaggatgctacaaatgtttattcattaaagccactcataacagcatagtacaaccctatttaaaaaagaaagacatattttacatgtatgtgtagaaaataatcaggaagaatgtacaccatattaacaggagattattcctaaggtgaagaattatgagtggttcttatttccttatctacttaagttttttctctccaatgggcaggcattgcttgtaccataccttaagcaaggaagtgcatgtttgggacagcagtttgggctctcagcctccttaagagagtcaggtctgcctcatccctgtatctgctagttgagcagaggccagggctgtgtgaggggctctccaacaattgtctttacaaagtataaaaagtcatcagtgatcccaggaacatgtttgtatctcaaattcagagattcaagagggccttagtttaacctcactgatgctcaaattctatttgtaaaggggtagcctgtcctctttcatgggcccctctgcaatgcaagggctgggagagcaattccgcctccacataggggtttcacagagattttctttagagatagagggattcattttccagggttaagctcaccacttcattttattttaggtctatacaattttaggcttgattataaaaaaaaaaagtctgatattgtttacattatagaactctgccaaaggcagttctcttctttaattcattacctcctcgaggctctgggcacagtatcccaggtatcaagaagtacttgttcccttgccgttggagactcaagcacctcaccctgagacaggggcctcggaaagaaagacctgaatggtgtggaggaaagagccctgagctgggagacaaggtccctccagctactgctccaaccctgacttgctgtgtgcctttgatcaagctgtctctgggctttagcctccccctttgtaaaacgggcggggaagaggttgagatggcatgggtgcctccagctctctcagcatgattctgagaactctgcgggtagctctggcctgcccctttccacgccctaccgcgatgtgcgcacaacagtattgtgacccttgtggtgtactgtagattttacctagttttgtttcccgtcaaacacataaagaaaaagtaatctttcccaccccgcccccactaaaataataatcatgagaatgaatacacagggaggaagactggaaaaaatgaaagggaaggacttgctccctcaaaaggaaggatctcagtttgaagtaatgtagtggctgttgcacagggttagacgtatctcgccgaaaggctgggcttgtctcccgatttgaccacaggcctgaaagagaggaaagcgaccatcattgtagccagaaccccgccagtgcagcatccatccagccacgtccagcctcccaatcccccagcctttgaaaggtctgagaacctgttcctggggcaccagcatgggactgggtgaatgacgtcagcacagcacccgtgctaaatgccttacttgcaccatctcatgtaatcctcacagcagccttaagggtgggcactgagattgagaagttaaacttgcccaaggtcacacatctaggaggtggctgagccaggatctaaaccgagttagtctagcttcctggagcccctgtcaaggtctccacagaggtgtgagagtgagactgataaccaaagtcattagctgacctgattctcagccccggaggatgacagggagagaggaggatgtgagcaaatcaccaccatcagccaaatgatgttacgctaaaaacgtgttaattcagcaccaggctagcaccttgtaaacatgctaattcatcatgagcgtcatgtctgcactctcagccctctaaaacctctctgttgaagctgagcggcccaccatcatcactgagtatattaactcgggtgttggaatttcccaggtgtgtttaatctgtatagctttgtattttaaggcagaactttattctcagttattcatctcaaaatgagagttttcagaaaagatcgagaaaagggatggtccttctgcaaaagttccaaagtgcaccctgaataataaaaatgctaaaaactggccgggtgcggtagctcacgcctataatcccagcactttgggaggccaaggcgggcggatcacgaggtcaggagatcgagaccatcctggctaacacggtgaaaccccgtctctactaaaaatacaaaaaattagccgggtgttgtggcgggtgcctgtagtcccagctacttgggaggttgaggcaggagaatggcgtgaacccgggaggcggagcttgcagtgagccgagatcgcaccactgcactcaagcctgggcgacatagcgagactccgtctcaaaaaaaaaaaaaaaaaaaaagaaaagaaaagaaaagaaaagctaaaaacttccccccccactttttttttttttttttgtgagatggaatcttgctctgttacccaggctggagtgcagtggtacgatctcagctcactgcaacctccgcctcccacgttcaagcgattctcctgcctcagcctcctgagtagcccggattataggcatgcaccacaatacccggctcattttcaaagtctttatccccttggtatatcacctgtaacatatgcattggaaatccattgcatttccattgctaaaaacaacaatgtgtaaagtcctgaacttggattccctcagaaaaatgtaaaggagtataaaatgcaaactccaggtataaaatgtaaaatatttcatctactgaaaagaactggtgtacacagtcggttatccttaacacttcagcctgcagccatggggaaggtgtctgagctttggatggaagttgcagctcccgggcagtatgaccttggacaaatcactaaatgttctaagcctcagtttccttatctgtaaaatgcaggtaatcatgactactttaaaagttgtcataaaacttaaaattaaaaaaaatctataaagcaagtaacgtgcgttgtaggctttcatcaaatggttattactattgataatctgagtttaatgtgcctttgccactttactaatccctgagccatgagatggcacaaagttgctgtgaggattaagagagatggggagtattacccctatcacagtgcctgactagagcaggcacttgttagatgctaccacagggatgcctcagccaacgggtggagagaggtttttaacagagagggagagagagagagagtgtgtgtgtgtgtgtgtgtgtgtgtgtgatcatgggctgaaactggatgaggcagtcacttgagctgccagatagccaattgtccctgcatctcgttccccttttttctactccagtccttggcagcaaaccaaggtcctacatgacacagagaagttagcaaccaaagccattattattttggttcagctgataaaagattggctctccctcaaaaaactagaccagccaagtaggaaaaaaaattgttttcttaagaaaacaacaaaacccagatggaataatcagaataaagaggaggtcaggtcctacgaggagctaggataaattgggggaatccctcaggttttttttttttttttttggaagtgccaggtcaaataagatggagatttactggagtcacactgctgttggcacccgcctaacccgggcctcctttttctcaaagacacaggccagatgccagccttggcctctctttgctcaggaactggctgactccctgccccaggatttcacggccatgacctctctctgggaaaagttcccactatttgctgctggggaaaccaggaccccaccccagggctggccaaggtgagcaggctgagttcaaaagagactcaccggggacatttgcaaacacgtcttcggttccctggataaggaaaaagaagggaaaaagtgagtgcccctatccatcaatagtccccaaagacagtgtattttttgttgttgctgttgttgttgctgctgttttttggttttacaaaaaatcatttcagaacgatcatgggctgaaattggatgaggcaaatagggaattgcctctacgaattctccttcctttcccctatttctttgaggattataactcttgagagccgggtaagggcttcttatccatccttcgtctcaagcatcaattaaaaaaaattgcaactacagacgcgggcgaaagcggggagcctgcagacctgatccggcacctctcttgcatgggacccaaagcagggtgggcggttcgccgaagagggccaaggacgaacctcaaactgatggtggttttgactaaccctcctgggcacttgactcggccacagcggccccctcccggcgggcgtttgtcatgtgtccagacatgtgcgcgcgcgctgcgggcttcgtcgacggaacacacccgctgcagcggctctgggaacgcggctttgtctcccaaaacctctccgagagcgcaaggagcgggaagggctttctcgcattctatctcccagaaagaagtgcctgtacctgcggggcagctcgggagtcccagaaaactcaaccccaagctcccccctcgcaaggtccgcctggagctagcagagccaagggcaggagcggggccgactccttcccgccgcgattcctcgggacttactgtggttgcagtaaagggtgataaccagtgacaggagaaggaccccacaagtcccggccaagggcgcccagatgtagatatcacaggcgaagtccagccccctcgtgtgcactgacgacaccaaagacgccgacatttaggagagggcccgggacctcccaaccgccccaccgtcccgggaacgtctctccgcctcagatctcggtttcccaccacttggacagcccttgactctacctacagtatcagggctgtccctggcatgggctctccccgcggtgcgtgccgcccccgccccgggcccccgcacgcctcacctgcgccccccgccgctggccggcacgcctctgggcgcagggacaggggctgcgacgcgatggtgggcgccggtgttggtggtcgcggcgctggcgtcgtggtgggcttcgctgcaagagcaacagagcgtggttgggggccaggctggggttatggaggcgccccagccccggcctcgcgcacctttccccacggggacgcctccccccggttttcctgggagaagggatagcagaggagacaggatggggaccccgggatgcgcgcggacccctgtgctcgggcctcggctcagcccagcgcacccggcgcccagagccggagcgcaggagccagctcccctgcacctggcctctctcccgggctgaaccagcaaccctggagcgcgggttgattgctgtccgcattttacccacgagcaaacggaggcgcagataatttaagtcatttgcccagaatcacacaagaatccgaactcgagtccagatcggccggacgtaaaaagccatccccagtccctactcagcctcgcgttagcctcagtttgctgtgtctgtgaaatgggaacagtatctaagtcgcttccaggtgcgctaagaggcttgaaagcagggcccaggtgtggaaaacaggttgaggtgaaccccaagccccacgcggagaggtgccgcaacccggcgcgcggacctggcaggaagaccggcacgaagtggctgaagtacatgatggagttgctcagggccgagcagaaatagtagccctcgttctctcggcggaagtcgctcagggtgaggacgaaggtgtcccccaacctcttgcccgagaaccgctgggtgtccagcccctcggccgccttgggcttgttttgggagaggtataggaggaaggtgggactggcggcggcgccgcgcggctggaagagccacgagcagcccgacgtcgggttggacagcagcacctggcacttcagctccactgtctcgcccaggttccaggtccgatccagcggcgacacccggaactggctcggcctggcggcgtctgcaggcggcaagcagcgaggctgagcccgcagtcccgcgccccccgccccccgcccgccccatcccctgccttcccgggcgtctcaaactcacggagcagcaaggccagcggcaggagcaaggcggtcactggtaaggccatgacgcgctccccaggacgctgcttggctcgaagctcgggcgcgaggggaggcgcgcgggagccggtggggcgccgaggggggaaagttgcgcccttcggccggcccggagcctgatttc
+
+
+
+

@@ -1,0 +1,328 @@
+<!-- Define a file named build.properties in this directory with two values:
+      aspectjpath= ... for the location of aspectjtools.jar
+      upxcmd=...     for the location of the upx command
+      
+      You need to have the bcel-5.1.jar in your call to ant or in your classpath. See the documentation.
+      -->
+<project name="Biochemie" default="compile" basedir=".">
+    <description>
+        Sammlung aller build-spezifischen Dinge, ausserdem erste Gehversuche mit Ant :)
+    </description>
+	<property file="build.properties"/>
+    <property name="name" value="biochemie" description="Name of the project"/>
+    <property name="src" location="src" description="Location of the source files w/o tests"/>
+    <property name="build" location="build" description="location of compiled class files"/>
+    <property name="dist"  location="dist" description="Location of the created programs of this script"/>
+    <property name="lib" location="lib" description="libraries needed by the programs, not the build!"/>
+    <property name="parameterfiles" location="properties" description="location of all parameterfiles for the programs"/>
+    <property name="build.dir" location="buildfiles/" description="everything needed for the build"/>
+    <property name="jsmooth" location="${build.dir}/jsmooth"/>
+
+	<!--properties related to signing-->
+	<property name="alias" value="webstartkey"/>
+	<property name="storepass" value="webstartpw"/>
+	<property name="keypass" value="webstartpw"/>
+	<!--properties related to deploying-->
+	<property name="public_html" value="${user.home}/public_html"/>
+
+	<path id="project.classpath">
+      <pathelement location="${build}" />
+      <fileset dir="${lib}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+
+	
+	<!-- Definition of additional tasks for this build -->
+	   <taskdef name="proguard"
+        classname="proguard.ant.ProGuardTask"
+        classpath="${build.dir}/proguard.jar"/>
+	
+   <taskdef name="jsmoothgen"
+     	classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+     	classpath="${jsmooth}/lib/jsmoothgen-ant.jar"/> 
+	
+	 <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties"
+	      classpath="${build.dir}/aspectj/lib/aspectjtools.jar"/>
+	
+<!--**********************************************************-->
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/images"/>
+    <mkdir dir="${build}/help"/>
+    <mkdir dir="${dist}"/>
+
+    <copy todir="${build}/images">
+      <fileset dir="${src}/images"/>
+    </copy>
+    <copy todir="${build}/help">
+      <fileset dir="${src}/help"/>
+    </copy>
+  </target>
+<!--**********************************************************-->
+  <target name="compile" 
+  		  depends="init"
+          description="compile the source" >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}"
+    	   excludes="**/CVS/**"
+    	   destdir="${build}"
+		   classpathref="project.classpath"
+    	   debug="true"
+  		   optimize="true"
+  		   source="1.4"
+  		   deprecation="true"/>
+  </target>
+	<!--**********************************************************-->
+	  <target name="ajcompile" 
+	  		  depends="init"
+	          description="compile the source with aspectj" >
+	    <iajc srcdir="${src}"
+	    	   destdir="${build}"
+			   classpathref="project.classpath"
+	    	   debug="true"
+	    	  excludes="**/CVS/**"
+	  		   source="1.4"/>
+	  </target>	
+
+
+<!--**********************************************************-->
+  <target name="calcdalton" 
+  		  depends="compile" 
+  		  description="generates standalone CalcDalton-App" >
+	<!--erstelle jar-File mit allen relevanten Klassen-->
+	<classfileset id="cdclasses" dir="${build}">
+	  <root classname="biochemie.calcdalton.CDStart"/>
+	</classfileset>
+    <jar jarfile="${dist}/CalcDalton-${DSTAMP}.jar"
+		 update="false">
+    	<manifest>
+    		<attribute name="Built-By" value="${user.name}"/>
+    		<attribute name="Main-Class" value="biochemie.calcdalton.CDStart"/>
+       	</manifest>
+
+		<fileset refid="cdclasses"/>
+		<fileset dir="${build}" includes="images/**"/>
+		<fileset dir="${build}" includes="help/**"/>
+    </jar>
+  	
+  	<antcall target="shrink" >
+  		<param name="outjarname" value="${dist}/CalcDalton.jar"/>
+  		<param name="neededjars" value = "${dist}/CalcDalton-${DSTAMP}.jar
+  											:${lib}/commons-functor.jar
+  											:${lib}/commons-lang-2.0.jar
+  											:${lib}/games.jar
+											:${lib}/TableLayout.jar"/> 
+	</antcall>
+    <!--erstelle exe-file-->
+
+    <jsmoothgen project="${build.dir}/calcdalton.jsmooth"
+      	skeletonroot="${jsmooth}/skeletons"/>
+    <!--benenne Calcdaton.jar um, zu Archivzwecken -->
+  	<delete file="${dist}/CalcDalton-${DSTAMP}.jar"/>
+    <move file="${dist}/CalcDalton.jar" tofile="${dist}/CalcDalton-${DSTAMP}.jar"/> 
+    <!--packe exe-file mit upx -->
+  	
+    <exec dir="${dist}" executable="${upxcmd}" failonerror="true">
+    	<arg line="CalcDalton.exe"/>
+    </exec>
+  </target>
+      <!--**********************************************************-->
+	  <target name="pcrmatcher"
+		  	  depends="compile"
+		      description="create new PCRMatcher executable">
+		<!--erstelle jar-File mit allen relevanten Klassen-->
+		<classfileset id="matcherclasses" dir="${build}">
+		  <rootfileset dir="${build}" includes="biochemie/pcr/matcher/PCRMatcher.class"/>
+		</classfileset>
+	    <jar jarfile="${dist}/pcrmatcher-${DSTAMP}.jar"
+	    	 update="false">
+			<fileset refid="matcherclasses"/>
+	    	<manifest>
+	    		<attribute name="Built-By" value="${user.name}"/>
+	    		<attribute name="Main-Class" value="biochemie.pcr.matcher.PCRMatcher"/>
+	       	</manifest>
+	    </jar>
+	  	
+	  	<!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
+	  	<antcall target="shrink" >
+	  		<param name="outjarname" value="${dist}/pcrmatcher.jar"/>
+	  		<param name="neededjars" value = "${dist}/pcrmatcher-${DSTAMP}.jar
+	  			                                                                :${lib}/commons-functor.jar
+	  			                                                                :${lib}/commons-lang-2.0.jar
+	  			                                                                :${lib}/jgrapht-0.5.3.jar
+	  			                                                                :${lib}/aspectjrt.jar"/>
+		</antcall>
+	    <!--erstelle exe-file-->
+	  		    <jsmoothgen project="${build.dir}/pcrmatcher.jsmooth"
+	      	skeletonroot="${jsmooth}/skeletons"/> 
+	    <!--packe exe-file mit upx-->
+	  	<exec dir="${dist}" executable="${upxcmd}" failonerror="true">
+	    	<arg line="PCRMatcher.exe"/>
+	    </exec>
+	  	<delete file="${dist}/pcrmatcher-${DSTAMP}.jar"/>
+	  	<move file="${dist}/pcrmatcher.jar" tofile="${dist}/pcrmatcher-${DSTAMP}.jar"/>
+	  </target>
+	  <!--**********************************************************-->
+  <target name="minisbe"
+	  	  depends="ajcompile"
+	      description="create new MiniSBE executable">
+	<!--erstelle jar-File mit allen relevanten Klassen-->
+	<classfileset id="sbeclasses" dir="${build}">
+	  <rootfileset dir="${build}" includes="biochemie/sbe/gui/MiniSBEGui.class"/>
+	</classfileset>
+    <jar jarfile="${dist}/minisbe-${DSTAMP}.jar"
+    	 update="false">
+		<fileset refid="sbeclasses"/>
+    	<fileset dir="${build}" includes="images/**"/>
+    	<manifest>
+    		<attribute name="Built-By" value="${user.name}"/>
+    		<attribute name="Main-Class" value="biochemie.sbe.gui.MiniSBEGui"/>
+<!--    		<attribute name="Class-Path" value="commons-lang-2.0.jar commons-functor.jar"/> -->
+       	</manifest>
+    </jar>
+  	<!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
+  	<antcall target="shrink" >
+  		<param name="outjarname" value="${dist}/minisbe.jar"/>
+  		<param name="neededjars" value = "${dist}/minisbe-${DSTAMP}.jar
+  			                              :${lib}/commons-functor.jar
+  			                              :${lib}/commons-lang-2.0.jar
+  			                              :${lib}/jgrapht-0.5.3.jar
+  			                              :${lib}/TableLayout.jar
+  			                              :${lib}/aspectjrt.jar"/>
+	</antcall>
+     <!--erstelle exe-file-->
+    <jsmoothgen project="${build.dir}/minisbe.jsmooth"
+      	skeletonroot="${jsmooth}/skeletons"/>
+    <!--packe exe-file mit upx-->
+    <exec dir="${dist}" executable="${upxcmd}" failonerror="true">
+    	<arg line="MiniSBE.exe"/>
+    </exec>
+  	<delete file="${dist}/minisbe-${DSTAMP}.jar"/>
+  	<move file="${dist}/minisbe.jar" tofile="${dist}/minisbe-${DSTAMP}.jar"/>
+  </target>
+  <!--**********************************************************-->
+  <target name="pcr" depends="ajcompile" description="generates standalone PCR-App" >
+	<!--erstelle jar-File mit allen relevanten Klassen-->
+	<classfileset id="pcrclasses" dir="${build}">
+	  <rootfileset dir="${build}" includes="biochemie/pcr/PCR.class"/>
+	</classfileset>
+
+    <jar jarfile="${dist}/PCR-${DSTAMP}.jar"
+    	 update="false">
+    	<manifest>
+    		<attribute name="Built-By" value="${user.name}"/>
+    		<attribute name="Main-Class" value="biochemie.pcr.PCR"/>
+       	</manifest>
+		<fileset refid="pcrclasses"/>
+    </jar>
+<!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
+  	<antcall target="shrink" >
+  		<param name="outjarname" value="${dist}/PCR.jar"/>
+  		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar
+  			                                                                :${lib}/xml.jar
+  			                                                                :${lib}/biojava-1.30-jdk14.jar
+  			                                                                :${lib}/bytecode-0.92.jar
+  			                                                                :${lib}/jakarta-regexp.jar
+  			                                                                :${lib}/jgrapht-0.5.3.jar
+  			                                                                :${lib}/aspectjrt.jar"/>
+	</antcall>
+ 
+<!--erstelle exe-file-->
+    <jsmoothgen project="${build.dir}/pcr.jsmooth"
+      	skeletonroot="${jsmooth}/skeletons"/>
+<!--packe exe-file mit upx-->
+    <exec dir="${dist}" executable="${upxcmd}" failonerror="true">
+    	<arg line="PCR.exe"/>
+    </exec>
+<!--benenne Calcdaton.jar um, zu Archivzwecken-->
+    <move file="${dist}/PCR.jar" tofile="${dist}/PCR-${DSTAMP}.jar"/>
+  </target>
+
+<!--**********************************************************-->
+  <target name="release" depends="clean,calcdalton,pcr,minisbe,pcrmatcher"
+  description="creates new release including all libs shrinked">
+	<mkdir dir="tmp"/>
+	<copy todir="tmp">
+      <fileset dir="${parameterfiles}">
+      </fileset>
+      <fileset dir="${dist}">
+      	<include name="*.exe"/>
+      </fileset>
+      <fileset dir="${parameterfiles}">
+      	<include name="*"/>
+      </fileset>
+    </copy>
+    <zip destfile="${dist}/release-${DSTAMP}.zip"
+    	basedir="tmp"/>
+    <delete dir="tmp"/>
+  </target>
+<!--**********************************************************-->
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+    <delete dir="tmp"/>
+  </target>
+ 
+  <!--**********************************************************-->
+	<target name="shrink" depends="init" description="TAKE CARE: the jar with the mainclass needs to be the first neededjars parameter!">
+	    <proguard	 obfuscate="false" 
+	    			 defaultpackage="libs">
+	       <libraryjar name="${java.home}/lib/rt.jar" />
+	       <injar path="${neededjars}"/>
+	    	<outjar name="${outjarname}"/>
+	    	
+	       <keepattribute name="InnerClasses" />
+	       <keepattribute name="SourceFile" />
+	       <keepattribute name="LineNumberTable" />
+	       <keep name="biochemie.**">
+	          <constructor/>
+	          <method/>
+	          <field/>
+	       </keep>
+	        <keep name="org.xml.sax.**">
+	            <constructor/>
+	            <method/>
+	            <field/>
+	         </keep>
+	         <keepclassmembers name="org.biojava.bio.seq.impl.**">
+	            <constructor/>
+	            <method/>
+	            <field/>
+	         </keepclassmembers>
+	    </proguard>
+	</target>
+	
+  <!--**********************************************************-->
+	<target name="deploy-sbegui" depends="minisbe" description="deploys sbegui to webstart">
+		<mkdir dir="${public_html}"/>
+		<copy todir="${public_html}">			
+			<fileset dir="${dist}">
+    			<include name="minisbe-${DSTAMP}.jar"/>
+			</fileset>
+			<fileset dir="${lib}">
+    			<include name="jfreechart-0.9.21.jar"/>
+			</fileset>
+			<fileset dir="${build.dir}">
+    			<include name="sbegui.jnlp"/>
+			</fileset>
+		</copy>
+		<move tofile="${public_html}/sbeguitest.jar" file="${public_html}/minisbe-${DSTAMP}.jar"/>
+		<delete file="${public_html}/minisbe-${DSTAMP}.jar"/>
+	    <signjar jar="${public_html}/sbeguitest.jar" alias="${alias}" keypass="${keypass}" storepass="${storepass}" keystore="${build.dir}/keystore"/>
+	    <signjar jar="${public_html}/jfreechart-0.9.21.jar" alias="${alias}" keypass="${keypass}" storepass="${storepass}" keystore="${build.dir}/keystore"/>
+	</target>
+  <!--**********************************************************-->
+  <target name="create RDTSC.dll">
+  <exec dir="${basedir}" executable="javah">
+  	  <arg line="-classpath bin; biochemie.util.CPUCycleTimer"/>
+  </exec>
+  <exec dir="${basedir}" executable="gcc">
+	  <arg line="-Wall -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -Id:/j2sdk1.4.2/include -Id:/j2sdk1.4.2/include/win32 -shared rdtsc.cc -o rdtsc.dll"/>
+  </exec>
+  </target>
+</project>

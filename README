@@ -1,0 +1,8 @@
+To build these programs you will need:
+
+ - Jakarta Ant installed. Copy buildfiles/bcel5.1.jar to $ANTPATH/lib or add it to your $CLASSPATH
+ - upx for reducing the size of the executable
+ 
+ Run "ant -Dupxcmd={path to your upx command} release"
+ 
+ 

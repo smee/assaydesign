@@ -1,0 +1,379 @@
+ID   2.86969444-86975778    ENSEMBL; DNA; PLN; 6335 BP.
+XX
+AC   2.86969444-86975778
+XX
+SV   2.86969444-86975778.ENSEMBL_DB:homo_sapiens_core_16_33
+XX
+DT   19-SEP-2003
+XX
+DE   Reannotated sequence via EnsEMBL
+XX
+KW   .
+XX
+OS   Homo sapiens (Human)
+OC   Eukaryota; Metazoa; Chordata; Vertebrata; Mammalia; Eutheria; Primates;
+OC   Catarrhini; Hominidae; Homo.
+XX
+CC   This sequence was reannotated via the Ensembl system. Please visit the
+CC   Ensembl web site, http://www.ensembl.org/ for more information.
+XX
+CC   All feature locations are relative to the first (5') base of the sequence
+CC   in this file.  The sequence presented is always the forward strand of the
+CC   assembly. Features that lie outside of the sequence contained in this file
+CC   have clonal location coordinates in the format: .:..
+XX
+CC   The /gene indicates a unique id for a gene, /note="transcript_id=..." a
+CC   unique id for a transcript, /protein_id a unique id for a peptide and
+CC   note="exon_id=..." a unique id for an exon. These ids are maintained
+CC   wherever possible between versions.
+XX
+CC   All the exons and transcripts in Ensembl are confirmed by similarity to
+CC   either protein or cDNA sequences.
+XX
+FH   Key             Location/Qualifiers
+FT   source          1..6335
+FT                   /organism="Homo sapiens"
+FT                   /db_xref="taxon:9606"
+FT   mRNA            join(complement(6168..6335),complement(5719..6072),
+FT                   complement(5031..5141),complement(3921..3951),
+FT                   complement(1..1362))
+FT                   /gene="ENSG00000153563"
+FT                   /note="transcript_id=ENST00000319224"
+FT   CDS             join(complement(6168..6216),complement(5719..6072),
+FT                   complement(5031..5141),complement(3921..3951),
+FT                   complement(1311..1362))
+FT                   /gene="ENSG00000153563"
+FT                   /protein_id="ENSP00000321631"
+FT                   /note="transcript_id=ENST00000319224"
+FT                   /db_xref="RefSeq:NM_171827"
+FT                   /db_xref="MIM:186910"
+FT                   /db_xref="LocusLink:925"
+FT                   /db_xref="HUGO:CD8A"
+FT                   /db_xref="SPTREMBL:Q13970"
+FT                   /db_xref="EMBL:M26315"
+FT                   /db_xref="EMBL:M26313"
+FT                   /db_xref="EMBL:M26314"
+FT                   /db_xref="protein_id:AAA79218.1"
+FT                   /db_xref="GO:GO:0016066"
+FT                   /db_xref="GO:GO:0019882"
+FT                   /db_xref="GO:GO:0005887"
+FT                   /db_xref="AFFY_HG_U133:HG-U133A:205758_at"
+FT                   /db_xref="AFFY_HG_U95:HG-U95A:40699_at"
+FT                   /db_xref="AFFY_HG_U95:HG-U95Av2:40699_at"
+FT                   /db_xref="AFFY_HG_U95:HG-U95D:74901_at"
+FT                   /db_xref="Sanger_Hver1_2_1:300973_A"
+FT                   /db_xref="Sanger_Hver1_2_1:771258_A"
+FT                   /translation="MALPVTALLLPLALLLHAARPSQFRVSPLDRTWNLGETVELKCQV
+FT                   LLSNPTSGCSWLFQPRGAAASPTFLLYLSQNKPKAAEGLDTQRFSGKRLGDTFVLTLSD
+FT                   FRRENEGYYFCSALSNSIMYFSHFVPVFLPAKPTTTPAPRPPTPAPTIASQPLSLRPEA
+FT                   CRPAAGGAGNRRRVCKCPRPVVKSGDKPSLSARYV"
+FT   mRNA            join(complement(6168..6335),complement(5719..6072),
+FT                   complement(5031..5141),complement(4714..4824),
+FT                   complement(3921..3951),complement(1..1362))
+FT                   /gene="ENSG00000153563"
+FT                   /note="transcript_id=ENST00000283635"
+FT   CDS             join(complement(6168..6216),complement(5719..6072),
+FT                   complement(5031..5141),complement(4714..4824),
+FT                   complement(3921..3951),complement(1311..1362))
+FT                   /gene="ENSG00000153563"
+FT                   /protein_id="ENSP00000283635"
+FT                   /note="transcript_id=ENST00000283635"
+FT                   /db_xref="SWISSPROT:CD8A_HUMAN"
+FT                   /db_xref="EMBL:M26315"
+FT                   /db_xref="EMBL:M26313"
+FT                   /db_xref="EMBL:M26314"
+FT                   /db_xref="EMBL:M12824"
+FT                   /db_xref="EMBL:M12828"
+FT                   /db_xref="EMBL:M27161"
+FT                   /db_xref="protein_id:AAA79217.1"
+FT                   /db_xref="protein_id:AAA61133.1"
+FT                   /db_xref="protein_id:AAB04637.1"
+FT                   /db_xref="protein_id:AAA59674.1"
+FT                   /db_xref="MIM:186910"
+FT                   /db_xref="PDB:1CD8"
+FT                   /db_xref="HUGO:CD8A"
+FT                   /db_xref="GO:GO:0004894"
+FT                   /db_xref="GO:GO:0005515"
+FT                   /db_xref="GO:GO:0015026"
+FT                   /db_xref="GO:GO:0042288"
+FT                   /db_xref="GO:GO:0006955"
+FT                   /db_xref="GO:GO:0007169"
+FT                   /db_xref="GO:GO:0042110"
+FT                   /db_xref="GO:GO:0005887"
+FT                   /db_xref="GO:GO:0042101"
+FT                   /db_xref="RefSeq:NM_001768"
+FT                   /db_xref="LocusLink:925"
+FT                   /db_xref="RefSeq:NM_171827"
+FT                   /db_xref="SPTREMBL:Q13970"
+FT                   /db_xref="protein_id:AAA79218.1"
+FT                   /db_xref="GO:GO:0016066"
+FT                   /db_xref="GO:GO:0019882"
+FT                   /db_xref="AFFY_HG_U133:HG-U133A:205758_at"
+FT                   /db_xref="AFFY_HG_U95:HG-U95A:40699_at"
+FT                   /db_xref="AFFY_HG_U95:HG-U95Av2:40699_at"
+FT                   /db_xref="AFFY_HG_U95:HG-U95D:74901_at"
+FT                   /db_xref="Sanger_Hver1_2_1:300973_A"
+FT                   /db_xref="Sanger_Hver1_2_1:771258_A"
+FT                   /db_xref="UMCU_Hsapiens_19Kv1:H001052_01"
+FT                   /translation="MALPVTALLLPLALLLHAARPSQFRVSPLDRTWNLGETVELKCQV
+FT                   LLSNPTSGCSWLFQPRGAAASPTFLLYLSQNKPKAAEGLDTQRFSGKRLGDTFVLTLSD
+FT                   FRRENEGYYFCSALSNSIMYFSHFVPVFLPAKPTTTPAPRPPTPAPTIASQPLSLRPEA
+FT                   CRPAAGGAVHTRGLDFACDIYIWAPLAGTCGVLLLSLVITLYCNHRNRRRVCKCPRPVV
+FT                   KSGDKPSLSARYV"
+FT   exon            complement(5031..5141)
+FT                   /note="exon_id=ENSE00001011446"
+FT   exon            complement(3921..3951)
+FT                   /note="exon_id=ENSE00001011445"
+FT   exon            complement(5719..6072)
+FT                   /note="exon_id=ENSE00001220182"
+FT   exon            complement(1..1362)
+FT                   /note="exon_id=ENSE00001185334"
+FT   exon            complement(6168..6335)
+FT                   /note="exon_id=ENSE00001220203"
+FT   exon            complement(4714..4824)
+FT                   /note="exon_id=ENSE00001011450"
+FT   variation       341..341
+FT                   /replace="C/T"
+FT                   /db_xref="dbSNP:1051386"
+FT                   /db_xref="HGBASE:SNP000997577"
+FT   variation       561..561
+FT                   /replace="C/T"
+FT                   /db_xref="dbSNP:3020729"
+FT                   /db_xref="HGBASE:SNP001686964"
+FT   variation       2039..2039
+FT                   /replace="G/T"
+FT                   /db_xref="dbSNP:3020728"
+FT                   /db_xref="HGBASE:SNP001686963"
+FT   variation       2645..2645
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:2944254"
+FT                   /db_xref="HGBASE:SNP001685310"
+FT   variation       3291..3291
+FT                   /replace="(TG)/11/13/14/15/16/25/27/A/T"
+FT                   /db_xref="dbSNP:3138643"
+FT   variation       3584..3584
+FT                   /replace="-/A"
+FT                   /db_xref="dbSNP:5832694"
+FT   variation       3647..3648
+FT                   /replace="-/T"
+FT                   /db_xref="dbSNP:5832695"
+FT   variation       4286..4286
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:2886957"
+FT                   /db_xref="HGBASE:SNP001683242"
+FT                   /db_xref="TSC-CSHL:TSC1756786"
+FT   variation       4348..4348
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:4319929"
+FT   variation       4352..4352
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:4312493"
+FT   variation       4381..4381
+FT                   /replace="C/T"
+FT                   /db_xref="dbSNP:4538199"
+FT   variation       4453..4453
+FT                   /replace="C/T"
+FT                   /db_xref="dbSNP:3020727"
+FT                   /db_xref="HGBASE:SNP001686962"
+FT   variation       4774..4774
+FT                   /replace="C/T"
+FT                   /db_xref="dbSNP:3020726"
+FT                   /db_xref="HGBASE:SNP001686961"
+FT   variation       5202..5202
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:2944253"
+FT                   /db_xref="HGBASE:SNP001685309"
+FT   variation       5222..5222
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:2944252"
+FT                   /db_xref="HGBASE:SNP001685308"
+FT   variation       5302..5302
+FT                   /replace="C/G"
+FT                   /db_xref="dbSNP:2944251"
+FT                   /db_xref="HGBASE:SNP001685307"
+FT   variation       5337..5337
+FT                   /replace="C/G"
+FT                   /db_xref="dbSNP:2944250"
+FT                   /db_xref="HGBASE:SNP001685306"
+FT   variation       5843..5843
+FT                   /replace="A/G"
+FT                   /db_xref="dbSNP:2229240"
+FT                   /db_xref="HGBASE:SNP001660035"
+FT   variation       5930..5930
+FT                   /replace="A/C"
+FT                   /db_xref="dbSNP:2229239"
+FT                   /db_xref="HGBASE:SNP001660034"
+FT   variation       6080..6080
+FT                   /replace="G/T"
+FT                   /db_xref="dbSNP:2944249"
+FT                   /db_xref="HGBASE:SNP001685305"
+FT   variation       6101..6101
+FT                   /replace="G/T"
+FT                   /db_xref="dbSNP:2944248"
+FT                   /db_xref="HGBASE:SNP001685304"
+FT   variation       6102..6102
+FT                   /replace="G/T"
+FT                   /db_xref="dbSNP:2944247"
+FT                   /db_xref="HGBASE:SNP001685303"
+FT   repeat_region   complement(3290..3318)
+FT                   /note="trf repeat: matches 1..29(1) of consensus"
+FT   repeat_region   complement(2412..2452)
+FT                   /note="trf repeat: matches 1..41(1) of consensus"
+FT   repeat_region   complement(6108..6135)
+FT                   /note="GC_rich repeat: matches 1..28(1) of consensus"
+FT   repeat_region   5551..5603
+FT                   /note="MIR repeat: matches 101..151(1) of consensus"
+FT   repeat_region   complement(5402..5559)
+FT                   /note="MIR repeat: matches 11..177(1) of consensus"
+FT   repeat_region   complement(4998..5021)
+FT                   /note="GC_rich repeat: matches 1..24(1) of consensus"
+FT   repeat_region   complement(4023..4051)
+FT                   /note="(CAA)n repeat: matches 2..30(1) of consensus"
+FT   repeat_region   complement(3290..3318)
+FT                   /note="(CA)n repeat: matches 1..29(1) of consensus"
+FT   repeat_region   3140..3224
+FT                   /note="MIR repeat: matches 165..252(1) of consensus"
+FT   repeat_region   2914..3082
+FT                   /note="MIR repeat: matches 80..262(1) of consensus"
+FT   repeat_region   complement(2473..2644)
+FT                   /note="AluSg/x repeat: matches 130..301(1) of consensus"
+FT   repeat_region   2130..2440
+FT                   /note="AluY repeat: matches 1..311(1) of consensus"
+FT   repeat_region   complement(1522..1680)
+FT                   /note="MIR repeat: matches 25..219(1) of consensus"
+FT   repeat_region   863..1030
+FT                   /note="MIR3 repeat: matches 20..201(1) of consensus"
+FT   repeat_region   complement(AC064848.5:23695..23876)
+FT                   /note="L1ME repeat: matches 5616..5841(1) of consensus"
+FT   repeat_region   complement(668..678)
+FT                   /note="dust repeat: matches 1..11(1) of consensus"
+FT   repeat_region   complement(2411..2459)
+FT                   /note="dust repeat: matches 1..49(1) of consensus"
+FT   repeat_region   complement(2473..2489)
+FT                   /note="dust repeat: matches 1..17(1) of consensus"
+FT   repeat_region   complement(3007..3028)
+FT                   /note="dust repeat: matches 1..22(1) of consensus"
+FT   repeat_region   complement(3252..3318)
+FT                   /note="dust repeat: matches 1..67(1) of consensus"
+FT   repeat_region   complement(3528..3535)
+FT                   /note="dust repeat: matches 1..8(1) of consensus"
+FT   repeat_region   complement(3637..3654)
+FT                   /note="dust repeat: matches 1..18(1) of consensus"
+FT   repeat_region   complement(4020..4061)
+FT                   /note="dust repeat: matches 1..42(1) of consensus"
+FT   repeat_region   complement(4222..4229)
+FT                   /note="dust repeat: matches 1..8(1) of consensus"
+FT   repeat_region   complement(4998..5046)
+FT                   /note="dust repeat: matches 1..49(1) of consensus"
+FT   repeat_region   complement(6108..6141)
+FT                   /note="dust repeat: matches 1..34(1) of consensus"
+XX
+SQ   Sequence 6335 BP; 1581 A; 1660 C; 1658 G; 1436 T; 0 other;
+     TGCTGTTTAC CCATTAAAGA GGATGCTACA AATGTTTATT CATTAAAGCC ACTCATAACA        60
+     GCATAGTACA ACCCTATTTA AAAAAGAAAG ACATATTTTA CATGTATGTG TAGAAAATAA       120
+     TCAGGAAGAA TGTACACCAT ATTAACAGGA GATTATTCCT AAGGTGAAGA ATTATGAGTG       180
+     GTTCTTATTT CCTTATCTAC TTAAGTTTTT TCTCTCCAAT GGGCAGGCAT TGCTTGTACC       240
+     ATACCTTAAG CAAGGAAGTG CATGTTTGGG ACAGCAGTTT GGGCTCTCAG CCTCCTTAAG       300
+     AGAGTCAGGT CTGCCTCATC CCTGTATCTG CTAGTTGAGC AGAGGCCAGG GCTGTGTGAG       360
+     GGGCTCTCCA ACAATTGTCT TTACAAAGTA TAAAAAGTCA TCAGTGATCC CAGGAACATG       420
+     TTTGTATCTC AAATTCAGAG ATTCAAGAGG GCCTTAGTTT AACCTCACTG ATGCTCAAAT       480
+     TCTATTTGTA AAGGGGTAGC CTGTCCTCTT TCATGGGCCC CTCTGCAATG CAAGGGCTGG       540
+     GAGAGCAATT CCGCCTCCAC ATAGGGGTTT CACAGAGATT TTCTTTAGAG ATAGAGGGAT       600
+     TCATTTTCCA GGGTTAAGCT CACCACTTCA TTTTATTTTA GGTCTATACA ATTTTAGGCT       660
+     TGATTATAAA AAAAAAAAGT CTGATATTGT TTACATTATA GAACTCTGCC AAAGGCAGTT       720
+     CTCTTCTTTA ATTCATTACC TCCTCGAGGC TCTGGGCACA GTATCCCAGG TATCAAGAAG       780
+     TACTTGTTCC CTTGCCGTTG GAGACTCAAG CACCTCACCC TGAGACAGGG GCCTCGGAAA       840
+     GAAAGACCTG AATGGTGTGG AGGAAAGAGC CCTGAGCTGG GAGACAAGGT CCCTCCAGCT       900
+     ACTGCTCCAA CCCTGACTTG CTGTGTGCCT TTGATCAAGC TGTCTCTGGG CTTTAGCCTC       960
+     CCCCTTTGTA AAACGGGCGG GGAAGAGGTT GAGATGGCAT GGGTGCCTCC AGCTCTCTCA      1020
+     GCATGATTCT GAGAACTCTG CGGGTAGCTC TGGCCTGCCC CTTTCCACGC CCTACCGCGA      1080
+     TGTGCGCACA ACAGTATTGT GACCCTTGTG GTGTACTGTA GATTTTACCT AGTTTTGTTT      1140
+     CCCGTCAAAC ACATAAAGAA AAAGTAATCT TTCCCACCCC GCCCCCACTA AAATAATAAT      1200
+     CATGAGAATG AATACACAGG GAGGAAGACT GGAAAAAATG AAAGGGAAGG ACTTGCTCCC      1260
+     TCAAAAGGAA GGATCTCAGT TTGAAGTAAT GTAGTGGCTG TTGCACAGGG TTAGACGTAT      1320
+     CTCGCCGAAA GGCTGGGCTT GTCTCCCGAT TTGACCACAG GCCTGAAAGA GAGGAAAGCG      1380
+     ACCATCATTG TAGCCAGAAC CCCGCCAGTG CAGCATCCAT CCAGCCACGT CCAGCCTCCC      1440
+     AATCCCCCAG CCTTTGAAAG GTCTGAGAAC CTGTTCCTGG GGCACCAGCA TGGGACTGGG      1500
+     TGAATGACGT CAGCACAGCA CCCGTGCTAA ATGCCTTACT TGCACCATCT CATGTAATCC      1560
+     TCACAGCAGC CTTAAGGGTG GGCACTGAGA TTGAGAAGTT AAACTTGCCC AAGGTCACAC      1620
+     ATCTAGGAGG TGGCTGAGCC AGGATCTAAA CCGAGTTAGT CTAGCTTCCT GGAGCCCCTG      1680
+     TCAAGGTCTC CACAGAGGTG TGAGAGTGAG ACTGATAACC AAAGTCATTA GCTGACCTGA      1740
+     TTCTCAGCCC CGGAGGATGA CAGGGAGAGA GGAGGATGTG AGCAAATCAC CACCATCAGC      1800
+     CAAATGATGT TACGCTAAAA ACGTGTTAAT TCAGCACCAG GCTAGCACCT TGTAAACATG      1860
+     CTAATTCATC ATGAGCGTCA TGTCTGCACT CTCAGCCCTC TAAAACCTCT CTGTTGAAGC      1920
+     TGAGCGGCCC ACCATCATCA CTGAGTATAT TAACTCGGGT GTTGGAATTT CCCAGGTGTG      1980
+     TTTAATCTGT ATAGCTTTGT ATTTTAAGGC AGAACTTTAT TCTCAGTTAT TCATCTCAAA      2040
+     ATGAGAGTTT TCAGAAAAGA TCGAGAAAAG GGATGGTCCT TCTGCAAAAG TTCCAAAGTG      2100
+     CACCCTGAAT AATAAAAATG CTAAAAACTG GCCGGGTGCG GTAGCTCACG CCTATAATCC      2160
+     CAGCACTTTG GGAGGCCAAG GCGGGCGGAT CACGAGGTCA GGAGATCGAG ACCATCCTGG      2220
+     CTAACACGGT GAAACCCCGT CTCTACTAAA AATACAAAAA ATTAGCCGGG TGTTGTGGCG      2280
+     GGTGCCTGTA GTCCCAGCTA CTTGGGAGGT TGAGGCAGGA GAATGGCGTG AACCCGGGAG      2340
+     GCGGAGCTTG CAGTGAGCCG AGATCGCACC ACTGCACTCA AGCCTGGGCG ACATAGCGAG      2400
+     ACTCCGTCTC AAAAAAAAAA AAAAAAAAAA AGAAAAGAAA AGAAAAGAAA AGCTAAAAAC      2460
+     TTCCCCCCCC ACTTTTTTTT TTTTTTTTTG TGAGATGGAA TCTTGCTCTG TTACCCAGGC      2520
+     TGGAGTGCAG TGGTACGATC TCAGCTCACT GCAACCTCCG CCTCCCACGT TCAAGCGATT      2580
+     CTCCTGCCTC AGCCTCCTGA GTAGCCCGGA TTATAGGCAT GCACCACAAT ACCCGGCTCA      2640
+     TTTTCAAAGT CTTTATCCCC TTGGTATATC ACCTGTAACA TATGCATTGG AAATCCATTG      2700
+     CATTTCCATT GCTAAAAACA ACAATGTGTA AAGTCCTGAA CTTGGATTCC CTCAGAAAAA      2760
+     TGTAAAGGAG TATAAAATGC AAACTCCAGG TATAAAATGT AAAATATTTC ATCTACTGAA      2820
+     AAGAACTGGT GTACACAGTC GGTTATCCTT AACACTTCAG CCTGCAGCCA TGGGGAAGGT      2880
+     GTCTGAGCTT TGGATGGAAG TTGCAGCTCC CGGGCAGTAT GACCTTGGAC AAATCACTAA      2940
+     ATGTTCTAAG CCTCAGTTTC CTTATCTGTA AAATGCAGGT AATCATGACT ACTTTAAAAG      3000
+     TTGTCATAAA ACTTAAAATT AAAAAAAATC TATAAAGCAA GTAACGTGCG TTGTAGGCTT      3060
+     TCATCAAATG GTTATTACTA TTGATAATCT GAGTTTAATG TGCCTTTGCC ACTTTACTAA      3120
+     TCCCTGAGCC ATGAGATGGC ACAAAGTTGC TGTGAGGATT AAGAGAGATG GGGAGTATTA      3180
+     CCCCTATCAC AGTGCCTGAC TAGAGCAGGC ACTTGTTAGA TGCTACCACA GGGATGCCTC      3240
+     AGCCAACGGG TGGAGAGAGG TTTTTAACAG AGAGGGAGAG AGAGAGAGAG TGTGTGTGTG      3300
+     TGTGTGTGTG TGTGTGTGAT CATGGGCTGA AACTGGATGA GGCAGTCACT TGAGCTGCCA      3360
+     GATAGCCAAT TGTCCCTGCA TCTCGTTCCC CTTTTTTCTA CTCCAGTCCT TGGCAGCAAA      3420
+     CCAAGGTCCT ACATGACACA GAGAAGTTAG CAACCAAAGC CATTATTATT TTGGTTCAGC      3480
+     TGATAAAAGA TTGGCTCTCC CTCAAAAAAC TAGACCAGCC AAGTAGGAAA AAAAATTGTT      3540
+     TTCTTAAGAA AACAACAAAA CCCAGATGGA ATAATCAGAA TAAAGAGGAG GTCAGGTCCT      3600
+     ACGAGGAGCT AGGATAAATT GGGGGAATCC CTCAGGTTTT TTTTTTTTTT TTTTGGAAGT      3660
+     GCCAGGTCAA ATAAGATGGA GATTTACTGG AGTCACACTG CTGTTGGCAC CCGCCTAACC      3720
+     CGGGCCTCCT TTTTCTCAAA GACACAGGCC AGATGCCAGC CTTGGCCTCT CTTTGCTCAG      3780
+     GAACTGGCTG ACTCCCTGCC CCAGGATTTC ACGGCCATGA CCTCTCTCTG GGAAAAGTTC      3840
+     CCACTATTTG CTGCTGGGGA AACCAGGACC CCACCCCAGG GCTGGCCAAG GTGAGCAGGC      3900
+     TGAGTTCAAA AGAGACTCAC CGGGGACATT TGCAAACACG TCTTCGGTTC CCTGGATAAG      3960
+     GAAAAAGAAG GGAAAAAGTG AGTGCCCCTA TCCATCAATA GTCCCCAAAG ACAGTGTATT      4020
+     TTTTGTTGTT GCTGTTGTTG TTGCTGCTGT TTTTTGGTTT TACAAAAAAT CATTTCAGAA      4080
+     CGATCATGGG CTGAAATTGG ATGAGGCAAA TAGGGAATTG CCTCTACGAA TTCTCCTTCC      4140
+     TTTCCCCTAT TTCTTTGAGG ATTATAACTC TTGAGAGCCG GGTAAGGGCT TCTTATCCAT      4200
+     CCTTCGTCTC AAGCATCAAT TAAAAAAAAT TGCAACTACA GACGCGGGCG AAAGCGGGGA      4260
+     GCCTGCAGAC CTGATCCGGC ACCTCTCTTG CATGGGACCC AAAGCAGGGT GGGCGGTTCG      4320
+     CCGAAGAGGG CCAAGGACGA ACCTCAAACT GATGGTGGTT TTGACTAACC CTCCTGGGCA      4380
+     CTTGACTCGG CCACAGCGGC CCCCTCCCGG CGGGCGTTTG TCATGTGTCC AGACATGTGC      4440
+     GCGCGCGCTG CGGGCTTCGT CGACGGAACA CACCCGCTGC AGCGGCTCTG GGAACGCGGC      4500
+     TTTGTCTCCC AAAACCTCTC CGAGAGCGCA AGGAGCGGGA AGGGCTTTCT CGCATTCTAT      4560
+     CTCCCAGAAA GAAGTGCCTG TACCTGCGGG GCAGCTCGGG AGTCCCAGAA AACTCAACCC      4620
+     CAAGCTCCCC CCTCGCAAGG TCCGCCTGGA GCTAGCAGAG CCAAGGGCAG GAGCGGGGCC      4680
+     GACTCCTTCC CGCCGCGATT CCTCGGGACT TACTGTGGTT GCAGTAAAGG GTGATAACCA      4740
+     GTGACAGGAG AAGGACCCCA CAAGTCCCGG CCAAGGGCGC CCAGATGTAG ATATCACAGG      4800
+     CGAAGTCCAG CCCCCTCGTG TGCACTGACG ACACCAAAGA CGCCGACATT TAGGAGAGGG      4860
+     CCCGGGACCT CCCAACCGCC CCACCGTCCC GGGAACGTCT CTCCGCCTCA GATCTCGGTT      4920
+     TCCCACCACT TGGACAGCCC TTGACTCTAC CTACAGTATC AGGGCTGTCC CTGGCATGGG      4980
+     CTCTCCCCGC GGTGCGTGCC GCCCCCGCCC CGGGCCCCCG CACGCCTCAC CTGCGCCCCC      5040
+     CGCCGCTGGC CGGCACGCCT CTGGGCGCAG GGACAGGGGC TGCGACGCGA TGGTGGGCGC      5100
+     CGGTGTTGGT GGTCGCGGCG CTGGCGTCGT GGTGGGCTTC GCTGCAAGAG CAACAGAGCG      5160
+     TGGTTGGGGG CCAGGCTGGG GTTATGGAGG CGCCCCAGCC CCGGCCTCGC GCACCTTTCC      5220
+     CCACGGGGAC GCCTCCCCCC GGTTTTCCTG GGAGAAGGGA TAGCAGAGGA GACAGGATGG      5280
+     GGACCCCGGG ATGCGCGCGG ACCCCTGTGC TCGGGCCTCG GCTCAGCCCA GCGCACCCGG      5340
+     CGCCCAGAGC CGGAGCGCAG GAGCCAGCTC CCCTGCACCT GGCCTCTCTC CCGGGCTGAA      5400
+     CCAGCAACCC TGGAGCGCGG GTTGATTGCT GTCCGCATTT TACCCACGAG CAAACGGAGG      5460
+     CGCAGATAAT TTAAGTCATT TGCCCAGAAT CACACAAGAA TCCGAACTCG AGTCCAGATC      5520
+     GGCCGGACGT AAAAAGCCAT CCCCAGTCCC TACTCAGCCT CGCGTTAGCC TCAGTTTGCT      5580
+     GTGTCTGTGA AATGGGAACA GTATCTAAGT CGCTTCCAGG TGCGCTAAGA GGCTTGAAAG      5640
+     CAGGGCCCAG GTGTGGAAAA CAGGTTGAGG TGAACCCCAA GCCCCACGCG GAGAGGTGCC      5700
+     GCAACCCGGC GCGCGGACCT GGCAGGAAGA CCGGCACGAA GTGGCTGAAG TACATGATGG      5760
+     AGTTGCTCAG GGCCGAGCAG AAATAGTAGC CCTCGTTCTC TCGGCGGAAG TCGCTCAGGG      5820
+     TGAGGACGAA GGTGTCCCCC AACCTCTTGC CCGAGAACCG CTGGGTGTCC AGCCCCTCGG      5880
+     CCGCCTTGGG CTTGTTTTGG GAGAGGTATA GGAGGAAGGT GGGACTGGCG GCGGCGCCGC      5940
+     GCGGCTGGAA GAGCCACGAG CAGCCCGACG TCGGGTTGGA CAGCAGCACC TGGCACTTCA      6000
+     GCTCCACTGT CTCGCCCAGG TTCCAGGTCC GATCCAGCGG CGACACCCGG AACTGGCTCG      6060
+     GCCTGGCGGC GTCTGCAGGC GGCAAGCAGC GAGGCTGAGC CCGCAGTCCC GCGCCCCCCG      6120
+     CCCCCCGCCC GCCCCATCCC CTGCCTTCCC GGGCGTCTCA AACTCACGGA GCAGCAAGGC      6180
+     CAGCGGCAGG AGCAAGGCGG TCACTGGTAA GGCCATGACG CGCTCCCCAG GACGCTGCTT      6240
+     GGCTCGAAGC TCGGGCGCGA GGGGAGGCGC GCGGGAGCCG GTGGGGCGCC GAGGGGGGAA      6300
+     AGTTGCGCCC TTCGGCCGGC CCGGAGCCTG ATTTC                                 6335
+//
+     

@@ -1,0 +1,13 @@
+
+=======================================================================================================
+DONE 2.5 - ausgabe der gefilterten primer (typ, anzahl von #)
+DONE 3. - minisbegui: in ergebnistabelle bei secstruc incorp. nucl. las tooltip die ausgaben der ascii-art-dimer/hairpins
+4. - minisbegui: jtoolbar einfuegen mit: show mass differences, save primer design, create mass spec preview
+5.  --> auch bei calcdalton rein
+6. - calcdalton soll per maxclique suchen, wenn keine loesung gefunden werden kann
+7. - CalcDalton soll auch L in den Primern erkennen und den PL setzen
+8. testfall mit den daten aus /home/holger/potstkasten bauen
+DONE 0. - Show mass differences auch fuer alle Multiplexe
+DONE 1. - neuer filter fuer spezielle nicht gewollte primer, man kann in der ausgabe anklicken, welchen primer man nicht moechte.
+DONE 1. dieser wird in nem speziellen Format in die Eingabemaske eingetragen und mitgespeichert. (z.b. 3'_length_PL)
+DONE 2. - knopf jeweils : "show graph" (spektrometerbild mit gnuplot)
