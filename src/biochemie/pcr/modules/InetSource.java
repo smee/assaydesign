@@ -34,10 +34,7 @@ public class InetSource implements BlatSource{
     private final int ORIGINALHASH;
     public static final String blaturl= "http://genome.ucsc.edu/cgi-bin/hgBlat";
     //static public final String blaturl="http://genome.cribi.unipd.it/cgi-bin/hgBlat";
-    /**
-     * Hashcode der aktuellen Seite OHNE die hgsid!
-     */
-    int blathash;
+
 	private String hgsid;
 	private final PCRConfig config;
 
@@ -62,7 +59,10 @@ public class InetSource implements BlatSource{
             System.getProperties().put( "proxyHost",host);
             System.getProperties().put( "proxyPort", port);
         }
-		blathash= getAndHashAktuelleBLATPage();
+        /**
+         * Hashcode der aktuellen Seite OHNE die hgsid!
+         */
+        int blathash= getAndHashAktuelleBLATPage();
         if (PCR.debug) {
             System.out.println("Aktueller Hashcode von BLAT : " + blathash);
         }
@@ -86,7 +86,6 @@ public class InetSource implements BlatSource{
             while (null != (s = in.readLine())) {
                 sb.append(s);
             }
-            System.out.println(sb);
             this.cookie= urlcon.getHeaderField("Set-Cookie");
             if (null != cookie && -1 != cookie.indexOf(';')) {
                 cookie= cookie.substring(0, cookie.indexOf(';'));

@@ -277,8 +277,7 @@
 	<target name="shrink" depends="init" description="TAKE CARE: the jar with the mainclass needs to be the first neededjars parameter!">
 	    <proguard	 obfuscate="false" 
 	    			     defaultpackage="libs"
-	    				shrink="true"
-	    				printseeds="on">
+	    				shrink="true">
 	       <libraryjar name="${java.home}/lib/rt.jar" />
 	       <injar path="${neededjars}"/>
 	       <outjar name="${outjarname}"/>

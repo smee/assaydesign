@@ -67,6 +67,7 @@ public class PCRConfig extends GeneralConfig {
             ,{"PRIMER_NUM_RETURN",""}
             //,{"PARAM_SNP_OF_INTEREST",""}//TODO
             ,{"OUTPUT_CSV","false"}
-            ,{"ASSEMBLY","hg16"}};
+            ,{"ASSEMBLY","hg16"}
+            ,{"BLAT_HASHCODE","-1"}};
     }
 }

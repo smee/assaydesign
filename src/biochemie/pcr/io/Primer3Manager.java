@@ -108,7 +108,7 @@ public class Primer3Manager {
             {
                 aufruf = "command.com /C ";
             }
-            else if( osName.startsWith("linux")) {
+            else if( osName.toLowerCase().indexOf("linux") != -1) {
                 aufruf="/bin/bash -c ";
             }
               else {
