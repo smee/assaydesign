@@ -442,6 +442,7 @@ public class CalcDalton implements Interruptible{
     }
 
     protected double[] getMassenArray(int ptr, int i) {
+        //System.out.println("getMassenArray("+ptr+", "+i+"), has dims=["+massenList.length+","+massenList[ptr].length+"]");
         return massenList[ptr][i];
     }
 

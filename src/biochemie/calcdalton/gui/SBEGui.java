@@ -42,6 +42,7 @@ import javax.swing.filechooser.FileFilter;
 
 import biochemie.calcdalton.BerechnungsProgress;
 import biochemie.calcdalton.tf_seqDocListener;
+import biochemie.util.FileSelector;
 import biochemie.util.Helper;
 import biochemie.util.SwingWorker;
 
@@ -198,10 +199,7 @@ public class SBEGui extends JFrame{
             }
         }
         public void actionPerformed(ActionEvent e) {
-            File file=new File(".");
-            JFileChooser jfc=new JFileChooser(file);
-            jfc.setDialogTitle("Load primer...");
-            jfc.setFileFilter(new FileFilter(){
+            File file = FileSelector.getUserSelectedFile(null,"Load primer...",new FileFilter(){
                 public boolean accept(File f) {
                     if(f.isDirectory())
                         return true;
@@ -213,15 +211,13 @@ public class SBEGui extends JFrame{
                 public String getDescription() {
                     return "textfiles containing primer";
                 }
-            });
-            int result=jfc.showOpenDialog(null);
-            if(JFileChooser.APPROVE_OPTION == result){
+            },JFileChooser.OPEN_DIALOG);
+            if(file != null){
                 try {
                     /*
                      * FIXME schlampig, erkennt keine unvollstaendigen Ausgabezeilen (also Zeilen ohne "bio" darin)
                      * FIXME erstellt eine Zeile in der GUI zuviel (wegen dem HEader in den CSV-Files)
                      */
-                    file=jfc.getSelectedFile();
                     BufferedReader br=new BufferedReader(new FileReader(file));
                     List lines=new ArrayList();
                     String line="";
@@ -379,24 +375,20 @@ public class SBEGui extends JFrame{
             }
         }
         public void actionPerformed(ActionEvent e) {
-            File file=new File(".");
-            JFileChooser jfc=new JFileChooser(file);
-            jfc.setDialogTitle("Save primer as ...");
-            jfc.setFileFilter(new FileFilter(){
+            File file = FileSelector.getUserSelectedFile(null,"Save primers as...",new FileFilter(){
                 public boolean accept(File f) {
                     if(f.isDirectory())
                         return true;
-                    if(f.isFile() && (f.getName().toLowerCase().endsWith(".primer") || f.getName().toLowerCase().endsWith(".csv")))
+                    if(f.isFile() && (f.getName().toLowerCase().endsWith(".primer")
+                            || f.getName().toLowerCase().endsWith(".csv")))
                         return true;
                     return false;
                 }
                 public String getDescription() {
-                    return "(*.primer, *.csv)";
+                    return "textfiles containing primer";
                 }
-            });
-            int result=jfc.showSaveDialog(null);
-            if(JFileChooser.APPROVE_OPTION == result){
-                    file=jfc.getSelectedFile();
+            },JFileChooser.OPEN_DIALOG);
+            if(file != null) {
                     if(!file.getAbsolutePath().toLowerCase().endsWith(".primer") && !file.getAbsolutePath().toLowerCase().endsWith(".csv"))
                         file=new File(file.getAbsolutePath()+".csv");
                     

@@ -111,7 +111,7 @@ public class BerechnungsProgress extends JFrame{
         JButton jb_next;
         JButton jb_prev;
         JButton showDiffs;
-        frame = new JFrame("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions());
+        frame = new JFrame("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions()+"("+(sbetable.getColumnCount()-1)+" primers)");
         double p=TableLayoutConstants.PREFERRED;
         double f=TableLayoutConstants.FILL;
         double b=5;
@@ -170,7 +170,7 @@ public class BerechnungsProgress extends JFrame{
         jb_next.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 sbetable.nextLoesung();
-                frame.setTitle("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions());
+                frame.setTitle("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions()+"("+(sbetable.getColumnCount()-1)+" primers)");
                 frame.repaint();
             }
         });
@@ -178,7 +178,7 @@ public class BerechnungsProgress extends JFrame{
         jb_prev.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 sbetable.previousLoesung();
-                frame.setTitle("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions());
+                frame.setTitle("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions()+"("+(sbetable.getColumnCount()-1)+" primers)");
                 frame.repaint();
             }
         });
@@ -303,9 +303,9 @@ public class BerechnungsProgress extends JFrame{
         List primer = new ArrayList(paneldata.length * br.length);
         
         for (int i = 0; i < paneldata.length; i++) {
-            if(fest[i]!= -1)
+            if(fest[i]== -1)
                 for (int j = 0; j < br.length; j++) {
-                    primer.add(new SimplePrimer(cd,names[i],paneldata[i],br[j]));
+                    primer.add(new SimplePrimer(cd,names[i],paneldata[i],j));//jeden index einmal als fest verwenden
                 }
             else
                 primer.add(new SimplePrimer(cd,names[i],paneldata[i],fest[i]));
@@ -371,6 +371,8 @@ public class BerechnungsProgress extends JFrame{
         }
 
         public boolean passtMit(Multiplexable other) {
+            if(name.equals(((SimplePrimer)other).name))
+                return false;
             String[][] sbedata= {datarow
                                 ,((SimplePrimer)other).datarow};
             int[] fest=new int[] {this.fest, ((SimplePrimer)other).fest};

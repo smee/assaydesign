@@ -15,7 +15,6 @@ import javax.swing.JTextField;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import biochemie.sbe.gui.SBESequenceTextField;
 import biochemie.util.Helper;
 
 public class SBEPanel extends JPanel
@@ -39,7 +38,7 @@ public class SBEPanel extends JPanel
     protected JLabel lbName;
     protected JLabel lbSeqTf;
     protected JTextField tfName;
-    public SBESequenceTextField tfSequence;
+    public PBSequenceField tfSequence;
     /**
      * Konstruktor erwartet individuelle Nummerierung.
      * @param num
@@ -71,10 +70,10 @@ public class SBEPanel extends JPanel
         tfName.setToolTipText("Please enter the name of the SBE-primer sequence.");
         jp_sequence.add(tfName,"3,1");
         jp_sequence.add(new JLabel("   SBE-Primer:  "),"5,1");
-        tfSequence = new SBESequenceTextField( );
-        tfSequence.setValidChars("acgtACGT");
-        tfSequence.setMaxLen(150);
-        tfSequence.setUpper(true);
+        tfSequence = new PBSequenceField(150,true,"acgtACGT");
+//        tfSequence.setValidChars("acgtACGT");
+//        tfSequence.setMaxLen(150);
+//        tfSequence.setUpper(true);
         tfSequence.setToolTipText("Please insert a SBE-primer sequence with length>="+CDConfig.getInstance().getMaxBruchstelle()+" (Strg+V)");
         tfSequence.setPreferredSize(new Dimension(400,20));
         jp_sequence.add(tfSequence,"7, 1");
