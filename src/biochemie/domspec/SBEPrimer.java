@@ -22,7 +22,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import biochemie.calcdalton.CalcDalton;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBEOptionsProvider;
-import biochemie.sbe.calculators.Multiplexable;
+import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 
 
@@ -110,7 +110,7 @@ public class SBEPrimer extends Primer{
      */
     private void init(String bautein,boolean usergiven) {
         boolean hh= usergiven && (bautein.length() == 0 || !bautein.equalsIgnoreCase("none"));//vom benutzer vorgegebene Sekundaerstrukturen
-        if(hh && usergiven){
+        if(hh){
             int incompHairpin=0,incompHomodimer=0;
             HashSet positions=new HashSet();
             for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
@@ -208,22 +208,23 @@ public class SBEPrimer extends Primer{
                 }
             }
             return passtMitCrossdimern(other) && passtMitCalcDalton(other);
-        }else {
-            boolean ret= o.passtMit(this);//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
+        }else {//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
+            boolean ret= o.passtMit(this);
             edgereason=o.getEdgeReason();
             return ret;
         }
     }
     /**
+     * Testet, ob Crossdimer entstehen und speichert diese in den jeweiligen Primer zur weiteren Verwendung.
      * @param other
      * @return
      */
     protected boolean passtMitCrossdimern(SBEPrimer other) {
         //Crossdimer?
         Set cross1=SekStrukturFactory.getCrossdimer(this,other,cfg);
-        this.sekstruc.addAll(cross1);            				//soll bei jeweils dem Primer verzeichnet werden, der einbaut
+        //this.sekstruc.addAll(cross1);            				//soll bei jeweils dem Primer verzeichnet werden, der einbaut
         Set cross2=SekStrukturFactory.getCrossdimer(other,this,cfg);
-        other.sekstruc.addAll(cross2);
+        //other.sekstruc.addAll(cross2);
         cross1.addAll(cross2);//reusing vars
         for (Iterator it = cross1.iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
@@ -320,17 +321,18 @@ public class SBEPrimer extends Primer{
         return cfg.getMaxPlex();
     }
     /**
-     * Removes every crossdimer with primers, that aren't in this set of primers.
+     * Adds crossdimers with the primers in the given set to the internal memory
+     * of secondary structures.
      */
     public void normalizeCrossdimers(Collection primers) {
         if(sekstruc == null)
             return; //nothing to normalize
-        for (Iterator it = sekstruc.iterator(); it.hasNext();) {
-            SBESekStruktur s = (SBESekStruktur) it.next();
-            if(s.getType()==SekStruktur.CROSSDIMER &&
-               (!primers.contains(s.getPrimer()) ||
-                   !primers.contains(s.getCDPrimer())))
-                it.remove();
+        getSecStrucs();
+        
+        for (Iterator it = primers.iterator(); it.hasNext();) {
+            SBEPrimer p = (SBEPrimer) it.next();
+            if(p!=this)
+            	sekstruc.addAll(SekStrukturFactory.getCrossdimer(this,p,cfg));
         }
     }
 }

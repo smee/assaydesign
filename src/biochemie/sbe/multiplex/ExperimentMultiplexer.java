@@ -15,7 +15,6 @@ import java.util.Set;
 import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.SBEOptionsProvider;
-import biochemie.sbe.calculators.Multiplexable;
 import biochemie.sbe.calculators.ResusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.util.GraphHelper;

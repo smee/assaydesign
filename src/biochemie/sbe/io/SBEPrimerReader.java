@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import biochemie.sbe.MultiplexableFactory;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptionsProvider;
 import biochemie.sbe.WrongValueException;
+import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.util.Helper;
 
 /**

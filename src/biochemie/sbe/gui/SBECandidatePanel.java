@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.StringTokenizer;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -21,7 +22,6 @@ import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptionsProvider;
-
 /**
  * @author Steffen Dienst
  *
@@ -46,6 +46,8 @@ public class SBECandidatePanel extends JPanel {
 
     private boolean isExpertMode;
 	private StringEntryPanel filtersPanel = null;
+	private JCheckBox fixedPrimerCB = null;
+	
 	/**
 	 * This is the default constructor
 	 * @param
@@ -62,6 +64,7 @@ public class SBECandidatePanel extends JPanel {
 	 * @return void
 	 */
 	private  void initialize() {
+		GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
@@ -93,11 +96,11 @@ public class SBECandidatePanel extends JPanel {
 		gridBagConstraints31.fill = java.awt.GridBagConstraints.NONE;
 		gridBagConstraints31.insets = new java.awt.Insets(0,10,5,10);
 		gridBagConstraints31.anchor = java.awt.GridBagConstraints.CENTER;
-		gridBagConstraints7.gridx = 7;
+		gridBagConstraints7.gridx = 8;
 		gridBagConstraints7.gridy = 0;
 		gridBagConstraints7.gridheight = 2;
 		gridBagConstraints7.insets = new java.awt.Insets(5,10,5,0);
-		gridBagConstraints4.gridx = 1;
+		gridBagConstraints4.gridx = 2;
 		gridBagConstraints4.gridy = 0;
 		gridBagConstraints4.insets = new java.awt.Insets(10,0,10,0);
 		gridBagConstraints4.anchor = java.awt.GridBagConstraints.EAST;
@@ -105,22 +108,22 @@ public class SBECandidatePanel extends JPanel {
 		jLabel1.setText("5'-Sequence");
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-		gridBagConstraints5.gridx = 1;
+		gridBagConstraints5.gridx = 3;
 		gridBagConstraints5.gridy = 1;
 		gridBagConstraints5.weightx = 1.0;
 		gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints5.gridwidth = 2;
 		gridBagConstraints5.insets = new java.awt.Insets(0,0,5,0);
-		gridBagConstraints11.gridx = 4;
+		gridBagConstraints11.gridx = 5;
 		gridBagConstraints11.gridy = 0;
 		gridBagConstraints11.gridheight = 2;
 		gridBagConstraints11.insets = new java.awt.Insets(5,10,5,0);
-		gridBagConstraints10.gridx = 6;
+		gridBagConstraints10.gridx = 7;
 		gridBagConstraints10.gridy = 0;
 		gridBagConstraints10.insets = new java.awt.Insets(10,10,10,0);
 		gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
 		jLabel2.setText("3'-Sequence");
-		gridBagConstraints12.gridx = 6;
+		gridBagConstraints12.gridx = 7;
 		gridBagConstraints12.gridy = 1;
 		gridBagConstraints12.weightx = 1.0;
 		gridBagConstraints12.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -133,41 +136,45 @@ public class SBECandidatePanel extends JPanel {
 		gridBagConstraints2.gridy = 0;
 		gridBagConstraints2.insets = new java.awt.Insets(10,10,10,0);
 
-		gridBagConstraints41.gridx = 5;
+		gridBagConstraints41.gridx = 6;
 		gridBagConstraints41.gridy = 0;
 		gridBagConstraints41.gridheight = 2;
 		gridBagConstraints41.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints42.gridx = 8;
+		gridBagConstraints42.gridx = 9;
 		gridBagConstraints42.gridy = 0;
 		gridBagConstraints42.gridheight = 2;
 		gridBagConstraints42.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints51.gridx = 9;
+		gridBagConstraints51.gridx = 10;
 		gridBagConstraints51.gridy = 0;
 		gridBagConstraints51.gridheight = 2;
 		gridBagConstraints51.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints6.gridx = 10;
+		gridBagConstraints6.gridx = 11;
 		gridBagConstraints6.gridy = 0;
 		gridBagConstraints6.gridheight = 2;
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
 		this.add(getTfId(), gridBagConstraints31);
-		this.add(getPLSelectorPanel(), gridBagConstraints7);
 		this.add(jLabel, gridBagConstraints1);
-		this.add(jLabel1, gridBagConstraints4);
-		this.add(getSeq5tf(), gridBagConstraints5);
-		this.add(jLabel2, gridBagConstraints10);
-		this.add(getSeq3tf(), gridBagConstraints12);
-		this.add(getSNPSelectorPanel(), gridBagConstraints11);
-		this.add(getHairpin5SelectionPanel(), gridBagConstraints41);
-		this.add(getHairpin3SelectionPanel(), gridBagConstraints42);
-		this.add(getMultiplexidPanel(), gridBagConstraints51);
-		this.add(getPcrLenPanel(), gridBagConstraints6);
         inputcontroller = new SBESeqInputController(getSeq5tf(),getSeq3tf(),getPLSelectorPanel());
         setExpertMode(false);
-        gridBagConstraints13.gridx = 11;
+        gridBagConstraints13.gridx = 12;
         gridBagConstraints13.gridy = 0;
         gridBagConstraints13.gridheight = 2;
         gridBagConstraints13.insets = new java.awt.Insets(10,10,10,10);
+        gridBagConstraints15.gridx = 1;
+        gridBagConstraints15.gridy = 1;
+        gridBagConstraints15.insets = new java.awt.Insets(0,0,0,5);
+        this.add(getPLSelectorPanel(), gridBagConstraints7);
+        this.add(jLabel1, gridBagConstraints4);
+        this.add(getSeq5tf(), gridBagConstraints5);
+        this.add(jLabel2, gridBagConstraints10);
+        this.add(getSeq3tf(), gridBagConstraints12);
+        this.add(getSNPSelectorPanel(), gridBagConstraints11);
+        this.add(getHairpin5SelectionPanel(), gridBagConstraints41);
+        this.add(getHairpin3SelectionPanel(), gridBagConstraints42);
+        this.add(getMultiplexidPanel(), gridBagConstraints51);
+        this.add(getPcrLenPanel(), gridBagConstraints6);
         this.add(getFiltersPanel(), gridBagConstraints13);
+        this.add(getFixedPrimerCB(), gridBagConstraints15);
 	}
 	/**
 	 * This method initializes PBSequenceField
@@ -367,6 +374,8 @@ public class SBECandidatePanel extends JPanel {
         sb.append(multiplexid);
         sb.append(';');
         sb.append(filters);
+        sb.append(';');
+        sb.append(getFixedPrimerCB().isSelected());
         return new String(sb);
     }
     public SBECandidate getSBECandidate(SBEOptionsProvider cfg){
@@ -395,7 +404,9 @@ public class SBECandidatePanel extends JPanel {
         String multiplexid = getMultiplexidPanel().getText();
         String unwanted = getFiltersPanel().getText();
         int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
-        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted);
+        boolean userGiven=getFixedPrimerCB().isSelected();
+        
+        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven);
         return s;
     }
 
@@ -420,7 +431,13 @@ public class SBECandidatePanel extends JPanel {
         String snp = stok.nextToken();
         String r = stok.nextToken();
         String bautein3 = stok.nextToken();
-        int pcrlen = stok.nextToken().length();
+        int productlen=0;
+        String temp=stok.nextToken();
+        try{
+    		productlen=Integer.parseInt(temp);
+        }catch (NumberFormatException e) {
+    		productlen=temp.length() ;//PCR-Produktlaenge
+    	}
         int pl;
         try {
             pl = Integer.parseInt(stok.nextToken());
@@ -429,16 +446,19 @@ public class SBECandidatePanel extends JPanel {
         }
         String multiplexid = stok.hasMoreTokens()?stok.nextToken():"";
         String filters = stok.hasMoreTokens()?stok.nextToken():"";
+        String fixed = stok.hasMoreTokens()?stok.nextToken():"";
+        
         getTfId().setText(id);
         getSeq5tf().setText(l);
         getHairpin5SelectionPanel().setSelectedNukleotides(bautein5);
         getSNPSelectorPanel().setSelectedNukleotides(snp);
         getSeq3tf().setText(r);
         getHairpin3SelectionPanel().setSelectedNukleotides(bautein3);
-        getPcrLenPanel().setText(Integer.toString(pcrlen));
+        getPcrLenPanel().setText(Integer.toString(productlen));
         getPLSelectorPanel().setSelectedPL(pl);
         getMultiplexidPanel().setText(multiplexid);
         getFiltersPanel().setText(filters);
+        getFixedPrimerCB().setSelected(Boolean.valueOf(fixed).booleanValue());
     }
 	/**
 	 * This method initializes stringEntryPanel
@@ -470,4 +490,17 @@ public class SBECandidatePanel extends JPanel {
     public void setFilters(String f) {
         getFiltersPanel().setText(f);
     }
-    }  //  @jve:decl-index=0:visual-constraint="65,28"
+	/**
+	 * This method initializes fixedPrimerCB	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getFixedPrimerCB() {
+		if (fixedPrimerCB == null) {
+			fixedPrimerCB = new JCheckBox();
+			fixedPrimerCB.setText("Fix");
+			fixedPrimerCB.setToolTipText("If checked, length of 5' sequence will not be adjusted to the specified temperature and it will be used as is for multiplexing");
+		}
+		return fixedPrimerCB;
+	}
+     }  //  @jve:decl-index=0:visual-constraint="65,28"

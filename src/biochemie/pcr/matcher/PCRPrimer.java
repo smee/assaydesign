@@ -10,7 +10,7 @@ import java.util.Set;
 import biochemie.domspec.Primer;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.pcr.modules.CrossDimerAnalysis;
-import biochemie.sbe.calculators.Multiplexable;
+import biochemie.sbe.multiplex.Multiplexable;
 
 /**
  * @author Steffen Dienst

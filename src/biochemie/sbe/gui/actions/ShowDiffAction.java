@@ -32,7 +32,6 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.lang.ArrayUtils;
 
-
 import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;

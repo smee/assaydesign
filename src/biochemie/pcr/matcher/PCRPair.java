@@ -4,7 +4,7 @@
  */
 package biochemie.pcr.matcher;
 
-import biochemie.sbe.calculators.Multiplexable;
+import biochemie.sbe.multiplex.Multiplexable;
 
 
 class PCRPair implements Multiplexable{

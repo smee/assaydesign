@@ -26,6 +26,7 @@ import biochemie.sbe.filter.PolyXFilter;
 import biochemie.sbe.filter.SekStructureFilter;
 import biochemie.sbe.filter.TemperaturFilter;
 import biochemie.sbe.filter.UnwantedPrimerFilter;
+import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.util.Helper;
 
 /*
@@ -111,8 +112,8 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param givenmplex
      * @param unwanted
      */
-    public SBECandidate(SBEOptionsProvider cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted) {
-        this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted);
+    public SBECandidate(SBEOptionsProvider cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted, boolean userGiven) {
+        this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted, userGiven);
     }
 
     /**
@@ -122,7 +123,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param givenMultiplexid
      * @param unwanted Ausdruck fuer Primer, die der User nicht will (List a la "3'_length_PL ...", z.B.: "3'_25_11 5'_19_8")
       */
-    public SBECandidate(SBEOptionsProvider cfg,String id, String l, String r, String snp, int productlen, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted) {
+    public SBECandidate(SBEOptionsProvider cfg,String id, String l, String r, String snp, int productlen, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted, boolean userGiven) {
         leftstring=l;
         rightstring= Helper.revcomplPrimer(r);
         this.id=id;
@@ -133,12 +134,16 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         this.cfg = cfg;
         this.unwanted=unwanted;
         System.out.println("\nAnalyzing Seq.ID: " + id + "\n------------------------");
-
-        createValidCandidate(l, bautEin5,r,bautEin3);
+        
+        if(userGiven){
+        	SBEPrimer primer = new SBEPrimer(cfg, id, l, snp, SBEPrimer._5_,bautEin5, productlen, true);
+        	primercandidates.add(primer);
+        }else
+        	createValidCandidate(l, bautEin5,r,bautEin3);
      }
 
     /**
-     * Erzeuge eine Sequenz, die allen Kriterien gerecht wird und setzt alle entsprechenden
+     * Erzeuge eine Liste von Sequenzen, die allen Kriterien gerecht werden und setzt alle entsprechenden
      * Instanzfelder.
      *
      */
@@ -651,15 +656,19 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         if(st.hasMoreTokens())
             unwanted = st.nextToken().trim();
 
+        boolean userGiven=false;
+        if(st.hasMoreTokens())
+        	userGiven=Boolean.valueOf(st.nextToken()).booleanValue();
+        
         if(festeBruchstelle != -1) {//wenn ein PL vorgegeben ist, wird nur der linke Primer betrachtet
             int posOfL=Helper.getPosOfPl(seq[0]);
             if(posOfL != -1 && posOfL != festeBruchstelle)
                 throw new IllegalArgumentException("In primer ID="+id+": Left primer has a L in position="+posOfL+" != field PL="+festeBruchstelle+" !");
 
             String primer = Helper.replacePL(seq[0],festeBruchstelle);
-            return new SBECandidate(cfg, id, primer,snp, productlen, hair5, givenMultiplexid, unwanted);
+            return new SBECandidate(cfg, id, primer,snp, productlen, hair5, givenMultiplexid, unwanted, userGiven);
         }else
-            return new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,hair5,hair3,givenMultiplexid,unwanted);
+            return new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,hair5,hair3,givenMultiplexid,unwanted, userGiven);
     }
     private final static String[] csvheader =
         new String[] {

@@ -523,7 +523,8 @@ public class SBEConfigDialog extends JDialog {
 	private JCheckBox getEvilCrossdimerCheckBox() {
 		if (evilCrossdimerCheckBox == null) {
 			evilCrossdimerCheckBox = new JCheckBox();
-			evilCrossdimerCheckBox.setText("all Crossdimers are evil");
+			evilCrossdimerCheckBox.setText("incomp. Crossdimers only");
+			evilCrossdimerCheckBox.setToolTipText("Predicts only incompatible crossdimers.");
 		}
 		return evilCrossdimerCheckBox;
 	}

@@ -14,7 +14,7 @@ import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 
-import biochemie.sbe.calculators.Multiplexable;
+import biochemie.sbe.multiplex.Multiplexable;
 
 /**
  * Immutable. Repraesentiert einen generischen Primer. 

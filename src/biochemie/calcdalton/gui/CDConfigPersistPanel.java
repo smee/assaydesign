@@ -11,10 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 
-
-
-
-
 /**
  * @author Steffen Dienst
  *

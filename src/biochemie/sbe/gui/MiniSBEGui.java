@@ -25,14 +25,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
@@ -63,8 +60,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.functor.Algorithms;
-import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.IsNull;
 
 import biochemie.calcdalton.JTableEx;
@@ -122,8 +117,12 @@ public class MiniSBEGui extends JFrame {
             SwingWorker sw = new SwingWorker(){
         		public Object construct() {
                     MiniSBE m = null;
-                    m = new MiniSBE(sbeccoll,cfg);
-                    normalizeSekStruks(sbec);
+                    try {
+						m = new MiniSBE(sbeccoll,cfg);
+						normalizeSekStruks(sbec);
+					} catch (RuntimeException e) {
+						e.printStackTrace();
+					}
                     return m;
         		}
         		public void finished() {
@@ -348,7 +347,8 @@ public class MiniSBEGui extends JFrame {
                     "\"PCR Produkt\";" +
                     "\"Feste Photolinkerposition (leer, wenn egal)\";" +
                     "\"feste MultiplexID\";" +
-                    "\"Ausgeschlossene Primer\"";
+                    "\"Ausgeschlossene Primer\";" +
+                    "\"Primer wird verwendet as-is";
             bw.write(header);
             bw.write("\n");
             for (Iterator it = sbec.iterator(); it.hasNext();) {
@@ -449,8 +449,8 @@ public class MiniSBEGui extends JFrame {
 	private void exitApp() {
 //		 Save the state of the window as preferences
         int answer = askUserForSave();
-        if (answer == JOptionPane.CANCEL_OPTION)
-            return;
+//        if (answer == JOptionPane.CANCEL_OPTION)
+//            return;
 		prefs.putInt(WINDOW_WIDTH_KEY, getWidth());
 		prefs.putInt(WINDOW_HEIGHT_KEY, getHeight());
 		prefs.putInt(WINDOW_X_KEY, getX());

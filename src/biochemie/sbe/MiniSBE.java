@@ -13,6 +13,7 @@ import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.sbe.multiplex.BestellMultiplexer;
 import biochemie.sbe.multiplex.ExperimentMultiplexer;
+import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.sbe.multiplex.Multiplexer;
 import biochemie.util.LogStdStreams;
 /*

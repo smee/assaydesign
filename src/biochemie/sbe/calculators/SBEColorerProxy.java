@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org._3pq.jgrapht.UndirectedGraph;
 
+import biochemie.sbe.multiplex.Multiplexable;
+
 /**
  * @author Steffen Dienst
  * 06.10.2004

@@ -11,7 +11,7 @@ import java.util.List;
 import org._3pq.jgrapht.UndirectedGraph;
 import org._3pq.jgrapht.graph.SimpleGraph;
 
-import biochemie.sbe.calculators.Multiplexable;
+import biochemie.sbe.multiplex.Multiplexable;
 
 /**
  * @author sdienst
