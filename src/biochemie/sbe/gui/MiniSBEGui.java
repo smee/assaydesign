@@ -212,6 +212,10 @@ public class MiniSBEGui extends JFrame {
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(java.awt.event.ActionEvent e) {
+            int answer = askUserForSave();
+            if (answer == JOptionPane.CANCEL_OPTION)
+                return;
+
             getSbepanelsPanel().removeAll();
             sbepanels.clear();
             getSbepanelsPanel().revalidate();
@@ -413,6 +417,9 @@ public class MiniSBEGui extends JFrame {
 	}
 	private void exitApp() {
 //		 Save the state of the window as preferences
+        int answer = askUserForSave();
+        if (answer == JOptionPane.CANCEL_OPTION)
+            return;
 		prefs.putInt(WINDOW_WIDTH_KEY, getWidth());
 		prefs.putInt(WINDOW_HEIGHT_KEY, getHeight());
 		prefs.putInt(WINDOW_X_KEY, getX());
@@ -791,8 +798,7 @@ public class MiniSBEGui extends JFrame {
  	public static void main(String[] args) {
  	    if(args.length == 0) {
             MiniSBE.initLogfile(".");
- 	        JFrame frame=new MiniSBEGui();
- 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            final MiniSBEGui frame=new MiniSBEGui();
  	        frame.pack();
  	        frame.setVisible(true);
  	    }
@@ -889,5 +895,15 @@ public class MiniSBEGui extends JFrame {
             column.setPreferredWidth(100);
         }
         return table;
+    }
+    /**
+     * Saves, if the user clicks yes, returns the value received from  JOptionPane.
+     * @return
+     */
+    protected int askUserForSave() {
+        int answer=JOptionPane.showConfirmDialog(null,"Would you like to save?","New assay design",JOptionPane.YES_NO_CANCEL_OPTION);
+        if(answer == JOptionPane.YES_OPTION)
+            getSavePrimerAction().actionPerformed(new ActionEvent(this,0,"save"));
+        return answer;
     }
   }  //  @jve:decl-index=0:visual-constraint="10,102"
