@@ -136,7 +136,8 @@ public class MiniSBEGui extends JFrame {
             dialog.pack();
             dialog.setVisible(true);
         }
-
+        //TODO alle CDs zwischen den primern, nicht nur innerhalb eines multiplexes anzeigen
+        //TODO in der Ausgabe: bei irrel.: no bleibt, bei yes: PL oder Multiplex
         protected void normalizeSekStruks(List sbec) {
             Set plexids = (Set) Algorithms.collect(Algorithms.apply(sbec.iterator(), new UnaryFunction() {
                 public Object evaluate(Object obj) {
