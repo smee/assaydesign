@@ -1,6 +1,7 @@
 package biochemie.sbe;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -594,7 +595,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         assertPrimerChosen();
         return chosen.getSecStrucs();
     }
-    public void normalizeCrossdimers(Set sbec) {
+    public void normalizeCrossdimers(Collection sbec) {
         assertPrimerChosen();
         Set primers = new HashSet();
         for (Iterator it = sbec.iterator(); it.hasNext();) {

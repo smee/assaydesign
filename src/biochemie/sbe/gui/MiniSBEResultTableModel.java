@@ -26,19 +26,21 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
     public MiniSBEResultTableModel(List sb) {
         this.sbec = sb;
         String[] origheader = SBECandidate.getCsvheader();
-        header  = new String[origheader.length + 1];
+        header  = new String[origheader.length + 2];
         System.arraycopy(origheader,0,header,0,origheader.length);
-        header[header.length-1] = "Exclude primer";
+        header[header.length-2] = "Exclude primer";
+        header[header.length-1] = "Exclude pl";
         data = new Object[sbec.size()][];
         int i=0;
         for (Iterator it = sbec.iterator(); it.hasNext();i++) {
             SBECandidate s = (SBECandidate) it.next();
             StringTokenizer st = new StringTokenizer(Helper.clearEmptyCSVEntries(s.getCSVRow()),";");
-            Object[] entries = new Object[st.countTokens() + 1];
+            Object[] entries = new Object[st.countTokens() + 2];
             int j =0;
             while (st.hasMoreTokens()) {
                 entries[j++] = st.nextToken();
             }
+            entries[entries.length - 2] = Boolean.FALSE;
             entries[entries.length - 1] = Boolean.FALSE;
             data[i] = entries;
         }
@@ -66,7 +68,7 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
         return getValueAt(0, c).getClass();
     }
     public boolean isCellEditable(int row, int col) {
-        if(col==header.length-1)
+        if(col >= header.length-2 )
             return true;
         return false;
     }
@@ -82,6 +84,15 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
             SBECandidate p = (SBECandidate) it.next();
             if(p.getId().equals(id)) {
                 return p.getType()+"_"+p.getFavSeq().length()+"_"+p.getBruchstelle();
+            }
+        }
+        return "";
+    }
+    public String getPLFilterFor(String id) {
+        for (Iterator it = sbec.iterator(); it.hasNext();) {
+            SBECandidate p = (SBECandidate) it.next();
+            if(p.getId().equals(id)) {
+                return "*_*_"+p.getBruchstelle();
             }
         }
         return "";

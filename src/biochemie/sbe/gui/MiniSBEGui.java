@@ -136,25 +136,11 @@ public class MiniSBEGui extends JFrame {
             dialog.pack();
             dialog.setVisible(true);
         }
-        //TODO alle CDs zwischen den primern, nicht nur innerhalb eines multiplexes anzeigen
-        //TODO in der Ausgabe: bei irrel.: no bleibt, bei yes: PL oder Multiplex
+
         protected void normalizeSekStruks(List sbec) {
-            Set plexids = (Set) Algorithms.collect(Algorithms.apply(sbec.iterator(), new UnaryFunction() {
-                public Object evaluate(Object obj) {
-                    return ((SBECandidate)obj).getMultiplexId();
-                }
-            }), new HashSet());
-            for (Iterator it = plexids.iterator(); it.hasNext();) {
-                final String id = (String) it.next();
-                Set set=(Set) Algorithms.collect(Algorithms.select(sbec.iterator(), new UnaryPredicate() {
-                    public boolean test(Object obj) {
-                        return ((SBECandidate)obj).getMultiplexId().equals(id);
-                    }
-                }), new HashSet());
-                for (Iterator iter = set.iterator(); iter.hasNext();) {
-                    SBECandidate sc = (SBECandidate) iter.next();
-                    sc.normalizeCrossdimers(set);
-                }
+            for (Iterator iter = sbec.iterator(); iter.hasNext();) {
+                SBECandidate sc = (SBECandidate) iter.next();
+                sc.normalizeCrossdimers(new HashSet(sbec));
             }
 
         }
@@ -195,7 +181,11 @@ public class MiniSBEGui extends JFrame {
 
             Boolean filter = (Boolean) model.getValueAt(row, column);
             String id = (String) model.getValueAt(row,1);
-            String filterstring=((MiniSBEResultTableModel)model).getFilterFor(id);
+            String filterstring;
+            if(column == 20)
+                filterstring=((MiniSBEResultTableModel)model).getFilterFor(id);
+            else
+                filterstring=((MiniSBEResultTableModel)model).getPLFilterFor(id);
             modifyUserFilterFor(id,filterstring,filter.booleanValue());
         }
 
@@ -828,7 +818,9 @@ public class MiniSBEGui extends JFrame {
             SBECandidatePanel panel = (SBECandidatePanel) it.next();
             if(panel.getId().equals(id)) {
                 String oldfilters = panel.getFilters();
-                oldfilters=oldfilters.replaceAll(filter,"");
+                int pos = oldfilters.indexOf(filter);
+                if(pos != -1)
+                    oldfilters = oldfilters.substring(0,pos)+oldfilters.substring(pos+filter.length());
                 if(b == true)
                     oldfilters=oldfilters+" "+filter;
                 oldfilters=oldfilters.replaceAll("   *"," ").trim();//loesche alle mehrfachen leerzeichen

@@ -6,6 +6,7 @@ package biochemie.domspec;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -296,6 +297,7 @@ public class SBEPrimer extends Primer{
                 break;
             }
             clazz+=s.isIncompatible()?"incompatible":"compatible";
+            //TODO in der Ausgabe: bei irrel.: no bleibt, bei yes: PL oder Multiplex
             if(s.isVerhindert()){
                 irrel+="PL=3'";
                 if(1 == getBruchstelle() - s.getPosFrom3())
@@ -320,7 +322,7 @@ public class SBEPrimer extends Primer{
     /**
      * Removes every crossdimer with primers, that aren't in this set of primers.
      */
-    public void normalizeCrossdimers(Set primers) {
+    public void normalizeCrossdimers(Collection primers) {
         if(sekstruc == null)
             return; //nothing to normalize
         for (Iterator it = sekstruc.iterator(); it.hasNext();) {

@@ -27,10 +27,10 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     public UnwantedPrimerFilter(SBEOptionsProvider cfg, String unwanted) {
         super(cfg);
         count =0;
-        
+
         if(unwanted == null || unwanted.length() == 0)
             return;
-        
+
         StringTokenizer st = new StringTokenizer(unwanted);
         this.type = new String[st.countTokens()];
         this.len = new int[st.countTokens()];
@@ -40,8 +40,14 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
             String tok=st.nextToken();
             String[] parts = tok.split("_");
             type[i]=parts[0];
-            len[i]=Integer.parseInt(parts[1]);
-            pl[i]=Integer.parseInt(parts[2]);
+            if(parts[1].equals("*"))
+                len[i]=-1;
+            else
+                len[i]=Integer.parseInt(parts[1]);
+            if(parts[2].equals("*"))
+                pl[i]=-1;
+            else
+                pl[i]=Integer.parseInt(parts[2]);
             i++;
         }
     }
@@ -50,13 +56,15 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
         for (Iterator it= cand.iterator(); it.hasNext();) {
             SBEPrimer p=(SBEPrimer) it.next();
             for (int i = 0; i < type.length; i++) {
-                if(p.getType().equals(type[i]) && p.getSeq().length() == len[i] && p.getBruchstelle() == pl[i]) {
+                if((p.getType().equals(type[i]) || type[i].equals("*")) &&
+                   (p.getSeq().length() == len[i] || len[i] < 0) &&
+                   (p.getBruchstelle() == pl[i] || pl[i] < 0)){
                     it.remove();
                     count++;
-                    if(debug)                        
+                    if(debug)
                         System.out.println("not considering "+p.getSeq()+", PL="+p.getBruchstelle()+", user doesn't like him!");
                 }
-                
+
             }
         }
     }
