@@ -34,7 +34,7 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
 import biochemie.calcdalton.CDOptionsImpl;
-import biochemie.calcdalton.CalcDaltonOptionsProvider;
+import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.gui.DoubleValueIntervallPanel;
 import biochemie.util.config.GeneralConfig;
 
@@ -291,7 +291,7 @@ public class CDConfigPanel extends JPanel{
         setValuesFrom(new CDOptionsImpl());
     }
 
-    public CalcDaltonOptionsProvider getCalcDaltonOptionsProvider() {
+    public CalcDaltonOptions getCalcDaltonOptionsProvider() {
         CDOptionsImpl c=new CDOptionsImpl();
 
         int[] br=new int[bruchstelleVector.size()];
@@ -310,7 +310,7 @@ public class CDConfigPanel extends JPanel{
         return c;
     }
 
-    public void setValuesFrom(CalcDaltonOptionsProvider cfg) {
+    public void setValuesFrom(CalcDaltonOptions cfg) {
         bruchstelleVector.removeAllElements();
         int[] br=cfg.getPhotolinkerPositions();
         for(int i=0;i<br.length;i++)

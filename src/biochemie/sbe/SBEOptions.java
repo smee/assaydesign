@@ -4,14 +4,14 @@
  */
 package biochemie.sbe;
 
-import biochemie.calcdalton.CalcDaltonOptionsProvider;
+import biochemie.calcdalton.CalcDaltonOptions;
 
 /**
  * Kaspelt alle Optionen, die MiniSBE braucht.
  * @author Steffen Dienst
  *
  */
-public interface SBEOptionsProvider extends CalcDaltonOptionsProvider {
+public interface SBEOptions extends CalcDaltonOptions {
 
 	/**
 	 * Get minimum meltingtemperature.

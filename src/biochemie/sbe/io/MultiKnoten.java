@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
 
@@ -16,10 +16,10 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         private List knoten;
         List multiplexables;
 		String edgeReason;
-		private SBEOptionsProvider cfg;
+		private SBEOptions cfg;
         private String givenId;
 
-        public MultiKnoten(List knoten2, String givenid, SBEOptionsProvider cfg) {
+        public MultiKnoten(List knoten2, String givenid, SBEOptions cfg) {
             this.knoten=knoten2;
             this.cfg=cfg;
             this.givenId = givenid !=null?givenid:"";

@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import biochemie.domspec.Primer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  *
@@ -17,7 +17,7 @@ import biochemie.sbe.SBEOptionsProvider;
  */
 public class PolyXFilter extends AbstractKandidatenFilter {
     private int polyX;
-    public PolyXFilter(SBEOptionsProvider cfg){
+    public PolyXFilter(SBEOptions cfg){
     	super(cfg);
         this.polyX=cfg.getPolyX();
     }

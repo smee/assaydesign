@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.sbe.SBECandidate;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.WrongValueException;
 import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.util.Helper;
@@ -33,7 +33,7 @@ import biochemie.util.Helper;
 public class SBEPrimerReader {
 	protected List list;
     protected List sbec;
-    protected SBEOptionsProvider cfg;
+    protected SBEOptions cfg;
 
     public SBEPrimerReader() {
 
@@ -44,7 +44,7 @@ public class SBEPrimerReader {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void initForRead(String filename, SBEOptionsProvider cfg) throws FileNotFoundException, IOException {
+    private void initForRead(String filename, SBEOptions cfg) throws FileNotFoundException, IOException {
         this.cfg = cfg;
     	BufferedReader br= new BufferedReader(new FileReader(new File(filename)));
         list = new LinkedList();
@@ -68,7 +68,7 @@ public class SBEPrimerReader {
      * @throws WrongValueException
      * @see SBECandidate
      */
-    public List getSBECandidates(String filename, SBEOptionsProvider cfg) throws IOException, WrongValueException {
+    public List getSBECandidates(String filename, SBEOptions cfg) throws IOException, WrongValueException {
         initForRead(filename, cfg);
         if(null == sbec) {
             sbec=new ArrayList();
@@ -89,7 +89,7 @@ public class SBEPrimerReader {
 	 * @param sbec
      * @return
 	 */
-	public static List collapseMultiplexes(List sbec, SBEOptionsProvider cfg) {
+	public static List collapseMultiplexes(List sbec, SBEOptions cfg) {
 		Collections.sort(sbec,new Comparator() {
             public int compare(Object arg0, Object arg1) {
                 return ((SBECandidate)arg0).getGivenMultiplexID().compareTo(((SBECandidate)arg1).getGivenMultiplexID());

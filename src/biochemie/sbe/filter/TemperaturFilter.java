@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import biochemie.domspec.SBEPrimer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 /**
  *
  * @author Steffen
@@ -17,7 +17,7 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
     private double maxT;
     private double minT;
     
-    public TemperaturFilter(SBEOptionsProvider cfg) {
+    public TemperaturFilter(SBEOptions cfg) {
     	super(cfg);
         this.minT= cfg.getMinTemperature();
         this.maxT= cfg.getMaxTemperature();

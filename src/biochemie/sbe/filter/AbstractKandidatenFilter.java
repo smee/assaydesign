@@ -4,17 +4,17 @@
  */
 package biochemie.sbe.filter;
 
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  * @author Steffen Dienst
  *
  */
 public abstract class AbstractKandidatenFilter implements KandidatenFilter{
-	protected SBEOptionsProvider cfg;
+	protected SBEOptions cfg;
 	protected final boolean debug;
 
-	public AbstractKandidatenFilter(SBEOptionsProvider cfg){
+	public AbstractKandidatenFilter(SBEOptions cfg){
 		this.cfg = cfg;
         this.debug=cfg.isDebug();;
 	}

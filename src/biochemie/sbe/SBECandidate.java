@@ -98,7 +98,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     private final String snp;
     private final int productlen;
     private String givenMultiplexID;
-	private final SBEOptionsProvider cfg;
+	private final SBEOptions cfg;
     private String unwanted;
 
     /**
@@ -112,7 +112,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param givenmplex
      * @param unwanted
      */
-    public SBECandidate(SBEOptionsProvider cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted, boolean userGiven) {
+    public SBECandidate(SBEOptions cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted, boolean userGiven) {
         this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted, userGiven);
     }
 
@@ -123,7 +123,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param givenMultiplexid
      * @param unwanted Ausdruck fuer Primer, die der User nicht will (List a la "3'_length_PL ...", z.B.: "3'_25_11 5'_19_8")
       */
-    public SBECandidate(SBEOptionsProvider cfg,String id, String l, String r, String snp, int productlen, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted, boolean userGiven) {
+    public SBECandidate(SBEOptions cfg,String id, String l, String r, String snp, int productlen, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted, boolean userGiven) {
         leftstring=l;
         rightstring= Helper.revcomplPrimer(r);
         this.id=id;
@@ -623,7 +623,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @return
      * @throws WrongValueException
      */
-    public static SBECandidate getSBECandidateFrom(SBEOptionsProvider cfg, String line) throws WrongValueException {
+    public static SBECandidate getSBECandidateFrom(SBEOptions cfg, String line) throws WrongValueException {
         StringTokenizer st=new StringTokenizer(line,";\"");
         String[] seq=new String[2];
         String hair5="",hair3="";

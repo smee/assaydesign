@@ -41,15 +41,15 @@ public class PLSelectorPanel extends MyPanel {
 	}
 
 	public void setPLPositions(int[] br){
-		values=new Object[br.length+1];
-		values[0]="auto";
-		for (int i = 0; i < br.length; i++) {
-			values[i+1]=new Integer(br[i]);
-		}
+        MutableComboBoxModel m = ((MutableComboBoxModel)getComboPL().getModel());
         int sel=getComboPL().getSelectedIndex();
         if(sel == -1)
             sel=0;
-		MutableComboBoxModel m = ((MutableComboBoxModel)getComboPL().getModel());
+        values=new Object[br.length+1];
+        values[0]="auto";
+        for (int i = 0; i < br.length; i++) {
+            values[i+1]=new Integer(br[i]);
+        }
         while(m.getSize() != 0)
             m.removeElementAt(0);
         for (int i = 0; i < values.length; i++) {
@@ -112,7 +112,7 @@ public int getMaxSelectablePl() {
 	 *
 	 * @return javax.swing.JComboBox
 	 */
-	private JComboBox getComboPL() {
+	protected JComboBox getComboPL() {
 		if (comboPL == null) {
 			comboPL = new JComboBox(new DefaultComboBoxModel());
 		}
@@ -139,5 +139,9 @@ public int getMaxSelectablePl() {
     }
     public void addItemListener(ItemListener aListener) {
         getComboPL().addItemListener(aListener);
+    }
+
+    public void setModel(MutableComboBoxModel model) {
+        getComboPL().setModel(model);
     }
  }

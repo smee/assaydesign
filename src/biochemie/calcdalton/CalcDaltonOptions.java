@@ -4,7 +4,7 @@
  */
 package biochemie.calcdalton;
 
-import biochemie.util.config.GeneralOptionsProvider;
+import biochemie.util.config.GeneralOptions;
 
 
 /**
@@ -12,7 +12,7 @@ import biochemie.util.config.GeneralOptionsProvider;
  * @author sdienst
  *
  */
-public interface CalcDaltonOptionsProvider extends GeneralOptionsProvider{
+public interface CalcDaltonOptions extends GeneralOptions{
 
 
     /**

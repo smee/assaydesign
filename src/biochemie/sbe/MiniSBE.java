@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.corba.se.connection.GetEndPointInfoAgainException;
+
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.sbe.multiplex.BestellMultiplexer;
@@ -29,7 +31,7 @@ public class MiniSBE {
 
     public MiniSBE(String optname, String primername) {
         List sbec=null;
-        SBEOptionsProvider cfg = null;
+        SBEOptions cfg = null;
         try {
             cfg = new SBEConfig();
             ((SBEConfig)cfg).readConfigFile(optname);
@@ -57,10 +59,10 @@ public class MiniSBE {
         sbpr.writeSBEResults(outname);
 
     }
-    public MiniSBE(List sbec, SBEOptionsProvider cfg){
+    public MiniSBE(List sbec, SBEOptions cfg){
     	doCalculation(sbec, cfg);
     }
-    protected void doCalculation(List sbec, SBEOptionsProvider cfg){
+    protected void doCalculation(List sbec, SBEOptions cfg){
         Multiplexer m1=new ExperimentMultiplexer(cfg);
         Multiplexer m2=new BestellMultiplexer(cfg);
         while(true) {
@@ -74,6 +76,9 @@ public class MiniSBE {
             }
             if(0 == structs.size()) break; //s gibbet nix zu multiplexen
 
+            if(cfg.getAllCrossdimersAreEvil() == false)
+                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
+            
             if(allgiven)//wenn alle Primer vorgegeben sind, muss ich Experimente finden
                 m1.findMultiplexes(structs);
             else

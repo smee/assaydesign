@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import biochemie.domspec.SBEPrimer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  *
@@ -19,7 +19,7 @@ public class LaengenFilter extends AbstractKandidatenFilter {
 
     private final int len;
     
-    public LaengenFilter(SBEOptionsProvider cfg){
+    public LaengenFilter(SBEOptions cfg){
     	super(cfg);
         this.len=cfg.getMinCandidateLen();
     }

@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.calcdalton.CalcDalton;
-import biochemie.calcdalton.CalcDaltonOptionsProvider;
+import biochemie.calcdalton.CalcDaltonOptions;
 
 
 
@@ -726,7 +726,7 @@ public class Helper {
      * @param cfg
      * @return
      */
-    public static CalcDalton getCalcDalton(CalcDaltonOptionsProvider cfg) {
+    public static CalcDalton getCalcDalton(CalcDaltonOptions cfg) {
     	return new CalcDalton(cfg.getPhotolinkerPositions()
     			             ,cfg.getCalcDaltonFrom()
     						 ,cfg.getCalcDaltonTo()

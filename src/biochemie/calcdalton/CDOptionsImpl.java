@@ -14,7 +14,7 @@ import biochemie.util.config.GeneralConfig;
  * @author sdienst
  *
  */
-public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsProvider {
+public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public CDOptionsImpl() {
         super();
     }

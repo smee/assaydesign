@@ -71,7 +71,7 @@ public class CalcDalton implements Interruptible{
     /**
      * @param cfg
      */
-    public CalcDalton(CalcDaltonOptionsProvider c) {
+    public CalcDalton(CalcDaltonOptions c) {
         this(c.getPhotolinkerPositions(),c.getCalcDaltonFrom(),c.getCalcDaltonTo(),c.getCalcDaltonPeaks(),c.getCalcDaltonVerbFrom(),c.getCalcDaltonVerbTo(),c.getCalcDaltonAllowOverlap());
     }
     public void outputState(){

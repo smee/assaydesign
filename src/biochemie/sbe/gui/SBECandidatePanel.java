@@ -21,7 +21,7 @@ import biochemie.gui.NuklSelectorPanel;
 import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
 import biochemie.sbe.SBECandidate;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 /**
  * @author Steffen Dienst
  *
@@ -378,7 +378,7 @@ public class SBECandidatePanel extends JPanel {
         sb.append(getFixedPrimerCB().isSelected());
         return new String(sb);
     }
-    public SBECandidate getSBECandidate(SBEOptionsProvider cfg){
+    public SBECandidate getSBECandidate(SBEOptions cfg){
         if(!inputcontroller.isOkay()) {
             return null;
         }
@@ -414,7 +414,7 @@ public class SBECandidatePanel extends JPanel {
      * TODO listenerartig basteln...
      * @param optionsFromGui
      */
-    public void refreshData(SBEOptionsProvider cfg) {
+    public void refreshData(SBEOptions cfg) {
         getPLSelectorPanel().setPLPositions(cfg.getPhotolinkerPositions());
     }
 

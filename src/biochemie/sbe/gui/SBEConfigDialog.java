@@ -38,7 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import biochemie.calcdalton.gui.CDConfigPanel;
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.gui.IntegerValueIntervallPanel;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.util.FileSelector;
 /**
@@ -95,7 +95,7 @@ public class SBEConfigDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-        SBEOptionsProvider c = new SBEConfig();
+        SBEOptions c = new SBEConfig();
         setPropertiesFrom(c);
 
 		this.setTitle("Preferences");
@@ -169,7 +169,7 @@ public class SBEConfigDialog extends JDialog {
 	/**
 	 *
 	 */
-	public SBEOptionsProvider getSBEOptionsFromGui() {
+	public SBEOptions getSBEOptionsFromGui() {
 	    sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
 	    sbeconfig.setCalcTime(Integer.parseInt(getColortimeTf().getText()));
 	    sbeconfig.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
@@ -531,7 +531,7 @@ public class SBEConfigDialog extends JDialog {
 		}
 		return evilCrossdimerCheckBox;
 	}
-    protected void setPropertiesFrom(SBEOptionsProvider c) {
+    protected void setPropertiesFrom(SBEOptions c) {
         //setze Calcdalton-Optionen
         CDConfigPanel cdp=getCdPanel();
         cdp.setValuesFrom(c);
@@ -575,7 +575,7 @@ public class SBEConfigDialog extends JDialog {
             }
         }
         public void actionPerformed(ActionEvent e) {
-            SBEOptionsProvider c = new SBEConfig();
+            SBEOptions c = new SBEConfig();
             setPropertiesFrom(c);
         }
     }
@@ -613,7 +613,7 @@ public class SBEConfigDialog extends JDialog {
 
         private void loadProperties(File file) {
 			try {
-				SBEOptionsProvider c = new SBEConfig();
+				SBEOptions c = new SBEConfig();
                 ((SBEConfig)c).readConfigFile(file.getCanonicalPath());
 				setPropertiesFrom(c);
 			} catch (IOException  e) {

@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import biochemie.domspec.Primer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  *
@@ -20,7 +20,7 @@ public class GCFilter extends AbstractKandidatenFilter {
     private final double gcMin;
     private final double gcMax;
     
-    public GCFilter(SBEOptionsProvider cfg){
+    public GCFilter(SBEOptions cfg){
     	super(cfg);
         this.gcMin=cfg.getMinGC();
         this.gcMax=cfg.getMaxGC();

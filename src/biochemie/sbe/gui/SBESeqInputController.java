@@ -60,72 +60,65 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         okayBorder = left.getBorder();
     }
     private void handleChange(DocumentEvent e){
-        if(IamModifying)
+        String ltext=left.getText();
+        String rtext=right.getText();
+        plpanel.setEnabled(true);
+        
+        if(ltext==null && rtext == null) return;
+
+        //sind die eingegebenen seq. lang genug?
+        int maxpl = plpanel.getMaxSelectablePl();
+        final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+"characters!";
+
+        if(ltext.length() !=0 && ltext.length()<maxpl) {
+            setToolTipAndBorder(left,TOOSHORT,true);
             return;
-        try {
-            IamModifying = true;
-            String ltext=left.getText();
-            String rtext=right.getText();
+        }
+        if(rtext.length() != 0 && rtext.length()<maxpl) {
+            setToolTipAndBorder(right,TOOSHORT,true);
+            return;
+        }
+        //wurde ein L eingegeben?
+        int pos=ltext.indexOf('L');
 
-            if(ltext==null && rtext == null) return;
+        if(pos == -1 )  {      //kein L in der Eingabe
+            replacedNukl=0;
+            String ltool=ltext.length()==0?INSERT_TT:ltext;
+            setToolTipAndBorder(left,ltext,false);
+            String rtool=rtext.length()==0?INSERT_TT:rtext;
+            setToolTipAndBorder(right,rtool,false);
+            left.setEnabled(true);
+            right.setEnabled(true);
+            fixedcb.setEnabled(false);
+            fixedcb.setSelected(false);
+            return;
+        }
+        if(replacedNukl != 0) {
+            String tooltip = ltext.substring(0,pos)+"[L]"+ltext.substring(pos+1);
+            setToolTipAndBorder(left,tooltip,false);
+            return;//wurde schon alles erledigt, geht mich nix an :)
+        }
+        //Also wurde ein L vom user eingegeben
 
-            //sind die eingegebenen seq. lang genug?
-            int maxpl = plpanel.getMaxSelectablePl();
-            final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+"characters!";
+        right.setText("");
+        right.setEnabled(false); //schalt mer aus, brauchen wir nicht mehr
 
-            if(ltext.length() !=0 && ltext.length()<maxpl) {
-                setToolTipAndBorder(left,TOOSHORT,true);
-                return;
-            }
-            if(rtext.length() != 0 && rtext.length()<maxpl) {
-                setToolTipAndBorder(right,TOOSHORT,true);
-                return;
-            }
-            //wurde ein L eingegeben?
-            int pos=ltext.indexOf('L');
+        int br=ltext.length() - pos;
+        if(plpanel.setSelectedPL(br)){//es gibt diesen PL
+            plpanel.setEnabled(false);
+            plpanel.setRekTooltip("Photolinker was defined by primer sequence input");
 
-            if(pos == -1 )  {      //kein L in der Eingabe
-                String ltool=ltext.length()==0?INSERT_TT:ltext;
-                setToolTipAndBorder(left,ltext,false);
-                String rtool=rtext.length()==0?INSERT_TT:rtext;
-                setToolTipAndBorder(right,rtool,false);
-                left.setEnabled(true);
-                right.setEnabled(true);
-                plpanel.setEnabled(true);
-                //plpanel.setAuto();
-                fixedcb.setEnabled(false);
-                fixedcb.setSelected(false);
-                return;
-            }
-            if(replacedNukl != 0) {
-                String tooltip = ltext.substring(0,pos)+"[L]"+ltext.substring(pos+1);
-                setToolTipAndBorder(left,tooltip,false);
-                return;//wurde schon alles erledigt, geht mich nix an :)
-            }
-            //Also wurde ein L vom user eingegeben
-
-            right.setText("");
-            right.setEnabled(false); //schalt mer aus, brauchen wir nicht mehr
-
-            int br=ltext.length() - pos;
-            if(plpanel.setSelectedPL(br)){//es gibt diesen PL
-                plpanel.setEnabled(false);
-                plpanel.setRekTooltip("Photolinker was defined by primer sequence input");
-
-                String tooltip = ltext.substring(0,pos)+"[L]"+ltext.substring(pos+1);
-                setToolTipAndBorder(left,tooltip,false);
-                setToolTipAndBorder(right,"",false);
-                fixedcb.setEnabled(true);
-                return;
-            }else {
-                plpanel.setAuto();
-                plpanel.setEnabled(true);
-                setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
-                fixedcb.setEnabled(false);
-                fixedcb.setSelected(false);
-            }
-        }finally {
-            IamModifying = false;
+            String tooltip = ltext.substring(0,pos)+"[L]"+ltext.substring(pos+1);
+            setToolTipAndBorder(left,tooltip,false);
+            setToolTipAndBorder(right,"",false);
+            fixedcb.setEnabled(true);
+            return;
+        }else {
+            //plpanel.setAuto();
+            //plpanel.setEnabled(true);
+            setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
+            fixedcb.setEnabled(false);
+            fixedcb.setSelected(false);
         }
     }
     /**
@@ -170,50 +163,48 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Wird immer dann aufgerufen, wenn ein PL gesetzt wurde. Entweder vom user oder von uns selbst.
      */
     public void itemStateChanged(ItemEvent e) {
-        if(IamModifying || e.getStateChange() == ItemEvent.DESELECTED)//geht uns nix an
+        if(e.getStateChange() == ItemEvent.DESELECTED)//geht uns nix an
             return;
         String newseq=left.getText();
 
         try {
-            IamModifying=true;
-            Object item=e.getItem();
-            if(replacedNukl == 0) {//bisher kein pl
-                if(item instanceof Integer) {//user hat nen pl gewaehlt
-                    int pl = ((Integer)item).intValue();
-                    String ltext = left.getText();
-                    if(ltext.length() < pl) {
-                        plpanel.setAuto();
-                        return;
-                    }
-                    right.setText("");
-                    right.setEnabled(false);
-                    replacedNukl = ltext.charAt(ltext.length() - pl);
-                    newseq=biochemie.util.Helper.replacePL(ltext,pl);
-                }
-            }else {//schon vorher was gewaehlt
+        Object item=e.getItem();
+        if(replacedNukl == 0) {//bisher kein pl
+            if(item instanceof Integer) {//user hat nen pl gewaehlt
+                int pl = ((Integer)item).intValue();
                 String ltext = left.getText();
-                int pos = Helper.getPLFromSeq(ltext);
-                if(pos == -1)
-                    throw new IllegalStateException("There should be a PL in "+ltext+"!");
-
-                if(item instanceof String) {//auto
-                    right.setText("");
-                    newseq=Helper.replaceNukl(ltext,pos,replacedNukl);
-                    replacedNukl = 0;
-                }else {//pl veraendert
-                    int newpl = ((Integer)item).intValue();
-                    if(ltext.length()< newpl) {
-                        plpanel.setAuto();
-                        return;
-                    }
-                    char newrepl = ltext.charAt(ltext.length() - newpl);
-                    ltext = Helper.replaceNukl(ltext, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
-                    newseq = Helper.replacePL(ltext, newpl);
-                    replacedNukl = newrepl;
+                if(ltext.length() < pl) {
+                    plpanel.setAuto();
+                    return;
                 }
+                right.setText("");
+                right.setEnabled(false);
+                replacedNukl = ltext.charAt(ltext.length() - pl);
+                newseq=biochemie.util.Helper.replacePL(ltext,pl);
             }
+        }else {//schon vorher was gewaehlt
+            String ltext = left.getText();
+            int pos = Helper.getPosOfPl(ltext);
+            if(pos == -1)
+                throw new IllegalStateException("There should be a PL in "+ltext+"!");
+
+            if(item instanceof String) {//auto
+                right.setText("");
+                newseq=Helper.replaceNukl(ltext,pos,replacedNukl);
+                replacedNukl = 0;
+            }else {//pl veraendert
+                int newpl = ((Integer)item).intValue();
+                if(ltext.length()< newpl) {
+                    plpanel.setAuto();
+                    return;
+                }
+                char newrepl = ltext.charAt(ltext.length() - newpl);
+                ltext = Helper.replaceNukl(ltext, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
+                newseq = Helper.replacePL(ltext, newpl);
+                replacedNukl = newrepl;
+            }
+        }
         }finally {
-            IamModifying=false;
             left.setText(newseq);
         }
     }

@@ -37,7 +37,7 @@ import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
 import biochemie.sbe.SBECandidate;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
 import biochemie.util.Helper;
@@ -53,7 +53,7 @@ public class ShowDiffAction extends MyAction {
     final String[] mid;
     private JFrame frame;
     private List sbecfilt;
-    private SBEOptionsProvider cfg;
+    private SBEOptions cfg;
     private Set mids;
     private JTable difftable;
     private JTable cdtable;
@@ -61,7 +61,7 @@ public class ShowDiffAction extends MyAction {
     private JTable[] restables;
     private JScrollPane resscrollpane;
 
-    public ShowDiffAction(List sbec, SBEOptionsProvider cfg, MiniSBEGui.CalculateAction calcaction) {
+    public ShowDiffAction(List sbec, SBEOptions cfg, MiniSBEGui.CalculateAction calcaction) {
         super("Masses / Maldi", "Show mass differences and MALDI previews"
                 ,ShowDiffAction.class.getClassLoader().getResource("images/maldi.gif"), null);
         this.cfg = cfg;

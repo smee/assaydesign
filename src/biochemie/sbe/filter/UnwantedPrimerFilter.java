@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import biochemie.domspec.SBEPrimer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  * @author sdienst
@@ -24,7 +24,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
      * @param cfg
      * @param unwanted
      */
-    public UnwantedPrimerFilter(SBEOptionsProvider cfg, String unwanted) {
+    public UnwantedPrimerFilter(SBEOptions cfg, String unwanted) {
         super(cfg);
         count =0;
 

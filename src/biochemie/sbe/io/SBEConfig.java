@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import biochemie.calcdalton.CDOptionsImpl;
-import biochemie.calcdalton.CalcDaltonOptionsProvider;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.calcdalton.CalcDaltonOptions;
+import biochemie.sbe.SBEOptions;
 import biochemie.util.config.GeneralConfig;
 
 /**
@@ -17,8 +17,8 @@ import biochemie.util.config.GeneralConfig;
  * @author Steffen Dienst
  *
  */
-public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
-    CalcDaltonOptionsProvider cdopt;
+public class SBEConfig extends GeneralConfig implements SBEOptions{
+    CalcDaltonOptions cdopt;
 
     /**
 	 * Returns defaultvalues
@@ -31,7 +31,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
 	/**
      * @param provider
      */
-    public SBEConfig(CalcDaltonOptionsProvider c) {
+    public SBEConfig(CalcDaltonOptions c) {
         super();
         cdopt = c;
     }

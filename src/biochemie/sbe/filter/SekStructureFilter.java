@@ -13,7 +13,7 @@ import org.apache.commons.functor.BinaryFunction;
 import biochemie.domspec.Primer;
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  *
@@ -24,7 +24,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
 
 
     
-    public SekStructureFilter(SBEOptionsProvider cfg){
+    public SekStructureFilter(SBEOptions cfg){
     	super(cfg);
     }
    

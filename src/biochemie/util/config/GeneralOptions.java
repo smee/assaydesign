@@ -9,7 +9,7 @@ package biochemie.util.config;
  * @author sdienst
  *
  */
-public interface GeneralOptionsProvider {
+public interface GeneralOptions {
     public int[] getPhotolinkerPositions();
     public void setPhotolinkerPositions(int[] br);
 

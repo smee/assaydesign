@@ -12,7 +12,7 @@ import java.util.Set;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.pcr.modules.HairpinAnalysis;
 import biochemie.pcr.modules.HomoDimerAnalysis;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  * @author Steffen Dienst
@@ -20,7 +20,7 @@ import biochemie.sbe.SBEOptionsProvider;
  */
 public class SekStrukturFactory {
 
-	public static Set getSecStruks(Primer p, SBEOptionsProvider cfg){
+	public static Set getSecStruks(Primer p, SBEOptions cfg){
         HairpinAnalysis hpa= getHairpinAnalysisInstance(cfg);
         HomoDimerAnalysis hda= getHomoDimerAnalysisInstance(cfg);
         String seq=p.getSeq();
@@ -52,18 +52,18 @@ public class SekStrukturFactory {
         }
         return sekstrukts;
 	}
-	public static Set getCrossdimer(Primer p, Primer other, SBEOptionsProvider cfg){
+	public static Set getCrossdimer(Primer p, Primer other, SBEOptions cfg){
         CrossDimerAnalysis cda = getCrossDimerAnalysisInstance(cfg);
         return getCrossdimer(p,other,cda);
 	}
 	
-	private static HairpinAnalysis getHairpinAnalysisInstance(SBEOptionsProvider cfg){
+	private static HairpinAnalysis getHairpinAnalysisInstance(SBEOptions cfg){
 		return new HairpinAnalysis(cfg.getHairpinWindowsizes(),cfg.getHairpinMinbinds(),Boolean.toString(cfg.isDebug()));
 	}
-	private static HomoDimerAnalysis getHomoDimerAnalysisInstance(SBEOptionsProvider cfg){
+	private static HomoDimerAnalysis getHomoDimerAnalysisInstance(SBEOptions cfg){
 		return new HomoDimerAnalysis(cfg.getHomodimerWindowsizes(),cfg.getHomodimerMinbinds(),Boolean.toString(cfg.isDebug()));
 	}
-	private static CrossDimerAnalysis getCrossDimerAnalysisInstance(SBEOptionsProvider cfg){
+	private static CrossDimerAnalysis getCrossDimerAnalysisInstance(SBEOptions cfg){
 		return new CrossDimerAnalysis(cfg.getCrossDimerWindowsizes(),cfg.getCrossdimerMinbinds(),Boolean.toString(cfg.isDebug()));
 	}
     /**
