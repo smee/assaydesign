@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
@@ -38,16 +39,22 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Ich setze gerade den PL, nicht der user
      */
     private boolean IamModifying=false;
+    private SBECandidatePanel panel;
+    private JCheckBox fixedcb;
 
-    public SBESeqInputController(SBESequenceTextField left, PBSequenceField right, PLSelectorPanel pl) {
-        this.left=left;
-        this.right=right;
-        this.plpanel=pl;
+    public SBESeqInputController(SBECandidatePanel panel) {
+        this.panel=panel;
+        this.left=panel.getSeq5tf();
+        this.right=panel.getSeq3tf();
+        this.plpanel=panel.getPLSelectorPanel();
+
+        this.fixedcb=panel.getFixedPrimerCB();
+        fixedcb.setEnabled(false);
         left.getDocument().addDocumentListener(this);
         right.getDocument().addDocumentListener(this);
+        plpanel.addPhotolinkerListListener(this);
+        plpanel.addItemListener(this);
 
-        pl.addPhotolinkerListListener(this);
-        pl.addItemListener(this);
         errorBorder=BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.red,2),okayBorder);
         okayBorder = left.getBorder();
     }
@@ -85,6 +92,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 right.setEnabled(true);
                 plpanel.setEnabled(true);
                 //plpanel.setAuto();
+                fixedcb.setEnabled(false);
                 return;
             }
             if(replacedNukl != 0) {
@@ -105,11 +113,13 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 String tooltip = ltext.substring(0,pos)+"[L]"+ltext.substring(pos+1);
                 setToolTipAndBorder(left,tooltip,false);
                 setToolTipAndBorder(right,"",false);
+                fixedcb.setEnabled(true);
                 return;
             }else {
                 plpanel.setAuto();
                 plpanel.setEnabled(true);
                 setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
+                fixedcb.setEnabled(false);
             }
         }finally {
             IamModifying = false;

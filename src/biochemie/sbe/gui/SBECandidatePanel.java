@@ -154,7 +154,7 @@ public class SBECandidatePanel extends JPanel {
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
 		this.add(getTfId(), gridBagConstraints31);
 		this.add(jLabel, gridBagConstraints1);
-        inputcontroller = new SBESeqInputController(getSeq5tf(),getSeq3tf(),getPLSelectorPanel());
+        inputcontroller = new SBESeqInputController(this);
         setExpertMode(false);
         gridBagConstraints13.gridx = 12;
         gridBagConstraints13.gridy = 0;
@@ -181,7 +181,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.calcdalton.gui.PBSequenceField
 	 */
-	private SBESequenceTextField getSeq5tf() {
+    protected SBESequenceTextField getSeq5tf() {
 		if (seq5tf == null) {
 			seq5tf = new SBESequenceTextField();
 			seq5tf.setMaxLen(100);
@@ -196,7 +196,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.gui.NuklSelectorPanel
 	 */
-	private NuklSelectorPanel getSNPSelectorPanel() {
+    protected NuklSelectorPanel getSNPSelectorPanel() {
 		if (nuklSelectorPanel == null) {
 			nuklSelectorPanel = new NuklSelectorPanel();
 			nuklSelectorPanel.setRekTooltip("Define SNP alleles");
@@ -208,7 +208,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return javax.swing.JTextField
 	 */
-	private JTextField getTfId() {
+    protected JTextField getTfId() {
 		if (tfId == null) {
 			tfId = new JTextField();
 			tfId.setPreferredSize(new java.awt.Dimension(80,20));
@@ -246,7 +246,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.gui.PLSelectorPanel
 	 */
-	private PLSelectorPanel getPLSelectorPanel() {
+    protected PLSelectorPanel getPLSelectorPanel() {
 		if (PLSelectorPanel == null) {
 			PLSelectorPanel = new PLSelectorPanel();
 			PLSelectorPanel.setPreferredSize(new java.awt.Dimension(90,56));
@@ -258,7 +258,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.calcdalton.gui.PBSequenceField
 	 */
-	private PBSequenceField getSeq3tf() {
+    protected PBSequenceField getSeq3tf() {
 		if (seq3tf == null) {
 			seq3tf = new PBSequenceField(100,true,"ACGTacgt");
 			seq3tf.setColumns(10);
@@ -270,7 +270,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.sbe.gui.HairpinSelectionPanel
 	 */
-	private HairpinSelectionPanel getHairpin5SelectionPanel() {
+    protected HairpinSelectionPanel getHairpin5SelectionPanel() {
 		if (hairpin5SelectionPanel == null) {
 			hairpin5SelectionPanel = new HairpinSelectionPanel();
 			hairpin5SelectionPanel.setTitle("Def. Hairpin 5'");
@@ -291,7 +291,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.sbe.gui.HairpinSelectionPanel
 	 */
-	private HairpinSelectionPanel getHairpin3SelectionPanel() {
+    protected HairpinSelectionPanel getHairpin3SelectionPanel() {
 		if (hairpin3SelectionPanel == null) {
 			hairpin3SelectionPanel = new HairpinSelectionPanel();
 			hairpin3SelectionPanel.setTitle("Def. Hairpin 3'");
@@ -303,7 +303,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.gui.StringEntryPanel
 	 */
-	private StringEntryPanel getMultiplexidPanel() {
+    protected StringEntryPanel getMultiplexidPanel() {
 		if (multiplexidPanel == null) {
 			multiplexidPanel = new StringEntryPanel();
 			multiplexidPanel.setLabel("MultiplexID");
@@ -320,7 +320,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.gui.StringEntryPanel
 	 */
-	private StringEntryPanel getPcrLenPanel() {
+    protected StringEntryPanel getPcrLenPanel() {
 		if (pcrLenPanel == null) {
 			pcrLenPanel = new StringEntryPanel();
 			pcrLenPanel.setLabel("PCR length");
@@ -465,7 +465,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return biochemie.gui.StringEntryPanel
 	 */
-	private StringEntryPanel getFiltersPanel() {
+	protected StringEntryPanel getFiltersPanel() {
 		if (filtersPanel == null) {
 			filtersPanel = new StringEntryPanel();
             filtersPanel.setLabel("Filtered primers");
@@ -495,7 +495,7 @@ public class SBECandidatePanel extends JPanel {
 	 *
 	 * @return javax.swing.JCheckBox
 	 */
-	private JCheckBox getFixedPrimerCB() {
+    protected JCheckBox getFixedPrimerCB() {
 		if (fixedPrimerCB == null) {
 			fixedPrimerCB = new JCheckBox();
 			fixedPrimerCB.setText("Fix");
