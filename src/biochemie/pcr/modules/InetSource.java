@@ -54,9 +54,13 @@ public class InetSource implements BlatSource{
 	private void initProperties() throws BlatException{
         //setze Proxy-Server, wenn nötig
         if(config.getBoolean("USEPROXY",false)){
+            String host=config.getString("PROXYHOST");
+            String port=config.getString("PROXYPORT");
+            if(PCR.debug)
+                System.out.println("using proxy: "+host+", port: "+port);
             System.getProperties().put( "proxySet", "true" );
-            System.getProperties().put( "proxyHost",config.getString("PROXYHOST"));
-            System.getProperties().put( "proxyPort", config.getString("PROXYPORT"));
+            System.getProperties().put( "proxyHost",host);
+            System.getProperties().put( "proxyPort", port);
         }
 		blathash= getAndHashAktuelleBLATPage();
         if (PCR.debug) {
