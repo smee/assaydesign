@@ -20,12 +20,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.MultiplexableFactory;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptionsProvider;
 import biochemie.sbe.WrongValueException;
-import biochemie.sbe.calculators.Multiplexable;
 import biochemie.util.Helper;
 
 /**
@@ -111,7 +109,7 @@ public class SBEPrimerReader {
                 if(1 == knoten.size())
                     l.add(sbec.get(startpos));
                 else
-                    l.add(new MegaKnotenFactory(knoten,id,cfg));
+                    l.add(new MultiKnoten(knoten,id,cfg));
                 startpos=i+1;
             }
         }
@@ -145,98 +143,6 @@ public class SBEPrimerReader {
             bw.close();
         } catch (IOException e) {
             System.out.println("Fehler beim Schreiben von "+filename+". Fehler: "+e.getMessage());
-        }
-    }
-    static class MegaKnotenFactory implements MultiplexableFactory, Multiplexable{
-
-        private List knoten;
-        private List multiplexables;
-		private String edgeReason;
-		private SBEOptionsProvider cfg;
-        private String givenId;
-
-        public MegaKnotenFactory(List knoten2, String givenid, SBEOptionsProvider cfg) {
-            this.knoten=knoten2;
-            this.cfg=cfg;
-            this.givenId = givenid !=null?givenid:"";
-        }
-
-        public List getMultiplexables() {
-            multiplexables=new ArrayList();
-            for (int j = 0; j < knoten.size(); j++) {
-                multiplexables.addAll(((SBECandidate)knoten.get(j)).getMultiplexables());
-            }
-            List l=new ArrayList();
-            if(multiplexables.size() != 0)//wenn es was zu multiplexen gibt
-                l.add(this);//meld ich mich stellvertretend freiwillig :)
-            return l;//sonst halt nich, weil ich hab nix mehr zu multiplexen
-        }
-
-        public String getCSVRow() {
-            StringBuffer sb=new StringBuffer();
-            for (Iterator it = knoten.iterator(); it.hasNext();) {
-                MultiplexableFactory mf = (MultiplexableFactory) it.next();
-                sb.append(mf.getCSVRow());
-                sb.append('\n');
-            }
-            sb.deleteCharAt(sb.length()-1);
-            return sb.toString();
-        }
-
-        public void setPlexID(String s) {
-            for (Iterator it = multiplexables.iterator(); it.hasNext();) {
-                Multiplexable m = (Multiplexable) it.next();
-                m.setPlexID(s);
-            }
-        }
-
-        public String getName() {
-            StringBuffer sb = new StringBuffer("[");
-            sb.append("gegebenerKnoten, Groesse ");
-            sb.append(knoten.size());
-//            for (Iterator it = multiplexables.iterator(); it.hasNext();) {
-//                Multiplexable m = (Multiplexable) it.next();
-//                sb.append(m.getName());
-//                sb.append("|");
-//            }
-//            sb.deleteCharAt(sb.length()-1);
-            sb.append(']');
-            return sb.toString();
-        }
-
-        public boolean passtMit(Multiplexable o) {
-            List other=new ArrayList();
-            boolean differentGivenMultiplexes = false;
-            if(o instanceof SBEPrimer)
-                other.add(o);
-            else if(o instanceof MegaKnotenFactory) {
-                other.addAll(((MegaKnotenFactory)o).multiplexables);
-                differentGivenMultiplexes = givenId.length()!=0
-                && ((MegaKnotenFactory)o).givenId.length()!=0
-                && !givenId.equalsIgnoreCase(((MegaKnotenFactory)o).givenId);
-            }
-            for (Iterator it = multiplexables.iterator(); it.hasNext();) {
-                Multiplexable m = (Multiplexable) it.next();
-                for (Iterator iter = other.iterator(); iter.hasNext();) {
-                    Multiplexable m2 = (Multiplexable) iter.next();
-                    if(differentGivenMultiplexes) {
-                        edgeReason = "differentGivenMultiplexIDs";
-                        return false;
-                    }else
-                        if(!m.passtMit(m2)){
-                            edgeReason=m.getEdgeReason();
-                            return false;
-                        }
-                }
-            }
-            return true;
-        }
-
-        public int maxPlexSize() {
-            return cfg.getMaxPlex()-knoten.size()+1;
-        }
-        public String getEdgeReason(){
-            return edgeReason;
         }
     }
 
