@@ -147,14 +147,18 @@ public class PCR {
 
 	public void startAnalysis() throws IOException{
 		StringTokenizer st = new StringTokenizer(config.getProperty("INFILES"));
+		final int primernum=config.getInteger("PRIMER_NUM_RETURN",30);
+		int counter=0;
+		
 		while (st.hasMoreTokens()) {
 			String file = st.nextToken();
 			if(PCR.debug)
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
 			int solutions=runAnalysis(file);
-			if(solutions > 0)
-				break;   //loesungen gefunden, also ferdsch :)
+			counter+=solutions;
+			if(counter >= primernum)
+				break;   //genug loesungen gefunden, also ferdsch :)
 		}
 	}
 	/**
