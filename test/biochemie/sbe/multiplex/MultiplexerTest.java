@@ -49,6 +49,7 @@ public class MultiplexerTest extends TestCase {
 		};
 	}
 	public void testEnhancePrimerList(){
+        cfg.setAllCrossdimersAreEvil(false);//sollte keine Auswirkungen haben
 		assertTrue(primerA.passtMit(primerB));
 		assertTrue(primerA.passtMit(primerC));
 		assertTrue(primerB.passtMit(primerC));

@@ -34,7 +34,8 @@ public class CDStart {
                 System.exit(0);
             }
         }
-        LogStdStreams.initializeErrorLogging("calcdalton.log", "---------Program started: " + new Date()+" -----------", true, true);
+        if(!Boolean.getBoolean("DEBUG"))
+            LogStdStreams.initializeErrorLogging("calcdalton.log", "---------Program started: " + new Date()+" -----------", true, true);
         SBEGui gui= SBEGui.getInstance();
     }
 }

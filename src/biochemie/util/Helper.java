@@ -677,9 +677,9 @@ public class Helper {
     public static String replacePL(String seq, int pos) {
         return replaceNukl(seq,pos,'L');
     }
-    public static String replaceNukl(String seq, int pos, char c) {
-        if(pos >0)
-            return seq.substring(0,seq.length() - pos )+c+seq.substring(seq.length() - pos + 1);
+    public static String replaceNukl(String seq, int plpos, char c) {
+        if(plpos >0)
+            return seq.substring(0,seq.length() - plpos )+c+seq.substring(seq.length() - plpos + 1);
         return seq;
     }
     public static int getPosOfPl(String seq) {
@@ -706,15 +706,16 @@ public class Helper {
         sb.append(string.substring(oldindex));
         return sb.toString();
     }
-    /**
-     * Liefert die Photolinkerposition, wenn eine vorhanden ist.
-     * @param ltext
-     * @return
-     */
-    public static int getPLFromSeq(String seq) {
-        int pos = seq.length() - seq.indexOf('L');
-        if(pos <= seq.length())
-            return pos;
-        return -1;
+
+    public static boolean isSBEPrimer(String p) {
+        p=p.toUpperCase();
+        String allnukl= "ACGTL";
+        for (int i= 0; i < p.length(); i++) {
+            if (allnukl.indexOf(p.charAt(i)) == -1)
+                return false;
+        }
+        if(StringUtils.countMatches(p,"L")>1)
+            return false;
+        return true;
     }
 }

@@ -199,7 +199,7 @@ public class MiniSBEGui extends JFrame {
         public void actionPerformed(ActionEvent e) {
         	SBEConfigDialog dia=getConfigDialog();
         	dia.setVisible(true);
-            System.out.println("Still showing preferneces... ?");
+            System.out.println("Am I still showing preferences... ? Shouldn't...");
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel panel = (SBECandidatePanel) it.next();
                 panel.refreshData(dia.getSBEOptionsFromGui());

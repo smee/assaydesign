@@ -86,6 +86,7 @@ public abstract class Multiplexer {
      * @return
      */
     protected List getEnhancedPrimerList(List sbep,SBEOptionsProvider cfg){
+        //TODO verwenden beim Multiplexen
     	if(cfg.getAllCrossdimersAreEvil()==true)
     		return sbep;
     	List result=new ArrayList(sbep);
