@@ -20,7 +20,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.calcdalton.CalcDalton;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 
@@ -38,7 +38,7 @@ public class SBEPrimer extends Primer{
     private final int pl;
     private final String type;
     private final String snp;
-    private final SBEOptionsProvider cfg;
+    private final SBEOptions cfg;
     private final int productlen;
 
 
@@ -56,7 +56,7 @@ public class SBEPrimer extends Primer{
      * @param prodlen Length of the sbeproduct
      * @param usergiven tru: don't probe for secstructures.
      */
-    public SBEPrimer(SBEOptionsProvider cfg,String id,String seq, String snp, String type, String bautein, int prodlen,boolean usergiven) {
+    public SBEPrimer(SBEOptions cfg,String id,String seq, String snp, String type, String bautein, int prodlen,boolean usergiven) {
         super(id,seq);
         this.cfg = cfg;
         this.pl=Helper.getPosOfPl(seq);
@@ -171,42 +171,13 @@ public class SBEPrimer extends Primer{
 }
 
     public boolean passtMit(Multiplexable o) {
-
         if(o instanceof SBEPrimer) {
             SBEPrimer other=(SBEPrimer) o;
-            if(other.getId().equals(this.getId())) {
-                edgereason="same";
-                return false;	//derselbe SBECandidate
-            }
-            //Produktlänge
-            int prdiff=productlen-other.productlen;
-            if(Math.abs(prdiff)<cfg.getMinProductLenDiff()) {
-                edgereason="productlendiff="+prdiff;
-                return false;    //Produktlängenunterschied zu gering
-            }
-
-            //Inkompatible Sekundärstrukturen?
-            String snp1=getSNP();
-            String snp2=other.getSNP();
-            for (Iterator it = sekstruc.iterator(); it.hasNext();) {
-                SBESekStruktur s = (SBESekStruktur) it.next();
-                if(s.isVerhindert())
-                    continue;
-                if(-1 != snp2.indexOf(s.bautEin())){
-                    edgereason="incomp. Sekstructure";
-                    return false;
-                }
-            }
-            for (Iterator it = other.sekstruc.iterator(); it.hasNext();) {
-                SBESekStruktur s = (SBESekStruktur) it.next();
-                if(s.isVerhindert())
-                    continue;
-                if(snp1.indexOf(s.bautEin()) != -1){
-                    edgereason="incomp. Sekstructure";
-                    return false;
-                }
-            }
-            return passtMitCrossdimern(other) && passtMitCalcDalton(other);
+            return passtMitID(other)
+                && passtMitProductLength(other)
+                && passtMitSekStrucs(other) 
+                && passtMitCrossdimern(other,true) 
+                && passtMitCalcDalton(other);
         }else {//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
             boolean ret= o.passtMit(this);
             edgereason=o.getEdgeReason();
@@ -214,11 +185,64 @@ public class SBEPrimer extends Primer{
         }
     }
     /**
-     * Testet, ob Crossdimer entstehen und speichert diese in den jeweiligen Primer zur weiteren Verwendung.
+     * Testet, ob dieser Primer mit other passt, wobei nur inkompatible Crossdimer beruecksichtigt werden.
      * @param other
      * @return
      */
-    protected boolean passtMitCrossdimern(SBEPrimer other) {
+    public boolean passtMitKompCD(SBEPrimer other) {
+        return passtMitID(other)
+        && passtMitProductLength(other)
+        && passtMitSekStrucs(other) 
+        && passtMitCrossdimern(other,false) 
+        && passtMitCalcDalton(other);
+    }
+    public boolean passtMitID(SBEPrimer other) {
+        if(other.getId().equals(this.getId())) {
+            edgereason="same";
+            return false;   //derselbe SBECandidate
+        }
+        return true;
+    }
+    public boolean passtMitProductLength(SBEPrimer other) {
+        //Produktlänge
+        int prdiff=productlen-other.productlen;
+        if(Math.abs(prdiff)<cfg.getMinProductLenDiff()) {
+            edgereason="productlendiff="+prdiff;
+            return false;    //Produktlängenunterschied zu gering
+        }
+        return true;
+    }
+    public boolean passtMitSekStrucs(SBEPrimer other) {
+        //Inkompatible Sekundärstrukturen?
+        String snp1=getSNP();
+        String snp2=other.getSNP();
+        for (Iterator it = sekstruc.iterator(); it.hasNext();) {
+            SBESekStruktur s = (SBESekStruktur) it.next();
+            if(s.isVerhindert())
+                continue;
+            if(-1 != snp2.indexOf(s.bautEin())){
+                edgereason="incomp. Sekstructure";
+                return false;
+            }
+        }
+        for (Iterator it = other.sekstruc.iterator(); it.hasNext();) {
+            SBESekStruktur s = (SBESekStruktur) it.next();
+            if(s.isVerhindert())
+                continue;
+            if(snp1.indexOf(s.bautEin()) != -1){
+                edgereason="incomp. Sekstructure";
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Testet, ob Crossdimer entstehen und speichert diese in den jeweiligen Primer zur weiteren Verwendung.
+     * @param other
+     * @param evilcd true, jeder CD ist Ausschlusskriterium, false heisst, nur inkompatible.
+     * @return
+     */
+    public boolean passtMitCrossdimern(SBEPrimer other, boolean evilcd) {
         //Crossdimer?
         Set cross1=SekStrukturFactory.getCrossdimer(this,other,cfg);
         //this.sekstruc.addAll(cross1);            				//soll bei jeweils dem Primer verzeichnet werden, der einbaut
@@ -229,7 +253,7 @@ public class SBEPrimer extends Primer{
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.isVerhindert())
                 continue;
-            if(!cfg.getAllCrossdimersAreEvil()) {
+            if(!evilcd) {
                 if(s.isIncompatible()) {
                     edgereason="incomp. Crossdimer";
                     return false;
@@ -246,7 +270,7 @@ public class SBEPrimer extends Primer{
      * @param other
      * @return
      */
-    protected boolean passtMitCalcDalton(SBEPrimer other) {
+    public boolean passtMitCalcDalton(SBEPrimer other) {
         CalcDalton cd=Helper.getCalcDalton(cfg);
         String[][] sbedata= {{this.getSeq(),"A","C","G","T"}
         					,{other.getSeq(),"A","C","G","T"}};

@@ -16,7 +16,7 @@ import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.sbe.MiniSBE;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 
 /**
  * @author Steffen
@@ -27,9 +27,9 @@ import biochemie.sbe.SBEOptionsProvider;
 public abstract class Multiplexer {
 	private static int plexnr=1;
     protected final boolean debug;
-    protected SBEOptionsProvider cfg;
+    protected SBEOptions cfg;
 
-	public Multiplexer( SBEOptionsProvider cfg){
+	public Multiplexer( SBEOptions cfg){
 		this.cfg = cfg;
         this.debug=cfg.isDebug();
 	}
@@ -85,16 +85,13 @@ public abstract class Multiplexer {
      * @param sbep List von SBEPrimern
      * @return
      */
-    protected List getEnhancedPrimerList(List sbep,SBEOptionsProvider cfg){
-        //TODO verwenden beim Multiplexen
-    	if(cfg.getAllCrossdimersAreEvil()==true)
-    		return sbep;
+    public static  List getEnhancedPrimerList(List sbep,SBEOptions cfg){
     	List result=new ArrayList(sbep);
     	SBEPrimer[] primer=(SBEPrimer[]) sbep.toArray(new SBEPrimer[sbep.size()]);
     	for (int i = 0; i < primer.length; i++) {
 			for (int j =i+1; j < primer.length; j++) {
-				if(!primer[i].passtMit(primer[j]))
-					continue;
+				if(!primer[i].passtMitKompCD(primer[j]))
+					continue;//passt eh aus anderen gruenden nicht miteinander
 				Set sekstruks=SekStrukturFactory.getCrossdimer(primer[i],primer[j],cfg);
 				sekstruks.addAll(SekStrukturFactory.getCrossdimer(primer[j],primer[i],cfg));
 				Set kompchars=new HashSet();
@@ -117,7 +114,8 @@ public abstract class Multiplexer {
     	
     	return result;
     }
-    protected class SBEPrimerProxy implements Multiplexable{
+
+    protected static class SBEPrimerProxy implements Multiplexable{
 
     	private SBEPrimer p1;
     	private SBEPrimer p2;

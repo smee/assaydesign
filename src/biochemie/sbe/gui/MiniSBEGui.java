@@ -66,7 +66,7 @@ import biochemie.calcdalton.JTableEx;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.actions.SaveResultsAction;
 import biochemie.sbe.gui.actions.ShowDiffAction;
 import biochemie.sbe.io.SBEPrimerReader;
@@ -93,7 +93,7 @@ public class MiniSBEGui extends JFrame {
         	final List sbec= new ArrayList(sbepanels.size());
 
 
-        	final SBEOptionsProvider cfg = getConfigDialog().getSBEOptionsFromGui();
+        	final SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
         	for (Iterator it = sbepanels.iterator(); it.hasNext();) {
         		SBECandidatePanel p = (SBECandidatePanel) it.next();
         		sbec.add(p.getSBECandidate(cfg));
@@ -147,7 +147,7 @@ public class MiniSBEGui extends JFrame {
         /**
          * @param sbec
          */
-        private void showResultFrame(final List sbec, SBEOptionsProvider cfg) {
+        private void showResultFrame(final List sbec, SBEOptions cfg) {
             JFrame frame = new JFrame("Results");
             //JDialog frame = new JDialog(MiniSBEGui.this,true);
             frame.getContentPane().setLayout(new BorderLayout());
