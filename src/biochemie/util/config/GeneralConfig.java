@@ -225,4 +225,7 @@ public abstract class GeneralConfig extends Observable{
     public String getProperty(String string) {
 		return prop.getProperty(string);
 	}
+    public String toString(){
+        return prop.toString();
+    }
 }

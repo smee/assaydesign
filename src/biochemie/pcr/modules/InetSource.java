@@ -86,6 +86,7 @@ public class InetSource implements BlatSource{
             while (null != (s = in.readLine())) {
                 sb.append(s);
             }
+            System.out.println(sb);
             this.cookie= urlcon.getHeaderField("Set-Cookie");
             if (null != cookie && -1 != cookie.indexOf(';')) {
                 cookie= cookie.substring(0, cookie.indexOf(';'));
