@@ -27,16 +27,15 @@ public abstract class SekAnalysis extends AnalyseModul {
     public static final int CROSS=2;
 	int[] windowsize;
     int[] minbinds;
-    boolean debug;
     int maxbind=Integer.MIN_VALUE;              //temp. VAr. für momentane anzahl maximaler binds
     List liste=new ArrayList();
 	
 	public SekAnalysis(String windowsizes, String minbinds, String debug, int type) {
-		super(null);
+		super(null,Boolean.valueOf(debug).booleanValue());
 		init(windowsizes,minbinds,debug,type);
 	}
-	public SekAnalysis(PCRConfig cfg,int type) {
-		super(cfg);
+	public SekAnalysis(PCRConfig cfg,int type, boolean debug) {
+		super(cfg,debug);
 		if(null == cfg)
 			return;
 		init(null,null,null,type);
@@ -56,7 +55,6 @@ public abstract class SekAnalysis extends AnalyseModul {
 		}
 		windowsize= Helper.tokenizeToInt(win);
 		minbinds=Helper.tokenizeToInt(bind);
-		this.debug=Boolean.valueOf(debug).booleanValue();
 		
 		validateParameter();
 	}

@@ -26,6 +26,7 @@ public class PCRConfig extends GeneralConfig {
         return new String[][]{
              {"INFILES","test.in"}
             ,{"OUTFILE",""}
+            ,{"FURTHER_CONFIGFILE",""}
             ,{"PARAM_GCDIFF_LOWER_BOUND","2000"}
             ,{"PARAM_GCDIFF_UPPER_BOUND","8000"}
             ,{"PARAM_REPETETIVE_SEQ","40"}
@@ -68,6 +69,8 @@ public class PCRConfig extends GeneralConfig {
             //,{"PARAM_SNP_OF_INTEREST",""}//TODO
             ,{"OUTPUT_CSV","false"}
             ,{"ASSEMBLY","hg16"}
-            ,{"BLAT_HASHCODE","-1"}};
+            ,{"BLAT_HASHCODE","-1"}
+            ,{"PRIMER_NUM_RETURN","50"}
+            ,{""}};
     }
 }

@@ -38,11 +38,13 @@ public class Primer3Manager {
     private int numberOfResults=0;
     private BufferedReader input=null;
 	private String feste5seq;
+    private final boolean debug;
 
-    public Primer3Manager(PCRConfig config){
+    public Primer3Manager(PCRConfig config, boolean debug){
         this.config=config;
         this.feste5seq=Helper.getNuklFromString(config.getProperty("FESTE5SEQ"));
         this.primer3exe="primer3.exe";
+        this.debug=debug;
     }
 
 
@@ -116,7 +118,7 @@ public class Primer3Manager {
                   UI.errorDisplay("OS "+osName+" not supported, yet. Sorry.");
               }
             aufruf+='\"'+primer3exe+" < "+filename+" >"+primer3output+'\"';
-            if(PCR.debug){
+            if(debug){
             	System.out.println("calling primer3 via: "+aufruf);
             }
             File f=new File("primer3.exe");
@@ -125,7 +127,7 @@ public class Primer3Manager {
             if(PCR.verbose) {
                 System.out.println("Starte PRIMER3 (kann je nach Parametern dauern!)...");
             }
-            if(PCR.debug){
+            if(debug){
             	System.out.println("Aufruf lautet: "+aufruf);
             }
             /*

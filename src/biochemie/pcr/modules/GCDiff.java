@@ -25,8 +25,8 @@ public class GCDiff extends AnalyseModul{
 	 * Wenn ein Parameter keine Zahl ist wird das Programm beendet.
 	 * @param cfg
 	 */	
-	public GCDiff(PCRConfig cfg) {
-		super(cfg);
+	public GCDiff(PCRConfig cfg, boolean debug) {
+		super(cfg,debug);
 		String temp=cfg.getProperty("PARAM_GCDIFF_LOWER_BOUND").trim();
 		int l;
 		int u;

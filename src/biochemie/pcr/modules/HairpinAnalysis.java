@@ -19,17 +19,16 @@ import biochemie.util.Helper;
  */
 public class HairpinAnalysis extends SekAnalysis{
      
-	public HairpinAnalysis(PCRConfig cfg) {
-		super(cfg,HAIR);
+	public HairpinAnalysis(PCRConfig cfg, boolean debug) {
+		super(cfg,HAIR,debug);
 	}
 	public HairpinAnalysis(String w, String b, String d){
 		super(w,b,d,HAIR);
 	}
     public HairpinAnalysis(int windowSize, int minbinds, boolean debug){
-        super(null,HAIR);
+        super(null,HAIR,debug);
         this.windowsize=new int[]{windowSize};
         this.minbinds=new int[]{minbinds};
-        this.debug=debug;
         validateParameter();
     }
     

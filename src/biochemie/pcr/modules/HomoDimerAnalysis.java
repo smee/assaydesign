@@ -18,17 +18,16 @@ import biochemie.util.Helper;
  */
 public class HomoDimerAnalysis extends SekAnalysis{
     
-    public HomoDimerAnalysis(PCRConfig cfg) {
-        super(cfg,HOMO);
+    public HomoDimerAnalysis(PCRConfig cfg, boolean debug) {
+        super(cfg,HOMO,debug);
     }
 	public HomoDimerAnalysis(String w, String b, String d){
 		super(w,b,d,HOMO);
 	}
     public HomoDimerAnalysis(int windowSize, int minbinds, boolean debug){
-        super(null,HOMO);
+        super(null,HOMO,debug);
         this.windowsize=new int[]{windowSize};
         this.minbinds=new int[]{minbinds};
-        this.debug=debug;
         validateParameter();
     }
     /**

@@ -19,9 +19,11 @@ import biochemie.sbe.WrongValueException;
 public abstract class AnalyseModul {
 	PCRConfig config;
 	protected final int maxscore;
+    protected final boolean debug;
 	
-	public AnalyseModul(PCRConfig cfg) {
+	public AnalyseModul(PCRConfig cfg, boolean debug) {
 		this.config=cfg;
+        this.debug=debug;
 		int score=100;
 		try {
 			if(cfg != null)

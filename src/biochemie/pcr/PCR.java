@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import biochemie.pcr.io.PCRConfig;
@@ -78,38 +77,38 @@ public class PCR {
 
 		if(config.getProperty("GCDIFF").equalsIgnoreCase("true")) {
 			this.gcdiffOn=true;
-			this.gcdiffObj=new GCDiff(config);
+			this.gcdiffObj=new GCDiff(config, PCR.debug);
 		}else
 			this.gcdiffOn=false;
 		if(config.getProperty("HAIR").equalsIgnoreCase("true")) {
 			this.hairOn=true;
-			this.hairanalysisObj=new HairpinAnalysis(config);
+			this.hairanalysisObj=new HairpinAnalysis(config, PCR.debug);
 		}else
 			this.hairOn=false;
         if(config.getProperty("HOMO").equalsIgnoreCase("true")) {
             this.homoOn=true;
-            this.homoanalysisObj=new HomoDimerAnalysis(config);
+            this.homoanalysisObj=new HomoDimerAnalysis(config, PCR.debug);
         }else
             this.homoOn=false;
         if(config.getProperty("CROSS").equalsIgnoreCase("true")) {
             this.crossOn=true;
-            this.crossanalysisObj=new CrossDimerAnalysis(config);
+            this.crossanalysisObj=new CrossDimerAnalysis(config, PCR.debug);
         }else
             this.crossOn=false;
 		if(config.getProperty("SNP").equalsIgnoreCase("true")) {
-			snpObj=new SNP(config);
+			snpObj=new SNP(config, PCR.debug);
 			this.snpOn=true;
 		}else
 			this.snpOn=false;
 		if(config.getProperty("PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER").equalsIgnoreCase("true")) {
-			exonObj=new ExonIntron(config);
+			exonObj=new ExonIntron(config, PCR.debug);
 			this.exonOn=true;
 		}else
 			this.exonOn=false;
 		if(config.getProperty("BLAT").equalsIgnoreCase("true")) {
 			this.blatOn=true;
 			try {
-				this.blatObj=new BLAT(config);
+				this.blatObj=new BLAT(config,PCR.debug);
 			} catch (BlatException e) {
 				System.err.println("Fehler bei Zugriff auf Blat. Das BLAT-Analysemodul wurde DEAKTIVIERT!");
 				System.err.println("Fehlermeldung: "+e.getMessage());
@@ -119,7 +118,7 @@ public class PCR {
 			this.blatOn=false;
 		if(config.getProperty("REP").equalsIgnoreCase("true")) {
 			this.repOn=true;
-			this.repseqObj=new RepetetiveSeq(config);
+			this.repseqObj=new RepetetiveSeq(config, PCR.debug);
 		}
 		else
 			this.repOn=false;
@@ -170,72 +169,74 @@ public class PCR {
 	 * Starte die eigentliche Arbeit. Liefert die Anzahl gefundener Loesungen.
 	 */
 	private int runAnalysis(String filename, String outfilename) throws IOException {
-		if(PCR.debug) {
-			System.out.println("Verwende folgende Parameter: "+this);
+	    if(PCR.debug) {
+	        System.out.println("Verwende folgende Parameter: "+this);
+	    }
+	    Primer3Manager primer3=new Primer3Manager(config, PCR.debug);
+	    primer3.runPrimer3(filename);
+	    
+	    if(0 == primer3.getNumberOfResults()){
+	        //UI.errorDisplay("Keine Ergebnisse von Primer3 --> nix zu filtern.");
+	        return 0;
+	    }
+	    //setze nachtraeglich Parameter fuer BLAT-Modul
+	    if(blatOn) {
+	        blatObj.setSequence(config.getProperty("SEQUENCE"));
+	    }
+	    //Starte Module
+	    
+	    boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);
+	    
+	    if(outputcsv)
+	        outfilename += ".csv";
+	    FileWriter notokayout=new FileWriter("not_ok_"+outfilename,true);
+	    FileWriter combined=new FileWriter("combined_"+outfilename,true);
+	    if(outputcsv) {
+	        notokayout.write(PrimerPair.getCSVHeaderLine());
+	        combined.write(PrimerPair.getCSVHeaderLine());
         }
-        Primer3Manager primer3=new Primer3Manager(config);
-        primer3.runPrimer3(filename);
-
-		if(0 == primer3.getNumberOfResults()){
-			//UI.errorDisplay("Keine Ergebnisse von Primer3 --> nix zu filtern.");
-			return 0;
-		}
-        //setze nachtraeglich Parameter fuer BLAT-Modul
-		if(blatOn) {
-			blatObj.setSequence(config.getProperty("SEQUENCE"));
-		}
-        //Starte Module
-
-        FileWriter debugout=null;
-        
-        boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);
-
-        if(PCR.debug) {
-	            if(outputcsv)
-	            	outfilename += ".csv";
-                debugout=new FileWriter("not_ok_"+outfilename,true);
-                if(outputcsv)
-                	debugout.write(PrimerPair.getCSVHeaderLine());
-                debugout.write("\n");
-        }
- 
-
-		File outfile=new File(outfilename);
-		FileWriter out=new FileWriter(outfile);
-		if(outputcsv){
-			out.write(PrimerPair.getCSVHeaderLine());
-			out.write("\n");
-		}
-		PrimerPair[] pps=doTheFilterBoogie(primer3);
-        final int solutioncount=countAndMarkSuccessfulPairs(pps);
-    	
-        int count=1;
-        String line=null;
-		for(int i=0;i<pps.length;i++) {
-			if(pps[i].okay) {
-        		if(!outputcsv)
-        			line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
-        		else
-        			line=pps[i].toCSVString(i+1);
-				out.write(line);
-				out.write("\n");
-			}else{
-        		if(!outputcsv)
-        			line="\nNr. "+(-1)+'\n'+pps[i].toString();
-        		else
-        			line=pps[i].toCSVString(-1);
-                debugout.write(line);
-                debugout.write("\n");
-			}
-		}
-        out.close();
-        if(PCR.debug) {
-            debugout.close();
-        }
-        if(PCR.verbose) {
-            System.out.println("Fertig mit "+filename);
-        }
-        return solutioncount;
+	    notokayout.write("\n");
+	    combined.write("\n");
+	    
+	    
+	    File outfile=new File(outfilename);
+	    FileWriter out=new FileWriter(outfile);
+	    if(outputcsv){
+	        out.write(PrimerPair.getCSVHeaderLine());
+	        out.write("\n");
+	    }
+	    PrimerPair[] pps=doTheFilterBoogie(primer3);
+	    final int solutioncount=countAndMarkSuccessfulPairs(pps);
+	    
+	    int count=1;
+	    String line=null;
+	    for(int i=0;i<pps.length;i++) {
+	        if(pps[i].okay) {
+	            if(!outputcsv)
+	                line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
+	            else
+	                line=pps[i].toCSVString(i+1);
+	            out.write(line);
+	            out.write("\n");
+                combined.write(line);
+	            combined.write("\n");
+	        }else{//zu viele strafpunkte
+	            if(!outputcsv)
+	                line="\nNr. "+(-1)+'\n'+pps[i].toString();
+	            else
+	                line=pps[i].toCSVString(i+1);
+	            notokayout.write(line);
+	            notokayout.write("\n");
+                combined.write(line);
+                combined.write("\n");
+	        }
+	    }
+	    out.close();
+	    notokayout.close();
+	    if(PCR.verbose) {
+	        System.out.println("Fertig mit "+filename);
+	    }
+	    return solutioncount;
 	}
 
 	private int countAndMarkSuccessfulPairs(PrimerPair[] pps) {

@@ -65,8 +65,8 @@ public class BLAT extends AnalyseModul {
      * @param single
      * @throws BLATPageInvalid
      */
-    public BLAT(PCRConfig cfg) throws BlatException {
-        super(cfg);
+    public BLAT(PCRConfig cfg, boolean debug) throws BlatException {
+        super(cfg,debug);
         initProperties();
         src = new InetSource(cfg);
     }
@@ -74,8 +74,8 @@ public class BLAT extends AnalyseModul {
 	 * @param cfg
 	 * @param object
 	 */
-	public BLAT(PCRConfig cfg, BlatSource src) {
-		super(cfg);
+	public BLAT(PCRConfig cfg, BlatSource src, boolean debug) {
+		super(cfg,debug);
 		if(src == null)
 			throw new NullPointerException("No blatsource given!");
 		this.src = src;

@@ -44,8 +44,8 @@ public class RepetetiveSeq extends AnalyseModul {
 	//		this.feat=feat;
 	//		getRepetetiveSeqLocations();
 	//   }   
-	public RepetetiveSeq(PCRConfig cfg) {
-		super(cfg);
+	public RepetetiveSeq(PCRConfig cfg, boolean debug) {
+		super(cfg,debug);
 		try {
 			this.x= Integer.parseInt(config.getProperty("PARAM_REPETETIVE_SEQ").trim());
 		} catch (NumberFormatException e) {

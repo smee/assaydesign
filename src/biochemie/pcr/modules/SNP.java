@@ -24,8 +24,8 @@ public class SNP extends AnalyseModul{
 	public int[] snps;
 	int endscore;
 	
-	public SNP(PCRConfig cfg) {
-		super(cfg);
+	public SNP(PCRConfig cfg, boolean debug) {
+		super(cfg,debug);
 		try {
 			this.endscore=Integer.parseInt(config.getProperty("SCORE_SNP_END").trim());
 		} catch (NumberFormatException e) {

@@ -24,11 +24,11 @@ import biochemie.pcr.io.PCRConfig;
 public class ExonIntron extends AnalyseModul {
 	Location[] locs=null;
     
-	public ExonIntron(PCRConfig cfg) {
-		this(cfg,null);
+	public ExonIntron(PCRConfig cfg, boolean debug) {
+		this(cfg,null,debug);
 	}
-	public ExonIntron(PCRConfig cfg, FeatureHolder feat) {
-		super(cfg);
+	public ExonIntron(PCRConfig cfg, FeatureHolder feat, boolean debug) {
+		super(cfg,debug);
 		if(null == feat) {
 			parseExonStringToLocations(config.getProperty("EXONS"));
 		}else {

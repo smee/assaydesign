@@ -18,17 +18,16 @@ import biochemie.util.Helper;
  */
 public class CrossDimerAnalysis extends SekAnalysis{
      
-    public CrossDimerAnalysis(PCRConfig cfg) {
-        super(cfg,CROSS);
+    public CrossDimerAnalysis(PCRConfig cfg, boolean debug) {
+        super(cfg,CROSS,debug);
     }
 	public CrossDimerAnalysis(String windowsizes, String minbinds, String debug) {
 		super(windowsizes, minbinds,debug, CROSS);
 	}
     public CrossDimerAnalysis(int win, int min, boolean debug){
-        super(null,CROSS);
+        super(null,CROSS,debug);
         this.windowsize=new int[]{win};
         this.minbinds=new int[]{min};
-        this.debug=debug;
         validateParameter();
     }
     
