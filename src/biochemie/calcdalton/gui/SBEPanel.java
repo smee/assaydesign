@@ -2,19 +2,18 @@ package biochemie.calcdalton.gui;
 import info.clearthought.layout.TableLayout;
 
 import java.awt.Dimension;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import biochemie.gui.PLSelectorPanel;
+import biochemie.sbe.gui.SBESeqInputController;
+import biochemie.sbe.gui.SBESequenceTextField;
 import biochemie.util.Helper;
 
 public class SBEPanel extends JPanel
@@ -32,13 +31,12 @@ public class SBEPanel extends JPanel
     protected JLabel lbLabel0;
     protected JLabel lbLabel4;
     protected JPanel pnSpaltstelle;
-    protected JComboBox cmbFest;
-    Vector select;
+    protected PLSelectorPanel plpanel;
     protected int nummer;
     protected JLabel lbName;
     protected JLabel lbSeqTf;
     protected JTextField tfName;
-    public PBSequenceField tfSequence;
+    public SBESequenceTextField tfSequence;
     /**
      * Konstruktor erwartet individuelle Nummerierung.
      * @param num
@@ -70,15 +68,15 @@ public class SBEPanel extends JPanel
         tfName.setToolTipText("Please enter the name of the SBE-primer sequence.");
         jp_sequence.add(tfName,"3,1");
         jp_sequence.add(new JLabel("   SBE-Primer:  "),"5,1");
-        tfSequence = new PBSequenceField(150,true,"acgtACGT");
-//        tfSequence.setValidChars("acgtACGT");
-//        tfSequence.setMaxLen(150);
-//        tfSequence.setUpper(true);
+        tfSequence = new SBESequenceTextField();
+        tfSequence.setValidChars("acgtACGT");
+        tfSequence.setMaxLen(150);
+        tfSequence.setUpper(true);
         tfSequence.setToolTipText("Please insert a SBE-primer sequence with length>="+CDConfig.getInstance().getMaxBruchstelle()+" (Strg+V)");
         tfSequence.setPreferredSize(new Dimension(400,20));
         jp_sequence.add(tfSequence,"7, 1");
         add(jp_sequence,"1,1");
-
+        
         //nr. 2
         jp_anhang = new JPanel();
         jp_anhang.setBorder(BorderFactory.createTitledBorder("ddNTPs"));
@@ -102,16 +100,13 @@ public class SBEPanel extends JPanel
         add(jp_anhang,"3,1");
         //nr. 3
         double[][] spaltSize={{p,30},{p}};
-        pnSpaltstelle = new JPanel(new TableLayout(spaltSize));
-        pnSpaltstelle.setBorder( BorderFactory.createTitledBorder( "Photolinker at:" ) );
-        select=new Vector(Arrays.asList(ArrayUtils.toObject(CDConfig.getInstance().getBruchStellenArray())));
-        cmbFest = new JComboBox(select);
-        cmbFest.setToolTipText("Specify position of the Photolinker, auto means the value should be choosen by the program.");
-        cmbFest.insertItemAt("auto",0);
-        cmbFest.setSelectedIndex(0);
-        pnSpaltstelle.setToolTipText("Specify position of the Photolinker, auto means the value should be choosen by the program.");
-        pnSpaltstelle.add(cmbFest,"0,0");
-        add(pnSpaltstelle,"5,1,C,C");
+        plpanel=new PLSelectorPanel();
+        plpanel.setPLPositions(CDConfig.getInstance().getBruchStellenArray());
+        plpanel.setRekTooltip("Specify position of the Photolinker, auto means the value should be choosen by the program.");
+
+        add(plpanel,"5,1,C,C");
+        
+        new SBESeqInputController(tfSequence,null,plpanel,null);
     }
 
 
@@ -163,10 +158,7 @@ public class SBEPanel extends JPanel
      * @return SpaltstelleIndex wenn gewählt,<0 sonst
      */
     public int getFestenAnhangIndex() {
-        if(0 < cmbFest.getSelectedIndex()) {
-            return cmbFest.getSelectedIndex()-1;
-        }
-        return -1;
+        return ArrayUtils.indexOf(CDConfig.getInstance().getBruchStellenArray(),plpanel.getSelectedPL());
     }
 
     public String getName() {
@@ -176,29 +168,9 @@ public class SBEPanel extends JPanel
      * liest die comboboxen für feste bruchstellen neu ein.
      */
     public void refreshData() {
-        select=new Vector(Arrays.asList(ArrayUtils.toObject(CDConfig.getInstance().getBruchStellenArray())));
-        int index=cmbFest.getSelectedIndex();
-        cmbFest.removeAllItems();
-        cmbFest.insertItemAt("auto",0);
-        for(int i=0;i<select.size();i++)
-            cmbFest.addItem(select.get(i));
-        cmbFest.setSelectedIndex(-1);
-        if(index<select.size())
-            cmbFest.setSelectedIndex(index);
-        else
-            cmbFest.setSelectedIndex(0);
-        tfSequence.setToolTipText("Please insert a SBE-primer sequence with length>="+CDConfig.getInstance().getMaxBruchstelle());
-        cmbFest.repaint();
+        plpanel.setPLPositions(CDConfig.getInstance().getBruchStellenArray());
     }
     public void setSelectedPL(int pl) {
-        int pos=0;
-        for (Iterator iter = select.iterator(); iter.hasNext();pos++) {
-            Object o = iter.next();
-            
-            if(o instanceof Integer && ((Integer)o).intValue()==pl) {
-                cmbFest.setSelectedIndex(pos);
-                return;
-            }
-        }
+        plpanel.setSelectedPL(pl);
     }
 }
