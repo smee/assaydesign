@@ -6,7 +6,9 @@ package biochemie.sbe.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,11 +42,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
@@ -73,6 +78,7 @@ import biochemie.sbe.gui.actions.ShowDiffAction;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.util.ConsoleWindow;
 import biochemie.util.FileSelector;
+import biochemie.util.GUIHelper;
 import biochemie.util.Helper;
 import biochemie.util.MyAction;
 
@@ -100,18 +106,35 @@ public class MiniSBEGui extends JFrame {
         	Algorithms.remove(sbec.iterator(),IsNull.instance());
         	final List sbeccoll=SBEPrimerReader.collapseMultiplexes(sbec,cfg);
         	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        	SwingWorker sw = new SwingWorker(){
+
+            //dialog um den user zu informieren
+            final JDialog dialog = new JDialog(MiniSBEGui.this,"Calculationprogress",true);
+            dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            Container pane=dialog.getContentPane();
+            pane.setLayout(new BoxLayout(pane,BoxLayout.Y_AXIS));
+            JProgressBar bar =new JProgressBar(JProgressBar.HORIZONTAL);
+            bar.setIndeterminate(true);
+            pane.add(bar);
+            pane.add(new JLabel("Please have some patience, this operation might need some time."));
+
+            GUIHelper.center(dialog, MiniSBEGui.this);
+
+            SwingWorker sw = new SwingWorker(){
         		public Object construct() {
-        			MiniSBE m = new MiniSBE(sbeccoll,cfg);
+                    MiniSBE m = null;
+                    m = new MiniSBE(sbeccoll,cfg);
                     normalizeSekStruks(sbec);
-        			return m;
+                    return m;
         		}
         		public void finished() {
+                    dialog.dispose();
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         			showResultFrame(sbec,cfg);
         		}
         	};
         	sw.start();
-
+            dialog.pack();
+            dialog.setVisible(true);
         }
 
         protected void normalizeSekStruks(List sbec) {
@@ -155,7 +178,7 @@ public class MiniSBEGui extends JFrame {
             JButton showdiffs = new JButton(new ShowDiffAction(sbec,cfg,this));
             toolbar.add(showdiffs);
             frame.pack();
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
             ToolTipManager.sharedInstance().setDismissDelay(100000);
             frame.setVisible(true);
         }
@@ -212,6 +235,8 @@ public class MiniSBEGui extends JFrame {
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(java.awt.event.ActionEvent e) {
+            if(sbepanels.size() == 0)
+                return;//nothing to do
             int answer = askUserForSave();
             if (answer == JOptionPane.CANCEL_OPTION)
                 return;
@@ -230,6 +255,7 @@ public class MiniSBEGui extends JFrame {
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(java.awt.event.ActionEvent e) {
+            getNewAction().actionPerformed(e);//loesche alle bestehenden primer in der gui
 
             FileFilter filter = new FileFilter(){
                 public boolean accept(File f) {
@@ -257,7 +283,6 @@ public class MiniSBEGui extends JFrame {
                     JOptionPane.showMessageDialog(MiniSBEGui.this,"Error loading file "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                getNewAction().actionPerformed(e);//loesche alle bestehenden primer in der gui
                 for (int i = 0; i < primerlines.size(); i++) {
                     addSBECandidatePanel(i);
                 }
@@ -271,6 +296,8 @@ public class MiniSBEGui extends JFrame {
                     }
                 }
             }
+            getSbepanelsPanel().revalidate();
+            getSbepanelsPanel().repaint();
         }
     }
     private class SavePrimerAction extends MyAction {
@@ -314,6 +341,7 @@ public class MiniSBEGui extends JFrame {
                 }
             }
         }
+
         /**
          * @param sbec
          * @param file
@@ -339,6 +367,18 @@ public class MiniSBEGui extends JFrame {
             }
             bw.close();
         }
+    }
+    private class ExitAppAction extends MyAction{
+
+        public ExitAppAction() {
+            super("Exit","exits the application",ExitAppAction.class.getClassLoader().getResource("images/exit.gif"),
+                    KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_DOWN_MASK));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            exitApp();
+        }
+
     }
     private static Preferences prefs=Preferences.userNodeForPackage(MiniSBEGui.class);
     private static final int DEFAULT_WINDOW_X = 50;
@@ -373,7 +413,7 @@ public class MiniSBEGui extends JFrame {
 	private JToggleButton expertToggleButton = null;
 	private SBEConfigDialog dialog = null;
 
-	private int sbe_anzahl=0;
+	private int sbe_anzahl=-1;
 	List sbepanels;
 
     private Action newAction;
@@ -482,6 +522,8 @@ public class MiniSBEGui extends JFrame {
 			fileMenu.add(getOpenMenuItem());
 			fileMenu.add(getSaveMenuItem());
 			fileMenu.add(getPreferencesMenuItem());
+            fileMenu.addSeparator();
+            fileMenu.add(new ExitAppAction());
 		}
 		return fileMenu;
 	}
@@ -888,6 +930,7 @@ public class MiniSBEGui extends JFrame {
                 return new String(sb);
             }
         };
+        table.setPreferredScrollableViewportSize(new Dimension(400,table.getPreferredSize().height));
         //sorter.setTableHeader(table.getTableHeader());
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for(int j=0; j <table.getColumnCount();j++){
