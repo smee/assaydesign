@@ -5,7 +5,9 @@
 package biochemie.pcr.matcher;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -156,12 +158,27 @@ public class PCRMatcher {
         	Collection pairsToUse=ms.getBestPCRPrimerSet(pm.primers);
         	System.out.println("Using:");
         	System.out.println(Helper.toStringln(pairsToUse));
+            String outname="matcher_"+Helper.dateFunc()+".csv";
+            System.out.println("\nWriting to "+outname);
+            outputFile(pairsToUse, outname);
         } catch (WrongValueException e) {
             e.printStackTrace();
         } catch (IOException e) {
         }
     }
 
+
+
+
+    private static void outputFile(Collection pairsToUse, String outname) throws IOException {
+        BufferedWriter bw=new BufferedWriter(new FileWriter(outname));
+        for (Iterator iter = pairsToUse.iterator(); iter.hasNext();) {
+            PCRPair pair = (PCRPair) iter.next();
+            bw.write(pair.getCSVLine());
+            bw.write("\n");
+        }
+        bw.close();
+    }
 
 
 
