@@ -86,7 +86,7 @@ public class CalcDaltonNative extends CalcDalton {
     public int[][] calc(String[][] sbeData, int[] fest){
         return calcNative(sbeData,fest);
     }
-    public void calc(String[][] sbeData, SBETable sbeTable, int[] fest) {
+    public SBETable calc(String[][] sbeData, SBETable sbeTable, int[] fest) {
         if(useNative){
             int[][] erg= calcNative(sbeData,fest);
             for(int i=0;i<erg.length;i++){
@@ -99,6 +99,7 @@ public class CalcDaltonNative extends CalcDalton {
 
         }else
             super.calc(sbeData, sbeTable, fest);
+        return sbeTable;
     }
 
     public void outputState() {

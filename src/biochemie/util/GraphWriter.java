@@ -18,21 +18,6 @@ public class GraphWriter{
     private final int type;
     private static int counter=0;
     
-/*	public GraphWriter(SBECandidate[] sbec, String filename, int type){
-		
-        this.type=type;
-        filename=setFilename(filename);
-        try {
-			bw=new BufferedWriter(new FileWriter(filename));
-            List l=new ArrayList(sbec.length);
-            for (int i = 0; i < sbec.length; i++) {
-                l.add(sbec[i].getId());
-            }
-			init(l,type);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
 	/**
      * @param sbec
      * @throws IOException

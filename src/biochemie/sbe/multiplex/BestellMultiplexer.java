@@ -11,7 +11,7 @@ import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.SBEOptionsProvider;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
-import biochemie.sbe.calculators.ResusableThread;
+import biochemie.sbe.calculators.ReusableThread;
 import biochemie.util.GraphHelper;
 
 /**
@@ -21,7 +21,7 @@ import biochemie.util.GraphHelper;
  * 02.08.2004
  */
 public class BestellMultiplexer extends Multiplexer {
-    ResusableThread rt;
+    ReusableThread rt;
 
     /**
      * @param csvr
@@ -29,7 +29,7 @@ public class BestellMultiplexer extends Multiplexer {
      */
     public BestellMultiplexer(SBEOptionsProvider cfg) {
         super(cfg);
-	    rt=new ResusableThread(cfg.getCalcTime() * 1000);
+	    rt=new ReusableThread(cfg.getCalcTime() * 1000);
     }
 
     

@@ -11,7 +11,7 @@ import java.util.Set;
 import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.calculators.MaximumCliqueFinder;
-import biochemie.sbe.calculators.ResusableThread;
+import biochemie.sbe.calculators.ReusableThread;
 import biochemie.util.GraphHelper;
 import biochemie.util.GraphWriter;
 
@@ -37,7 +37,7 @@ public class MaxCliqueStrategy implements MatcherStrategy {
 
         MaximumCliqueFinder mcf=new MaximumCliqueFinder(g,maxplex,true);
 
-        ResusableThread rt=new ResusableThread(seconds*1000);
+        ReusableThread rt=new ReusableThread(seconds*1000);
 
         System.out.println("Time for clique finding: "+seconds+" s");
         System.out.println("Starting clique search...");

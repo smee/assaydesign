@@ -41,10 +41,11 @@ public class MaximumCliqueFinder implements Interruptible{
     private int k;
     GraphWriter gw;
     private volatile boolean interrupted=false;
+    private Thread calcThread;
     
     public MaximumCliqueFinder(boolean[][] admatrix,int maxplexnr,boolean debug) {
         this.debug=debug;
-        this.maxplex= maxplexnr;
+        this.maxplex= Math.min(maxplexnr,admatrix.length);
         if(debug) {
             System.out.println("creating graph of size "+admatrix.length);
             List l=new ArrayList();
@@ -61,7 +62,7 @@ public class MaximumCliqueFinder implements Interruptible{
     }
     public MaximumCliqueFinder(UndirectedGraph g,int maxplexnr, boolean debug) {
         this.debug=debug;
-        this.maxplex= maxplexnr;
+        this.maxplex= Math.min(maxplexnr, g.vertexSet().size());
         graph=g;
         graphes=createSortedIndependentSubgraphList(graph);
     }
@@ -143,6 +144,7 @@ public class MaximumCliqueFinder implements Interruptible{
      * die Teilgraphen, die nach erster Schätzung die größte Clique beinhalten könnten.
      */
     private void startSearch() {
+        calcThread=Thread.currentThread();
         maxclique=new HashSet();
         int ub=Integer.MAX_VALUE;
         
@@ -174,7 +176,7 @@ public class MaximumCliqueFinder implements Interruptible{
      */
     private Set findMaxClique(final UndirectedGraph g, Set c, Set best, int ub) {
 //        depth++;
-        if(interrupted) {//muss leider aufhören :(
+        if(calcThread.isInterrupted()) {//muss leider aufhören :(
             return best;
         }
         if(0 == g.vertexSet().size())
@@ -363,8 +365,8 @@ public class MaximumCliqueFinder implements Interruptible{
      * @see biochemie.sbe.calculators.Interruptible#stop()
      */
     public void stop() {
-        interrupted=true;
-        
+        if(calcThread != null)
+            calcThread.interrupt();
     }
     /* (non-Javadoc)
      * @see biochemie.sbe.calculators.Interruptible#getResult()

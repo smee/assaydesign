@@ -36,11 +36,11 @@ import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
-import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptionsProvider;
 import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
+import biochemie.util.Helper;
 import biochemie.util.MyAction;
 
 
@@ -126,7 +126,7 @@ public class ShowDiffAction extends MyAction {
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
 
-        CalcDalton cd = MiniSBE.getCalcDalton(cfg);
+        CalcDalton cd = Helper.getCalcDalton(cfg);
         cd.calc(paneldata,sbetable,fest);
         return sbetable;
     }

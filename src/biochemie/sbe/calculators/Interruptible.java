@@ -10,7 +10,7 @@ package biochemie.sbe.calculators;
  */
 public interface Interruptible {
     /**
-     * Startet den Task.
+     * Startet den Task. Blockiert, bis der Task beendet ist bzw. abgebrochen wird.
      *
      */
     public void start();
@@ -21,7 +21,8 @@ public interface Interruptible {
     public void stop();
     /**
      * Liefert Ergebnis des Tasks. Achtung: Es wird nicht sichergestellt, dass das
-     * Ergebnis schon existiert!
+     * Ergebnis schon existiert! Das Ergebnis eines abgebrochenen Tasks ist nicht
+     * spezifiziert.
      * @return
      */
     public Object getResult();

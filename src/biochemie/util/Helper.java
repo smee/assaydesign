@@ -26,6 +26,9 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 
+import biochemie.calcdalton.CalcDalton;
+import biochemie.calcdalton.CalcDaltonOptionsProvider;
+
 
 
 
@@ -717,5 +720,19 @@ public class Helper {
         if(StringUtils.countMatches(p,"L")>1)
             return false;
         return true;
+    }
+    /**
+     * Helpermethode.
+     * @param cfg
+     * @return
+     */
+    public static CalcDalton getCalcDalton(CalcDaltonOptionsProvider cfg) {
+    	return new CalcDalton(cfg.getPhotolinkerPositions()
+    			             ,cfg.getCalcDaltonFrom()
+    						 ,cfg.getCalcDaltonTo()
+    						 ,cfg.getCalcDaltonPeaks()
+    			             ,cfg.getCalcDaltonVerbFrom()
+    						 ,cfg.getCalcDaltonVerbTo()
+    						 ,cfg.getCalcDaltonAllowOverlap());
     }
 }

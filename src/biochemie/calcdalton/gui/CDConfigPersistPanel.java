@@ -10,6 +10,10 @@ import info.clearthought.layout.TableLayoutConstants;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import biochemie.calcdalton.gui.CDConfigPanel.LoadAction;
+import biochemie.calcdalton.gui.CDConfigPanel.ResetAction;
+import biochemie.calcdalton.gui.CDConfigPanel.SaveAction;
+
 
 /**
  * @author Steffen Dienst

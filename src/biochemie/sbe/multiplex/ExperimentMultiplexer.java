@@ -15,7 +15,7 @@ import java.util.Set;
 import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.SBEOptionsProvider;
-import biochemie.sbe.calculators.ResusableThread;
+import biochemie.sbe.calculators.ReusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.util.GraphHelper;
 
@@ -27,14 +27,14 @@ import biochemie.util.GraphHelper;
  * 24.10.2004
  */
 public class ExperimentMultiplexer extends Multiplexer {
-    ResusableThread rt;
+    ReusableThread rt;
     /**
      * @param csvr
      * @param debug
      */
     public ExperimentMultiplexer(SBEOptionsProvider cfg) {
         super(cfg);
-        rt=new ResusableThread(cfg.getCalcTime() * 1000);
+        rt=new ReusableThread(cfg.getCalcTime() * 1000);
     }
 
     public void findMultiplexes(List multip) {

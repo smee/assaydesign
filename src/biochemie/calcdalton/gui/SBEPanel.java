@@ -3,6 +3,7 @@ import info.clearthought.layout.TableLayout;
 
 import java.awt.Dimension;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -13,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.commons.lang.ArrayUtils;
+
+import biochemie.sbe.gui.SBESequenceTextField;
+import biochemie.util.Helper;
 
 public class SBEPanel extends JPanel
 {
@@ -35,7 +39,7 @@ public class SBEPanel extends JPanel
     protected JLabel lbName;
     protected JLabel lbSeqTf;
     protected JTextField tfName;
-    public PBSequenceField tfSequence;
+    public SBESequenceTextField tfSequence;
     /**
      * Konstruktor erwartet individuelle Nummerierung.
      * @param num
@@ -43,7 +47,7 @@ public class SBEPanel extends JPanel
     public SBEPanel(int num){
         nummer = num;
         double border=5;
-        double hg=10;   //gap between 
+        double hg=10;   //gap between
         double lg=5;    //gap between label and textfield
         double f = TableLayout.FILL;
         double p = TableLayout.PREFERRED;
@@ -52,10 +56,10 @@ public class SBEPanel extends JPanel
         double[][] size=
             {{border,f,hg,p,hg,p,border},
              {border,p,border}};
-        TableLayout layout=new TableLayout(size); 
+        TableLayout layout=new TableLayout(size);
         setLayout(layout);
-        
-        //Erstes Panel      
+
+        //Erstes Panel
         double[][] seqPanelSize=
             {{border,p,lg,.20,hg,p,lg,f,border},
              {border,p,border}};
@@ -67,12 +71,15 @@ public class SBEPanel extends JPanel
         tfName.setToolTipText("Please enter the name of the SBE-primer sequence.");
         jp_sequence.add(tfName,"3,1");
         jp_sequence.add(new JLabel("   SBE-Primer:  "),"5,1");
-        tfSequence = new PBSequenceField( 150, true, "ACGT");
+        tfSequence = new SBESequenceTextField( );
+        tfSequence.setValidChars("acgtACGT");
+        tfSequence.setMaxLen(150);
+        tfSequence.setUpper(true);
         tfSequence.setToolTipText("Please insert a SBE-primer sequence with length>="+CDConfig.getInstance().getMaxBruchstelle()+" (Strg+V)");
         tfSequence.setPreferredSize(new Dimension(400,20));
         jp_sequence.add(tfSequence,"7, 1");
         add(jp_sequence,"1,1");
-        
+
         //nr. 2
         jp_anhang = new JPanel();
         jp_anhang.setBorder(BorderFactory.createTitledBorder("ddNTPs"));
@@ -126,7 +133,7 @@ public class SBEPanel extends JPanel
             i++;
         String[] ergebnis = new String[i];
         i = 1;
-        ergebnis[0] = tfSequence.getText();
+        ergebnis[0] = Helper.getNuklFromString(tfSequence.getText());
         if(cb_A.isSelected())
         {
             ergebnis[i] = "A";
@@ -153,7 +160,7 @@ public class SBEPanel extends JPanel
 
     /**
      * Methode gibt zurück, welche Spaltstelle als fest gewählt wurde.
-     * 
+     *
      * @return SpaltstelleIndex wenn gewählt,<0 sonst
      */
     public int getFestenAnhangIndex() {
@@ -184,5 +191,15 @@ public class SBEPanel extends JPanel
         tfSequence.setToolTipText("Please insert a SBE-primer sequence with length>="+CDConfig.getInstance().getMaxBruchstelle());
         cmbFest.repaint();
     }
-
+    public void setSelectedPL(int pl) {
+        int pos=0;
+        for (Iterator iter = select.iterator(); iter.hasNext();pos++) {
+            Object o = iter.next();
+            
+            if(o instanceof Integer && ((Integer)o).intValue()==pl) {
+                cmbFest.setSelectedIndex(pos);
+                return;
+            }
+        }
+    }
 }

@@ -13,14 +13,14 @@ import javax.swing.Timer;
 
 
 
-public  class ResusableThread extends Thread implements ActionListener{
+public  class ReusableThread extends Thread implements ActionListener{
     private final List tasklist;
     private Timer timer;
     private boolean resultAvailable,resultFetched;
     Interruptible i;
     private int msectowait;
     
-    public ResusableThread( int msectowait) {
+    public ReusableThread( int msectowait) {
         tasklist=new ArrayList();
         this.msectowait=msectowait;
         timer=new Timer(msectowait,this);
@@ -59,9 +59,16 @@ public  class ResusableThread extends Thread implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
+        stopTask();
+    }
+    /**
+     * Stops the currently running task
+     */
+    public synchronized void stopTask() {
         if(0 != msectowait)
             i.stop();
     }
+
     private synchronized void setUnavailable() {
         resultFetched=false;
     }
@@ -76,6 +83,7 @@ public  class ResusableThread extends Thread implements ActionListener{
             e.printStackTrace();
         }
     }
+    
     /**
      * @return
      */

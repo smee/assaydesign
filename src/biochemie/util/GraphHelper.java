@@ -42,18 +42,18 @@ public class GraphHelper {
     /**
      * Erstellt den Unvertraeglichkkeitsgraphen von einer List von Multiplexables.
      * @param multiplexables
-     * @param debug true, graph wird in eine Datei geschrieben
+     * @param writegraph true, graph wird in eine Datei geschrieben
      * @param outputtype kann sein: GraphWriter.TGF, GraphWriter.GML oder XWG, 0 default
      * @return Undirectedgraph
      */
-    public static UndirectedGraph createIncompGraph(List multiplexables, boolean debug, int outputtype) {
+    public static UndirectedGraph createIncompGraph(List multiplexables, boolean writegraph, int outputtype) {
         List names=new ArrayList(multiplexables.size());
         for (Iterator it = multiplexables.iterator(); it.hasNext();) {
             Multiplexable p = (Multiplexable) it.next();
             names.add(p.getName());
         }
         GraphWriter gw=null;
-        if(debug) {
+        if(writegraph) {
             gw=new GraphWriter(names,"graph",outputtype);
         }
         UndirectedGraph g=new SimpleGraph();
@@ -64,12 +64,12 @@ public class GraphHelper {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
                 if(!s1.passtMit(s2)) {
                     g.addEdge(s1,s2);
-                    if(debug)
+                    if(writegraph)
                         gw.addArc(i,j,s1.getEdgeReason());
                 }
             }
         }
-        if(debug)
+        if(gw != null)
             gw.close();
         return g;
     }

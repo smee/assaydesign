@@ -19,10 +19,10 @@ import biochemie.util.Helper;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class SBETable implements TableModel {
-	private int anzahlSBE;
+	private final int anzahlSBE;
 	private int aktuelleTabelle=0;
- 	private String[] columnNames;
-	private String[] ersteSpalte;
+ 	private final String[] columnNames;
+	private final String[] ersteSpalte;
 
     int[] br;
     int[] tablebruchstellen;
@@ -187,12 +187,12 @@ private void initTableBruchstellen() {
         }
         return sum;
     }
-    public int getMaxLengthColumn(int i){
+    public int getMaxLengthOfColumn(int i){
         if(i<anzahlSBE+1){
             if(0 == i){
                 return ersteSpalte[3].length()*8;//laengster String in der ersten Spalte
             }else{
-                return getValueAt(1,i).toString().length()*8;
+                return getValueAt(1,i).toString().length()*8;//geschaetzte Laenge des primers in pixeln
             }
         }
         return 0;
@@ -202,4 +202,14 @@ private void initTableBruchstellen() {
 		ergebnisse.clear();
 		initTableBruchstellen();
 	}
+
+
+    /**
+     * @return
+     */
+    public String[] getNames() {
+        String[] n=new String[anzahlSBE];
+        System.arraycopy(columnNames,1,n,0,anzahlSBE);
+        return n;
+    }
 }

@@ -1,13 +1,8 @@
 package biochemie.gui;
 
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.GridBagLayout;
-
-import biochemie.sbe.gui.SBESequenceTextField;
-import biochemie.util.Helper;
-
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashSet;
@@ -19,6 +14,9 @@ import javax.swing.MutableComboBoxModel;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import biochemie.sbe.gui.SBESequenceTextField;
+import biochemie.util.Helper;
 public class SBESequencePanel extends MyPanel implements DocumentListener, ItemListener {
 
 	private SBESequenceTextField SBESequenceTextField = null;

@@ -20,7 +20,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.calcdalton.CalcDalton;
-import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBEOptionsProvider;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
@@ -248,7 +247,7 @@ public class SBEPrimer extends Primer{
      * @return
      */
     protected boolean passtMitCalcDalton(SBEPrimer other) {
-        CalcDalton cd=MiniSBE.getCalcDalton(cfg);
+        CalcDalton cd=Helper.getCalcDalton(cfg);
         String[][] sbedata= {{this.getSeq(),"A","C","G","T"}
         					,{other.getSeq(),"A","C","G","T"}};
         int[] br = cfg.getPhotolinkerPositions();

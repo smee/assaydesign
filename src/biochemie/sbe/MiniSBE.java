@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.calcdalton.CalcDalton;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.sbe.multiplex.BestellMultiplexer;
@@ -135,21 +134,5 @@ public class MiniSBE {
         sb.append(year);
         return sb.toString();
     }
-
-
-	/**
-	 * Helpermethode.
-	 * @param cfg
-	 * @return
-	 */
-	public static CalcDalton getCalcDalton(SBEOptionsProvider cfg) {
-		return new CalcDalton(cfg.getPhotolinkerPositions()
-				             ,cfg.getCalcDaltonFrom()
-							 ,cfg.getCalcDaltonTo()
-							 ,cfg.getCalcDaltonPeaks()
-				             ,cfg.getCalcDaltonVerbFrom()
-							 ,cfg.getCalcDaltonVerbTo()
-							 ,cfg.getCalcDaltonAllowOverlap());
-	}
 
 }

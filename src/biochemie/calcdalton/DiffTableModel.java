@@ -26,8 +26,8 @@ public class DiffTableModel implements TableModel{
 	ArrayList firstcolumn;
 	HashMap hm;
 	
-public DiffTableModel(String[] names, SBETable sbetable) {
-		this(names,getWeightsFromTable(sbetable));//! SpaltenxZeilen!
+public DiffTableModel(SBETable sbetable) {
+		this(sbetable.getNames(),getWeightsFromTable(sbetable));//! SpaltenxZeilen!
 }
 /**
  * 

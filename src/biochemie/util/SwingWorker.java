@@ -1,4 +1,4 @@
-package biochemie.calcdalton;
+package biochemie.util;
 import javax.swing.SwingUtilities;
 
 /**
@@ -127,5 +127,12 @@ public abstract class SwingWorker {
         if (null != t) {
             t.start();
         }
+    }
+
+    /**
+     * @return
+     */
+    public boolean isDone() {
+        return getValue()!=null;
     }
 }

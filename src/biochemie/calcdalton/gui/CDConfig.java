@@ -9,6 +9,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import biochemie.calcdalton.gui.CDConfigPanel.OkayAction;
+
 
 
 /**

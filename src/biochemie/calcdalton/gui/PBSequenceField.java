@@ -7,7 +7,7 @@ import javax.swing.text.PlainDocument;
 
 public class PBSequenceField extends JTextField
 {
-    class CharacterDocument extends PlainDocument
+    protected class CharacterDocument extends PlainDocument
     {
 
         public void insertString(int offs, String str, AttributeSet a)
@@ -27,15 +27,15 @@ public class PBSequenceField extends JTextField
                     x = Character.toUpperCase(str.charAt(i));
                 else
                     x = str.charAt(i);
-                
+
                 if(uniquechars.indexOf(x) != -1 && text.indexOf(x) != -1)
                 	continue;
-                
+
                 if(validChars == null || validChars.indexOf(x) != -1)
                     validstr.append(x);
             }
             super.insertString(offs, new String(validstr), a);
-            
+
           int chartoremoved = getLength();
           if(chartoremoved > maxLen)
               remove(0,chartoremoved - maxLen);
@@ -45,11 +45,11 @@ public class PBSequenceField extends JTextField
         {
         }
     }
-    
+
     public static final String NUMBERS="0123456789";
     public static final String CHARACTERS="abcdefghijklmnopqrstuvwxyz" +
     									  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
+
 	/**
 	 * @return Returns the isUpper.
 	 */
@@ -96,15 +96,15 @@ public class PBSequenceField extends JTextField
     String validChars;
     String uniquechars;
     int maxLen;
-    
+
     public PBSequenceField(){
     	this(10,false,CHARACTERS);
     }
-    
+
     public PBSequenceField(int cols, boolean isupper, String validchars)
     {
-    	setUpper(isupper);    	
-        setMaxLen(cols);                
+    	setUpper(isupper);
+        setMaxLen(cols);
         setValidChars(validchars);
         setUniqueChars("");
     }

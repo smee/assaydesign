@@ -15,7 +15,7 @@ import java.util.Set;
 
 import org._3pq.jgrapht.UndirectedGraph;
 
-import biochemie.sbe.calculators.ResusableThread;
+import biochemie.sbe.calculators.ReusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.util.GraphHelper;
 import biochemie.util.GraphWriter;
@@ -41,7 +41,7 @@ public class ColorerStrategy implements MatcherStrategy {
         System.out.println("Graph has "+g.edgeSet().size()+" edges.");
 
 
-        ResusableThread rt=new ResusableThread(seconds*1000);
+        ReusableThread rt=new ReusableThread(seconds*1000);
 
         System.out.println("Time for Coloring: "+seconds+" s");
         System.out.println("Starting coloring search...");

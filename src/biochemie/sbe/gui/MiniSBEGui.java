@@ -63,7 +63,6 @@ import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
 
 import biochemie.calcdalton.JTableEx;
-import biochemie.calcdalton.SwingWorker;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
@@ -76,6 +75,7 @@ import biochemie.util.FileSelector;
 import biochemie.util.GUIHelper;
 import biochemie.util.Helper;
 import biochemie.util.MyAction;
+import biochemie.util.SwingWorker;
 
 /**
  * @author Steffen Dienst
