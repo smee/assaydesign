@@ -349,14 +349,17 @@ public class SBEConfigDialog extends JDialog {
 	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getJToggleButton() {
+        final String ENABLETEXT="Show expert settings";
+        final String DISABLETEXT="Hide expert settings";
 		if (jToggleButton == null) {
 			jToggleButton = new JToggleButton();
-			jToggleButton.setText("Enable advanced settings");
+			jToggleButton.setText(ENABLETEXT);
 			jToggleButton.setToolTipText("Notice: Advanced expert settings are ignored in the standard mode!");
 			jToggleButton.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					boolean val = e.getStateChange() == ItemEvent.SELECTED;
 					getAdvSettingsPanel().setVisible(val);
+                    jToggleButton.setText(val?DISABLETEXT:ENABLETEXT);
 				}
 			});
 		}

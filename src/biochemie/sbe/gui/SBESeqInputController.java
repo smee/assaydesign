@@ -50,6 +50,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
 
         this.fixedcb=panel.getFixedPrimerCB();
         fixedcb.setEnabled(false);
+        fixedcb.setSelected(false);
         left.getDocument().addDocumentListener(this);
         right.getDocument().addDocumentListener(this);
         plpanel.addPhotolinkerListListener(this);
@@ -93,6 +94,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 plpanel.setEnabled(true);
                 //plpanel.setAuto();
                 fixedcb.setEnabled(false);
+                fixedcb.setSelected(false);
                 return;
             }
             if(replacedNukl != 0) {
@@ -120,6 +122,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 plpanel.setEnabled(true);
                 setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
                 fixedcb.setEnabled(false);
+                fixedcb.setSelected(false);
             }
         }finally {
             IamModifying = false;
