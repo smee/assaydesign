@@ -9,7 +9,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import biochemie.domspec.SBEPrimer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 
 /**
@@ -18,7 +18,7 @@ import biochemie.sbe.io.SBEConfig;
  */
 public class TestUnwantedPrimers extends TestCase {
     KandidatenFilter filt;
-    SBEOptionsProvider cfg;
+    SBEOptions cfg;
     List sbec;
 
     protected void setUp() throws Exception {

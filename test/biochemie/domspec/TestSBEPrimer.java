@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.TestCase;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 
 /**
@@ -16,7 +16,7 @@ import biochemie.sbe.io.SBEConfig;
  * 18.10.2004
  */
 public class TestSBEPrimer extends TestCase {
-    SBEOptionsProvider cfg;
+    SBEOptions cfg;
 
     public void setUp() {
         cfg= new SBEConfig();
@@ -77,7 +77,7 @@ public class TestSBEPrimer extends TestCase {
         SBEPrimer p1= new SBEPrimer(cfg,"330ctla4","agctagctagctagctLgctaaaaaggt","AG",SBEPrimer._5_,"",0,true);
         SBEPrimer p2= new SBEPrimer(cfg,"331ctla4","ttggttggttggtLggttggttttt","CT",SBEPrimer._5_,"",0,true);
 
-        assertTrue(p1.passtMitCrossdimern(p2));
+        assertTrue(p1.passtMitCrossdimern(p2,false));
         //TODO an neue Funktionalitaet von allCDAreEvil anpassen! --------------------------------------------------
         //cfg.setAllCrossdimersAreEvil(true);
         //assertFalse(p1.passtMitCrossdimern(p2));

@@ -12,7 +12,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import biochemie.domspec.SBEPrimer;
-import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.multiplex.Multiplexer.SBEPrimerProxy;
 
@@ -25,7 +25,7 @@ import biochemie.sbe.multiplex.Multiplexer.SBEPrimerProxy;
 public class MultiplexerTest extends TestCase {
 
 	List primers;
-	SBEOptionsProvider cfg;
+	SBEOptions cfg;
 	Multiplexer m;
 	SBEPrimer primerA;
 	SBEPrimer primerB;
@@ -50,7 +50,10 @@ public class MultiplexerTest extends TestCase {
 	}
 	public void testEnhancePrimerList(){
         cfg.setAllCrossdimersAreEvil(false);//sollte keine Auswirkungen haben
-		assertTrue(primerA.passtMit(primerB));
+		assertTrue(primerA.passtMitKompCD(primerB));
+		assertTrue(primerA.passtMitKompCD(primerC));
+		assertTrue(primerB.passtMitKompCD(primerC));
+		assertFalse(primerA.passtMit(primerB));
 		assertTrue(primerA.passtMit(primerC));
 		assertTrue(primerB.passtMit(primerC));
 

@@ -3,10 +3,10 @@
   codebase="http://192.168.0.9/~sdienst/"
   href="sbegui.jnlp">
 <information>
-  <title>Gui for MiniSBE</title>
+  <title>CalcDalton 1.5</title>
   <vendor>SD Productions</vendor>
   <homepage href="/noneyet" />
-  <description>GUI tests+test of java webstart</description>
+  <description>New and improved version of CalcDalton</description>
   <offline-allowed/>
 </information>
 <security>
@@ -14,8 +14,7 @@
 </security>
 <resources>
   <j2se version="1.4+" />
-  <jar href="sbeguitest.jar"/>
-  <jar href="jfreechart-0.9.21.jar"/>
+  <jar href="calcdalton.jar"/>
 </resources>
-<application-desc main-class="biochemie.sbe.gui.MiniSBEGui"/>
+<application-desc main-class="biochemie.calcdalton.CDStart"/>
 </jnlp>
