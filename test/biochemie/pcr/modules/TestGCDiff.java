@@ -24,7 +24,7 @@ public class TestGCDiff extends TestCase {
 	
 	protected void setUp() throws Exception {
 		PCRConfig p=new PCRConfig();
-		gcd=new GCDiff(p);
+		gcd=new GCDiff(p,false);
 		pps=new PrimerPair[5];
 		pps[0]=new PrimerPair("","",0,1000,1,0);
 		pps[1]=new PrimerPair("","",0,1000,10,0);

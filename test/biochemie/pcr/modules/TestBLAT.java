@@ -71,7 +71,7 @@ public class TestBLAT extends TestCase {
 	public void testBlatWithNullSource(){
 		//soll npe werfen, wenn keine quelle angegeben wurde.
 		try {
-			BLAT blat =new BLAT(cfg, null);
+			BLAT blat =new BLAT(cfg, null,false);
 			fail();
 		} catch (NullPointerException e) {
 		}		
@@ -94,7 +94,7 @@ public class TestBLAT extends TestCase {
 		control.setReturnValue(erg);
 		control.replay();
 		
-		BLAT blat =new BLAT(cfg, mock);
+		BLAT blat =new BLAT(cfg, mock,false);
 		try {
 			blat.calcScores(new PrimerPair[]{testpair});
 			fail("Should have thrown an exception!");
@@ -117,7 +117,7 @@ public class TestBLAT extends TestCase {
         
         BLAT blat;
         try {
-            blat = new BLAT(cfg, mock);
+            blat = new BLAT(cfg, mock,false);
             blat.calcScores(pairs);        
             fail("Should have thrown BlatException!");
         } catch (BlatException e) {}        
@@ -140,7 +140,7 @@ public class TestBLAT extends TestCase {
 		control.replay();
 		
 		PrimerPair testpair = new PrimerPair(0,10,39,10);
-		BLAT blat =new BLAT(cfg, mock);
+		BLAT blat =new BLAT(cfg, mock,false);
 		blat.calcScores(new PrimerPair[]{testpair});
 		
 		assertEquals("Es gab kein match, also darf es auch keine Punkte geben.",0,testpair.getOverallScore());
@@ -162,7 +162,7 @@ public class TestBLAT extends TestCase {
         control.setReturnValue(resultlist);
         control.replay();
         
-        BLAT blat =new BLAT(cfg, mock);
+        BLAT blat =new BLAT(cfg, mock,false);
         blat.calcScores(pairs);
         for (int i = 0; i < pairs.length; i++) {
             assertEquals("Es gab kein match, also darf es auch keine Punkte geben.",0,pairs[i].getOverallScore());
@@ -191,7 +191,7 @@ public class TestBLAT extends TestCase {
         control.setReturnValue(resultlist);
         control.replay();
 
-        BLAT blat =new BLAT(cfg, mock);
+        BLAT blat =new BLAT(cfg, mock,false);
         blat.calcScores(pairs);
         int[] scores = new int[] {75,175,0,175};
         
@@ -230,7 +230,7 @@ public class TestBLAT extends TestCase {
         control.setReturnValue(resultlist);
         control.replay();
         
-        BLAT blat =new BLAT(cfg, mock);
+        BLAT blat =new BLAT(cfg, mock,false);
         blat.calcScores(pairs);
         int[] scores = new int[] {75,175,0,175};
         
@@ -239,7 +239,7 @@ public class TestBLAT extends TestCase {
         }
     }
     public void testPercentMatches() {
-        BLAT blat =new BLAT(cfg, mock);
+        BLAT blat =new BLAT(cfg, mock,false);
         //links, 50%
         assertEquals(50010,blat.getPosForPercentBinding(50000, 20, 0.5f, true));
         assertEquals(50010,blat.getPosForPercentBinding(50000, 21, 0.5f, true));

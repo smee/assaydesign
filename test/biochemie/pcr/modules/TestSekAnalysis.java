@@ -30,15 +30,14 @@ public class TestSekAnalysis extends TestCase {
 	PCRConfig cfg;
 
 	protected void setUp() throws Exception {
-        PCR.debug=false ;
 		cfg=new PCRConfig();
         cfg.setProperty("PARAM_HAIRPIN_WINDOW_SIZE","6");
         cfg.setProperty("PARAM_HAIRPIN_MIN_BINDING","4");
         cfg.setProperty("PARAM_HOMO_WINDOW_SIZE","6");
         cfg.setProperty("PARAM_HOMO_MIN_BINDING","4");
         cfg.setProperty("PARAM_MAXSCORE","100");
-        sek=new HairpinAnalysis(cfg);
-        hom = new HomoDimerAnalysis(cfg);
+        sek=new HairpinAnalysis(cfg,false);
+        hom = new HomoDimerAnalysis(cfg,false);
 		pps=new PrimerPair[9];		
 		pps[0]=new PrimerPair("","A",0,0,0,0);
 		pps[1]=new PrimerPair("AA","AAA",0,0,0,0);
@@ -65,7 +64,7 @@ public class TestSekAnalysis extends TestCase {
 	public void testNonDefaultBigHairpins() {
 		cfg.setProperty("PARAM_HAIRPIN_WINDOW_SIZE","40");
 		cfg.setProperty("PARAM_HAIRPIN_MIN_BINDING","2");
-		sek=new HairpinAnalysis(cfg);
+		sek=new HairpinAnalysis(cfg,false);
 		int[] erg={0,0,0,0,5,23,18,25,18};
 		
 		sek.calcScores(pps);
@@ -76,7 +75,7 @@ public class TestSekAnalysis extends TestCase {
 	public void testNonDefaultHairpins(){
 		cfg.setProperty("PARAM_HAIRPIN_WINDOW_SIZE","4");
 		cfg.setProperty("PARAM_HAIRPIN_MIN_BINDING","4");
-		sek=new HairpinAnalysis(cfg);
+		sek=new HairpinAnalysis(cfg,false);
 
 		int[] erg2={0,0,0,0,0,200,100,200,0};
 		

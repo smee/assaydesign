@@ -34,7 +34,7 @@ public class TestRepetetiveSeq extends TestCase {
 		 * 4020,41 668,10 3290,28 863,167 3528,7 3637,17 3290,28 5551,52 
 		 * 2411,48 5402,157 4222,7*/ 
 		p.setProperty("REP_SEQ_LIST",emblp.getRepetetiveSeqsAsString());
-        repseq=new RepetetiveSeq(p);
+        repseq=new RepetetiveSeq(p,false);
 		pps=new PrimerPair[4];
 		pps[0]=new PrimerPair(2100,20,0,0);	
 		pps[1]=new PrimerPair(2100,40,0,0);

@@ -26,7 +26,7 @@ public class TestSNP extends TestCase {
 		cfg.setProperty("SCORE_SNP_DISTANCES","50 40 30 20 10");
 		cfg.setProperty("SNP_LIST","15 55 123 300 366 700");
 		cfg.setProperty("SCORE_MAXSCORE","100");
-		snp=new SNP(cfg);
+		snp=new SNP(cfg,false);
 		int[] exp= {0,0,0,0,100,100,50};
 		PrimerPair[] pps=new PrimerPair[7];
 		pps[0]=new PrimerPair("aaaaaaaaaa","",0,0,0,0);
@@ -48,7 +48,7 @@ public class TestSNP extends TestCase {
         cfg.setProperty("SCORE_SNP_DISTANCES","50 40 30 20 10");
         cfg.setProperty("SNP_LIST","15 55 123 300 366 700");
         cfg.setProperty("SCORE_MAXSCORE","100");
-        snp=new SNP(cfg);
+        snp=new SNP(cfg,false);
         int[] exp= {0,0,0,100,100,100,50};
         PrimerPair[] pps=new PrimerPair[7];
         pps[0]=new PrimerPair("","aaaaaaaaaa",0,25,0,0);
