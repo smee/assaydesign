@@ -197,10 +197,13 @@ public class PrimerPair {
         sb.append(';');
         sb.append(gcdiff);
         sb.append(';');
+        int sum=0;
         for(int i=0;7 >= i;i++){
+            sum+=scores[i];
         	sb.append(scores[i]);
         	sb.append(';');
         }
+        sb.append(sum);
         return sb.toString() ;      
 	}
 	
@@ -217,6 +220,7 @@ public class PrimerPair {
         	sb.append(scorenames[i]);
         	sb.append(';');
         }
+		sb.append("sum;");
         return sb.toString();
 	}
 }
