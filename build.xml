@@ -109,6 +109,7 @@
     </jar>
   	
   	<antcall target="shrink" >
+  		<param name="mainclassname" value="biochemie.calcdalton.CDStart"/>
   		<param name="outjarname" value="${dist}/CalcDalton.jar"/>
   		<param name="neededjars" value = "${dist}/CalcDalton-${DSTAMP}.jar
   											:${lib}/commons-functor.jar
@@ -122,7 +123,7 @@
     <jsmoothgen project="${build.dir}/calcdalton.jsmooth"
       	skeletonroot="${jsmooth}/skeletons"/>
     <!--benenne Calcdaton.jar um, zu Archivzwecken -->
-  	<delete file="${dist}/CalcDalton-${DSTAMP}.jar"/>
+  	<delete file="${dist}/CalcDalton-${DSTAMP}.jar"/> 
     <move file="${dist}/CalcDalton.jar" tofile="${dist}/calcdalton-${DSTAMP}.jar"/> 
     <!--packe exe-file mit upx -->
   	
@@ -149,6 +150,7 @@
 	  	
 	  	<!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
 	  	<antcall target="shrink" >
+	  		<param name="mainclassname" value="biochemie.pcr.matcher.PCRMatcher"/>
 	  		<param name="outjarname" value="${dist}/pcrmatcher.jar"/>
 	  		<param name="neededjars" value = "${dist}/pcrmatcher-${DSTAMP}.jar
 	  			                                                                :${lib}/commons-functor.jar
@@ -186,6 +188,7 @@
     </jar>
   	<!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
   	<antcall target="shrink" >
+  		<param name="mainclassname" value="biochemie.sbe.**"/>
   		<param name="outjarname" value="${dist}/minisbe.jar"/>
   		<param name="neededjars" value = "${dist}/minisbe-${DSTAMP}.jar
   			                              :${lib}/commons-functor.jar
@@ -221,6 +224,7 @@
     </jar>
 <!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
   	<antcall target="shrink" >
+  		<param name="mainclassname" value="biochemie.pcr.PCR"/>
   		<param name="outjarname" value="${dist}/PCR.jar"/>
   		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar
   			                                                                :${lib}/xml.jar
@@ -272,19 +276,30 @@
   <!--**********************************************************-->
 	<target name="shrink" depends="init" description="TAKE CARE: the jar with the mainclass needs to be the first neededjars parameter!">
 	    <proguard	 obfuscate="false" 
-	    			 defaultpackage="libs">
+	    			     defaultpackage="libs"
+	    				shrink="true"
+	    				printseeds="on">
 	       <libraryjar name="${java.home}/lib/rt.jar" />
 	       <injar path="${neededjars}"/>
-	    	<outjar name="${outjarname}"/>
+	       <outjar name="${outjarname}"/>
 	    	
 	       <keepattribute name="InnerClasses" />
 	       <keepattribute name="SourceFile" />
 	       <keepattribute name="LineNumberTable" />
-	       <keep name="biochemie.**">
-	          <constructor/>
-	          <method/>
-	          <field/>
-	       </keep>
+
+	    	<!-- Preserve all public applications. -->
+	        <keepclasseswithmembers access="public" name="${mainclassname}">
+	          <method access    ="public static"
+	                  type      ="void"
+	                  name      ="main"
+	                  parameters="java.lang.String[]" />
+	        </keepclasseswithmembers>
+
+	    	<!-- Preserve all native method names and the names of their classes. -->
+	        <keepclasseswithmembernames>
+	          <method access="native" />
+	        </keepclasseswithmembernames>
+	    	
 	        <keep name="org.xml.sax.**">
 	            <constructor/>
 	            <method/>
