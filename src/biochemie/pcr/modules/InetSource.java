@@ -52,18 +52,18 @@ public class InetSource implements BlatSource{
         initProperties();
 	}
 	private void initProperties() throws BlatException{
+        //setze Proxy-Server, wenn nötig
+        if(config.getBoolean("USEPROXY",false)){
+            System.getProperties().put( "proxySet", "true" );
+            System.getProperties().put( "proxyHost",config.getString("PROXYHOST"));
+            System.getProperties().put( "proxyPort", config.getString("PROXYPORT"));
+        }
 		blathash= getAndHashAktuelleBLATPage();
         if (PCR.debug) {
             System.out.println("Aktueller Hashcode von BLAT : " + blathash);
         }
         if (blathash != ORIGINALHASH) {
             throw new BlatException("Wrong hashcode. The website "+blaturl+" seems to have changed!");
-        }
-        //setze Proxy-Server, wenn nötig
-        if(config.getBoolean("USEPROXY",false)){
-            System.getProperties().put( "proxySet", "true" );
-            System.getProperties().put( "proxyHost",config.getString("PROXYHOST"));
-            System.getProperties().put( "proxyPort", config.getString("PROXYPORT"));
         }
 	}
 	   /**
