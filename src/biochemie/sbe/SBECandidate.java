@@ -240,7 +240,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
          * lege Liste an mit allen Sequenzen, die aus Primer entstehen, indem Basen am 5'-Ende abgeschnitten werden.
          */
         int[] br=cfg.getPhotolinkerPositions();
-        int plpos=primer.indexOf('L');
+        int plpos=Helper.getPosOfPl(primer);
         if(plpos !=  -1)
             br=new int[] {plpos};//vorgegebener pl
 
