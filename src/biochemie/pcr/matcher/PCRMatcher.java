@@ -77,12 +77,12 @@ public class PCRMatcher {
         String right;
         StringTokenizer st=new StringTokenizer(line,"\";");
 
-        st.nextToken();//ignore pos
+        st.nextToken().trim();//ignore pos
         st.nextToken();//ignore org.pos
         left=st.nextToken();
         st.nextToken();//start
         st.nextToken();//length
-        right=st.nextToken();
+        right=st.nextToken().trim();
         PCRPrimer p1=new PCRPrimer(idprefix,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,maxplex,cda);
         PCRPrimer p2=new PCRPrimer(idprefix,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,maxplex,cda);
         primers.add(new PCRPair(p1,p2,maxplex));
