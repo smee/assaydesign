@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -527,7 +529,12 @@ public class SBEGui extends JFrame{
       }
       catch ( Exception e ) {}
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                exitApp();
+            }
+        });
         URL url=this.getClass().getClassLoader().getResource("images/reagenz.gif");
         if(null != url){
             setIconImage(new ImageIcon(url).getImage());
@@ -610,6 +617,13 @@ public class SBEGui extends JFrame{
 	show();
     }
 	/**
+     * 
+     */
+    public void exitApp() {
+        System.exit(0);
+    }
+
+    /**
 	 * liest die comboboxen für feste bruchstellen neu ein.
 	 */
 	public void refreshData() {

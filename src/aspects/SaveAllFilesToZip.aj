@@ -44,7 +44,8 @@ public aspect  SaveAllFilesToZip {
 										        || within(GeneralConfig+)
 										        || within(biochemie.util..*));
 						
-	pointcut resultsWritten(): (call( void SBEPrimerReader.write*(..)) || call( void startAnalysis()));
+	pointcut resultsWritten(): (call( void SBEPrimerReader.write*(..)) || call( void startAnalysis())
+										|| execution (void exitApp()));
 	
 	
 	

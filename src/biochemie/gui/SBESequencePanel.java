@@ -22,7 +22,6 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
 	private SBESequenceTextField SBESequenceTextField = null;
 	private JLabel seqnameLabel = null;
 	private PLSelectorPanel PLSelectorPanel = null;
-    private SBESequenceTextField.PLDocument model;
     private Border errorBorder;
     private Border okayBorder;
 
@@ -35,8 +34,9 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
      */
     private boolean isOkay;
     /**
-     * Enthaelt die groesste PL-Position.
+     * Enthaelt das durch L ersetzte Nukleotid.
      */
+    private char replNukl;
     private int maxpl;
     /**
      * This is the default constructor
@@ -77,6 +77,7 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
     	this.add(seqnameLabel, gridBagConstraints2);
     	this.add(getPLSelectorPanel(), gridBagConstraints3);
         
+        replNukl=0;
         setOkay(false);
         okayBorder = getSBESequenceTextField().getBorder();
         errorBorder=BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.red,2),okayBorder);
@@ -106,19 +107,11 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
 	private PLSelectorPanel getPLSelectorPanel() {
 		if (PLSelectorPanel == null) {
 			PLSelectorPanel = new PLSelectorPanel();
-            PLSelectorPanel.setModel(getModel());
-            //PLSelectorPanel.addItemListener(this);
+            PLSelectorPanel.addItemListener(this);
 		}
 		return PLSelectorPanel;
 	}
-    private SBESequenceTextField.PLDocument getModel(){
-        if(model == null) {
-            final SBESequenceTextField.PLDocument model=(SBESequenceTextField.PLDocument) getSBESequenceTextField().getComboBoxModel();
-            model.addDocumentListener(this);
-            this.model=model;
-        }
-        return model;
-    }
+
     /**
      * @param b
      */
@@ -137,7 +130,7 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
         getSBESequenceTextField().setText(seq);
     }
     public void setPLPositions(int[] br) {
-        MutableComboBoxModel m = ((MutableComboBoxModel)getPLSelectorPanel().getComboPL().getModel());
+        MutableComboBoxModel m = getPLModel();
         plset=new HashSet();
         maxpl=Integer.MIN_VALUE;
         int sel=getPLSelectorPanel().getComboPL().getSelectedIndex();
@@ -161,6 +154,13 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
             getPLSelectorPanel().setAuto();
         
     }
+    /**
+     * @return
+     */
+    private MutableComboBoxModel getPLModel() {
+        return ((MutableComboBoxModel)getPLSelectorPanel().getComboPL().getModel());
+    }
+
     public void setTitle(String title) {
         this.seqnameLabel.setText(title);
     }
@@ -200,7 +200,7 @@ public class SBESequencePanel extends MyPanel implements DocumentListener, ItemL
      *
      */
     private void handleChange() {
-        if(getModel().hasUsergivenPL()) {
+        if(false) {
             getPLSelectorPanel().setEnabled(false);
             getPLSelectorPanel().setRekTooltip("Photolinker was defined by primer sequence input");
         }else {
