@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -40,9 +41,9 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import biochemie.calcdalton.BerechnungsProgress;
-import biochemie.calcdalton.SwingWorker;
 import biochemie.calcdalton.tf_seqDocListener;
 import biochemie.util.Helper;
+import biochemie.util.SwingWorker;
 
 public class SBEGui extends JFrame{
     JPanel panel;
@@ -204,7 +205,8 @@ public class SBEGui extends JFrame{
                 public boolean accept(File f) {
                     if(f.isDirectory())
                         return true;
-                    if(f.isFile() && (f.getName().endsWith(".primer") || f.getName().endsWith(".PRIMER")))
+                    if(f.isFile() && (f.getName().toLowerCase().endsWith(".primer")
+                            || f.getName().toLowerCase().endsWith(".csv")))
                         return true;
                     return false;
                 }
@@ -215,6 +217,10 @@ public class SBEGui extends JFrame{
             int result=jfc.showOpenDialog(null);
             if(JFileChooser.APPROVE_OPTION == result){
                 try {
+                    /*
+                     * FIXME schlampig, erkennt keine unvollstaendigen Ausgabezeilen (also Zeilen ohne "bio" darin)
+                     * FIXME erstellt eine Zeile in der GUI zuviel (wegen dem HEader in den CSV-Files)
+                     */
                     file=jfc.getSelectedFile();
                     BufferedReader br=new BufferedReader(new FileReader(file));
                     List lines=new ArrayList();
@@ -228,12 +234,24 @@ public class SBEGui extends JFrame{
                             newPanel.tfSequence.getDocument().addDocumentListener(dl_seq);
                             newPanel.refreshData();
                             sbePanelList.add(newPanel);
-                            panel.add(newPanel,panel.getComponentCount()-1);
+                            panel.add(newPanel);
                         }
                     }
-                    for(int i=0;i<sbePanelList.size();i++) {
+                    for(int i=0;i<lines.size();i++) {
                         String p=(String) lines.get(i);
-                        ((SBEPanel)sbePanelList.get(i)).tfSequence.setText(p);
+                        SBEPanel panel=((SBEPanel)sbePanelList.get(i));
+                        if(Helper.isSBEPrimer(p)) {//nur ein primer in der Zeile
+                            panel.tfSequence.setText(p);
+                            panel.tfName.setText("");
+                            panel.cmbFest.setSelectedIndex(0);
+                        }else {//minisbe-ein/ausgabefile
+                            if(i == 0)
+                                continue;//header
+                            if(p.indexOf("bio")!=-1)
+                                loadFromOutputline(Helper.clearEmptyCSVEntries(p),panel);
+                            else
+                                loadFromInputline(Helper.clearEmptyCSVEntries(p),panel);
+                        }
                     }
                     br.close();
                 } catch (FileNotFoundException e1) {
@@ -244,6 +262,104 @@ public class SBEGui extends JFrame{
             }
             panel.revalidate();
             panel.repaint();
+        }
+        private void loadFromInputline(String line, SBEPanel panel) {
+            System.out.println("Loading from INputfile: "+line);
+            StringTokenizer stok = new StringTokenizer(line,";\"");
+            String id = stok.nextToken();
+            String l = stok.nextToken();
+            stok.nextToken();//bautein5
+            String snp = stok.nextToken().toUpperCase();
+            loadSNPInto(panel, snp);
+            stok.nextToken();//right primer
+            stok.nextToken();//bautein5
+            stok.nextToken();//PCR-Produktlaenge
+            int pl;
+            try {
+                pl = Integer.parseInt(stok.nextToken());
+            } catch (NumberFormatException e) {
+                pl = -1;
+            }
+            panel.setSelectedPL(pl);
+            panel.tfName.setText(id);
+            panel.tfSequence.setText(l);
+        }
+        /**
+         * @param panel
+         * @param snp
+         */
+        private void loadSNPInto(SBEPanel panel, String snp) {
+            for(int j=0;j<snp.length();j++) {
+                switch (snp.charAt(j)) {
+                case 'A':
+                    panel.cb_A.setSelected(true);
+                    break;
+                case 'C':
+                    panel.cb_C.setSelected(true);
+                    break;
+                case 'G':
+                    panel.cb_G.setSelected(true);
+                    break;
+                case 'T':
+                    panel.cb_T.setSelected(true);
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        }
+        private void loadFromOutputline(String p, SBEPanel panel) {
+            System.out.println("Loading from OUTputfile: "+p);
+            /*
+            "Multiplex ID"
+            ,"SBE-ID"
+            ,"Sequence incl. PL"
+            ,"SNP allele"
+            ,"Photolinker (=PL): position"
+            ,"Primerlength"
+            ,"GC contents incl PL"
+            ,"Tm incl PL"
+            ,"Excluded 5\' Primers"
+            ,"Excluded 3\' Primers"
+            ,"Sec.struc.: position (3\')"
+            ,"Sec.struc.: incorporated nucleotide"
+            ,"Sec.struc.: class"
+            ,"Sec.struc.: irrelevant due to PL"
+            ,"Primer from 3' or 5'"
+            ,"Fragment: T-Content"
+            ,"Fragment: G-content"
+            ,"PCR-Product-length"
+            ,"Sequence excl.PL"
+            ,"Comment"};
+         */
+            StringTokenizer stok = new StringTokenizer(p,";\"");
+            stok.nextToken();//mid
+            String id=stok.nextToken();
+            stok.nextToken();//bio seq.
+            loadSNPInto(panel,stok.nextToken());//snp
+            
+            int pl = -1;
+            try {
+                pl =Integer.parseInt(stok.nextToken());//pl
+            }catch(NumberFormatException e) {};
+            stok.nextToken();//primerlength
+            stok.nextToken();//gc
+            stok.nextToken();//tm
+            stok.nextToken();//excl. 5
+            stok.nextToken();//excl. 3
+            stok.nextToken();//sec1
+            stok.nextToken();//sec2
+            stok.nextToken();//sec3
+            stok.nextToken();//sec4
+            stok.nextToken();//3 or 5
+            stok.nextToken();//t
+            stok.nextToken();//g
+            stok.nextToken();//pcrprod. length
+            String seq=stok.nextToken();//
+            panel.tfName.setText(id);
+            panel.tfSequence.setText(seq);
+            panel.setSelectedPL(pl);
         }
     }
     private class SavePrimerAction extends AbstractAction{
@@ -270,35 +386,107 @@ public class SBEGui extends JFrame{
                 public boolean accept(File f) {
                     if(f.isDirectory())
                         return true;
-                    if(f.isFile() && (f.getName().endsWith(".primer") || f.getName().endsWith(".PRIMER")))
+                    if(f.isFile() && (f.getName().toLowerCase().endsWith(".primer") || f.getName().toLowerCase().endsWith(".csv")))
                         return true;
                     return false;
                 }
                 public String getDescription() {
-                    return "(*.primer)";
+                    return "(*.primer, *.csv)";
                 }
             });
             int result=jfc.showSaveDialog(null);
             if(JFileChooser.APPROVE_OPTION == result){
-                try {
                     file=jfc.getSelectedFile();
-                    if(!file.getAbsolutePath().endsWith(".primer") && !file.getAbsolutePath().endsWith(".PRIMER"))
-                        file=new File(file.getAbsolutePath()+".primer");
+                    if(!file.getAbsolutePath().toLowerCase().endsWith(".primer") && !file.getAbsolutePath().toLowerCase().endsWith(".csv"))
+                        file=new File(file.getAbsolutePath()+".csv");
+                    
+                    if(file.getAbsolutePath().toLowerCase().endsWith(".primer"))
+                        writePrimerFile(file);
+                    else
+                        writeMiniSBECompatibleFile(file);
+
+
+            }
+            panel.revalidate();
+            panel.repaint();
+        }
+        /**
+         * @param file
+         */
+        private void writeMiniSBECompatibleFile(File file) {
+            final String header = "\"SBE-ID\";" +
+            "\"5\' Sequenz (in 5\'->3\')\";" +
+            "\"Definitiver Hairpin 5\'\";" +
+            "\"SNP Variante\";" +
+            "\"3\' Sequenz (in 5\' -> 3\')\"" +
+            ";\"Definitiver Hairpin 3\'\";" +
+            "\"PCR Produkt\";" +
+            "\"Feste Photolinkerposition (leer, wenn egal)\";" +
+            "\"feste MultiplexID\";" +
+            "\"Ausgeschlossene Primer\";" +
+            "\"Primer wird verwendet as-is";
+            try {
+                BufferedWriter bw=new BufferedWriter(new FileWriter(file));
+                bw.write(header);
+                bw.write('\n');
+                for(int i=0;i<sbePanelList.size();i++) {
+                    SBEPanel panel=(SBEPanel)sbePanelList.get(i);
+                    bw.write(panel.tfName.getText());
+                    bw.write(';');
+                    bw.write(panel.tfSequence.getText());
+                    bw.write(';');
+                    //hairpin 5
+                    bw.write(';');
+                    //SNP
+                    String[] temp=panel.getPrimer();
+                    for (int j = 1; j < temp.length; j++) {
+                        bw.write(temp[j]);
+                    }
+                    bw.write(';');
+                    //3'seq.
+                    bw.write(';');
+                    //hairpin 3'
+                    bw.write(';');
+                    //pcr product
+                    bw.write(';');
+                    int idx=panel.getFestenAnhangIndex();
+                    if(idx >-1) {
+                        bw.write(Integer.toString(CDConfig.getInstance().getBruchStellenArray()[idx]));
+                    }
+                    bw.write(';');
+                    //multiplexid
+                    bw.write(';');
+                    //ausschluss
+                    bw.write(';');
+                    bw.write("true");
+                    bw.write(';');
+                    bw.write(';');
+                    bw.write('\n');
+                }
+                bw.close(); 
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+        /**
+         * 
+         */
+            private void writePrimerFile(File file) {
+                try {
                     BufferedWriter br=new BufferedWriter(new FileWriter(file));
                     for(int i=0;i<sbePanelList.size();i++) {
                         SBEPanel panel=(SBEPanel)sbePanelList.get(i);
                         br.write(panel.tfSequence.getText()+'\n');
                     }
-                    br.close();
+                    br.close(); 
                 } catch (FileNotFoundException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             }
-            panel.revalidate();
-            panel.repaint();
-        }
     }
 
     private static SBEGui singleton=null;
@@ -399,7 +587,7 @@ public class SBEGui extends JFrame{
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		while(1 > sbe_anzahl) {
 			try{
-                String input=JOptionPane.showInputDialog(null,"Please enter maximum multiplex level (1-?):","",JOptionPane.INFORMATION_MESSAGE);
+                String input=JOptionPane.showInputDialog(null,"Please enter maximum multiplex level (1-?):","1");
                 if(null == input)
                     System.exit(0);
 				sbe_anzahl = Integer.parseInt(input);
