@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sun.corba.se.connection.GetEndPointInfoAgainException;
 
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SBEPrimerReader;
