@@ -226,6 +226,7 @@
   	<antcall target="shrink" >
   		<param name="mainclassname" value="biochemie.pcr.PCR"/>
   		<param name="outjarname" value="${dist}/PCR.jar"/>
+  		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar"/>
   		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar
   			                                                                :${lib}/xml.jar
   			                                                                :${lib}/biojava-1.30-jdk14.jar
@@ -233,6 +234,7 @@
   			                                                                :${lib}/jakarta-regexp.jar
   			                                                                :${lib}/jgrapht-0.5.3.jar
   			                                                                :${lib}/aspectjrt.jar"/>
+
 	</antcall>
  
 <!--erstelle exe-file-->
@@ -277,8 +279,9 @@
 	<target name="shrink" depends="init" description="TAKE CARE: the jar with the mainclass needs to be the first neededjars parameter!">
 	    <proguard	 obfuscate="false" 
 	    			     defaultpackage="libs"
-	    				shrink="true">
-	       <libraryjar name="${java.home}/lib/rt.jar" />
+	    				shrink="true"
+	    				optimize="false">
+	       <libraryjar path="${java.home}/lib/rt.jar:${libraryjars}" />
 	       <injar path="${neededjars}"/>
 	       <outjar name="${outjarname}"/>
 	    	
@@ -304,11 +307,11 @@
 	            <method/>
 	            <field/>
 	         </keep>
-	         <keepclassmembers name="org.biojava.bio.seq.impl.**">
+	         <keep name="org.biojava.bio.seq.impl.**">
 	            <constructor/>
 	            <method/>
 	            <field/>
-	         </keepclassmembers>
+	         </keep>
 	    </proguard>
 	</target>
 	  <!--**********************************************************-->
