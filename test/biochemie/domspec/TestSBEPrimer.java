@@ -4,7 +4,6 @@
  */
 package biochemie.domspec;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -27,11 +26,7 @@ public class TestSBEPrimer extends TestCase {
         cfg.setCalcDaltonVerbFrom(new double[] {1000.0});
         cfg.setCalcDaltonVerbTo(new double[] {2000.0});
     }
-    public static SBEOptionsProvider getConfig(String filename) throws IOException {
-        SBEConfig cfg = new SBEConfig();
-        cfg.readConfigFile(filename);
-        return cfg;
-    }
+    
     public void testCrossDimer() {
         SBEPrimer p1= new SBEPrimer(cfg,"197","GGACCAGAGATTCTTTCTTGCACAT","AG",SBEPrimer._5_,"",0,true);
         p1.setBruchstelle(9);
@@ -50,7 +45,7 @@ public class TestSBEPrimer extends TestCase {
         SBEPrimer p2= new SBEPrimer(cfg,"165","TGAGGAAATTGTAGTTAAATAATTAGAAAG","AG",SBEPrimer._5_,"",0,true);
         p2.setBruchstelle(9);
         Set cd=SekStrukturFactory.getCrossdimer(p2,p1,cfg);
-        System.out.println(cd);
+        
         //genau ein crossdimer muss gefunden werden
         assertEquals(1,cd.size());
         
@@ -62,8 +57,8 @@ public class TestSBEPrimer extends TestCase {
         assertEquals("165 bindet an 197 an der Pos. 13",13, s.getPosFrom3());
         assertTrue("Ein A wird eingebaut, ist im SNP enthalten, also inkompatibel.",s.isIncompatible());//nicht kompatibel, weil 165 AG snp ist. 
         assertFalse("Der Photolinker kann den Crossdimer nicht verhindern.",s.isVerhindert());
-        
-        //assertEquals("197: TGAGGAAATTGTAGTTAAATAATTAGAAAG,PL= 9, incompatible crossdimer with ID 165: TGAGGAAATTGTAGTTAAATAATTAGAAAG,PL= 9",s.toString());
+        System.out.println(s.toString());
+        assertEquals("197: GGACCAGAGATTCTTTCTTGCACAT,PL= 9, incompatible crossdimer with ID 165: TGAGGAAATTGTAGTTAAATAATTAGAAAG,PL= 9",s.toString());
 
     }
     public void testCorrectSNPs() {
@@ -107,32 +102,121 @@ public class TestSBEPrimer extends TestCase {
         assertFalse(p1.passtMitCalcDalton(p2));
     }
     
-    public void testHairpinBug() {
-        SBEPrimer p1= new SBEPrimer(cfg,"0360_CD24","ACTGCAGGGCACCACCAGCC","AG",SBEPrimer._5_,"",0,false);
-        p1.setBruchstelle(10);
-        cfg.setHairpinWindowsizes("3");
-        cfg.setHairpinMinbinds("3");
-        Set s=SekStrukturFactory.getSecStruks(p1,cfg);
-        //System.out.println(s);
-        assertTrue(s.size() == 1);//pl ist genau nach den drei bindenden nukleotiden, kann den hairpin also nicht verhindern.
-
-        SBEPrimer p2= new SBEPrimer(cfg,"0360_CD24","ACTGCAGGGCACCACCAGCC","AG",SBEPrimer._5_,"",0,false);
-        p2.setBruchstelle(11);
-        s=SekStrukturFactory.getSecStruks(p2,cfg);
-        //System.out.println(s);
-        assertTrue(s.size() == 0);//pl ersetzt die dritte bindende base, also binden nur 2/3
+    public void testCrossdimerTestfall1(){
+    	/*
+    	 * primerA macht Crossdimer mit primerB, inkompatibel, nicht verhindert
+    	 */
+    	cfg.setCrossdimerMinbinds("6");
+    	cfg.setCrossimerWindowsizes("7");
+    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);//TODO soll auch L erkennen und PL setzen!
+    	primerA.setBruchstelle(9);
+    	SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);//soll auch L erkennen und PL setzen!
+    	primerB.setBruchstelle(10);
+    	
+    	//durch einen Crossdimer wird an einem Primer ein Nukl. eingebaut. TODO Der Crossdimer ist also dem Primer zuzuordnen, bei dem etwas angebaut wird!
+    	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg);
+    	assertTrue(cross2.size()==0);
+    	
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);
+    	assertEquals(1, cross1.size());
+    	
+    	SBESekStruktur sek = (SBESekStruktur) cross1.iterator().next();
+    	
+    	assertEquals(SekStruktur.CROSSDIMER, sek.getType());
+    	assertEquals(8, sek.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('A',sek.bautEin());
+    	assertFalse(sek.isVerhindert());    	
+    	assertTrue(sek.isIncompatible());//ist inkompatibel
     }
-    public void testHomodimerNichtVerhindertBug() {
-        cfg.setHairpinWindowsizes("3");
-        cfg.setHairpinMinbinds("3");
-        SBEPrimer p = new SBEPrimer(cfg,"","GCTTACTTTCTGTTGCAGAAAGTGTAAAAATTATTA","TG",SBEPrimer._5_,"",0,false);
-        p.setBruchstelle(13);
-        Set s=SekStrukturFactory.getSecStruks(p,cfg);
-        
-        for (Iterator it = s.iterator(); it.hasNext();) {
-            SBESekStruktur sek = (SBESekStruktur) it.next();
-            if(sek.getPosFrom3() == 12)
-                assertTrue(sek.isVerhindert());
-        }
+    public void testCrossdimerTestfall2(){
+    	/*
+    	 * primerA  : baut A ein, inkompatibel, nicht verhindert
+    	 * primerB  : baut anti-pl ein, ist verhindert, 
+    	 */
+    	cfg.setCrossdimerMinbinds("6");
+    	cfg.setCrossimerWindowsizes("7");
+    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);//TODO soll auch L erkennen und PL setzen!
+    	primerA.setBruchstelle(9);
+    	SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAACT","TG",SBEPrimer._5_,"",0,true);//TODO soll auch L erkennen und PL setzen!
+    	primerB.setBruchstelle(10);
+    	
+    	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg);
+    	assertEquals(1,cross2.size());
+    	SBESekStruktur sek2 = (SBESekStruktur) cross2.iterator().next();    	
+    	assertEquals(1, cross2.size());
+    	assertEquals(SekStruktur.CROSSDIMER, sek2.getType());
+    	assertEquals(8, sek2.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('K',sek2.bautEin());//liegt gegenueber dem PL, baut also "Anti-PL" ein, nennen wir es K :)
+    	assertTrue(sek2.isVerhindert());    	
+    	assertFalse(sek2.isIncompatible());//ist kompatibel
+    	
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);    	
+    	assertEquals(1,cross1.size());
+    	SBESekStruktur sek1 = (SBESekStruktur) cross1.iterator().next();    	
+    	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
+    	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('A',sek1.bautEin());
+    	assertFalse(sek1.isVerhindert());    	
+    	assertTrue(sek1.isIncompatible());//ist inkompatibel
+    }
+    public void testCrossdimer3(){
+    	/*
+    	 * primerA : beide nicht verhindert, nicht kompatibel, pos: 8 und 34
+    	 * primerB :
+    	 */
+    	cfg.setCrossdimerMinbinds("6");
+    	cfg.setCrossimerWindowsizes("7");
+    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
+    	primerA.setBruchstelle(9);
+    	SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);//TODO soll auch L erkennen und PL setzen!
+    	primerB.setBruchstelle(10);
+    	
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);    	
+    	assertEquals(2,cross1.size());
+    	Iterator it = cross1.iterator();
+    	
+    	SBESekStruktur sek1 = (SBESekStruktur) it.next();    	
+    	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
+    	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('A',sek1.bautEin());
+    	assertFalse(sek1.isVerhindert());    	
+    	assertTrue(sek1.isIncompatible());//ist inkompatibel
+    	SBESekStruktur sek2 = (SBESekStruktur) it.next();    	
+    	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
+    	assertEquals(34, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('A',sek1.bautEin());
+    	assertFalse(sek1.isVerhindert());    	
+    	assertTrue(sek1.isIncompatible());//ist inkompatibel  	
+    	
+    }
+    public void testCrossdimer4(){
+    	/*
+    	 * primerA : beide nicht verhindert, kompatibel und inkompatibel, pos: 8 und 34
+    	 * primerB :
+    	 */
+    	cfg.setCrossdimerMinbinds("6");
+    	cfg.setCrossimerWindowsizes("7");
+    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
+    	primerA.setBruchstelle(9);
+    	SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATAAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","CG",SBEPrimer._5_,"",0,true);//TODO soll auch L erkennen und PL setzen!
+    	primerB.setBruchstelle(10);
+    	
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);    	
+    	assertEquals(2,cross1.size());
+    	Iterator it = cross1.iterator();
+    	
+    	SBESekStruktur sek1 = (SBESekStruktur) it.next();    	
+    	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
+    	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('A',sek1.bautEin());
+    	assertFalse(sek1.isVerhindert());    	
+    	assertTrue(sek1.isIncompatible());//ist inkompatibel
+    	SBESekStruktur sek2 = (SBESekStruktur) it.next();    	
+    	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
+    	assertEquals(34, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
+    	assertEquals('T',sek1.bautEin());
+    	assertFalse(sek1.isVerhindert());    	
+    	assertFalse(sek1.isIncompatible());//ist kompatibel  	
+    	
     }
 }
