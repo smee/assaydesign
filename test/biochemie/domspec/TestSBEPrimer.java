@@ -107,8 +107,6 @@ public class TestSBEPrimer extends TestCase {
         //pl==10
         SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);//soll auch L erkennen und PL setzen!
 
-    	//durch einen Crossdimer wird an einem Primer ein Nukl. eingebaut.
-        //TODO Der Crossdimer ist also dem Primer zuzuordnen, bei dem etwas angebaut wird!
     	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg);
     	assertTrue(cross2.size()==0);
 

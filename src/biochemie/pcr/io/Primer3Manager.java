@@ -37,8 +37,8 @@ public class Primer3Manager {
     private final String primer3exe;
     private int numberOfResults=0;
     private BufferedReader input=null;
-	private String feste5seq;    
-    
+	private String feste5seq;
+
     public Primer3Manager(PCRConfig config){
         this.config=config;
         this.feste5seq=Helper.getNuklFromString(config.getProperty("FESTE5SEQ"));
@@ -51,7 +51,7 @@ public class Primer3Manager {
 	    InputStream is;
 	    String type;
 	    OutputStream os;
-	    
+
 	    StreamGobbler(InputStream is, String type)
 	    {
 	        this(is, type, null);
@@ -63,7 +63,7 @@ public class Primer3Manager {
 	        this.type = type;
 	        this.os = redirect;
 	    }
-	    
+
 	    public void run()
 	    {
 	        try
@@ -71,7 +71,7 @@ public class Primer3Manager {
 	            PrintWriter pw = null;
 	            if (null != os)
 	                pw = new PrintWriter(os);
-	                
+
 	            InputStreamReader isr = new InputStreamReader(is);
 	            BufferedReader br = new BufferedReader(isr);
 	            String line=null;
@@ -79,13 +79,13 @@ public class Primer3Manager {
 	            {
 	                if (null != pw)
 	                    pw.println(line);
-	                //System.out.println(type + ">" + line);    
+	                //System.out.println(type + ">" + line);
 	            }
 	            if (null != pw)
 	                pw.flush();
 	        } catch (IOException ioe)
 	            {
-	            ioe.printStackTrace();  
+	            ioe.printStackTrace();
 	            }
 	    }
 	}
@@ -93,7 +93,7 @@ public class Primer3Manager {
      * Start von primer3. Auslesen relevanter Parameter, wie z.B. Anzahl gefundener Paare und Index_Base.
      */
     public void runPrimer3(String filename) {
-   
+
         this.primer3output=filename+".tmp";
         try {
             String osName = System.getProperty("os.name" );
@@ -108,7 +108,9 @@ public class Primer3Manager {
             {
                 aufruf = "command.com /C ";
             }
-            //TODO shell-support für linux
+            else if( osName.startsWith("linux")) {
+                aufruf="/bin/bash -c ";
+            }
               else {
                   //aufruf = "/bin/sh "+ primer3output;
                   UI.errorDisplay("OS "+osName+" not supported, yet. Sorry.");
@@ -136,7 +138,7 @@ public class Primer3Manager {
             Process primerprocess = Runtime.getRuntime().exec(aufruf);
         StreamGobbler inputGobbler=new StreamGobbler(new FileInputStream(inputfile),"INPUT",primerprocess.getOutputStream());
         StreamGobbler outputGobbler = new StreamGobbler(primerprocess.getInputStream(), "OUTPUT", new FileOutputStream(primer3output));
-            
+
         // kick them off
         inputGobbler.start();
         outputGobbler.start();
@@ -161,7 +163,7 @@ public class Primer3Manager {
             }
         } catch (IOException e) {
             UI.errorDisplay("Kritischer Fehler beim Aufruf von Primer3 : "+e.getMessage());
-        
+
         } catch (InterruptedException e) {
             UI.errorDisplay("Primer3 wurde abgebrochen!");
         }
@@ -182,7 +184,7 @@ public class Primer3Manager {
             found1=found2=found3=found4=false;
             int numreturn=-1, pairexplain=-1;
             String line;
-            /* Es muessen drei Werte gefunden werden: 
+            /* Es muessen drei Werte gefunden werden:
              * - PRIMER_FIRST_BASE_INDEX --> 0 oder 1 basierter Index
              * - PRIMER_PAIR_EXPLAIN     --> enthaelt Anzahl gefundener Paare
              * - PRIMER_NUM_RETURN       --> max. gewuenschte Paare
@@ -226,7 +228,7 @@ public class Primer3Manager {
                 UI.errorDisplay("Fehler beim Lesen der Primer3-Ergebnisse: "+e1.getMessage());
             }
         }
-        
+
     }
 
     public PrimerPair[] getNextResults(int maxNum) throws NumberFormatException {
@@ -236,7 +238,7 @@ public class Primer3Manager {
                     input=new BufferedReader(new FileReader(this.primer3output));
                 } catch (FileNotFoundException e) {
                     UI.errorDisplay("Datei "+primer3output+" wurde geloescht, kann Ergebnisse nicht lesen.");
-                }                
+                }
             }
             if(aktPos+maxNum>=numberOfResults)
                 maxNum=numberOfResults-aktPos;
@@ -253,7 +255,7 @@ public class Primer3Manager {
                 System.out.println("Lese PrimerPaare aus "+primer3output+"...["+aktPos+'-'+(aktPos+maxNum)+']');
             }
             pps=new PrimerPair[maxNum];
-           
+
             /**
               Ein typischer Datensatz sieht so aus:
                PRIMER_PAIR_PENALTY_1=37.9560
@@ -276,7 +278,7 @@ public class Primer3Manager {
                PRIMER_PAIR_1_COMPL_ANY=1.00
                PRIMER_PAIR_1_COMPL_END=0.00
                PRIMER_PRODUCT_SIZE_1=271
-               In dieser Reihenfolge wird also gelesen. 
+               In dieser Reihenfolge wird also gelesen.
              */
             String line=null;
             float gc1=0,gc2=0,gc=0;
@@ -306,7 +308,7 @@ public class Primer3Manager {
                         aktPos++;
                         break;
                     }
-                }  
+                }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -333,12 +335,12 @@ public class Primer3Manager {
                 aktPos++;
                 if(i==maxNum)
                     break;
-            }  
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }                
+        }
         return pps;
     }
 

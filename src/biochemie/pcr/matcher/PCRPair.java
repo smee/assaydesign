@@ -21,7 +21,7 @@ class PCRPair implements Multiplexable{
     }
 
     public String getName() {
-        return leftp.getId()+","+leftp.getPos();
+        return leftp.getId()+","+leftp.getPos()+": "+leftp.getInputLine();
     }
 
     public boolean passtMit(Multiplexable other) {

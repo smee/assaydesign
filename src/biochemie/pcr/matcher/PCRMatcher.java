@@ -81,8 +81,8 @@ public class PCRMatcher {
         st.nextToken();//start
         st.nextToken();//length
         right=st.nextToken();
-        PCRPrimer p1=new PCRPrimer(idprefix,pos,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,maxplex,cda);
-        PCRPrimer p2=new PCRPrimer(idprefix,pos,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,maxplex,cda);
+        PCRPrimer p1=new PCRPrimer(idprefix,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,maxplex,cda);
+        PCRPrimer p2=new PCRPrimer(idprefix,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,maxplex,cda);
         primers.add(new PCRPair(p1,p2,maxplex));
         return primers;
     }
@@ -156,8 +156,6 @@ public class PCRMatcher {
         	Collection pairsToUse=ms.getBestPCRPrimerSet(pm.primers);
         	System.out.println("Using:");
         	System.out.println(Helper.toStringln(pairsToUse));
-        	//TODO in der Ausgabe die jeweiligen Zeilen ausgeben/zitieren
-        	//TODO ausgeben, welche dateien nicht verwendet wurden
         } catch (WrongValueException e) {
             e.printStackTrace();
         } catch (IOException e) {

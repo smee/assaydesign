@@ -19,13 +19,14 @@ import biochemie.sbe.calculators.Multiplexable;
 public class PCRPrimer extends Primer {
     public static final String LEFT = "left";
     public static final String RIGHT = "right";
-    private double maxtm;
-    private double maxgc;
+    private final double maxtm;
+    private final double maxgc;
     private CrossDimerAnalysis cda;
-    private String type;
-    private int pos, maxplex;
-    
-    public PCRPrimer(String id, int pos,String seq, String type,double maxtm, double maxgc, int maxplex, CrossDimerAnalysis cda) {
+    private final String type;
+    private final int pos, maxplex;
+    private final String inputline;
+
+    public PCRPrimer(String id, int pos, String inputline, String seq, String type,double maxtm, double maxgc, int maxplex, CrossDimerAnalysis cda) {
         super(id,seq);
         this.maxtm=maxtm;
         this.maxgc=maxgc;
@@ -33,6 +34,7 @@ public class PCRPrimer extends Primer {
         this.type=type;
         this.pos=pos;
         this.maxplex=maxplex;
+        this.inputline=inputline;
     }
     public boolean passtMit(Multiplexable o) {
         if(!(o instanceof PCRPrimer)) {
@@ -78,4 +80,7 @@ public class PCRPrimer extends Primer {
 	public Set getSecStrucs() {
 		return new HashSet();
 	}
+    public String getInputLine() {
+        return inputline;
+    }
 }
