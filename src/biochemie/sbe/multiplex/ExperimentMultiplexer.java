@@ -23,7 +23,7 @@ import biochemie.util.GraphHelper;
 /**
  * Geht davon aus, dass jeder SBECandidate genau einen Primer hat, so
  * dass nur die Aufteilung der Primer auf Multiplexe gesucht werden muss.
- * Die Anzahl der benoetigten Multiplexe wird minimiert. 
+ * Die Anzahl der benoetigten Multiplexe wird minimiert.
  * @author Steffen Dienst
  * 24.10.2004
  */
@@ -40,7 +40,7 @@ public class ExperimentMultiplexer extends Multiplexer {
 
     public void findMultiplexes(List multip) {
         System.out.println("Using graph coloring to find multiplexes for given primers...");
-        
+
         boolean drawGraph=cfg.isDrawGraphes();
 
         UndirectedGraph g=GraphHelper.createIncompGraph(multip,drawGraph, 0);
@@ -51,7 +51,7 @@ public class ExperimentMultiplexer extends Multiplexer {
         Collections.sort(colors,new Comparator() {//sortieren nach Groesse
             public int compare(Object arg0, Object arg1) {
                 return ((Collection)arg1).size()-((Collection)arg0).size();
-            }            
+            }
         });
         if (debug) {
             System.out.println("Found multiplexes:\n------------------");
@@ -68,11 +68,7 @@ public class ExperimentMultiplexer extends Multiplexer {
         }
         for (Iterator it = colors.iterator(); it.hasNext();) {
             Set mult = (Set) it.next();
-            String multid=getNextMultiplexID();
-            for (Iterator it2 = mult.iterator(); it2.hasNext();) {
-                Multiplexable p = (Multiplexable) it2.next();
-                p.setPlexID(multid);
-            }
+            giveMultiplexIDTo(mult);
         }
     }
 

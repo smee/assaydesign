@@ -220,10 +220,10 @@ public class SBEPrimer extends Primer{
     protected boolean passtMitCrossdimern(SBEPrimer other) {
         //Crossdimer?
         Set cross1=SekStrukturFactory.getCrossdimer(this,other,cfg);
-        other.sekstruc.addAll(cross1);            				//soll bei jeweils dem Primer verzeichnet werden, der einbaut
+        this.sekstruc.addAll(cross1);            				//soll bei jeweils dem Primer verzeichnet werden, der einbaut
         Set cross2=SekStrukturFactory.getCrossdimer(other,this,cfg);
-        this.sekstruc.addAll(cross2);
-        cross1.addAll(cross2);
+        other.sekstruc.addAll(cross2);
+        cross1.addAll(cross2);//reusing vars
         for (Iterator it = cross1.iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.isVerhindert())
@@ -316,5 +316,19 @@ public class SBEPrimer extends Primer{
 
     public int maxPlexSize() {
         return cfg.getMaxPlex();
+    }
+    /**
+     * Removes every crossdimer with primers, that aren't in this set of primers.
+     */
+    public void normalizeCrossdimers(Set primers) {
+        if(sekstruc == null)
+            return; //nothing to normalize
+        for (Iterator it = sekstruc.iterator(); it.hasNext();) {
+            SBESekStruktur s = (SBESekStruktur) it.next();
+            if(s.getType()==SekStruktur.CROSSDIMER &&
+               (!primers.contains(s.getPrimer()) ||
+                   !primers.contains(s.getCDPrimer())))
+                it.remove();
+        }
     }
 }

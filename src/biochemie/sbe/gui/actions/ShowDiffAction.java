@@ -32,6 +32,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.lang.ArrayUtils;
 
+
 import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
@@ -39,23 +40,29 @@ import biochemie.calcdalton.SBETable;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptionsProvider;
+import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
 import biochemie.util.MyAction;
 
 
 public class ShowDiffAction extends MyAction {
+    private static final Dimension TABLE_DIM = new Dimension(500,200);
+
     private int index = 0;
     final TableModel[] diffmodels;
     final TableModel[] cdmodels;
     final String[] mid;
-    private JTable difftable;
     private JFrame frame;
     private List sbecfilt;
     private SBEOptionsProvider cfg;
-    private JTableEx cdtable;
     private Set mids;
+    private JTable difftable;
+    private JTable cdtable;
+    private JTable restable;
+    private JTable[] restables;
+    private JScrollPane resscrollpane;
 
-    public ShowDiffAction(List sbec, SBEOptionsProvider cfg) {
+    public ShowDiffAction(List sbec, SBEOptionsProvider cfg, MiniSBEGui.CalculateAction calcaction) {
         super("Masses / Maldi", "Show mass differences and MALDI previews"
                 ,ShowDiffAction.class.getClassLoader().getResource("images/maldi.gif"), null);
         this.cfg = cfg;
@@ -75,16 +82,24 @@ public class ShowDiffAction extends MyAction {
         });
         diffmodels=new TableModel[mids.size()+1];
         cdmodels = new TableModel[mids.size()+1];
+        restables = new JTable[mids.size()+1];
+
         mid=new String[mids.size()+1];
        diffmodels[0]=generateDiffTableModelFor(null,sbecfilt);
        cdmodels[0]=generateCDModelFor(null,sbecfilt);
+       restables[0]=MiniSBEGui.createResultTable(sbecfilt);
        mid[0]="All multiplexes";
         int i=1;
        for (Iterator it = mids.iterator(); it.hasNext();i++) {
            String  id = (String ) it.next();
            diffmodels[i]=generateDiffTableModelFor(id,sbecfilt);
            cdmodels[i]=generateCDModelFor(id,sbecfilt);
+           restables[i]=MiniSBEGui.createResultTable(getFilteredList(id, sbecfilt));
            mid[i]=id;
+       }
+       for (int j = 0; j < restables.length; j++) {
+        restables[j].setPreferredScrollableViewportSize(TABLE_DIM);
+        restables[j].getModel().addTableModelListener(calcaction);
        }
     }
 
@@ -137,12 +152,12 @@ public class ShowDiffAction extends MyAction {
     }
 
     /**
+     * liste aller sbec, die zu diesem multiplex gehoeren
      * @param multiplexid
      * @param sbec
      * @return
      */
     private List getFilteredList(final String multiplexid, List sbec) {
-        //liste aller sbec, die zu diesem multiplex gehoeren
         List mysbec=(List) Algorithms.collect(Algorithms.select(sbec.iterator(),new UnaryPredicate() {
             public boolean test(Object obj) {
                 if(multiplexid == null)
@@ -157,20 +172,23 @@ public class ShowDiffAction extends MyAction {
        index=1;
         frame = new JFrame("Detailed results");
         frame.getContentPane().setLayout(new BorderLayout());
+        restable = restables[index];
         difftable = new JTableEx(diffmodels[index]);
         cdtable = new JTableEx(cdmodels[index-1]);
-        Dimension dim = new Dimension(500,200);
-        difftable.setPreferredScrollableViewportSize(dim);
-        cdtable.setPreferredScrollableViewportSize(dim);
+        difftable.setPreferredScrollableViewportSize(TABLE_DIM);
+        cdtable.setPreferredScrollableViewportSize(TABLE_DIM);
 
         JScrollPane sp=new JScrollPane(difftable);
         JScrollPane sp2=new JScrollPane(cdtable);
-
-        JSplitPane versplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        resscrollpane=new JScrollPane(restable);
+        JSplitPane versplit1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        JSplitPane versplit2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         JSplitPane horsplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        versplit.setTopComponent(sp);
-        versplit.setBottomComponent(sp2);
-        horsplit.setRightComponent(versplit);
+        versplit1.setTopComponent(resscrollpane);
+        versplit1.setBottomComponent(versplit2);
+        versplit2.setTopComponent(sp);
+        versplit2.setBottomComponent(sp2);
+        horsplit.setRightComponent(versplit1);
         String[] ids = new String[mids.size() +1];
         ids[0]="All primers";
         int i=1;
@@ -189,33 +207,13 @@ public class ShowDiffAction extends MyAction {
                 index=(pos+mid.length)%mid.length;
                 difftable.setModel(diffmodels[index]);
                 cdtable.setModel(cdmodels[index]);
+                resscrollpane.setViewportView(restables[index]);
                 frame.repaint();
             }
 
         });
         frame.getContentPane().add(horsplit,BorderLayout.CENTER);
         JPanel buttonpanel=new JPanel();
-
-/*        JButton prev = new JButton("Previous multiplex");
-        JButton next = new JButton("Next multiplex");
-        prev.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                index=(index-1+mid.length)%mid.length;
-                difftable.setModel(diffmodels[index]);
-                frame.setTitle(mid[index]);
-                frame.repaint();
-            }
-        });
-        next.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                index=(index+1)%mid.length;
-                difftable.setModel(diffmodels[index]);
-                frame.setTitle(mid[index]);
-                frame.repaint();
-            }
-        });
-        buttonpanel.add(prev);
-        buttonpanel.add(next);*/
         JButton showspektrometer = new JButton("Show preview");
         buttonpanel.add(showspektrometer);
         showspektrometer.addActionListener(new ActionListener() {

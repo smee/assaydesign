@@ -3,6 +3,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -592,6 +593,15 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     public Set getSekStrucs() {
         assertPrimerChosen();
         return chosen.getSecStrucs();
+    }
+    public void normalizeCrossdimers(Set sbec) {
+        assertPrimerChosen();
+        Set primers = new HashSet();
+        for (Iterator it = sbec.iterator(); it.hasNext();) {
+            SBECandidate sc = (SBECandidate) it.next();
+            primers.add(sc.chosen);
+        }
+        chosen.normalizeCrossdimers(primers);
     }
     /**
      * @return Returns the csvheader.

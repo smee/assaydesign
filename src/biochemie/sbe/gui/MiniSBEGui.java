@@ -24,9 +24,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
@@ -55,6 +58,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.IsNull;
 
 import biochemie.calcdalton.JTableEx;
@@ -77,11 +82,11 @@ import biochemie.util.MyAction;
  */
 public class MiniSBEGui extends JFrame {
 
-	private class CalculateAction extends MyAction implements TableModelListener {
+	public class CalculateAction extends MyAction implements TableModelListener {
         public CalculateAction() {
-            super("Calculate","Start calculation"
-                    ,CalculateAction.class.getClassLoader().getResource("images/play.gif")
-                    ,(KeyStroke)null);
+            super("Calculate","Start calculation",
+                    CalculateAction.class.getClassLoader().getResource("images/play.gif"),
+                    (KeyStroke)null);
         }
         public void actionPerformed(ActionEvent e) {
         	final List sbec= new ArrayList(sbepanels.size());
@@ -98,6 +103,7 @@ public class MiniSBEGui extends JFrame {
         	SwingWorker sw = new SwingWorker(){
         		public Object construct() {
         			MiniSBE m = new MiniSBE(sbeccoll,cfg);
+                    normalizeSekStruks(sbec);
         			return m;
         		}
         		public void finished() {
@@ -108,6 +114,26 @@ public class MiniSBEGui extends JFrame {
 
         }
 
+        protected void normalizeSekStruks(List sbec) {
+            Set plexids = (Set) Algorithms.collect(Algorithms.apply(sbec.iterator(), new UnaryFunction() {
+                public Object evaluate(Object obj) {
+                    return ((SBECandidate)obj).getMultiplexId();
+                }
+            }), new HashSet());
+            for (Iterator it = plexids.iterator(); it.hasNext();) {
+                final String id = (String) it.next();
+                Set set=(Set) Algorithms.collect(Algorithms.select(sbec.iterator(), new UnaryPredicate() {
+                    public boolean test(Object obj) {
+                        return ((SBECandidate)obj).getMultiplexId().equals(id);
+                    }
+                }), new HashSet());
+                for (Iterator iter = set.iterator(); iter.hasNext();) {
+                    SBECandidate sc = (SBECandidate) iter.next();
+                    sc.normalizeCrossdimers(set);
+                }
+            }
+
+        }
         /**
          * @param sbec
          */
@@ -116,31 +142,8 @@ public class MiniSBEGui extends JFrame {
             //JDialog frame = new JDialog(MiniSBEGui.this,true);
             frame.getContentPane().setLayout(new BorderLayout());
 
-            final TableModel model = new MiniSBEResultTableModel(sbec);
-            model.addTableModelListener(this);
-
-            //TableSorter sorter = new TableSorter(model);
-//            JTableEx table = new JTableEx(sorter) {
-            JTableEx table = new JTableEx(model) {
-                public String getToolTipText(MouseEvent event) {
-                    Point p= event.getPoint();
-                    int row= rowAtPoint(p);
-                    int col= columnAtPoint(p);
-                    if(col == 10) {//XXX
-                        return getSekStrukTooltipFor((SBECandidate)sbec.get(row));
-                    }else if(col == 8 || col == 9 ){
-                    	return splittedHtmlLine(model.getValueAt(row,col).toString());
-                    }else {
-                        return super.getToolTipText(event);
-                    }
-                }
-            };
-            //sorter.setTableHeader(table.getTableHeader());
-            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            for(int j=0; j <table.getColumnCount();j++){
-            	TableColumn column = table.getColumnModel().getColumn(j);
-            	column.setPreferredWidth(100);
-            }
+            JTable table = createResultTable(sbec);
+            table.getModel().addTableModelListener(this);
             JScrollPane scrollpane = new JScrollPane(table);
             frame.getContentPane().add(scrollpane,BorderLayout.CENTER);
             JToolBar toolbar =new JToolBar();
@@ -149,7 +152,7 @@ public class MiniSBEGui extends JFrame {
             JButton saveresultsbutton = new JButton(new SaveResultsAction(sbec));
             toolbar.add(saveresultsbutton);
 
-            JButton showdiffs = new JButton(new ShowDiffAction(sbec,cfg));
+            JButton showdiffs = new JButton(new ShowDiffAction(sbec,cfg,this));
             toolbar.add(showdiffs);
             frame.pack();
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -157,41 +160,6 @@ public class MiniSBEGui extends JFrame {
             frame.setVisible(true);
         }
 
-        /**
-		 * @param event
-		 * @return
-		 */
-		protected String splittedHtmlLine(String line) {
-			StringBuffer sb= new StringBuffer("<html>");
-			StringTokenizer st= new StringTokenizer(line,",");
-			while(st.hasMoreTokens()){
-				sb.append(st.nextToken());
-				sb.append("<br>");
-			}
-			sb.append("</html>");
-			return new String(sb);
-		}
-
-		/**
-         * @param candidate
-         * @return
-         */
-        protected String getSekStrukTooltipFor(SBECandidate s) {
-            if(!s.hasValidPrimer())
-                return null;
-            StringBuffer sb = new StringBuffer("<html>");
-
-            Set sek=s.getSekStrucs();
-            for (Iterator it = sek.iterator(); it.hasNext();) {
-                SBESekStruktur struk = (SBESekStruktur) it.next();
-                sb.append(struk.toString().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
-                sb.append("<br>");
-                sb.append(struk.getAsciiArt().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
-                sb.append("<br>");
-            }
-            sb.append("</html>");
-            return new String(sb);
-        }
 
         /* (non-Javadoc)
          * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
@@ -854,5 +822,72 @@ public class MiniSBEGui extends JFrame {
             ConsoleWindow.showInstalledConsole();
         }
 
+    }
+    /**
+     * @param sbec
+     * @return
+     */
+    public static JTable createResultTable(final List sbec) {
+        final TableModel model = new MiniSBEResultTableModel(sbec);
+
+        //TableSorter sorter = new TableSorter(model);
+//        JTableEx table = new JTableEx(sorter) {
+        JTableEx table = new JTableEx(model) {
+            public String getToolTipText(MouseEvent event) {
+                Point p= event.getPoint();
+                int row= rowAtPoint(p);
+                int col= columnAtPoint(p);
+                if(col == 10) {//XXX
+                    return getSekStrukTooltipFor((SBECandidate)sbec.get(row));
+                }else if(col == 8 || col == 9 ){
+                    return splittedHtmlLine(model.getValueAt(row,col).toString());
+                }else {
+                    return super.getToolTipText(event);
+                }
+            }
+
+            /**
+             * @param candidate
+             * @return
+             */
+            protected String getSekStrukTooltipFor(SBECandidate s) {
+                if(!s.hasValidPrimer())
+                    return null;
+                StringBuffer sb = new StringBuffer("<html>");
+
+                Set sek=s.getSekStrucs();
+                for (Iterator it = sek.iterator(); it.hasNext();) {
+                    SBESekStruktur struk = (SBESekStruktur) it.next();
+                    sb.append(struk.toString().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
+                    sb.append("<br>");
+                    sb.append(struk.getAsciiArt().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
+                    sb.append("<br>");
+                }
+                sb.append("</html>");
+                return new String(sb);
+            }
+
+            /**
+             * @param event
+             * @return
+             */
+            protected String splittedHtmlLine(String line) {
+                StringBuffer sb= new StringBuffer("<html>");
+                StringTokenizer st= new StringTokenizer(line,",");
+                while(st.hasMoreTokens()){
+                    sb.append(st.nextToken());
+                    sb.append("<br>");
+                }
+                sb.append("</html>");
+                return new String(sb);
+            }
+        };
+        //sorter.setTableHeader(table.getTableHeader());
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        for(int j=0; j <table.getColumnCount();j++){
+            TableColumn column = table.getColumnModel().getColumn(j);
+            column.setPreferredWidth(100);
+        }
+        return table;
     }
   }  //  @jve:decl-index=0:visual-constraint="10,102"

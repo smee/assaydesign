@@ -63,7 +63,7 @@ public class SBEGui extends JFrame{
                     berechnungsframe=new BerechnungsProgress();
         			return berechnungsframe;
         		}
-                public void finished() {                        
+                public void finished() {
                     berechnungsframe.dispose();
                 }
         	};
@@ -86,14 +86,14 @@ public class SBEGui extends JFrame{
                 putValue(Action.SMALL_ICON,icon);
             }
         }
-        public void actionPerformed(ActionEvent e) {				
+        public void actionPerformed(ActionEvent e) {
             CDConfig.getInstance().showModalDialog(sbegui);
         }
     }
     private static final class AboutAction extends AbstractAction {
         public AboutAction(){
             putValue(NAME,"About");
-            
+
         }
         public void actionPerformed(ActionEvent e) {
         	JFrame jf_about=
@@ -122,7 +122,7 @@ public class SBEGui extends JFrame{
         				"A tool created by Steffen Dienst and Holger Kirsten.<br>" +
         				"Contact: hkirsten@medizin.uni-leipzig.de</html>")));
         	jf_about.setSize(600, 300);
-        	jf_about.show();
+        	jf_about.setVisible(true);
         }
     }
     private class AddPanelAction extends AbstractAction{
@@ -141,7 +141,7 @@ public class SBEGui extends JFrame{
                 putValue(Action.SMALL_ICON,icon);
             }
         }
-        public void actionPerformed(ActionEvent e) {                
+        public void actionPerformed(ActionEvent e) {
             SBEPanel newPanel=new SBEPanel(sbePanelList.size()+1);
             newPanel.tfSequence.getDocument().addDocumentListener(dl_seq);
             newPanel.refreshData();
@@ -174,7 +174,7 @@ public class SBEGui extends JFrame{
                 JFrame f=new JFrame("Help");
                 f.getContentPane().add(editorScrollPane);
                 f.pack();
-                f.show();
+                f.setVisible(true);
             } catch (IOException e1) {
                 JOptionPane.showMessageDialog(null,"Sorry, couldn't load the help-file.","Error on loading help.",JOptionPane.ERROR_MESSAGE);
             }
@@ -196,7 +196,7 @@ public class SBEGui extends JFrame{
                 putValue(Action.SMALL_ICON,icon);
             }
         }
-        public void actionPerformed(ActionEvent e) {                
+        public void actionPerformed(ActionEvent e) {
             File file=new File(".");
             JFileChooser jfc=new JFileChooser(file);
             jfc.setDialogTitle("Load primer...");
@@ -210,7 +210,7 @@ public class SBEGui extends JFrame{
                 }
                 public String getDescription() {
                     return "textfiles containing primer";
-                }            
+                }
             });
             int result=jfc.showOpenDialog(null);
             if(JFileChooser.APPROVE_OPTION == result){
@@ -262,7 +262,7 @@ public class SBEGui extends JFrame{
                 putValue(Action.SMALL_ICON,icon);
             }
         }
-        public void actionPerformed(ActionEvent e) {                
+        public void actionPerformed(ActionEvent e) {
             File file=new File(".");
             JFileChooser jfc=new JFileChooser(file);
             jfc.setDialogTitle("Save primer as ...");
@@ -276,7 +276,7 @@ public class SBEGui extends JFrame{
                 }
                 public String getDescription() {
                     return "(*.primer)";
-                }            
+                }
             });
             int result=jfc.showSaveDialog(null);
             if(JFileChooser.APPROVE_OPTION == result){
@@ -300,7 +300,7 @@ public class SBEGui extends JFrame{
             panel.repaint();
         }
     }
-    
+
     private static SBEGui singleton=null;
 	JMenuBar menu;
 	JMenu help;
@@ -332,8 +332,8 @@ public class SBEGui extends JFrame{
 			return new SBEGui();
 		}catch (SingletonException e) {}
 		return SBEGui.singleton;
-	}	
-	
+	}
+
     private SBEGui()throws SingletonException{
 		super("Photolinker-positions in single base extension primers for multiplexing");
        	if(null != singleton)
@@ -358,16 +358,16 @@ public class SBEGui extends JFrame{
 		Action helpaction=new HelpAction();
 		Action calcaction=new CalculateAction();
 		Action optionsaction=new OptionsAction();
-		
+
 		getContentPane().setLayout(new BorderLayout());
-		
+
 		JToolBar toolbar = new JToolBar();
 		toolbar.add(addpanelaction);
 		toolbar.add(loadaction);
 		toolbar.add(saveaction);
 		toolbar.add(optionsaction);
 
-		
+
 		getContentPane().add(toolbar, BorderLayout.NORTH);
 		menu= new JMenuBar();
 		help= new JMenu("?");
@@ -379,12 +379,12 @@ public class SBEGui extends JFrame{
 		prefs =new JMenuItem(optionsaction);
         prefs.setHorizontalAlignment(SwingConstants.LEFT);
 		about= new JMenuItem(new AboutAction());
-		
+
 		JMenuItem loadPrimer=new JMenuItem(loadaction);
 		zeugs.add(loadPrimer);
 		JMenuItem savePrimer=new JMenuItem(saveaction);
 		zeugs.add(savePrimer);
-		
+
         JMenuItem addPanel=new JMenuItem(addpanelaction);
 		zeugs.add(prefs);
         zeugs.add(addPanel);
@@ -392,7 +392,7 @@ public class SBEGui extends JFrame{
         helpItem.setHorizontalAlignment(SwingConstants.LEFT);
         help.add(helpItem);
 		help.add(about);
-		
+
         ////////////////////////////////////////////
 		//Lege SBEPanels an, je nach Usereingabe
 		panel= new JPanel();
@@ -403,12 +403,12 @@ public class SBEGui extends JFrame{
                 if(null == input)
                     System.exit(0);
 				sbe_anzahl = Integer.parseInt(input);
-				
+
 			}
-		catch(NumberFormatException nfe){}		
+		catch(NumberFormatException nfe){}
 		}
         sbePanelList=new ArrayList();
-       	
+
         dl_seq = new tf_seqDocListener(sbePanelList);
        	for(int i=0;i<sbe_anzahl;i++) {
             SBEPanel sbep=new SBEPanel(i+1);
@@ -416,8 +416,8 @@ public class SBEGui extends JFrame{
        		sbep.tfSequence.getDocument().addDocumentListener(dl_seq);
 			panel.add(sbep);
        	}
-        
-	  
+
+
 	JScrollPane scrollPane= new JScrollPane(panel);
 	getContentPane().add(scrollPane, BorderLayout.CENTER);
 		//Startbutton

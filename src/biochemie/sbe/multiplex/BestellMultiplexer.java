@@ -4,7 +4,6 @@
  */
 package biochemie.sbe.multiplex;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +11,6 @@ import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.SBEOptionsProvider;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
-import biochemie.sbe.calculators.Multiplexable;
 import biochemie.sbe.calculators.ResusableThread;
 import biochemie.util.GraphHelper;
 
@@ -56,12 +54,7 @@ public class BestellMultiplexer extends Multiplexer {
 	    }
 
 
-        String plexid=getNextMultiplexID();
-        for (Iterator iter = maxclique.iterator(); iter.hasNext();) {
-            Multiplexable struc = (Multiplexable) iter.next();
-            System.out.println(struc.getName());
-            struc.setPlexID(plexid);
-        }
+        giveMultiplexIDTo(maxclique);
     }
 
 } 

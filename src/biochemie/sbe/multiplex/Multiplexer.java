@@ -7,7 +7,9 @@
 package biochemie.sbe.multiplex;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBEOptionsProvider;
@@ -23,7 +25,7 @@ public abstract class Multiplexer {
 	private static int plexnr=1;
     protected final boolean debug;
     protected SBEOptionsProvider cfg;
-    
+
 	public Multiplexer( SBEOptionsProvider cfg){
 		this.cfg = cfg;
         this.debug=cfg.isDebug();
@@ -82,5 +84,18 @@ public abstract class Multiplexer {
         }
         return names;
     }
-	
+    /**
+     * Tags the multiplexables with an unique identifier.
+     * @param maxclique
+     */
+    protected void giveMultiplexIDTo(Set maxclique) {
+        String plexid=getNextMultiplexID();
+        if(debug) System.out.println("New multiplex "+plexid+" for :");
+        for (Iterator iter = maxclique.iterator(); iter.hasNext();) {
+            Multiplexable struc = (Multiplexable) iter.next();
+            if(debug) System.out.println(struc);
+            struc.setPlexID(plexid);
+        }
+    }
+
 }

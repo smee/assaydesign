@@ -76,9 +76,6 @@ public class SekStruktur  implements Cloneable{
     }
 
 
-
-
-
     /**
      * @return
      */
@@ -103,6 +100,12 @@ public class SekStruktur  implements Cloneable{
         return bautAn;
     }
 
+    public Primer getPrimer() {
+        return p;
+    }
+    public Primer getCDPrimer() {
+        return other;
+    }
     /**
      * Liefert Comparator zum sortieren einer Liste von SekStruk mit HAIRPINS vor HOMODIMER vor CROSSDIMER
      * @return

@@ -675,8 +675,11 @@ public class Helper {
      * @return
      */
     public static String replacePL(String seq, int pos) {
+        return replaceNukl(seq,pos,'L');
+    }
+    public static String replaceNukl(String seq, int pos, char c) {
         if(pos >0)
-            return seq.substring(0,seq.length() - pos )+"L"+seq.substring(seq.length() - pos + 1);
+            return seq.substring(0,seq.length() - pos )+c+seq.substring(seq.length() - pos + 1);
         return seq;
     }
     public static int getPosOfPl(String seq) {
@@ -702,5 +705,16 @@ public class Helper {
         }
         sb.append(string.substring(oldindex));
         return sb.toString();
+    }
+    /**
+     * Liefert die Photolinkerposition, wenn eine vorhanden ist.
+     * @param ltext
+     * @return
+     */
+    public static int getPLFromSeq(String seq) {
+        int pos = seq.length() - seq.indexOf('L');
+        if(pos <= seq.length())
+            return pos;
+        return -1;
     }
 }
