@@ -59,6 +59,7 @@ public class UI {
 	private static final int target3=163;
 
 	PCRConfig config;
+    private String configfilename;
 	/**
 	 * Einlesen der Kommandozeilenparameter.
 	 * @param args
@@ -66,14 +67,15 @@ public class UI {
 	 */
 	public PCRConfig parseCmdLineParameter(String[] args) {
         boolean interactive=false;
-		if(1 <= args.length) {//es muessen mindestens pcrconfig u. primer3inputfile angegeben werden
+		if(1 <= args.length) {//es muessen mindestens 1x pcrconfig angegeben werden
 				if(!new File(args[args.length-1]).exists()) {
 					System.err.println("Configfile "+args[args.length-1]+" not found!");
 					return null;
 				}
 			config=new PCRConfig();
             try {
-                config.readConfigFile(args[args.length-1]);
+                configfilename=args[args.length-1];
+                config.readConfigFile(configfilename);System.out.println("Using configfile: "+configfilename);
             } catch (IOException e1) {
                 e1.printStackTrace();
                 return null;
@@ -467,8 +469,8 @@ public class UI {
 				}
 				break;
 			case UI.save2 :
-				try {
-                    config.updateConfigFile(config.getProperty("CONFIGFILE"));
+				try {System.out.println("updating configfile: "+configfilename);
+                    config.updateConfigFile(configfilename);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
