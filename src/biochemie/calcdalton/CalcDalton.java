@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import biochemie.sbe.calculators.Interruptible;
 import biochemie.util.Helper;
-public class CalcDalton {
+public class CalcDalton implements Interruptible{
 	protected int solutionSize;
     protected final boolean overlap;
     protected double peaks;
@@ -28,6 +29,8 @@ public class CalcDalton {
     private double[][][] massenList;
     int anzahl_sbe=0;
     
+    Thread calcThread;
+    private Object result;    
     /**
      * @param br
      * @param abstaendeFrom
@@ -263,6 +266,7 @@ public class CalcDalton {
 				+ sbe[0].substring((sbe[0].length() - bruch) + 1);//das Nukleotid an dieser Stelle wird entfernt!
 		Tabellendaten[1]= df.format(sbe_massen[0]);
 		Tabellendaten[2]= (new Integer(bruch)).toString();
+        Tabellendaten[3]="";
 		for (int c= 1; c < sbe.length; c++)
 			switch (sbe[c].charAt(sbe[c].length() - 1)) {
 				case 'A' :  
@@ -281,7 +285,7 @@ public class CalcDalton {
 		return Tabellendaten;
 	}
 
-    public void calc(String[][] sbeData,SBETable sbeTable, int[] fest) {
+    public SBETable calc(String[][] sbeData,SBETable sbeTable, int[] fest) {
         int[][] erg=calc(sbeData,fest);
         for(int i=0;i<erg.length;i++){
             int[] line=erg[i];
@@ -291,17 +295,10 @@ public class CalcDalton {
             }
             sbeTable.addTabelle(temptable);
         }
-            
+        return sbeTable;   
     }
     
-/*    public Set findMaxClique(String[][] sbeData, int[] fest){
-    	 initializeMassen(sbeData);
-    	 UndirectedGraph g = new SimpleGraph();
-    	 for (int i = 0; i < sbeData.length; i++) {
-			
-		}
-    }*/
-    
+   
     /**
 	 * Berechnung.
 	 * @param paneldata Jede Zeile enthält Sequenz, Anhang1, Anhang 2... 
@@ -309,6 +306,8 @@ public class CalcDalton {
      * @param fest array mit indizes der festen bruchstellen, wenn egal, dann -1
 	 */
 	public int[][] calc(String[][] sbeData, int[] fest) {
+        calcThread = Thread.currentThread();
+        
         List erglist=new ArrayList();
         boolean[] brIstFest=new boolean[fest.length]; //Feld fuer feste Bruchstellen
         solutionSize=Integer.MAX_VALUE;
@@ -387,7 +386,7 @@ public class CalcDalton {
                     }
                 }
                 laufvar[ptr]++;
-                if(laufvar[ptr]==brlen || brIstFest[ptr] || noSmallerSolutionPossible(ptr)) {//bin in dieser zeile fertig oder feste br
+                if(laufvar[ptr]==brlen || brIstFest[ptr] || noSmallerSolutionPossible(ptr) || calcThread.isInterrupted()) {//bin in dieser zeile fertig oder feste br
                     ptr--;          //und eins hoch
                     while(-1 != ptr && (brIstFest[ptr] || laufvar[ptr]==brlen-1))//ueber alle festen und fertigen
                         ptr--;
@@ -469,10 +468,46 @@ public class CalcDalton {
         }
         return aktuellerWert;
     }
+
     /**
      * @return
      */
     public int getMaxReachedDepth() {
         return maxreacheddepth;
+    }
+    //--------------- Interrubtible ---------------------------------------
+    private String[][] sbeData;
+    private SBETable sbeTable;
+    private int[] fest;
+    public void setParameter(String[][] sbeData,SBETable sbeTable, int[] fest) {
+        setParameter(sbeData, fest);
+        this.sbeTable=sbeTable;
+    }
+    public void setParameter(String [][] sbeData, int[] fest) {
+        this.sbeTable=null;
+        this.sbeData=sbeData;
+        this.fest=fest;        
+    }
+    /* (non-Javadoc)
+     * @see biochemie.sbe.calculators.Interruptible#start()
+     */
+    public void start() {
+        if(sbeTable == null) 
+            result = calc(sbeData,fest);
+        else
+            result = calc(sbeData,sbeTable,fest);
+    }
+    /* (non-Javadoc)
+     * @see biochemie.sbe.calculators.Interruptible#stop()
+     */
+    public void stop() {
+        if(calcThread != null)
+            calcThread.interrupt();
+    }
+    /* (non-Javadoc)
+     * @see biochemie.sbe.calculators.Interruptible#getResult()
+     */
+    public Object getResult() {
+        return result;
     }
 }
