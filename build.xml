@@ -113,6 +113,7 @@
   		<param name="neededjars" value = "${dist}/CalcDalton-${DSTAMP}.jar
   											:${lib}/commons-functor.jar
   											:${lib}/commons-lang-2.0.jar
+								            :${lib}/jgrapht-0.5.3.jar
   											:${lib}/games.jar
 											:${lib}/TableLayout.jar"/> 
 	</antcall>
@@ -122,7 +123,7 @@
       	skeletonroot="${jsmooth}/skeletons"/>
     <!--benenne Calcdaton.jar um, zu Archivzwecken -->
   	<delete file="${dist}/CalcDalton-${DSTAMP}.jar"/>
-    <move file="${dist}/CalcDalton.jar" tofile="${dist}/CalcDalton-${DSTAMP}.jar"/> 
+    <move file="${dist}/CalcDalton.jar" tofile="${dist}/calcdalton-${DSTAMP}.jar"/> 
     <!--packe exe-file mit upx -->
   	
     <exec dir="${dist}" executable="${upxcmd}" failonerror="true">
@@ -296,7 +297,21 @@
 	         </keepclassmembers>
 	    </proguard>
 	</target>
-	
+	  <!--**********************************************************-->
+		<target name="deploy-calcdalton" depends="calcdalton" description="deploys calcdalton to webstart">
+			<mkdir dir="${public_html}"/>
+			<copy todir="${public_html}">			
+				<fileset dir="${dist}">
+	    			<include name="calcdalton-${DSTAMP}.jar"/>
+				</fileset>
+				<fileset dir="${build.dir}">
+	    			<include name="calcdalton.jnlp"/>
+				</fileset>
+			</copy>
+			<move tofile="${public_html}/calcdalton.jar" file="${public_html}/calcdalton-${DSTAMP}.jar"/>
+			<delete file="${public_html}/calcdalton-${DSTAMP}.jar"/>
+		    <signjar jar="${public_html}/calcdalton.jar" alias="${alias}" keypass="${keypass}" storepass="${storepass}" keystore="${build.dir}/keystore"/>
+		</target>
   <!--**********************************************************-->
 	<target name="deploy-sbegui" depends="minisbe" description="deploys sbegui to webstart">
 		<mkdir dir="${public_html}"/>
