@@ -139,7 +139,8 @@ public class MiniSBEGui extends JFrame {
         protected void normalizeSekStruks(List sbec) {
             for (Iterator iter = sbec.iterator(); iter.hasNext();) {
                 SBECandidate sc = (SBECandidate) iter.next();
-                sc.normalizeCrossdimers(new HashSet(sbec));
+                if(sc.hasValidPrimer())
+                    sc.normalizeCrossdimers(new HashSet(sbec));
             }
 
         }

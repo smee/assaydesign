@@ -17,20 +17,20 @@ import org.apache.commons.functor.UnaryPredicate;
 import biochemie.sbe.multiplex.Multiplexable;
 
 /**
- * Immutable. Repraesentiert einen generischen Primer. 
+ * Immutable. Repraesentiert einen generischen Primer.
  * @author Steffen Dienst
  * 05.11.2004
  */
 public abstract class Primer extends Observable implements Multiplexable, Cloneable {
 	public final static String SEKSTRUK_CHANGED="sec.structures changed";
 	public final static String PLEXID_CHANGED="multiplexid changed";
-	
+
     protected final String seq;
     protected String plexid;
     protected final String id;
     protected final double temp;
     protected final double gcgehalt;
-    
+
     protected Set sekstruc;
     protected String edgereason;
     /**
@@ -97,7 +97,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
      */
     public void setPlexID(String s) {
         if(plexid != null && plexid.length() != 0)
-            throw new IllegalStateException(getName()+": attempted to set plexid twice! Give PlexID:"+plexid);
+            throw new IllegalStateException(getName()+": attempted to set plexid twice! Has already PlexID:"+plexid);
         this.plexid=s;
         setChanged();
         notifyObservers(PLEXID_CHANGED);
@@ -127,12 +127,12 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         return (List)Algorithms.collect(Algorithms.apply(Algorithms.select(getSecStrucs().iterator(),new UnaryPredicate() {
             public boolean test(Object obj) {
                 return SekStruktur.HOMODIMER == ((SekStruktur) obj).getType();
-            }                
+            }
         }),new UnaryFunction() {
             public Object evaluate(Object obj) {
                 SBESekStruktur s=(SBESekStruktur)obj;
                 return new Integer(s.getPosFrom3());
-            }                
+            }
         }),new ArrayList());
     }
 
@@ -144,12 +144,12 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         return (List)Algorithms.collect(Algorithms.apply(Algorithms.select(getSecStrucs().iterator(),new UnaryPredicate() {
             public boolean test(Object obj) {
                 return SekStruktur.HAIRPIN == ((SekStruktur) obj).getType();
-            }                
+            }
         }),new UnaryFunction() {
             public Object evaluate(Object obj) {
                 SBESekStruktur s=(SBESekStruktur)obj;
                 return new Integer(s.getPosFrom3());
-            }                
+            }
         }),new ArrayList());
     }
 

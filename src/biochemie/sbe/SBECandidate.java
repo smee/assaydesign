@@ -134,9 +134,10 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         this.cfg = cfg;
         this.unwanted=unwanted;
         System.out.println("\nAnalyzing Seq.ID: " + id + "\n------------------------");
-        
+
         if(userGiven){
         	SBEPrimer primer = new SBEPrimer(cfg, id, l, snp, SBEPrimer._5_,bautEin5, productlen, true);
+            primer.addObserver(this);
         	primercandidates.add(primer);
         }else
         	createValidCandidate(l, bautEin5,r,bautEin3);
@@ -605,7 +606,8 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         Set primers = new HashSet();
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate sc = (SBECandidate) it.next();
-            primers.add(sc.chosen);
+            if(sc.chosen != null)
+                primers.add(sc.chosen);
         }
         chosen.normalizeCrossdimers(primers);
     }
@@ -659,7 +661,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         boolean userGiven=false;
         if(st.hasMoreTokens())
         	userGiven=Boolean.valueOf(st.nextToken()).booleanValue();
-        
+
         if(festeBruchstelle != -1) {//wenn ein PL vorgegeben ist, wird nur der linke Primer betrachtet
             int posOfL=Helper.getPosOfPl(seq[0]);
             if(posOfL != -1 && posOfL != festeBruchstelle)

@@ -47,7 +47,7 @@ public class SBECandidatePanel extends JPanel {
     private boolean isExpertMode;
 	private StringEntryPanel filtersPanel = null;
 	private JCheckBox fixedPrimerCB = null;
-	
+
 	/**
 	 * This is the default constructor
 	 * @param
@@ -382,7 +382,7 @@ public class SBECandidatePanel extends JPanel {
         if(!inputcontroller.isOkay()) {
             return null;
         }
-        String l=getSeq5tf().getSequence();
+        String l=getSeq5tf().getText();
         String r=getSeq3tf().getText();
         if(l.length() == 0 && r.length()==0) //keine primer da
             return null;
@@ -405,7 +405,7 @@ public class SBECandidatePanel extends JPanel {
         String unwanted = getFiltersPanel().getText();
         int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
         boolean userGiven=getFixedPrimerCB().isSelected();
-        
+
         s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven);
         return s;
     }
@@ -447,7 +447,7 @@ public class SBECandidatePanel extends JPanel {
         String multiplexid = stok.hasMoreTokens()?stok.nextToken():"";
         String filters = stok.hasMoreTokens()?stok.nextToken():"";
         String fixed = stok.hasMoreTokens()?stok.nextToken():"";
-        
+
         getTfId().setText(id);
         getSeq5tf().setText(l);
         getHairpin5SelectionPanel().setSelectedNukleotides(bautein5);
@@ -491,10 +491,10 @@ public class SBECandidatePanel extends JPanel {
         getFiltersPanel().setText(f);
     }
 	/**
-	 * This method initializes fixedPrimerCB	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes fixedPrimerCB
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getFixedPrimerCB() {
 		if (fixedPrimerCB == null) {
 			fixedPrimerCB = new JCheckBox();

@@ -27,7 +27,7 @@ import biochemie.util.LogStdStreams;
  */
 public class MiniSBE {
     SBEPrimerReader sbpr = null;
-	
+
     public MiniSBE(String optname, String primername) {
         List sbec=null;
         SBEOptionsProvider cfg = null;
@@ -56,7 +56,7 @@ public class MiniSBE {
         primername=new File(primername).getName();
         String outname = "out_" + primername;
         sbpr.writeSBEResults(outname);
-        
+
     }
     public MiniSBE(List sbec, SBEOptionsProvider cfg){
     	doCalculation(sbec, cfg);
@@ -74,12 +74,12 @@ public class MiniSBE {
                 structs.addAll(l);
             }
             if(0 == structs.size()) break; //s gibbet nix zu multiplexen
-            
+
             if(allgiven)//wenn alle Primer vorgegeben sind, muss ich Experimente finden
                 m1.findMultiplexes(structs);
             else
                 m2.findMultiplexes(structs);
-                
+
         }
     }
 
@@ -90,7 +90,7 @@ public class MiniSBE {
             return;
         }
         String optname= "", primername="";
-        
+
         primername= args[args.length-1];
         optname= args[args.length-2];
         initLogfile(".");
@@ -103,20 +103,21 @@ public class MiniSBE {
 
 
     /**
-     * 
+     *
      */
     public static void initLogfile(String path) {
         try {
             String startstring="---------Program started: " + new Date()+" -----------\n";
             startstring+="\t11.01.05 mit diversen Guitweaks";
-            LogStdStreams.initializeErrorLogging(path+File.separatorChar+"minisbe.log",startstring, true, false);
+            if(!Boolean.getBoolean("DEBUG"))
+                LogStdStreams.initializeErrorLogging(path+File.separatorChar+"minisbe.log",startstring, true, false);
         } catch (RuntimeException e) {
             e.printStackTrace();//XXX
         }
     }
     public static String getDatum() {
         Calendar cal=Calendar.getInstance();
-        int day= cal.get(Calendar.DAY_OF_MONTH); 
+        int day= cal.get(Calendar.DAY_OF_MONTH);
         int month= cal.get(Calendar.MONTH);
         int year= cal.get(Calendar.YEAR);
         StringBuffer sb= new StringBuffer();
@@ -134,8 +135,8 @@ public class MiniSBE {
         sb.append(year);
         return sb.toString();
     }
-    
-    
+
+
 	/**
 	 * Helpermethode.
 	 * @param cfg
