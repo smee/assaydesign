@@ -441,6 +441,7 @@ public class MiniSBEGui extends JFrame {
 		int windowWidth = prefs.getInt(WINDOW_WIDTH_KEY, DEFAULT_WINDOW_WIDTH);
 		int windowHeight = 	prefs.getInt(WINDOW_HEIGHT_KEY, DEFAULT_WINDOW_HEIGHT);
 		setBounds(windowX, windowY, windowWidth, windowHeight);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
 				exitApp();
@@ -450,8 +451,8 @@ public class MiniSBEGui extends JFrame {
 	private void exitApp() {
 //		 Save the state of the window as preferences
         int answer = askUserForSave();
-//        if (answer == JOptionPane.CANCEL_OPTION)
-//            return;
+        if (answer == JOptionPane.CANCEL_OPTION)
+            return;
 		prefs.putInt(WINDOW_WIDTH_KEY, getWidth());
 		prefs.putInt(WINDOW_HEIGHT_KEY, getHeight());
 		prefs.putInt(WINDOW_X_KEY, getX());
