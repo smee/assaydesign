@@ -81,14 +81,22 @@ public int getMaxSelectablePl() {
      * @param pl
      * @return
 	 */
-	public boolean setSelectedPL(int pl){
+	public void setSelectedPL(int pl){
+        if(pl <= 0) {
+            getComboPL().getModel().setSelectedItem("auto");
+            return;
+        }
 		Integer i=new Integer(pl);
 		int pos=ArrayUtils.indexOf(values,i);
 		if(pos == -1)
-			return false;
+			return;
 		getComboPL().getModel().setSelectedItem(i);
-		return true;
 	}
+    public boolean hasPL(int pl) {
+        Integer i=new Integer(pl);
+        int pos=ArrayUtils.indexOf(values,i);
+        return pos != -1;
+    }
 	/**
 	 * This method initializes this
 	 *
