@@ -181,9 +181,9 @@ public class PCR {
 			return 0;
 		}
         //setze nachtraeglich Parameter fuer BLAT-Modul
-//		if(blatOn) {
-//			blatObj.setSequence(config.getProperty("SEQUENCE"));
-//		}
+		if(blatOn) {
+			blatObj.setSequence(config.getProperty("SEQUENCE"));
+		}
         //Starte Module
 
         FileWriter debugout=null;
