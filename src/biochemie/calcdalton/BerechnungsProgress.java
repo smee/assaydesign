@@ -42,6 +42,7 @@ import biochemie.calcdalton.gui.SBEGui;
 import biochemie.calcdalton.gui.SBEPanel;
 import biochemie.gui.TaskRunnerDialog;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
+import biochemie.sbe.gui.SpektrometerPreviewFrame;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.GraphHelper;
 import biochemie.util.GraphWriter;
@@ -194,10 +195,19 @@ public class BerechnungsProgress extends JFrame{
                 f.setVisible(true);
             }
         });
+        JButton showPreview = new JButton("Show MALDI preview");
+        showPreview.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame preview= new SpektrometerPreviewFrame(sbetable,"Spektrometervorschau",frame.getTitle());
+                preview.pack();
+                preview.setVisible(true);
+            }
+        });
         buttonpanel.add(jb_prev);
         buttonpanel.add(jb_next);
         buttonpanel.add(Box.createGlue());
         buttonpanel.add(showDiffs);
+        buttonpanel.add(showPreview);
         frame.getContentPane().add(buttonpanel,"1,5");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();

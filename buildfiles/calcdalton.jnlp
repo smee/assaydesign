@@ -15,6 +15,7 @@
 <resources>
   <j2se version="1.4+" />
   <jar href="calcdalton.jar"/>
+  <jar href="jfreechart-0.9.21.jar"/>
 </resources>
 <application-desc main-class="biochemie.calcdalton.CDStart"/>
 </jnlp>

@@ -23,6 +23,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import biochemie.calcdalton.CalcDalton;
+import biochemie.calcdalton.SBETable;
 import biochemie.sbe.SBECandidate;
 
 /*
@@ -35,13 +36,26 @@ import biochemie.sbe.SBECandidate;
  *
  */
 public class SpektrometerPreviewFrame extends JFrame{
-    CustomXYToolTipGenerator ttgen;
+    final CustomXYToolTipGenerator ttgen;
     
     public SpektrometerPreviewFrame(List sbec,String title, String subtitle)
     {
         super(title);
-        
+        ttgen = new CustomXYToolTipGenerator();
         IntervalXYDataset massen = createDataset(sbec);
+        initialize(subtitle, massen);
+    }
+    public SpektrometerPreviewFrame(SBETable table, String title, String subtitle) {
+        super(title);
+        ttgen = new CustomXYToolTipGenerator();
+        IntervalXYDataset massen = createDataset(table);
+        initialize(subtitle, massen);
+    }
+    /**
+     * @param subtitle
+     * @param massen
+     */
+    private void initialize(String subtitle, IntervalXYDataset massen) {
         JFreeChart jfreechart = createChart(massen,subtitle,ttgen);
         ChartPanel chartpanel = new ChartPanel(jfreechart);
         chartpanel.setPreferredSize(new Dimension(500, 300));
@@ -49,6 +63,7 @@ public class SpektrometerPreviewFrame extends JFrame{
         ToolTipManager.sharedInstance().setInitialDelay(0);//???
         ToolTipManager.sharedInstance().setReshowDelay(0);
     }
+
 
     /**
      * @param sbec
@@ -69,13 +84,23 @@ public class SpektrometerPreviewFrame extends JFrame{
 //        xyplot.setDomainAxis(axis);
         return jfreechart;
     }
-    
+    private IntervalXYDataset createDataset(SBETable table) {
+        XYSeriesCollection collection = new XYSeriesCollection();
+        int numofprimers=table.getColumnCount();
+        for(int i=1; i<numofprimers;i++) {
+            String id=table.getColumnName(i);
+            if(id == null || id.length() == 0)
+                id=Integer.toString(i);
+            XYSeries masse = new XYSeries(id,false,true);
+            List l = new ArrayList(3*5);
+            double[] m = table.getMassenOfColumn(i);
+            String snp = table.getAnbauOfColumn(i);
+            addDataset(m,id,snp,collection);
+        }
+        return collection;
+    }
     private IntervalXYDataset createDataset(List sbec)
     {
-        final double LEN = 4000.0;
-
-        final DecimalFormat df = new DecimalFormat("00.00");
-        ttgen = new CustomXYToolTipGenerator();
         XYSeriesCollection collection = new XYSeriesCollection();
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate s = (SBECandidate) it.next();
@@ -83,36 +108,51 @@ public class SpektrometerPreviewFrame extends JFrame{
             List l = new ArrayList(3*5);
             double[] m = CalcDalton.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
             String id = s.getId();
-            
-            masse.add(m[0],LEN);
-            l.add(id+": "+df.format(m[0])+"D");
-            masse.add(m[0]+22,LEN*1/7f);
-            l.add(id+", Na+ Peak: "+df.format(m[0]+22)+"D");
-            masse.add(m[0]+38,LEN*1/10f);
-            l.add(id+", K+ Peak: "+df.format(m[0]+38)+"D");
-            
             String snp = s.getSNP();            
-            final String foo="ACGT";
-            
-            for (int i = 0; i < snp.length(); i++) {
-                int pos = foo.indexOf(snp.charAt(i));
-                if(pos==-1) {
-                    System.err.println("invalid nucleotide in snp!");
-                    continue;
-                }
-                String name = id+"+"+snp.charAt(i); 
-                masse.add(m[pos+1],LEN*5/4);
-                l.add(name+": "+df.format(m[pos+1])+"D");
-                masse.add(m[pos+1]+22,LEN*5/4f*1/7f);
-                l.add(name+", Na+ Peak: "+df.format(m[pos+1]+22)+"D");
-                masse.add(m[pos+1]+38,LEN*5/4f*1/10f);
-                l.add(name+", K+ Peak: "+df.format(m[pos+1]+38)+"D");
-            }
-            collection.addSeries(masse);
-            ttgen.addToolTipSeries(l);
+            addDataset(m,id,snp,collection);
         }
-        
         return collection;
     }
+    /**
+     * m muss aus 5 Massen bestehen, der Masse des Primers und die vier Massen, die entstehen, wenn ACGT angehaengt werden.
+     * @param m
+     * @param id
+     * @param snp
+     * @param collection
+     */
+    private void addDataset(double[] m, String id, String snp, XYSeriesCollection collection) {
+        final double LEN = 4000.0;
+        final DecimalFormat df = new DecimalFormat("00.00");
+        
+        XYSeries masse = new XYSeries(id,false,true);
+        List l = new ArrayList(3*5);
+        
+        masse.add(m[0],LEN);
+        l.add(id+": "+df.format(m[0])+"D");
+        masse.add(m[0]+22,LEN*1/7f);
+        l.add(id+", Na+ Peak: "+df.format(m[0]+22)+"D");
+        masse.add(m[0]+38,LEN*1/10f);
+        l.add(id+", K+ Peak: "+df.format(m[0]+38)+"D");
+        
+        final String foo="ACGT";
+        for (int i = 0; i < snp.length(); i++) {
+            int pos = foo.indexOf(snp.charAt(i));
+            if(pos==-1) {
+                System.err.println("invalid nucleotide in snp!");
+                continue;
+            }
+            String name = id+"+"+snp.charAt(i); 
+            masse.add(m[pos+1],LEN*5/4);
+            l.add(name+": "+df.format(m[pos+1])+"D");
+            masse.add(m[pos+1]+22,LEN*5/4f*1/7f);
+            l.add(name+", Na+ Peak: "+df.format(m[pos+1]+22)+"D");
+            masse.add(m[pos+1]+38,LEN*5/4f*1/10f);
+            l.add(name+", K+ Peak: "+df.format(m[pos+1]+38)+"D");
+        }
+        collection.addSeries(masse);
+        ttgen.addToolTipSeries(l);
+    }
+    
+
 
 }

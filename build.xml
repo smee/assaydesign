@@ -307,10 +307,14 @@
 				<fileset dir="${build.dir}">
 	    			<include name="calcdalton.jnlp"/>
 				</fileset>
+				<fileset dir="${lib}">
+	    			<include name="jfreechart-0.9.21.jar"/>
+				</fileset>
 			</copy>
 			<move tofile="${public_html}/calcdalton.jar" file="${public_html}/calcdalton-${DSTAMP}.jar"/>
 			<delete file="${public_html}/calcdalton-${DSTAMP}.jar"/>
 		    <signjar jar="${public_html}/calcdalton.jar" alias="${alias}" keypass="${keypass}" storepass="${storepass}" keystore="${build.dir}/keystore"/>
+		    <signjar jar="${public_html}/jfreechart-0.9.21.jar" alias="${alias}" keypass="${keypass}" storepass="${storepass}" keystore="${build.dir}/keystore"/>
 		</target>
   <!--**********************************************************-->
 	<target name="deploy-sbegui" depends="minisbe" description="deploys sbegui to webstart">

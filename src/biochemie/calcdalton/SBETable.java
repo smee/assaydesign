@@ -134,8 +134,8 @@ private void initTableBruchstellen() {
 	}
 
 	public String getColumnName(int columnIndex) {
-		//return columnNames[columnIndex];
-        return null;
+		return columnNames[columnIndex];
+        //return null;
     }
 
 	public Class getColumnClass(int columnIndex) {
@@ -211,5 +211,50 @@ private void initTableBruchstellen() {
         String[] n=new String[anzahlSBE];
         System.arraycopy(columnNames,1,n,0,anzahlSBE);
         return n;
+    }
+
+
+    /**
+     * Array der Massen einer Spalte. Enthaelt alle 5 moeglichen Werte, auch wenn weniger verwendet wurden!
+     * @param i
+     * @return
+     */
+    public double[] getMassenOfColumn(int i) {
+        double[] m = new double[5];
+        String val=(String) getValueAt(2,i);
+        if(val !=null)
+            m[0]=Double.parseDouble(val);
+        val=(String) getValueAt(5,i);
+        if(val !=null)
+            m[1]=Double.parseDouble(val);
+        val=(String) getValueAt(6,i);
+        if(val !=null)
+            m[2]=Double.parseDouble(val);
+        val=(String) getValueAt(7,i);
+        if(val !=null)
+            m[3]=Double.parseDouble(val);
+        val=(String) getValueAt(8,i);
+        if(val !=null)
+            m[4]=Double.parseDouble(val);
+        return m;
+    }
+
+
+    /**
+     * String, der alle Nukl. enthaelt, die eingebaut wurden, also irgendwas zwischen "" und "ACGT"
+     * @param i
+     * @return
+     */
+    public String getAnbauOfColumn(int i) {
+        String anbau="";
+        if(getValueAt(5,i)!=null)
+            anbau+="A";
+        if(getValueAt(6,i)!=null)
+            anbau+="C";
+        if(getValueAt(7,i)!=null)
+            anbau+="G";
+        if(getValueAt(8,i)!=null)
+            anbau+="T";
+        return anbau;
     }
 }
