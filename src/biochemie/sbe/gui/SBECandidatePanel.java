@@ -17,6 +17,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import biochemie.calcdalton.gui.PBSequenceField;
+import biochemie.gui.MyPanel;
 import biochemie.gui.NuklSelectorPanel;
 import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
@@ -26,7 +27,7 @@ import biochemie.sbe.SBEOptions;
  * @author Steffen Dienst
  *
  */
-public class SBECandidatePanel extends JPanel {
+public class SBECandidatePanel extends MyPanel {
 
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
@@ -330,19 +331,7 @@ public class SBECandidatePanel extends JPanel {
 		}
 		return pcrLenPanel;
 	}
-	/* (non-Javadoc)
-	 * @see java.awt.Component#setBackground(java.awt.Color)
-	 */
-	public void setBackgroundColor(Color bg) {
-		super.setBackground(bg);
-		getSNPSelectorPanel().setBackground(bg);
-		getHairpin3SelectionPanel().setBackground(bg);
-		getHairpin5SelectionPanel().setBackground(bg);
-		getPcrLenPanel().setBackground(bg);
-		getPLSelectorPanel().setBackground(bg);
-		getMultiplexidPanel().setBackground(bg);
-		getFiltersPanel().setBackground(bg);
-	}
+
     public String getCSVLine() {
         String id=getTfId().getText();
         String l=getSeq5tf().getText();

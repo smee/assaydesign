@@ -741,7 +741,7 @@ public class MiniSBEGui extends JFrame {
         SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1));
         p.setExpertMode(expertmode);
         if(index%2 == 1)
-        	p.setBackgroundColor(new Color(230,230,255));
+        	p.setBackground(new Color(230,230,255));
         sbepanels.add(p);
         sbepanelsPanel.add(p);
     }
