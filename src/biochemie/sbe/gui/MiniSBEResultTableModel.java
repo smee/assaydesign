@@ -92,7 +92,7 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate p = (SBECandidate) it.next();
             if(p.getId().equals(id)) {
-                return "*_*_"+p.getBruchstelle();
+                return p.getType()+"_*_"+p.getBruchstelle();
             }
         }
         return "";
