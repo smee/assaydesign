@@ -49,6 +49,7 @@ public class MyPanel extends JPanel {
      * @param string
      */
     public void setBackground(Color bg) {
+        super.setBackground(bg);
         int num=getComponentCount();
         for (int i = 0; i < num; i++) {
             getComponent(i).setBackground(bg);
