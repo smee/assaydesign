@@ -70,7 +70,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * @param e
      */
     private void handleChange(DocumentEvent e){
-        System.out.println("text: "+left.getText());
+        System.out.println("text: "+left.getText()+", "+_seq+", repl: "+replacedNukl);
         if(_seq.equals(left.getText()))
             return;//nix hat sich geaendert
         _seq=left.getText();
@@ -178,7 +178,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     public void itemStateChanged(ItemEvent e) {
         if(e.getStateChange() == ItemEvent.DESELECTED)//geht uns nix an
             return;
-        System.out.println("pl: "+e.getItem());
+        System.out.println("pl: "+e.getItem()+", "+_seq+", repl: "+replacedNukl);
         String newseq=_seq;
         try {
             Object item=e.getItem();
@@ -189,10 +189,13 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         plpanel.setAuto();
                         return;
                     }
-                    right.setText("");
-                    right.setEnabled(false);
-                    replacedNukl = _seq.charAt(_seq.length() - pl);
-                    newseq=biochemie.util.Helper.replacePL(_seq,pl);
+                    char torepl = _seq.charAt(_seq.length() - pl);
+                    if(torepl!='L') {
+                        replacedNukl=torepl;
+                        right.setText("");
+                        right.setEnabled(false);
+                        newseq=biochemie.util.Helper.replacePL(_seq,pl);
+                    }
                 }
             }else {//schon vorher was gewaehlt
                 int pos = Helper.getPosOfPl(_seq);
@@ -210,14 +213,17 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         return;
                     }
                     char newrepl = _seq.charAt(_seq.length() - newpl);
-                    _seq = Helper.replaceNukl(_seq, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
-                    newseq = Helper.replacePL(_seq, newpl);
+                    if(newpl == 'L')
+                        return;
+                    newseq = Helper.replaceNukl(_seq, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
+                    newseq = Helper.replacePL(newseq, newpl);
                     replacedNukl = newrepl;
                 }
             }
         }finally {
             if(!left.getText().equals(newseq))
                 left.setText(newseq);
+                
         }
     }
 }
