@@ -1,0 +1,241 @@
+<html>
+<head>
+<title>CalcDalton Help + Info</title>
+</head>
+
+<body>
+
+
+<p>The aim of
+the program is to suggest photolinker positions for single base extension
+primers (SBE-primers) in multiplex reactions. The suggested photolinker
+positions are optimised for best resolution in SBE-product analysis via mass
+spectrometry.</p>
+
+<p>A multiplex
+up to a ten-plex can be calculated – so at maximum 10 SBE-Primers can be
+analysed.</p>
+
+<p>When the
+program is started, the highest multiplex-number (1-10) to be analysed needs to
+be specified:</p>
+
+<img src="./pics/image001.png"></p>
+
+<p>&nbsp;</p>
+
+<p>For
+example: When a pentaplex and a triplex should be analysed, “5” must be
+entered. </p>
+
+<p>In the
+following screen you can copy and paste primer sequences into the appropriate
+SBE-Primer fields using the &quot;Ctrl-C&quot; (copy) and &quot;Ctrl-V&quot;
+(paste) key combinations.</p>
+
+
+
+<p><img src="./pics/image003.png"></p>
+
+
+
+<p>The first
+SBE-Primer always has to be entered.</p>
+
+<p>The primer
+sequences must include the nucleotide which will be replaced by the
+photolinker.</p>
+
+<p>The minimum
+primer length corresponds to the highest photolinker position, e.g. when you
+allow the program to insert photolinkers up to the 12<sup>th</sup> base
+position counting from the 3’ end, 12 bases is the minimum primer length. </p>
+
+
+
+<p>Note that
+you do not have to enter primer sequences in all SBE-Primer fields. </p>
+
+
+
+<p>Next you
+should specify which ddNTPs will be present in the primer extension reaction.
+Click with the left mouse button on the appropriate fields. </p>
+
+
+
+<p>At the
+field “Photolinker at:” you can choose “auto” to let the program suggest
+optimal photolinker positions. You can also specify a fixed photolinker
+position. </p>
+
+
+
+<p>In the menu
+option “Settings” (Alt-K) you can modify how photolinkers are chosen. </p>
+
+
+
+<p><img src="./pics/image005.png"></p>
+
+<p>Here you
+can specify which positions, counting from the 3´-end of the SBE-Primer are
+allowed to be replaced by a photolinker.  </p>
+
+<p>The order
+of the positions (starting from the top of the list) specifies the preferred
+usage. E.g. in the picture above the 9<sup>th</sup> position is preferred to the 8<sup>th</sup>
+position which is preferred to the 10<sup>th</sup> position and so on.
+Selecting a position and clicking the &quot;Up&quot; and &quot;Down&quot;
+buttons changes this order. You can also add and delete positions. </p>
+
+
+
+<p>The field
+“Excluded peak distances (D)” allows to exclude mass distances (in Dalton)
+between primers and SBE products. This allows to generate sets of primers where
+the extension products can be detected in the mass spectrometer without overlap
+between products and /or secondary peaks due to sodium, potassium or other
+cations. Note that the excluded distances do not apply to primer extension products resulting from the same primer.
+E.g. an excluded distance from 20 to 26 D does not conflict with the 24
+D-distance between an SBE-Primer extended with C and an SBE-Primer extended
+with A.  </p>
+
+<p>You can
+delete and add excluded distances. </p>
+
+
+
+<p>You can
+specify a “Minimum peak distance (D):”. Setting a minimum peak distance helps
+to account for the mass resolution of your system and improves the robustness
+of the assays. As explained above, this distance does not apply to the
+distances of primer extension products
+resulting from the same primer. </p>
+
+
+
+<p>To save the
+settings or load previously saved settings change to the “Save settings” card
+and push “Save settings “ or “Load last saved settings” . By this procedure the
+file “calcdalton.cfg” is written or loaded. This file is located in the same
+directory as the CalcDalton.jar file. </p>
+
+<p>Alternatively
+you can revert to the initial settings by pushing "Reset to standard settings" </p>
+
+<p>Note that
+when CalcDalton ist started the last saved settings are loaded by default. </p>
+
+
+
+
+
+<p>To leave
+the settings menu click “Okay” in “Settings”.  </p>
+
+
+
+<p>To start
+the calculation, push “Calculate” in the main input screen. You can switch
+between results by pushing “Previous result” and “Next result”. </p>
+
+
+
+
+
+<p><img src="./pics/image007.png"></p>
+
+
+
+
+
+<p>The results
+can be marked with the mouse and copied and pasted into other applications
+using the &quot;Ctrl-C&quot; and &quot;Ctrl-V&quot; key combinations. </p>
+
+
+
+<p>Algorithm
+information: </p>
+
+<p><br>
+The mass of a primer fragment after cleavage is calculated as follows: </p>
+
+
+
+<p>First, the
+masses for each nucleotide are added: </p>
+
+
+
+<p >dA: 313,22 D<br>
+dG: 329,22 D<br>
+dT: 304,21 D<br>
+dC: 289,18 D<br>
+<br>
+ddA: 297,22 D<br>
+ddG: 313,2 D<br>
+ddT: 288,1 D<br>
+ddC: 273,2 D<br>
+<br>
+</p>
+
+<p>Second, the
+effective weight of a phosphate (61,98 D) is subtracted. </p>
+
+
+
+<p>Third, the
+weight of the photolinker after cleavage (+ 80 D) is added.  </p>
+
+
+
+<p><h3><b>Copyright
+notice/legal disclaimer: </h3></b></p>
+
+
+
+<p>
+THIS SOFTWARE IS PROVIDED BY THE AUTOURS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE AUTHORS ARE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIALDAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION)HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. </p>
+
+
+<p>THE COPYRIGHT FOR ANY MATERIAL CREATED
+BY THE AUTHOR IS RESERVED. ANY DUPLICATION OR USE OF OBJECTS IN OTHER
+ELECTRONIC OR PRINTED PUBLICATIONS IS NOT PERMITTED WITHOUT THE AUTHOR'S AGREEMENT.</p>
+
+<p >
+IF SECTIONS OR INDIVIDUAL
+TERMS OF THIS STATEMENT ARE NOT LEGAL OR CORRECT, THE CONTENT OR VALIDITY OF
+THE OTHER PARTS REMAIN UNINFLUENCED BY THIS FACT.
+</p>
+
+
+
+<p>Contact: </p>
+
+<p><a
+href="mailto:hkirsten@medizin.uni-leipzig.de">hkirsten@medizin.uni-leipzig.de</a> </p>
+
+
+
+
+
+<p >
+12.0pt;mso-ansi-language:EN-GB'>A tool created by Steffen Dienst and Holger
+Kirsten.  </p>
+
+</div>
+
+</body>
+
+</html>
