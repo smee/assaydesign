@@ -1,13 +1,12 @@
 /*
  * Created on 12.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ItemListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -18,8 +17,6 @@ import org.apache.commons.lang.ArrayUtils;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class PLSelectorPanel extends MyPanel {
 
@@ -33,7 +30,7 @@ public class PLSelectorPanel extends MyPanel {
 		getComboPL().setEnabled(enabled);
 	}
 	Object[] values;
-	
+
 	/**
 	 * This is the default constructor
 	 */
@@ -48,7 +45,7 @@ public class PLSelectorPanel extends MyPanel {
 		values[0]="auto";
 		for (int i = 0; i < br.length; i++) {
 			values[i+1]=new Integer(br[i]);
-		}		
+		}
         int sel=getComboPL().getSelectedIndex();
         if(sel == -1)
             sel=0;
@@ -56,12 +53,12 @@ public class PLSelectorPanel extends MyPanel {
         while(m.getSize() != 0)
             m.removeElementAt(0);
         for (int i = 0; i < values.length; i++) {
-            m.addElement(values[i]);            
+            m.addElement(values[i]);
         }
         if(sel < br.length)
             getComboPL().setSelectedIndex(sel);
         else
-            setAuto();		
+            setAuto();
 	}
 public int getMaxSelectablePl() {
     int max=0;
@@ -80,7 +77,7 @@ public int getMaxSelectablePl() {
 		return -1;
 	}
 	/**
-     * Sets the photolinker and returns true. Returns false if <code>pl <c/ode> is not within possible range. 
+     * Sets the photolinker and returns true. Returns false if <code>pl <c/ode> is not within possible range.
      * @param pl
      * @return
 	 */
@@ -94,7 +91,7 @@ public int getMaxSelectablePl() {
 	}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
@@ -111,10 +108,10 @@ public int getMaxSelectablePl() {
 		setRekTooltip(null);
 	}
 	/**
-	 * This method initializes jComboBox	
-	 * 	
-	 * @return javax.swing.JComboBox	
-	 */    
+	 * This method initializes jComboBox
+	 *
+	 * @return javax.swing.JComboBox
+	 */
 	private JComboBox getComboPL() {
 		if (comboPL == null) {
 			comboPL = new JComboBox(new DefaultComboBoxModel());
@@ -122,7 +119,7 @@ public int getMaxSelectablePl() {
 		return comboPL;
 	}
 	/**
-	 * 
+	 *
 	 */
 	public void setAuto() {
         if(getComboPL().getModel().getSize()>0)
@@ -139,5 +136,8 @@ public int getMaxSelectablePl() {
 	}
     public void addPhotolinkerListListener(ListDataListener l) {
         getComboPL().getModel().addListDataListener(l);
+    }
+    public void addItemListener(ItemListener aListener) {
+        getComboPL().addItemListener(aListener);
     }
  }

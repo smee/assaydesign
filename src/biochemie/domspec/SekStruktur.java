@@ -5,8 +5,6 @@
 package biochemie.domspec;
 
 import java.util.Comparator;
-import java.util.Observable;
-import java.util.Observer;
 
 import biochemie.util.Helper;
 
@@ -14,7 +12,7 @@ import biochemie.util.Helper;
  * @author Steffen Dienst
  * 05.11.2004
  */
-public class SekStruktur extends Observable implements Cloneable, Observer{
+public class SekStruktur  implements Cloneable{
 
     public static final int HAIRPIN = 0;
     public static final int HOMODIMER = 1;
@@ -23,9 +21,10 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
     protected final Primer p;
     protected final Primer other;
     protected final int pos;
-    protected char einbau = 0;
+    protected char bautAn = 0;
 
     /**
+     * Constructor for Crossdimers.
      * @param p2
      * @param other2
      * @param pos2
@@ -37,12 +36,11 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
         this.other=other;
         this.type=CROSSDIMER;
         this.pos=pos;
-        p.addObserver((Observer) this);
-        other.addObserver(this);
+
     }
 
     /**
-     * Constructor for given builtin nucleotides.
+     * Constructor for given builtin nucleotides with unknown position.
      * @param p2
      * @param t
      * @param einbau2
@@ -51,7 +49,7 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
         this.p=p;
         this.other=null;
         this.pos=-1;
-        this.einbau=Character.toUpperCase(einbau);
+        this.bautAn=Character.toUpperCase(einbau);
         switch (t) {
             case HAIRPIN :
             case HOMODIMER:
@@ -61,8 +59,9 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
                 throw new IllegalArgumentException("invalid secondary strucure type given!");
         }
     }
-    
+
     /**
+     * Constructor for Hairpin/Homodimer.
      * @param p2
      * @param t
      * @param pos2
@@ -76,7 +75,7 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
         this.other=null;
     }
 
-    
+
 
 
 
@@ -95,13 +94,13 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
     }
 
     public char bautEin() {
-        if(0 == this.einbau) {
+        if(0 == this.bautAn) {
             String seq=p.getSeq();
             if(getType()==CROSSDIMER)
                 seq=other.getSeq();
-            einbau = Helper.sekundaerStrukturBautEin(seq,getPosFrom3());
+            bautAn = Helper.sekundaerStrukturBautEin(seq,getPosFrom3());
         }
-        return einbau;
+        return bautAn;
     }
 
     /**
@@ -114,7 +113,7 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
                 SekStruktur s1=(SekStruktur)arg0;
                 SekStruktur s2=(SekStruktur)arg1;
                 return s2.getType()-s1.getType();
-            }            
+            }
         };
     }
 
@@ -132,7 +131,7 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-    
+
     public String getAsciiArt() {
         switch (type) {
         case HAIRPIN:
@@ -148,6 +147,4 @@ public class SekStruktur extends Observable implements Cloneable, Observer{
     }
 
 
-    public void update(Observable o, Object arg) {
-    }
 }

@@ -1,8 +1,6 @@
 /*
  * Created on 11.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -23,13 +21,10 @@ import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptionsProvider;
-//import biochemie.sbe.SBECandidate;
 
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SBECandidatePanel extends JPanel {
 
@@ -48,12 +43,12 @@ public class SBECandidatePanel extends JPanel {
 	private StringEntryPanel multiplexidPanel = null;
 	private StringEntryPanel pcrLenPanel = null;
     private SBESeqInputController inputcontroller = null;
-    
+
     private boolean isExpertMode;
 	private StringEntryPanel filtersPanel = null;
 	/**
 	 * This is the default constructor
-	 * @param 
+	 * @param
 	 */
 	public SBECandidatePanel(String id) {
 		super();
@@ -63,7 +58,7 @@ public class SBECandidatePanel extends JPanel {
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
@@ -175,10 +170,10 @@ public class SBECandidatePanel extends JPanel {
         this.add(getFiltersPanel(), gridBagConstraints13);
 	}
 	/**
-	 * This method initializes PBSequenceField	
-	 * 	
-	 * @return biochemie.calcdalton.gui.PBSequenceField	
-	 */    
+	 * This method initializes PBSequenceField
+	 *
+	 * @return biochemie.calcdalton.gui.PBSequenceField
+	 */
 	private SBESequenceTextField getSeq5tf() {
 		if (seq5tf == null) {
 			seq5tf = new SBESequenceTextField();
@@ -190,10 +185,10 @@ public class SBECandidatePanel extends JPanel {
 		return seq5tf;
 	}
 	/**
-	 * This method initializes nuklSelectorPanel	
-	 * 	
-	 * @return biochemie.gui.NuklSelectorPanel	
-	 */    
+	 * This method initializes nuklSelectorPanel
+	 *
+	 * @return biochemie.gui.NuklSelectorPanel
+	 */
 	private NuklSelectorPanel getSNPSelectorPanel() {
 		if (nuklSelectorPanel == null) {
 			nuklSelectorPanel = new NuklSelectorPanel();
@@ -202,10 +197,10 @@ public class SBECandidatePanel extends JPanel {
 		return nuklSelectorPanel;
 	}
 	/**
-	 * This method initializes jTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */    
+	 * This method initializes jTextField
+	 *
+	 * @return javax.swing.JTextField
+	 */
 	private JTextField getTfId() {
 		if (tfId == null) {
 			tfId = new JTextField();
@@ -218,11 +213,11 @@ public class SBECandidatePanel extends JPanel {
                 }
 
                 public void removeUpdate(DocumentEvent e) {
-                    updateTooltip();                    
+                    updateTooltip();
                 }
 
                 public void changedUpdate(DocumentEvent e) {
-                    updateTooltip();                    
+                    updateTooltip();
                 }
                 private void updateTooltip() {
                     if(tfId.getText().length() == 0)
@@ -230,7 +225,7 @@ public class SBECandidatePanel extends JPanel {
                     else
                         tfId.setToolTipText(tfId.getText());
                 }
-                
+
             });
 			tfId.setToolTipText("Input SB-Primer Identification");
 		}
@@ -240,10 +235,10 @@ public class SBECandidatePanel extends JPanel {
         return getTfId().getText();
     }
 	/**
-	 * This method initializes PLSelectorPanel	
-	 * 	
-	 * @return biochemie.gui.PLSelectorPanel	
-	 */    
+	 * This method initializes PLSelectorPanel
+	 *
+	 * @return biochemie.gui.PLSelectorPanel
+	 */
 	private PLSelectorPanel getPLSelectorPanel() {
 		if (PLSelectorPanel == null) {
 			PLSelectorPanel = new PLSelectorPanel();
@@ -252,10 +247,10 @@ public class SBECandidatePanel extends JPanel {
 		return PLSelectorPanel;
 	}
 	/**
-	 * This method initializes PBSequenceField	
-	 * 	
-	 * @return biochemie.calcdalton.gui.PBSequenceField	
-	 */    
+	 * This method initializes PBSequenceField
+	 *
+	 * @return biochemie.calcdalton.gui.PBSequenceField
+	 */
 	private PBSequenceField getSeq3tf() {
 		if (seq3tf == null) {
 			seq3tf = new PBSequenceField(100,true,"ACGTacgt");
@@ -264,10 +259,10 @@ public class SBECandidatePanel extends JPanel {
 		return seq3tf;
 	}
 	/**
-	 * This method initializes hairpinSelectionPanel	
-	 * 	
-	 * @return biochemie.sbe.gui.HairpinSelectionPanel	
-	 */    
+	 * This method initializes hairpinSelectionPanel
+	 *
+	 * @return biochemie.sbe.gui.HairpinSelectionPanel
+	 */
 	private HairpinSelectionPanel getHairpin5SelectionPanel() {
 		if (hairpin5SelectionPanel == null) {
 			hairpin5SelectionPanel = new HairpinSelectionPanel();
@@ -285,10 +280,10 @@ public class SBECandidatePanel extends JPanel {
 
 	}
 	/**
-	 * This method initializes hairpinSelectionPanel1	
-	 * 	
-	 * @return biochemie.sbe.gui.HairpinSelectionPanel	
-	 */    
+	 * This method initializes hairpinSelectionPanel1
+	 *
+	 * @return biochemie.sbe.gui.HairpinSelectionPanel
+	 */
 	private HairpinSelectionPanel getHairpin3SelectionPanel() {
 		if (hairpin3SelectionPanel == null) {
 			hairpin3SelectionPanel = new HairpinSelectionPanel();
@@ -297,10 +292,10 @@ public class SBECandidatePanel extends JPanel {
 		return hairpin3SelectionPanel;
 	}
 	/**
-	 * This method initializes stringEntryPanel	
-	 * 	
-	 * @return biochemie.gui.StringEntryPanel	
-	 */    
+	 * This method initializes stringEntryPanel
+	 *
+	 * @return biochemie.gui.StringEntryPanel
+	 */
 	private StringEntryPanel getMultiplexidPanel() {
 		if (multiplexidPanel == null) {
 			multiplexidPanel = new StringEntryPanel();
@@ -314,10 +309,10 @@ public class SBECandidatePanel extends JPanel {
 		return multiplexidPanel;
 	}
 	/**
-	 * This method initializes stringEntryPanel1	
-	 * 	
-	 * @return biochemie.gui.StringEntryPanel	
-	 */    
+	 * This method initializes stringEntryPanel1
+	 *
+	 * @return biochemie.gui.StringEntryPanel
+	 */
 	private StringEntryPanel getPcrLenPanel() {
 		if (pcrLenPanel == null) {
 			pcrLenPanel = new StringEntryPanel();
@@ -347,8 +342,8 @@ public class SBECandidatePanel extends JPanel {
         String r=getSeq3tf().getText();
         String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
-        String multiplexid = getMultiplexidPanel().getText();       
-        String filters = getFiltersPanel().getText();       
+        String multiplexid = getMultiplexidPanel().getText();
+        String filters = getFiltersPanel().getText();
         String productlen=getPcrLenPanel().getText();
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
         int festerpl=getPLSelectorPanel().getSelectedPL();
@@ -382,26 +377,25 @@ public class SBECandidatePanel extends JPanel {
         String r=getSeq3tf().getText();
         if(l.length() == 0 && r.length()==0) //keine primer da
             return null;
-        
+
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
         String id=getTfId().getText();
-        
+
         int pl=0;
         try {
             pl = Integer.parseInt(getPcrLenPanel().getText());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        int festerpl=getPLSelectorPanel().getSelectedPL();
-        
+
         SBECandidate s=null;
-        
+
         String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
-        String multiplexid = getMultiplexidPanel().getText();		
+        String multiplexid = getMultiplexidPanel().getText();
         String unwanted = getFiltersPanel().getText();
         int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
-        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,festerpl,bautein5,bautein3,multiplexid,unwanted);
+        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted);
         return s;
     }
 
@@ -447,10 +441,10 @@ public class SBECandidatePanel extends JPanel {
         getFiltersPanel().setText(filters);
     }
 	/**
-	 * This method initializes stringEntryPanel	
-	 * 	
-	 * @return biochemie.gui.StringEntryPanel	
-	 */    
+	 * This method initializes stringEntryPanel
+	 *
+	 * @return biochemie.gui.StringEntryPanel
+	 */
 	private StringEntryPanel getFiltersPanel() {
 		if (filtersPanel == null) {
 			filtersPanel = new StringEntryPanel();

@@ -1,8 +1,6 @@
 /*
  * Created on 08.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.verw;
 
@@ -31,8 +29,6 @@ import com.Ostermiller.util.ExcelCSVParser;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class Verwandtschaft {
 	public static int[] lookup;
@@ -40,7 +36,7 @@ public class Verwandtschaft {
 	private static final int B = 1;
 	private static final int AB = 2;
 	private static final int NONE = 3;
-	
+
 	static class Kind{
 		private String name;
 		int type;
@@ -171,7 +167,7 @@ public class Verwandtschaft {
 		boolean[][] g;
 		private Kind[] kinder;
 		private Eltern[][] eltern;
-		
+
 		public VerwGraph(Kind[] kinder, Eltern[][] eltern){
 			this.kinder=kinder;
 			this.eltern=eltern;
@@ -195,7 +191,7 @@ public class Verwandtschaft {
 				System.out.print('.');
 				for (int b = a + 1; b < eltern[a].length; b++) {
 					for (int c = 0; c < kinder.length; c++) {
-						if(g[c][lookup[a] + (eltern.length - b)] == false){							
+						if(g[c][lookup[a] + (eltern.length - b)] == false){
 							try {
 								grev.addEdge(eltern[a][b],kinder[c]);
 							} catch (RuntimeException e) {
@@ -226,17 +222,17 @@ public class Verwandtschaft {
 	public static void main(String[] args) {
 		try {
 			ExcelCSVParser p=new ExcelCSVParser(new FileReader(args[0]),';');
-			
+
 			System.out.println("Reading file "+args[0]);
-			
+
 			String[][] val=p.getAllValues();
 			initLookup(val.length - 1);
 			System.out.println((val.length-1)+"x"+(val[0].length-1));
-			
+
 			Kind[] kinder=new Kind[val.length-1];
-			
+
 			System.out.println("Adding children...");
-			
+
 			for (int i = 1; i < val.length; i++) {
 				kinder[i-1]=new Kind(val[i][0], i);
 			}
@@ -248,7 +244,7 @@ public class Verwandtschaft {
 				}
 			}
 			VerwGraph g=new VerwGraph(kinder,eltern);
-			
+
 			System.out.println(eltern.length+" possible parents...");
 			//setze kanten bei allen nicht erwuenschten elternpaaren
 			for (int a = 0; a < eltern.length; a++) {
@@ -268,9 +264,9 @@ public class Verwandtschaft {
 					}
 				}
 //					g.addEdge(a,lookup[a] + (eltern.length - (a+2)));  //2er
-//					g.addEdge(a+2,lookup[a] + (eltern.length - (a+2)));		//2er			
+//					g.addEdge(a+2,lookup[a] + (eltern.length - (a+2)));		//2er
 			}
-			
+
 			for (int i = 1; i < val[0].length; i++) {
 //				if(i == 30)
 //					break;
@@ -290,8 +286,8 @@ public class Verwandtschaft {
 					System.out.println("Couldn't find values in column "+val[0][i]);
 					continue;
 				}
-				
-				
+
+
 				for (int j = 1; j < val.length; j++) {
 					String entry=val[j][i];
 					if(entry.indexOf('/')!=-1){
@@ -302,11 +298,11 @@ public class Verwandtschaft {
 						kinder[j-1].setType(B);
 					}else{
 						kinder[j-1].setType(NONE);
-						
+
 					}
 				}
 
-				
+
 				for (int a = 0; a < eltern.length; a++) {
 					for (int b = a + 1; b < eltern.length; b++) {
 						for (int c = 0; c < kinder.length; c++) {
@@ -322,27 +318,27 @@ public class Verwandtschaft {
 									System.exit(1);
 								}
 							}
-						}						
+						}
 					}
 				}
 			}
-			
+
 			System.out.println("Creating reverse graph...");
-			
+
 			UndirectedGraph grev=g.getReverseGraph();
 
-			
+
 			System.out.println("Searching connected sets...");
-			
+
 			ConnectivityInspector ci=new ConnectivityInspector(grev);
 			System.out.println(ci.connectedSets().size()+" connected sets!");
 			List sets=ci.connectedSets();
 			Algorithms.remove(sets.iterator(), new UnaryPredicate(){
 				public boolean test(Object obj) {
 					return ((Set)obj).size()<=1;
-				}				
+				}
 			});
-			
+
 			Map uniq=new HashMap();
 			for (Iterator it = sets.iterator(); it.hasNext();) {
 				Set family = (Set) it.next();
@@ -364,10 +360,10 @@ public class Verwandtschaft {
 						if(i==null)
 							i=new Integer(0);
 						uniq.put(e.papa.name,new Integer(i.intValue()+1));
-					}					
+					}
 				}
 			}
-			Set uniqnames=new TreeSet();			
+			Set uniqnames=new TreeSet();
 			for (Iterator it = uniq.keySet().iterator(); it.hasNext();) {
 				String name=(String) it.next();
 				int i=((Integer)uniq.get(name)).intValue();
@@ -376,14 +372,14 @@ public class Verwandtschaft {
 			}
 			System.out.println("Found "+uniqnames.size()+" unique names:");
 			System.out.println(uniqnames);
-			
+
 			System.out.println("-----------------------------------");
 			Set notinfamilies=new TreeSet();
 			for (int i = 0; i < kinder.length; i++) {
 				notinfamilies.add(kinder[i].name);
-			}			
+			}
 			notinfamilies.removeAll(uniqnames);
-			
+
 			for (Iterator it = uniqnames.iterator(); it.hasNext();) {
 				String name = (String) it.next();
 				assert !notinfamilies.contains(name);
@@ -391,9 +387,9 @@ public class Verwandtschaft {
 			System.out.println("Nicht zuordenbare Familienmitglieder ("+notinfamilies.size()+") :");
 			System.out.println(notinfamilies);
 			System.out.println("-----------------------------------");
-			
+
 			System.out.println("\nEindeutige Familien, weil min. ein Familienmitglied nur genau einmal auftaucht:");
-			
+
 			int counter = 1;
 			for (Iterator it = sets.iterator(); it.hasNext();) {
 				Set family = (Set) it.next();
@@ -425,11 +421,11 @@ public class Verwandtschaft {
 				Set family = (Set) it.next();
 				System.out.println(family);
 				List l=new ArrayList(family);
-				
+
 				List names=(List) Algorithms.collect(Algorithms.apply(l.iterator(),new UnaryFunction(){
 					public Object evaluate(Object obj) {
 						return obj.toString().replace(' ','_');
-					}					
+					}
 				}));
 				GraphWriter gw=new GraphWriter(names,"family",GraphWriter.TGF);
 				for (int i = 0; i < l.size(); i++) {
@@ -440,7 +436,7 @@ public class Verwandtschaft {
 				}
 				gw.close();
 			}
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

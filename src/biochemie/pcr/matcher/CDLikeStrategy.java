@@ -1,8 +1,6 @@
 /*
  * Created on 06.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.pcr.matcher;
 
@@ -21,20 +19,18 @@ import biochemie.util.Helper;
 /**
  * @author Steffen
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CDLikeStrategy implements MatcherStrategy {
 
     private int maxplex;
     private int solutionsize;
-    
+
     public CDLikeStrategy(int maxplex){
         this.maxplex=maxplex;
     }
     public Collection getBestPCRPrimerSet(List pcrpairs) {
         solutionsize=Integer.MAX_VALUE;
-        
+
         PCRPair[][] pairs=createPairMatrix(pcrpairs);
         System.out.print("got "+pairs.length+" files, with ");
         for (int i = 0; i < pairs.length; i++) {
@@ -42,13 +38,13 @@ public class CDLikeStrategy implements MatcherStrategy {
         }
         System.out.println();
         boolean[][][][] passtMatrix=createPasstMatrix(pairs);
-        
+
         List erglist=new LinkedList();
-        
+
         int ptr=0;
         int[] laufvar=new int[pairs.length];
         laufvar[0]=0;
-        
+
         do{
             boolean okay=true;
             for(int i=0;i < ptr && okay;i++){
@@ -71,18 +67,18 @@ public class CDLikeStrategy implements MatcherStrategy {
                     ++ptr;
                     laufvar[ptr]=0;
                     continue;
-                }                
+                }
             }
             laufvar[ptr]++;
             if(laufvar[ptr] == pairs[ptr].length) {//bin in dieser zeile fertig
                 ptr--;          //und eins hoch
                 while(-1 != ptr && laufvar[ptr] >= pairs[ptr].length-1)//ueber alle festen und fertigen
                     ptr--;
-                
+
                 laufvar[ptr]++;
             }
         }while(laufvar[0] < pairs.length);
-        
+
         List result=new ArrayList();
         if(erglist.size()==0)
             return result;
@@ -151,12 +147,12 @@ public class CDLikeStrategy implements MatcherStrategy {
                 l = new ArrayList();
                 ids.put(idx,l);
             }
-            l.add(p);            
+            l.add(p);
         }
-        
+
         PCRPair[][] matrix=new PCRPair[ids.size()][];
         int i=0;
-        
+
         for (Iterator iter = ids.keySet().iterator(); iter.hasNext();i++) {
             String idx=(String) iter.next();
             List l=(List) ids.get(idx);
@@ -164,11 +160,11 @@ public class CDLikeStrategy implements MatcherStrategy {
             Collections.sort(l, new Comparator(){
                 public int compare(Object arg0, Object arg1) {
                     return ((PCRPair)arg0).leftp.getPos() -  ((PCRPair)arg1).leftp.getPos() ;
-                }                
+                }
             });
             matrix[i]= (PCRPair[]) l.toArray(new PCRPair[l.size()]);
         }
-                
+
         return matrix;
     }
 

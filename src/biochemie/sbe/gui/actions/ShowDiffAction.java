@@ -1,8 +1,6 @@
 /*
  * Created on 18.01.2005
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui.actions;
 
@@ -48,7 +46,7 @@ import biochemie.util.MyAction;
 public class ShowDiffAction extends MyAction {
     private int index = 0;
     final TableModel[] diffmodels;
-    final TableModel[] cdmodels; 
+    final TableModel[] cdmodels;
     final String[] mid;
     private JTable difftable;
     private JFrame frame;
@@ -56,7 +54,7 @@ public class ShowDiffAction extends MyAction {
     private SBEOptionsProvider cfg;
     private JTableEx cdtable;
     private Set mids;
-    
+
     public ShowDiffAction(List sbec, SBEOptionsProvider cfg) {
         super("Masses / Maldi", "Show mass differences and MALDI previews"
                 ,ShowDiffAction.class.getClassLoader().getResource("images/maldi.gif"), null);
@@ -67,7 +65,7 @@ public class ShowDiffAction extends MyAction {
                 return !((SBECandidate)obj).isFoundValidSeq();
             }
         });
-        
+
         mids = new TreeSet();
         //suche alle vorhandenen Multiplexids
         Algorithms.foreach(sbecfilt.iterator(),new UnaryProcedure() {
@@ -98,13 +96,13 @@ public class ShowDiffAction extends MyAction {
     private TableModel generateCDModelFor(String id, List sbec) {
         if(id == null)
             return new DefaultTableModel(0,0);
-        
+
         List mysbec = getFilteredList(id, sbec);
-        
+
         String[] names = new String[mysbec.size()];
         String[][] paneldata = new String[mysbec.size()][];
         int[] fest = new int[mysbec.size()];
-        
+
         int i=0;
         for (Iterator it = mysbec.iterator(); it.hasNext();i++) {
             SBECandidate s = (SBECandidate) it.next();
@@ -126,7 +124,7 @@ public class ShowDiffAction extends MyAction {
      */
     private TableModel generateDiffTableModelFor(final String id, List sbec) {
         List mysbec = getFilteredList(id, sbec);
-        
+
         double[][] weights = new double[mysbec.size()][];
         String[] sbenames = new String[mysbec.size()];
         int i=0;
@@ -164,10 +162,10 @@ public class ShowDiffAction extends MyAction {
         Dimension dim = new Dimension(500,200);
         difftable.setPreferredScrollableViewportSize(dim);
         cdtable.setPreferredScrollableViewportSize(dim);
-        
+
         JScrollPane sp=new JScrollPane(difftable);
         JScrollPane sp2=new JScrollPane(cdtable);
-        
+
         JSplitPane versplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         JSplitPane horsplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         versplit.setTopComponent(sp);
@@ -193,11 +191,11 @@ public class ShowDiffAction extends MyAction {
                 cdtable.setModel(cdmodels[index]);
                 frame.repaint();
             }
-            
+
         });
         frame.getContentPane().add(horsplit,BorderLayout.CENTER);
         JPanel buttonpanel=new JPanel();
-        
+
 /*        JButton prev = new JButton("Previous multiplex");
         JButton next = new JButton("Next multiplex");
         prev.addActionListener(new ActionListener() {
@@ -230,7 +228,7 @@ public class ShowDiffAction extends MyAction {
                 f.setVisible(true);
             }
         });
-        frame.getContentPane().add(buttonpanel,BorderLayout.SOUTH);   
+        frame.getContentPane().add(buttonpanel,BorderLayout.SOUTH);
         idlist.setSelectedIndex(0);
         frame.pack();
         frame.setVisible(true);

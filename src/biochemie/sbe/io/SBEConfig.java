@@ -1,8 +1,6 @@
 /*
  * Created on 29.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.io;
 
@@ -15,13 +13,13 @@ import biochemie.sbe.SBEOptionsProvider;
 import biochemie.util.config.GeneralConfig;
 
 /**
- * 
+ *
  * @author Steffen Dienst
  *
  */
 public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
     CalcDaltonOptionsProvider cdopt;
-    
+
     /**
 	 * Returns defaultvalues
 	 */
@@ -29,7 +27,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
 		super();
         cdopt = new CDOptionsImpl();
 	}
-	
+
 	/**
      * @param provider
      */
@@ -60,10 +58,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
     }
 
 
-    
+
     //MiniSBE parameter:
     //--------------------------------------------------------------
-    
+
     public boolean getAllCrossdimersAreEvil() {
         return getBoolean("sbe.crossdimer.areallevil",false);
     }
@@ -171,7 +169,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
 			setProperty("sbe.homodimer.windowsizes",w);
             }
 	}
-	
+
 	public String getCrossdimerMinbinds() {
 		return getString("sbe.crossdimer.minbinds","");
 	}
@@ -181,7 +179,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
 			setProperty("sbe.crossdimer.minbinds",w);
         }
 	}
- 
+
 	public String getCrossDimerWindowsizes() {
 		return getString("sbe.crossdimer.windowsizes","");
 	}
@@ -214,7 +212,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
 		setProperty("sbe.prodlendiff",Integer.toString(len));
 	}
     public boolean isDrawGraphes() {
-        return getBoolean("misc.drawgraph",false);        
+        return getBoolean("misc.drawgraph",false);
     }
 
     public void setDrawGraphes(boolean b) {
@@ -232,7 +230,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
             return true;
         return false;
     }
-    
+
     //proxy for CalcDaltonOptionsProvider--------------------------------------------------------
     public int[] getPhotolinkerPositions() {
         return cdopt.getPhotolinkerPositions();
@@ -271,21 +269,21 @@ public class SBEConfig extends GeneralConfig implements SBEOptionsProvider{
         cdopt.setDebug(b);
     }
     //proxy end -----------------------------------------------------------------------------------------
-    
-    public void readConfigFile(String f) throws IOException {        
+
+    public void readConfigFile(String f) throws IOException {
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).readConfigFile(f);
         super.readConfigFile(f);
     }
-    
+
     public void updateConfigFile(String filename) throws IOException {
         super.updateConfigFile(filename);
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).updateConfigFile(filename);
-    } 
-    
+    }
+
     public void writeConfigTo(String filename) throws IOException {
-        super.writeConfigTo(filename);        
+        super.writeConfigTo(filename);
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).updateConfigFile(filename);
     }

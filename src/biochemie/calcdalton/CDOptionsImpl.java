@@ -1,8 +1,6 @@
 /*
  * Created on 04.12.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.calcdalton;
 
@@ -15,8 +13,6 @@ import biochemie.util.config.GeneralConfig;
 /**
  * @author sdienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsProvider {
     public CDOptionsImpl() {
@@ -38,7 +34,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsPro
     public int[] getPhotolinkerPositions(){
         String pl = getString("calcdalton.pl");
         int[] br=Helper.tokenizeToInt(pl);
-        return br;      
+        return br;
     }
     public void setPhotolinkerPositions(int[] br){
         setProperty("calcdalton.pl",StringUtils.join(ArrayUtils.toObject(br),' '));
@@ -47,7 +43,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsPro
     public double[] getCalcDaltonFrom() {
         String pl = getString("calcdalton.from");
         double[] from=Helper.tokenizeToDouble(pl);
-        return from;    
+        return from;
     }
 
     public void setCalcDaltonFrom(double[] arr) {
@@ -57,7 +53,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsPro
     public double[] getCalcDaltonTo() {
         String pl = getString("calcdalton.to");
         double[] to=Helper.tokenizeToDouble(pl);
-        return to;  
+        return to;
     }
 
     public void setCalcDaltonTo(double[] arr) {
@@ -67,7 +63,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsPro
     public double[] getCalcDaltonVerbFrom() {
         String pl = getString("calcdalton.verbfrom");
         double[] verbfrom=Helper.tokenizeToDouble(pl);
-        return verbfrom;    
+        return verbfrom;
     }
 
     public void setCalcDaltonVerbFrom(double[] arr) {
@@ -77,7 +73,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptionsPro
     public double[] getCalcDaltonVerbTo() {
         String pl = getString("calcdalton.verbto");
         double[] verbto=Helper.tokenizeToDouble(pl);
-        return verbto;  
+        return verbto;
     }
 
     public void setCalcDaltonVerbTo(double[] arr) {

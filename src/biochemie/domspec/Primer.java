@@ -17,20 +17,19 @@ import org.apache.commons.functor.UnaryPredicate;
 import biochemie.sbe.calculators.Multiplexable;
 
 /**
+ * Immutable. Repraesentiert einen generischen Primer. 
  * @author Steffen Dienst
  * 05.11.2004
  */
 public abstract class Primer extends Observable implements Multiplexable, Cloneable {
-	public final static String TEMP_CHANGED="temperature changed";
-	public final static String GC_CHANGED="gc changed";
 	public final static String SEKSTRUK_CHANGED="sec.structures changed";
 	public final static String PLEXID_CHANGED="multiplexid changed";
 	
-    protected String seq;
+    protected final String seq;
     protected String plexid;
-    protected String id;
-    protected double temp;
-    protected double gcgehalt;
+    protected final String id;
+    protected final double temp;
+    protected final double gcgehalt;
     
     protected Set sekstruc;
     protected String edgereason;

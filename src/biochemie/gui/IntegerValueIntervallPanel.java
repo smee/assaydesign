@@ -1,8 +1,6 @@
 /*
  * Created on 22.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.gui;
 
@@ -30,8 +28,6 @@ import biochemie.util.Helper;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class IntegerValueIntervallPanel extends JPanel {
 	final class AddAbstandAction extends AbstractAction {
@@ -54,7 +50,7 @@ public class IntegerValueIntervallPanel extends JPanel {
 				try {
 					int start=Integer.parseInt(sstart);
 					int ende=Integer.parseInt(sende);
-					abstandVector.add(sstart+" - "+sende);		
+					abstandVector.add(sstart+" - "+sende);
 					int[] neu_from=new int[from.length+1];
 					int[] neu_to=new int[to.length+1];
 					for(int i=0;i<from.length;i++) {
@@ -101,11 +97,11 @@ public class IntegerValueIntervallPanel extends JPanel {
 				from=neu_from;
 				to=neu_to;
 				if(0 == abstandVector.size())
-					delAbstandAction.setEnabled(false);                            
-			}            
+					delAbstandAction.setEnabled(false);
+			}
 		}
 	}
-	
+
 	private JButton btAddAbstand = null;
 	private JButton btDelAbstand = null;
 	private JLabel toJlabel = null;
@@ -117,13 +113,13 @@ public class IntegerValueIntervallPanel extends JPanel {
 	private final DelAbstandAction delAbstandAction;
 	private final AddAbstandAction addAbAction;
 	private String title = null;
-	
+
 	int[] defaultfrom = new int[]{};
 	int[] defaultto = new int[]{};
 	Vector abstandVector;
 	int[] from = {};
 	int[] to   =  {};
-	
+
 	/**
 	 * This is the default constructor
 	 */
@@ -136,7 +132,7 @@ public class IntegerValueIntervallPanel extends JPanel {
 	}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
@@ -192,10 +188,10 @@ public class IntegerValueIntervallPanel extends JPanel {
 		this.add(getJScrollPane(), gridBagConstraints8);
 	}
 	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getBtAddAbstand() {
 		if (btAddAbstand == null) {
 			btAddAbstand = new JButton();
@@ -204,10 +200,10 @@ public class IntegerValueIntervallPanel extends JPanel {
 		return btAddAbstand;
 	}
 	/**
-	 * This method initializes jButton1	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton1
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getBtDelAbstand() {
 		if (btDelAbstand == null) {
 			btDelAbstand = new JButton();
@@ -216,10 +212,10 @@ public class IntegerValueIntervallPanel extends JPanel {
 		return btDelAbstand;
 	}
 	/**
-	 * This method initializes PBSequenceField	
-	 * 	
-	 * @return biochemie.calcdalton.gui.PBSequenceField	
-	 */    
+	 * This method initializes PBSequenceField
+	 *
+	 * @return biochemie.calcdalton.gui.PBSequenceField
+	 */
 	private PBSequenceField getTfFrom() {
 		if (tfFrom == null) {
 			tfFrom = new PBSequenceField();
@@ -229,10 +225,10 @@ public class IntegerValueIntervallPanel extends JPanel {
 		return tfFrom;
 	}
 	/**
-	 * This method initializes PBSequenceField1	
-	 * 	
-	 * @return biochemie.calcdalton.gui.PBSequenceField	
-	 */    
+	 * This method initializes PBSequenceField1
+	 *
+	 * @return biochemie.calcdalton.gui.PBSequenceField
+	 */
 	private PBSequenceField getTfTo() {
 		if (tfTo == null) {
 			tfTo = new PBSequenceField();
@@ -243,10 +239,10 @@ public class IntegerValueIntervallPanel extends JPanel {
 		return tfTo;
 	}
 	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */    
+	 * This method initializes jScrollPane
+	 *
+	 * @return javax.swing.JScrollPane
+	 */
 	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
@@ -266,9 +262,9 @@ public class IntegerValueIntervallPanel extends JPanel {
 					if(KeyEvent.VK_DELETE == e.getKeyCode())
 						delAbstandAction.actionPerformed(null);
 				}
-			});			
+			});
 		}
-		return abstandList;		
+		return abstandList;
 	}
 	public String saveToString() {
 		StringBuffer sb=new StringBuffer();
@@ -287,7 +283,7 @@ public class IntegerValueIntervallPanel extends JPanel {
 			return;
 		}
 		abstandVector.clear();
-		
+
 		StringTokenizer st=new StringTokenizer(string," \"");
 		abstandVector.removeAllElements();
 		from=new int[st.countTokens()];
@@ -305,7 +301,7 @@ public class IntegerValueIntervallPanel extends JPanel {
 		StringTokenizer st2=new StringTokenizer(sto);
 		if(st.countTokens() != st2.countTokens())
 			return;
-		
+
 		abstandVector.clear();
 		from = new int[st.countTokens()];
 		to = new int[st2.countTokens()];
@@ -321,7 +317,7 @@ public class IntegerValueIntervallPanel extends JPanel {
 		abstandList.setListData(abstandVector);
 	}
 	/**
-	 * 
+	 *
 	 */
 	public void reset() {
 		from=new int[defaultfrom.length];
@@ -334,7 +330,7 @@ public class IntegerValueIntervallPanel extends JPanel {
 		}
 		update();
 	}
-	
+
     public int[] getFrom() {
     	return Helper.clone(from);
     }

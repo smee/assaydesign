@@ -1,8 +1,6 @@
 /*
  * Created on 21.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.gui;
 
@@ -45,7 +43,7 @@ public class DoubleValueIntervallPanel extends JPanel{
 	double[] to   =  {};
     JTextField tfFrom;
     JTextField tfTo;
-    
+
 	final class AddAbstandAction extends AbstractAction {
 		Icon icon;
 		AddAbstandAction(String tooltip) {
@@ -91,7 +89,7 @@ public class DoubleValueIntervallPanel extends JPanel{
 			}
 		}
 	}
-	
+
 	final class DelAbstandAction extends AbstractAction {
 		Icon icon;
 		DelAbstandAction(String tooltip) {
@@ -122,8 +120,8 @@ public class DoubleValueIntervallPanel extends JPanel{
 				from=neu_from;
 				to=neu_to;
 				if(0 == abstandVector.size())
-					delAbstandAction.setEnabled(false);                            
-			}            
+					delAbstandAction.setEnabled(false);
+			}
 		}
 	}
 	public DoubleValueIntervallPanel(String title, String tooltip,double[] defaultfrom,double[] defaultto){
@@ -169,7 +167,7 @@ public class DoubleValueIntervallPanel extends JPanel{
 		update();
 	}
 	/**
-	 * 
+	 *
 	 */
 	private void update() {
         abstandVector.clear();
@@ -180,7 +178,7 @@ public class DoubleValueIntervallPanel extends JPanel{
 		abstandList.setListData(abstandVector);
 	}
 	/**
-	 * 
+	 *
 	 */
 	public void reset(double[] defaultfrom, double[] defaultto) {
 		from=new double[defaultfrom.length];
@@ -201,10 +199,10 @@ public class DoubleValueIntervallPanel extends JPanel{
 		setBorder( BorderFactory.createTitledBorder( title ) );
 		setToolTipText(tooltip);
 		abstandList = new JList( abstandVector );
-    
+
 		abstandList.setToolTipText(tooltip);
 		abstandList.setVisibleRowCount(5);
-		abstandList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
+		abstandList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		delAbstandAction= new DelAbstandAction("Delete selected value.");
 		abstandList.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e) {

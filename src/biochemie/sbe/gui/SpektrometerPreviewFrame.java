@@ -84,7 +84,6 @@ public class SpektrometerPreviewFrame extends JFrame{
             double[] m = CalcDalton.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
             String id = s.getId();
             
-            //TODO tooltips und positionen stimmen nicht ueberein
             masse.add(m[0],LEN);
             l.add(id+": "+df.format(m[0])+"D");
             masse.add(m[0]+22,LEN*1/7f);

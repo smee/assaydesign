@@ -32,13 +32,13 @@ public class PCRMatcher {
     List primers;
     private CrossDimerAnalysis cda;
     private int maxplex;
-    
+
     public PCRMatcher(List files, double tm, double gc, CrossDimerAnalysis cda) throws IOException {
         maxtmdiff=tm;
         maxgcdiff=gc;
         this.cda=cda;
         this.maxplex=files.size();
-        
+
         primers=new ArrayList();
         for (Iterator it = files.iterator(); it.hasNext();) {
             String filename = (String) it.next();
@@ -46,9 +46,9 @@ public class PCRMatcher {
         }
         System.out.println("Found "+primers.size()+" primers in "+maxplex + " files");
     }
-    
-    
-    
+
+
+
     /**
      * @param filename
      * @return
@@ -86,9 +86,9 @@ public class PCRMatcher {
         primers.add(new PCRPair(p1,p2,maxplex));
         return primers;
     }
-    
 
-    
+
+
     public static void main(String[] args) {
         if(args.length <1) {
             showUsage();
@@ -125,20 +125,20 @@ public class PCRMatcher {
         try {
         	System.out.println("Using the following inputfiles:");
         	System.out.println(Helper.toStringln(filesToProcess));
-        	
-        	
+
+
         	int seconds=conf.getInteger("TIME_TO_COLOR");
         	CrossDimerAnalysis cda=new CrossDimerAnalysis(conf.getString("PARAM_CROSS_WINDOW_SIZE")
         			,conf.getString("PARAM_CROSS_MIN_BINDING")
 					,Boolean.toString(false));
         	PCRMatcher pm=new PCRMatcher(filesToProcess, conf.getDouble("MAX_TM_DIFF"), conf.getDouble("MAX_GC_DIFF"),cda);
-        	
+
         	int maxplex=filesToProcess.size();
-        	
-        	MatcherStrategy ms=null;            
-        	
-        	int strategyToUse=conf.getInteger("STRATEGY");      
-        	
+
+        	MatcherStrategy ms=null;
+
+        	int strategyToUse=conf.getInteger("STRATEGY");
+
         	switch (strategyToUse) {
         	case MAXCLIQUESTRATEGY:
         		ms=new MaxCliqueStrategy(seconds,maxplex);
@@ -152,27 +152,25 @@ public class PCRMatcher {
         	default:
         		break;
         	}
-        	
+
         	Collection pairsToUse=ms.getBestPCRPrimerSet(pm.primers);
         	System.out.println("Using:");
         	System.out.println(Helper.toStringln(pairsToUse));
-        	
-        	
+        	//TODO in der Ausgabe die jeweiligen Zeilen ausgeben/zitieren
+        	//TODO ausgeben, welche dateien nicht verwendet wurden
         } catch (WrongValueException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
-    
-    
-   
-    
+
+
+
+
     /**
-     * 
+     *
      */
     private static void showUsage() {
-        System.out.println("PCRMatcher.exe configfile [pcrprimerfile1 pcrprimerfile2...]");        
+        System.out.println("PCRMatcher.exe configfile [pcrprimerfile1 pcrprimerfile2...]");
     }
 }

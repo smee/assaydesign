@@ -1,8 +1,6 @@
 /*
  * Created on 20.12.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -13,23 +11,21 @@ import java.util.StringTokenizer;
 import javax.swing.table.AbstractTableModel;
 
 import biochemie.sbe.SBECandidate;
-import biochemie.sbe.io.SBEPrimerReader;
+import biochemie.util.Helper;
 
 /**
  * @author sdienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MiniSBEResultTableModel extends AbstractTableModel {
     private final String[] header;
     private final Object[][] data;
     private final List sbec;
 
-    
+
     public MiniSBEResultTableModel(List sb) {
         this.sbec = sb;
-        String[] origheader = SBECandidate.getCsvheader(); 
+        String[] origheader = SBECandidate.getCsvheader();
         header  = new String[origheader.length + 1];
         System.arraycopy(origheader,0,header,0,origheader.length);
         header[header.length-1] = "Exclude primer";
@@ -37,7 +33,7 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
         int i=0;
         for (Iterator it = sbec.iterator(); it.hasNext();i++) {
             SBECandidate s = (SBECandidate) it.next();
-            StringTokenizer st = new StringTokenizer(SBEPrimerReader.clearEmptyFields(s.getCSVRow()),";");
+            StringTokenizer st = new StringTokenizer(Helper.clearEmptyCSVEntries(s.getCSVRow()),";");
             Object[] entries = new Object[st.countTokens() + 1];
             int j =0;
             while (st.hasMoreTokens()) {
@@ -70,7 +66,7 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
         return getValueAt(0, c).getClass();
     }
     public boolean isCellEditable(int row, int col) {
-        if(col==header.length-1)    
+        if(col==header.length-1)
             return true;
         return false;
     }

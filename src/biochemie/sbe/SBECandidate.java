@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryPredicate;
@@ -37,16 +38,9 @@ import biochemie.util.Helper;
 /*
  *
  * @author Steffen
- * TODO - Reason: wenn nicht Primer mit opt. Temp wegen Sek.Struks
- * TODO - Reason: Temperatur optimal/niochtoptimal				)
- * TODO - Reason: Zusammenfassung der aufgetretenen SekStruks   ) redundant, aber notwendig...
- * TODO 3 Anwendungen:
- *        1. zur Bestellung von Primern: MAxclique finden
- *        2. fuer Multiplexen: festgelegte Photolinker, Faerben des Graphen
- *        3. teilmultiplexe vorgegeben, hinyufuegen von Primern, finden optimaler Multiplexe
  */
 public class SBECandidate implements MultiplexableFactory, Observer {
-   
+
     private static final class TemperatureDistanceAndHairpinComparator implements Comparator {
         private final double opt;
         private TemperatureDistanceAndHairpinComparator(double opt) {
@@ -55,10 +49,10 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         public int compare(Object o1, Object o2) {
             SBEPrimer p1= (SBEPrimer)o1;
             SBEPrimer p2= (SBEPrimer)o2;
-            
+
             int numinc1=0, numinc2=0;       //Anzahl der incimp. SekStruks, ohne die, deren pos==pl ist
             int numhh1=0, numhh2=0;         //Anzahl der SekStruks, ohne die, deren pos==pl ist
-			
+
             for (Iterator it = p1.getSecStrucs().iterator(); it.hasNext();) {
                 SBESekStruktur s = (SBESekStruktur) it.next();
                 if(p1.getBruchstelle() - s.getPosFrom3() != 1) {//wenn kein gegenpl eingebaut wuerde
@@ -75,7 +69,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
                         numinc2++;
                 }
             }
-            // Sortieren nach kompatiblen vor inkomp. SekStrukturen 
+            // Sortieren nach kompatiblen vor inkomp. SekStrukturen
             if(numinc2 > numinc1)
                 return -1;
             if(numinc2 < numinc1)
@@ -93,71 +87,74 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         }
     }
 
-    
     SBEPrimer chosen;
     List primercandidates;
     private String invalidreason3="",invalidreason5="",usedreason="", optimaltempreason5="",optimaltempreason3="";
     private final String id;
     private final String leftstring, rightstring;
     private final String snp;
-    private final int productlen,givenfest;
-    private final String bautEin5,bautEin3;
+    private final int productlen;
     private String givenMultiplexID;
 	private final SBEOptionsProvider cfg;
     private String unwanted;
 
     /**
+     * Konstruktor fuer nur einen Primer.
+     * @param cfg
+     * @param id
+     * @param seq
+     * @param snp
+     * @param productlen
+     * @param bautein5
+     * @param givenmplex
+     * @param unwanted
+     */
+    public SBECandidate(SBEOptionsProvider cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted) {
+        this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted);
+    }
+
+    /**
      * @param id
      * @param snp
      * @param productlen
-     * @param festeBruchstelle
      * @param givenMultiplexid
-     * @param unwanted Ausdruck fuer Primer, die der User nicht will (List a la "3'_length_PL ...")
+     * @param unwanted Ausdruck fuer Primer, die der User nicht will (List a la "3'_length_PL ...", z.B.: "3'_25_11 5'_19_8")
       */
-    public SBECandidate(SBEOptionsProvider cfg,String id, String l, String r, String snp, int productlen, int festeBruchstelle, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted) {
+    public SBECandidate(SBEOptionsProvider cfg,String id, String l, String r, String snp, int productlen, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted) {
         leftstring=l;
         rightstring= Helper.revcomplPrimer(r);
         this.id=id;
         this.productlen=productlen;
-        this.bautEin5=bautEin5;
-        this.bautEin3=bautEin3;
         this.snp=snp;
         this.givenMultiplexID=givenMultiplexid.trim();
         this.primercandidates=new ArrayList();
         this.cfg = cfg;
-        this.givenfest = festeBruchstelle;
         this.unwanted=unwanted;
         System.out.println("\nAnalyzing Seq.ID: " + id + "\n------------------------");
 
-        if (-1 != festeBruchstelle) { //suche die Bruchstelle, wenn fest vorgegeben
-                System.out.println("==> Vom Benutzer vorgegebener Primer, keine Tests!");
-                chosen=new SBEPrimer(cfg,id,leftstring,snp,SBEPrimer._5_,bautEin5,productlen,true);
-                usedreason="verwendet - Vom Benutzer vorgegebener Primer, keine Tests!";
-                chosen.setBruchstelle(festeBruchstelle);
-                return;
-        }
-        createValidCandidate();    }
+        createValidCandidate(l, bautEin5,r,bautEin3);
+     }
+
     /**
      * Erzeuge eine Sequenz, die allen Kriterien gerecht wird und setzt alle entsprechenden
      * Instanzfelder.
      *
      */
-    private void createValidCandidate() {
+    private void createValidCandidate(String l, String b5, String r, String b3) {
         //Erzeuge Array mit Structs sortiert nach Abstand von optimaler Temperatur, alle nicht möglichen Kandidaten sind schon entfernt
-        List liste= createSortedCandidateList();
-        primercandidates=findBestPrimers(liste);
+        primercandidates=findBestPrimers(createSortedCandidateList(l, b5, r, b3));
         if (cfg.isDebug()) {
             System.out.println("Using the following primer as candidates:\n" +
                                "-----------------------------------------\n"
                     + Helper.toStringln(primercandidates.toArray(new Object[primercandidates.size()])));
         }
-        if (0 == liste.size()) {
+        if (0 == primercandidates.size()) {
             System.out.println("==> No Primer found for " + leftstring + " and " + rightstring);
             return;
         }
 
     }
-    public boolean isUserGivenPL(){
+    public boolean hasPL(){
         return -1 != getBruchstelle();
     }
     /**
@@ -166,7 +163,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param liste
      */
     private List findBestPrimers(List liste) {
-        
+
         int[] br = cfg.getPhotolinkerPositions();
         List l=new ArrayList();
         for (int i = 0; i < br.length; i++) {
@@ -174,13 +171,13 @@ public class SBECandidate implements MultiplexableFactory, Observer {
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
                         SBEPrimer p=((SBEPrimer)obj);
-                        return p.getBruchstelle()== b && p.getType().equals(SBEPrimer._5_);                    
+                        return p.getBruchstelle()== b && p.getType().equals(SBEPrimer._5_);
                     }
                 },null));
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
                         SBEPrimer p=((SBEPrimer)obj);
-                        return p.getBruchstelle()== b && p.getType().equals(SBEPrimer._3_);                    
+                        return p.getBruchstelle()== b && p.getType().equals(SBEPrimer._3_);
                     }
                 },null));
         }
@@ -207,16 +204,16 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     /**
      * Liefert Liste zurueck mit PrimerTypeTemperatureStructs im Temperaturbereich, absteigend
      * sortiert nach Abstand zur optimalen Temperatur. Alle Primer ausserhalb des GCGehaltes werden
-     * nicht beruecksichtigt. Ausserdem werden alle Primer mit einer Laenge von <18 geloescht. 
+     * nicht beruecksichtigt. Ausserdem werden alle Primer mit einer Laenge von <18 geloescht.
      * Die Liste besteht aus: Primer ohne Hairpin, nach Abstand von optimaler Temperatur ansteigend geordnet
      * gefolgt von Primern mit genau einem Hairpin, auch geordnet nach Abstand von opt. Temp.
      * @return
      */
-    private List createSortedCandidateList() {
-        List liste= getFilteredPTTStructList(leftstring, SBEPrimer._5_,bautEin5);
-        liste.addAll(getFilteredPTTStructList(rightstring, SBEPrimer._3_,bautEin3));
+    private List createSortedCandidateList(String left, String bautEin5, String right, String bautEin3) {
+        List liste= getFilteredPTTStructList(left, SBEPrimer._5_,bautEin5);
+        liste.addAll(getFilteredPTTStructList(right, SBEPrimer._3_,bautEin3));
         Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
-  
+
         System.out.println("List of possible primer:\n------------------------\n"
                 + Helper.toStringln(liste.toArray(new Object[liste.size()])));
         return liste;
@@ -235,31 +232,29 @@ public class SBECandidate implements MultiplexableFactory, Observer {
          * lege Liste an mit allen Sequenzen, die aus Primer entstehen, indem Basen am 5'-Ende abgeschnitten werden.
          */
         int[] br=cfg.getPhotolinkerPositions();
-        for (int i= 0; i < primer.length(); i++) {
-            SBEPrimer p=new SBEPrimer(cfg,id,primer.substring(i),snp,type,bautein,productlen,false);
-            if(p.getBruchstelle() != -1) { //hat sich selbst einen PL verpasst
-                p.addObserver(this);
-                liste.add(p);
-                continue;
-            }
+        int plpos=primer.indexOf('L');
+        if(plpos !=  -1)
+            br=new int[] {plpos};//vorgegebener pl
+
+        for (int startidx= 0; startidx < primer.length(); startidx++) {
             for (int j = 0; j < br.length; j++) {
-                if(p.getSeq().length()>=br[j]) {        //wenn die Sequenz kuerzer ist als die Pos. des PL kann mans gleich lassen
+                if(primer.length() - startidx > br[j]) {        //wenn die Sequenz kuerzer ist als die Pos. des PL kann mans gleich lassen
                     /*
                      * Ich kann den Primer nicht einfach clonen, weil sonst die Sekundaerstrukturen immer noch auf den originalen Primer verweisen,
                      * so dass eine gesetzte Bruchstelle keine Wirkung haette.
                      */
-                    SBEPrimer pclone=new SBEPrimer(cfg,id,primer.substring(i),snp,type,bautein,productlen,false);
-                    pclone.addObserver(this);
-                    pclone.setBruchstelle(br[j]);
-                    liste.add(pclone);
+                    String seq = Helper.replacePL(primer.substring(startidx),br[j]);
+                    SBEPrimer p=new SBEPrimer(cfg,id,seq,snp,type,bautein,productlen,false);
+                    p.addObserver(this);
+                    liste.add(p);
                 }
             }
         }
         final int allcount = liste.size();
-        
+
         //lege Liste mit Filtern an, die verwendet werden sollen
         List kf=new ArrayList();
-        
+
         kf.add(new LaengenFilter(cfg));
 		kf.add(new TemperaturFilter(cfg));
 		kf.add(new PolyXFilter(cfg));
@@ -283,7 +278,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
             if(type.equals(SBEPrimer._5_))
                 invalidreason5+=r;
             else
-                invalidreason3+=r;                
+                invalidreason3+=r;
         }
         String prefix = "All: "+filtcount+"/"+allcount+", ";
         if(type.equals(SBEPrimer._5_)) {
@@ -320,7 +315,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      */
     private String getFavSeqMitPhotolinker() {
         assertPrimerChosen();
-        
+
         int bruchstelle= chosen.getBruchstelle();
         if (-1 == bruchstelle)
             return "";
@@ -358,7 +353,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      */
     double getTMMitPhotolinker() {
         assertPrimerChosen();
-        
+
         if (-1 == chosen.getBruchstelle()) {
             return 0;
         }
@@ -369,7 +364,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
 
     private double getGCGehaltMitPhotolinker() {
         assertPrimerChosen();
-        
+
         StringBuffer sb= new StringBuffer(chosen.getSeq());
         if (-1 == chosen.getBruchstelle()) {
             return 0;
@@ -381,10 +376,10 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     }
     private double getXGehaltBruchStueck(String nukl) {
         assertPrimerChosen();
-        int bruch= chosen.getBruchstelle();    
+        int bruch= chosen.getBruchstelle();
         if (-1 == bruch)
             return 0;
-        
+
         String primer= chosen.getSeq();
         return Helper.getXGehalt(primer.substring(primer.length() - bruch+1), nukl);//zum bruchstueck zaehlt der pl nicht dazu
     }
@@ -407,33 +402,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         double gcvalue= Helper.getXGehalt(seq, "cCgG");
         return gcvalue >= cfg.getMinGC() && gcvalue <= cfg.getMaxGC();
     }
-    /**
-     * Returns the csv-line that can be read by SBEPrimerReader.
-     * @return
-     */
-    public String getInputCVSLine() {
-        StringBuffer sb=new StringBuffer();
-        sb.append(id);
-        sb.append(';');
-        sb.append(leftstring);
-        sb.append(';');
-        sb.append(bautEin5);
-        sb.append(';');
-        sb.append(snp);
-        sb.append(';');
-        sb.append(rightstring);
-        sb.append(';');
-        sb.append(bautEin3);
-        sb.append(';');
-        sb.append(productlen);
-        sb.append(';');
-        sb.append(givenfest);
-        sb.append(';');
-        sb.append(givenMultiplexID);
-        sb.append(';');
-        return new String(sb);
-    }
-    
+
     /**
      * Ergebniszeile.
      * @return
@@ -465,7 +434,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
             return ";"+getId()+";;;;;;;" +invalidreason5
                     + ";" + invalidreason3
                     + ";;;;;;;;;;"+getReason();
-        
+
         assertPrimerChosen();
         StringBuffer sb=new StringBuffer();
         DecimalFormat df= new DecimalFormat("0.00");
@@ -575,7 +544,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
             ret+="comp. ";
         }
         ret+="crossdimer";
-        
+
         return ret;
     }
     /**
@@ -584,8 +553,8 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      */
     protected void choose(SBEPrimer struct) {
         if(null != chosen && !chosen.equals(struct))
-            throw new IllegalStateException("ERROR: another primer was already chosen!");
-        
+            throw new IllegalStateException("ERROR: another primer was already chosen for this Id!");
+
         chosen=struct;
         primercandidates.clear();
     }
@@ -612,7 +581,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     public boolean hasValidPrimer() {
          return null != chosen && -1 != chosen.getBruchstelle();
     }
-    
+
 	public void update(Observable o, Object arg) {
 		if(arg.equals(SBEPrimer.PLEXID_CHANGED))
 			choose((SBEPrimer) o);
@@ -630,7 +599,58 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     public static String[] getCsvheader() {
         return (String[]) ArrayUtils.clone(csvheader);
     }
-    private final static String[] csvheader = 
+    /**
+     * Liest alle Werte aus dem CSV-String und liefert Instanz von <code>SBECandidate </code>.
+     * @param line
+     * @return
+     * @throws WrongValueException
+     */
+    public static SBECandidate getSBECandidateFrom(SBEOptionsProvider cfg, String line) throws WrongValueException {
+        StringTokenizer st=new StringTokenizer(line,";\"");
+        String[] seq=new String[2];
+        String hair5="",hair3="";
+        int productlen;
+        st=new StringTokenizer(line,";\"");
+        String id=st.nextToken() ;  //id
+        seq[0]=Helper.getNuklFromString(st.nextToken()).toUpperCase() ;//left seq.
+        hair5=Helper.getNuklFromString(st.nextToken()).toUpperCase();//Definitiver Hairpin 5'
+        String snp=Helper.getNuklFromString(st.nextToken()).toUpperCase() ;  //SNP
+        seq[1]=Helper.getNuklFromString(st.nextToken()).toUpperCase(); //right seq.
+        hair3=Helper.getNuklFromString(st.nextToken()).toUpperCase() ;//Definitiver Hairpin 3'
+        String temp=st.nextToken();
+        try{
+    		productlen=Integer.parseInt(temp);
+        }catch (NumberFormatException e) {
+    		productlen=temp.length() ;//PCR-Produktlaenge
+    	}
+        int festeBruchstelle=-1;
+        if(st.hasMoreTokens()){
+            String tmp=st.nextToken().trim();
+            if(null != tmp && 0 != tmp.length())
+                try {
+                    festeBruchstelle= Integer.parseInt(tmp);
+                } catch (NumberFormatException e1) {
+                    throw new WrongValueException("Falscher Parameter: \""+tmp+"\"; sollte z.B. sein \"9\"");
+                }
+        }
+        String givenMultiplexid="";
+        if(st.hasMoreTokens())
+            givenMultiplexid=st.nextToken().trim();
+        String unwanted = "";
+        if(st.hasMoreTokens())
+            unwanted = st.nextToken().trim();
+
+        if(festeBruchstelle != -1) {//wenn ein PL vorgegeben ist, wird nur der linke Primer betrachtet
+            int posOfL=Helper.getPosOfPl(seq[0]);
+            if(posOfL != -1 && posOfL != festeBruchstelle)
+                throw new IllegalArgumentException("In primer ID="+id+": Left primer has a L in position="+posOfL+" != field PL="+festeBruchstelle+" !");
+
+            String primer = Helper.replacePL(seq[0],festeBruchstelle);
+            return new SBECandidate(cfg, id, primer,snp, productlen, hair5, givenMultiplexid, unwanted);
+        }else
+            return new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,hair5,hair3,givenMultiplexid,unwanted);
+    }
+    private final static String[] csvheader =
         new String[] {
             "Multiplex ID"
             ,"SBE-ID"

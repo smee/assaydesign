@@ -1,8 +1,6 @@
 /*
  * Created on 06.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.pcr.matcher;
 
@@ -19,13 +17,13 @@ class PCRPair implements Multiplexable{
         this.maxplex=maxplex;
         edgereason="";
     }
-    public void setPlexID(String s) {            
+    public void setPlexID(String s) {
     }
-    
+
     public String getName() {
         return leftp.getId()+","+leftp.getPos();
     }
-    
+
     public boolean passtMit(Multiplexable other) {
         if(other instanceof PCRPrimer){
             boolean b=leftp.passtMit(other);
@@ -38,7 +36,7 @@ class PCRPair implements Multiplexable{
                 edgereason=rightp.getEdgeReason();
                 return false;
             }
-            
+
         }
         PCRPair p=(PCRPair)other;
         boolean b= leftp.passtMit(p.leftp)
@@ -55,7 +53,7 @@ class PCRPair implements Multiplexable{
         }
         return true;
     }
-    
+
     public int maxPlexSize() {
         return maxplex;
     }

@@ -1,8 +1,6 @@
 /*
  * Created on 03.12.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.util;
 
@@ -18,8 +16,6 @@ import biochemie.sbe.calculators.Multiplexable;
 /**
  * @author sdienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class GraphHelper {
 
@@ -40,11 +36,11 @@ public class GraphHelper {
                     result.addEdge(v1,v2);
             }
         }
-        return result;       
+        return result;
     }
 
     /**
-     * Erstellt den Unvertraeglichkkeitsgraphen von einer List von Multiplexables. 
+     * Erstellt den Unvertraeglichkkeitsgraphen von einer List von Multiplexables.
      * @param multiplexables
      * @param debug true, graph wird in eine Datei geschrieben
      * @param outputtype kann sein: GraphWriter.TGF, GraphWriter.GML oder XWG, 0 default

@@ -1,8 +1,6 @@
 /*
  * Created on 19.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.gui;
 
@@ -15,8 +13,6 @@ import biochemie.calcdalton.gui.PBSequenceField;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class StringEntryPanel extends MyPanel {
 
@@ -43,7 +39,7 @@ public class StringEntryPanel extends MyPanel {
 	}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
@@ -66,10 +62,10 @@ public class StringEntryPanel extends MyPanel {
 		this.add(getPBSequenceField(), gridBagConstraints3);
 	}
 	/**
-	 * This method initializes jTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */    
+	 * This method initializes jTextField
+	 *
+	 * @return javax.swing.JTextField
+	 */
 	private JTextField getLabelTf() {
 		if (labelTf == null) {
 			labelTf = new JTextField();
@@ -78,10 +74,10 @@ public class StringEntryPanel extends MyPanel {
 		return labelTf;
 	}
 	/**
-	 * This method initializes PBSequenceField	
-	 * 	
-	 * @return biochemie.calcdalton.gui.PBSequenceField	
-	 */    
+	 * This method initializes PBSequenceField
+	 *
+	 * @return biochemie.calcdalton.gui.PBSequenceField
+	 */
 	private PBSequenceField getPBSequenceField() {
 		if (PBSequenceField == null) {
 			PBSequenceField = new PBSequenceField();
@@ -102,7 +98,7 @@ public class StringEntryPanel extends MyPanel {
 		//TODO
 	}
 
-	
+
 	public String getText(){
 		return getPBSequenceField().getText();
 	}

@@ -1,8 +1,6 @@
 /*
  * Created on 29.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe;
 
@@ -34,7 +32,7 @@ public interface SBEOptionsProvider extends CalcDaltonOptionsProvider {
 	 */
 	public double getMaxTemperature();
 	public void setMaxTemperature(double val);
-	
+
 	/**
 	 * Get minimum gc amount. ()in percent
 	 * @return
@@ -89,35 +87,35 @@ public interface SBEOptionsProvider extends CalcDaltonOptionsProvider {
 	 */
 	public String getHairpinMinbinds();
 	public void setHairpinMinbinds(String w);
-	
+
 	/**
 	 * Returns the windowsizes of predicted homodimers. Spaceseparated list of ints.
 	 * @return
 	 */
 	public String getHomodimerWindowsizes();
 	public void setHomodimerWindowsizes(String w);
-	
-	/** 
+
+	/**
 	 * Returns the Minbinds of predicted homodimers. Spaceseparated list of ints.
 	 * @return
 	 */
 	public String getHomodimerMinbinds();
 	public void setHomodimerMinbinds(String w);
-	
+
 	/**
 	 * Returns the windowsizes of predicted crossdimers. Spaceseparated list of ints.
 	 * @return
 	 */
 	public String getCrossDimerWindowsizes();
 	public void setCrossimerWindowsizes(String w);
-	
+
 	/**
 	 * Returns the Minbinds of predicted crossdimers. Spaceseparated list of ints.
 	 * @return
 	 */
 	public String getCrossdimerMinbinds();
 	public void setCrossdimerMinbinds(String w);
-	
+
 	/**
 	 * If all crossdimers aren't evil, only incompatible crossdimers are considered
 	 * as such.

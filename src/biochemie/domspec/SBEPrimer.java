@@ -35,21 +35,34 @@ public class SBEPrimer extends Primer{
 
     public static final String _5_ = "5";
     public static final String _3_ = "3";
-    private int pl;
+    private final int pl;
     private final String type;
     private final String snp;
     private final SBEOptionsProvider cfg;
     private final int productlen;
-    
-	public static final String PL_CHANGED = "photolinker changed";
-    
+
+
     public void setPlexID(String s) {
         super.setPlexID(s);
     }
+    /**
+     * This constructor needs a L within the sequence to determine the position of the photolinker
+     * @param cfg SBEOptionsProvider
+     * @param id unique id
+     * @param seq String consisting of ACGT and max. one L which specifies the pl
+     * @param snp String of ACGT
+     * @param type SBEPrimer._5_ or SBEPrimer._3_
+     * @param bautein String of ACGT
+     * @param prodlen Length of the sbeproduct
+     * @param usergiven tru: don't probe for secstructures.
+     */
     public SBEPrimer(SBEOptionsProvider cfg,String id,String seq, String snp, String type, String bautein, int prodlen,boolean usergiven) {
         super(id,seq);
         this.cfg = cfg;
-        this.pl=-1;
+        this.pl=Helper.getPosOfPl(seq);
+        if(pl == -1)
+            throw new IllegalArgumentException("Sequence of primer "+id+" has no L within sequence!");
+
         this.productlen= prodlen;
         this.type=type;
         if(type.indexOf(_3_) != -1)
@@ -58,7 +71,6 @@ public class SBEPrimer extends Primer{
             this.snp=snp;
         init(bautein, usergiven);
 	}
-
 	public Set getSecStrucs() {
 		if(sekstruc == null)
 			sekstruc = SekStrukturFactory.getSecStruks(this,cfg);
@@ -73,7 +85,7 @@ public class SBEPrimer extends Primer{
             public Object evaluate(Object seed, Object sek) {
                 SBESekStruktur s=(SBESekStruktur)sek;
                 return Boolean.valueOf(((Boolean)seed).booleanValue() ||  (SBESekStruktur.HOMODIMER == s.getType() && s.isIncompatible()));
-            }                
+            }
         })).booleanValue();
         return ret;
     }
@@ -85,7 +97,7 @@ public class SBEPrimer extends Primer{
             public Object evaluate(Object seed, Object sek) {
                 SBESekStruktur s=(SBESekStruktur)sek;
                 return Boolean.valueOf(((Boolean) seed).booleanValue() || SBESekStruktur.HAIRPIN == s.getType() && true == s.isIncompatible());
-            }                
+            }
         })).booleanValue();
         return ret;
     }
@@ -96,8 +108,8 @@ public class SBEPrimer extends Primer{
      * @param bautein
      */
     private void init(String bautein,boolean usergiven) {
-        boolean hh= bautein.length() == 0 && !bautein.equalsIgnoreCase("none");
-        if(hh && !usergiven){
+        boolean hh= usergiven && (bautein.length() == 0 || !bautein.equalsIgnoreCase("none"));//vom benutzer vorgegebene Sekundaerstrukturen
+        if(hh && usergiven){
             int incompHairpin=0,incompHomodimer=0;
             HashSet positions=new HashSet();
             for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
@@ -115,17 +127,6 @@ public class SBEPrimer extends Primer{
                         default :
                             break;
                     }
-                }                    
-            }
-            int[] br =cfg.getPhotolinkerPositions();
-            if(0 < positions.size()) {
-                int pos=((Integer)positions.iterator().next()).intValue();
-                int bruchmax=Helper.findMaxIn(br);
-                int bruchmin=Helper.findMinIn(br);
-                if (pos > bruchmax)
-                    pos -= 1; //darf max. 1 Nukleotid Richtung 3' gehen
-                if (pos >=bruchmin && pos <= bruchmax) {//ich kann diese Sek,struktur verhindern!
-                    setBruchstelle(pos);
                 }
             }
         }else{//es wurde schon was vorgegeben
@@ -146,32 +147,8 @@ public class SBEPrimer extends Primer{
     public int getBruchstelle() {
         return pl;
     }
-    public void setBruchstelle(int i) {
-        if(pl != -1)
-            throw new IllegalStateException("photolinker already set! Attempted to set it twice. Error in Program!");
-        
-        pl=i;
-        revalidate();
-        setChanged();
-        notifyObservers(PL_CHANGED);
-    }
     public String getSNP() {
         return this.snp;
-    }
-    /**
-     * Testet, inwiefern sich ein Photolinker auf die Sekundärstrukturen dieses Kandidaten auswirken.
-     */
-    private void revalidate() {
-        StringBuffer sb= new StringBuffer(getSeq());
-        sb.deleteCharAt(sb.length() - getBruchstelle());
-        
-        temp=Helper.calcTM(sb.toString());
-        setChanged();
-        notifyObservers(TEMP_CHANGED);
-        
-        gcgehalt=Helper.getXGehalt(sb.toString(),"GgCc");
-        setChanged();
-        notifyObservers(GC_CHANGED);
     }
 
     public boolean equals(Object o){
@@ -183,7 +160,7 @@ public class SBEPrimer extends Primer{
         .appendSuper(super.equals(o))
         .append(this.getId(), rhs.getId())
         .append(getBruchstelle(), rhs.getBruchstelle())
-        .isEquals();    
+        .isEquals();
     }
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
@@ -207,7 +184,7 @@ public class SBEPrimer extends Primer{
                 edgereason="productlendiff="+prdiff;
                 return false;    //Produktlängenunterschied zu gering
             }
-            
+
             //Inkompatible Sekundärstrukturen?
             String snp1=getSNP();
             String snp2=other.getSNP();
@@ -218,7 +195,7 @@ public class SBEPrimer extends Primer{
                 if(-1 != snp2.indexOf(s.bautEin())){
                     edgereason="incomp. Sekstructure";
                     return false;
-                }                
+                }
             }
             for (Iterator it = other.sekstruc.iterator(); it.hasNext();) {
                 SBESekStruktur s = (SBESekStruktur) it.next();
@@ -227,7 +204,7 @@ public class SBEPrimer extends Primer{
                 if(snp1.indexOf(s.bautEin()) != -1){
                     edgereason="incomp. Sekstructure";
                     return false;
-                }                
+                }
             }
             return passtMitCrossdimern(other) && passtMitCalcDalton(other);
         }else {
@@ -253,13 +230,13 @@ public class SBEPrimer extends Primer{
                 continue;
             if(!cfg.getAllCrossdimersAreEvil()) {
                 if(s.isIncompatible()) {
-                    edgereason="incomp. Crossdimer";                        
+                    edgereason="incomp. Crossdimer";
                     return false;
                 }
             }else {
-                edgereason="Crossdimer";                        
-                return false;                    
-            }                
+                edgereason="Crossdimer";
+                return false;
+            }
         }
         return true;
     }
@@ -282,19 +259,6 @@ public class SBEPrimer extends Primer{
         return true;
     }
 
-    /**
-     * testet, ob einer der Nukleotide in <code>nukl </code> in <code>snp</code> enthalten ist.
-     * @param nukl
-     * @param snp
-     * @return
-     */
-    boolean isIncompatible(String nukl, String snp) {
-        for (int i = 0; i < nukl.length(); i++) {
-            if(-1 != snp.indexOf(nukl.charAt(i)))
-                return true;
-        }
-        return false;
-    }
     public String getName() {
         return getId()+'_'+getBruchstelle()+'_'+getType();
     }

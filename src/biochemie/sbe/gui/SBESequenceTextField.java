@@ -1,8 +1,6 @@
 /*
  * Created on 18.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -10,14 +8,13 @@ import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.util.Helper;
 
 /**
+ * Like PBSequenceField with a possible L within.
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SBESequenceTextField extends PBSequenceField  {
 
-	  
+
 
 	public SBESequenceTextField(){
 		super(100,true,"ACGTLacgt");
@@ -25,8 +22,8 @@ public class SBESequenceTextField extends PBSequenceField  {
 	}
 
 
-	
-	public String getSequence(){		
+
+	public String getSequence(){
         if(isEnabled())
             return Helper.getNuklFromString(super.getText().replace('L','A'));
         return "";

@@ -5,72 +5,67 @@
 package biochemie.domspec;
 
 import java.util.Comparator;
-import java.util.Observable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import sun.security.action.GetBooleanAction;
+
 import biochemie.util.Helper;
 
-
+/*
+ * TODO "All crossdimers are evil" hat neue Funktion: wenn durch crossdimer nukl. eingebaut werden, entstehen moeglicherweise neue kanten.
+ * TODO z.b. a macht mit b crossdimer, baut ein G ein, dann muss jetzt zwischen A und allen Primern, die ein G im SNP haben auch eine Kante rein!
+ * Das eigentliche Problem ist, dass es sich hierbei um bedingte Kanten handelt, sie sind nur relevant, wenn die beiden Primer, die den Crossdimer bilden
+ * in einem MUltiplex waeren. Aber bis das modelliert werden kann, werden eben einfach alle Kanten vollwertig verwendet.
+ *
+ */
 public class SBESekStruktur extends SekStruktur{
     private boolean incomp=false;
     private boolean verh=false;
-	private static final String VERH_CHANGED = "verhindert changed";
-	private static final String INCOMP_CHANGED = "(in)comp. changed";
-    
+
     protected  SBESekStruktur(SBEPrimer p,SBEPrimer other,int pos) {
         super(p,other,pos);
         init();
     }
     public SBESekStruktur(SBEPrimer p,int t, char einbau) {
         super(p,t,einbau);
+        init();
     }
     protected SBESekStruktur(SBEPrimer p,int t, int pos) {
         super(p,t,pos);
         init();
     }
-    
+
       /**
-     * 
+     *
      */
     private void init() {
-        if(0 != einbau){
-            incomp= (-1 != ((SBEPrimer)other).getSNP().indexOf(einbau));
+        if( bautAn != 0){//vorgegeben
+            incomp= (-1 != ((SBEPrimer)other).getSNP().indexOf(bautAn));
             verh=false;
         }else{
             switch (type) {
             case HAIRPIN :
             case HOMODIMER :
                 incomp=Helper.isInkompatibleSekStruktur(p.getSeq(),getPosFrom3(),((SBEPrimer)p).getSNP());
+                int pl=((SBEPrimer)p).getBruchstelle();
+                verh=getPosFrom3() == pl || getPosFrom3() == pl-1;
                 break;
             case CROSSDIMER:
-                incomp=Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),((SBEPrimer)p).getSNP());
+                //es sind zwei SNPs beteiligt, gegen die getestet werden muss.
+                incomp=Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),((SBEPrimer)p).getSNP())
+                              || Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),((SBEPrimer)other).getSNP());
+                //bei crossdimern verhindert ja der PL des anderen Primers
+                int plo=((SBEPrimer)other).getBruchstelle();
+                verh=getPosFrom3() == plo || getPosFrom3() == plo-1;
                 break;
-                
+
             default :
                 break;
             }
-            revalidate();
         }
     }
-    private void revalidate() {
-        SBEPrimer totest= (SBEPrimer) (type==CROSSDIMER?other:p);
-        if(-1 != pos){
-            boolean v= (pos == totest.getBruchstelle() 
-                || pos == totest.getBruchstelle() - 1);
-            if(verh != v){
-            	setChanged();
-            	notifyObservers(VERH_CHANGED);
-            }
-        }
-       
-        boolean inc= totest.getSNP().indexOf(einbau) != -1;
-        if( incomp != inc){
-        	incomp = inc;
-        	setChanged();
-        	notifyObservers(INCOMP_CHANGED);
-        }
-    }
+
     public boolean isIncompatible() {
         return incomp;
     }
@@ -94,7 +89,7 @@ public class SBESekStruktur extends SekStruktur{
         }else {
             eq=eq && (((SBEPrimer)p).getBruchstelle()==((SBEPrimer)rhs.p).getBruchstelle());
         }
-        
+
         return eq;
 
     }
@@ -107,13 +102,15 @@ public class SBESekStruktur extends SekStruktur{
                append(verh).
                append(type).
                toHashCode();
-//            System.out.println("{"+this+"} has hashcode "+hash);
             return hash;
     }
     public String toString() {
-        if( getType() == CROSSDIMER )
-            return other.getId()+": "+other.getSeq()+",PL= "+((SBEPrimer)other).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible crossdimer with ID "+p.getId()+": "+p.getSeq()+",PL= "+((SBEPrimer)p).getBruchstelle();
-        return p.getId()+": "+p.getSeq()+",PL="+((SBEPrimer)p).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible "+(HAIRPIN == getType()?"hairpin":"homodimer")+", pos="+getPosFrom3()+", bautein="+bautEin()+", "+(verh?"ir":"")+"relevant";
+        if( getType() != CROSSDIMER )
+            return p.getId()+": "+p.getSeq()+",PL="+((SBEPrimer)p).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible "+(HAIRPIN == getType()?"hairpin":"homodimer")+", pos="+getPosFrom3()+", bautein="+bautEin()+", "+(verh?"ir":"")+"relevant";
+        else
+            return p.getId()+"(PL="+((SBEPrimer)p).getBruchstelle()+") with "+other.getId()+"(PL="+((SBEPrimer)other).getBruchstelle()+"): "
+                     +(isIncompatible()?"in":"")+"compatible crossdimer, "+(verh?"ir":"")+"relevant";
+            //return other.getId()+": "+other.getSeq()+",PL= "+((SBEPrimer)other).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible crossdimer with ID "+p.getId()+": "+p.getSeq()+",PL= "+((SBEPrimer)p).getBruchstelle();
     }
     /**
      * Liefert Comaprator, der Sekundaerstrukturen nach Ernsthaftigkeit sortiert, also
@@ -130,14 +127,11 @@ public class SBESekStruktur extends SekStruktur{
                 if(s2.isIncompatible())
                     return 1;
                 return 0;
-            }            
+            }
         };
     }
-    
-    public void update(Observable o, Object arg) {
-        super.update(o, arg);
-        revalidate();
-    }
+
+
     /* (non-Javadoc)
      * @see biochemie.domspec.SekStruktur#getAsciiArt()
      */
@@ -150,7 +144,7 @@ public class SBESekStruktur extends SekStruktur{
             return Helper.outputXDimer(seq,seq,seq.length() - pos,p.seq.length());
         case CROSSDIMER:
             String otherseq = Helper.replacePL(other.getSeq(), ((SBEPrimer)other).getBruchstelle());
-            return Helper.outputXDimer(seq,otherseq,seq.length() - pos,Math.min(seq.length(),otherseq.length()));
+            return Helper.outputXDimer(seq,otherseq,seq.length()-pos,Math.min(seq.length(),otherseq.length()));
 
         default:
             return "unknown type of sec.struk encountered.";

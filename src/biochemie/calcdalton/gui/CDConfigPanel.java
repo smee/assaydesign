@@ -1,8 +1,6 @@
 /*
  * Created on 21.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.calcdalton.gui;
 
@@ -47,7 +45,7 @@ import biochemie.util.config.GeneralConfig;
  */
 public class CDConfigPanel extends JPanel{
 
-	
+
 	//actions
     private final class DeleteSpaltStelleAction extends AbstractAction{
         Icon icon;
@@ -70,8 +68,8 @@ public class CDConfigPanel extends JPanel{
                     spaltDownAction.setEnabled(false);
                     delSpaltAction.setEnabled(false);
                 }
-            }            
-        }        
+            }
+        }
     }
     private final class AddSpaltStelleAction extends AbstractAction{
         Icon icon;
@@ -98,8 +96,8 @@ public class CDConfigPanel extends JPanel{
                     delSpaltAction.setEnabled(true);
                 }
             }catch (NumberFormatException e1) {
-             }               
-        }        
+             }
+        }
     }
     public class OkayAction extends AbstractAction {
         Icon icon;
@@ -113,7 +111,7 @@ public class CDConfigPanel extends JPanel{
             }
         }
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     }
     private final class SpaltStelleUpAction extends AbstractAction {
@@ -127,7 +125,7 @@ public class CDConfigPanel extends JPanel{
                 putValue(Action.SMALL_ICON,icon);
             }
         }
-        public void actionPerformed(ActionEvent e) {            
+        public void actionPerformed(ActionEvent e) {
             int index=bruchList.getSelectedIndex();
             bruchList.setSelectedIndex(index);
             if(0 < index) {
@@ -136,7 +134,7 @@ public class CDConfigPanel extends JPanel{
                 bruchstelleVector.setElementAt(temp,index-1);
                 bruchList.setListData(bruchstelleVector);
                 bruchList.setSelectedIndex(index-1);
-            }            
+            }
         }
     }
     private final class SpaltStelleDownAction extends AbstractAction {
@@ -150,7 +148,7 @@ public class CDConfigPanel extends JPanel{
                 putValue(Action.SMALL_ICON,icon);
             }
         }
-        public void actionPerformed(ActionEvent e) {            
+        public void actionPerformed(ActionEvent e) {
             int index=bruchList.getSelectedIndex();
             bruchList.setSelectedIndex(index);
             if(index!=bruchstelleVector.size()-1 && -1 != index) {
@@ -160,7 +158,7 @@ public class CDConfigPanel extends JPanel{
                 bruchList.setListData(bruchstelleVector);
                 bruchList.setSelectedIndex(index+1);
             }
-            
+
         }
     }
     public class ResetAction extends AbstractAction {
@@ -203,7 +201,7 @@ public class CDConfigPanel extends JPanel{
                 }
                 public String getDescription() {
                     return "CalcDalton-configfiles";
-                }            
+                }
             });
             int result=jfc.showOpenDialog(null);
             if(JFileChooser.APPROVE_OPTION == result){
@@ -218,7 +216,7 @@ public class CDConfigPanel extends JPanel{
             }
             }
             delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
-            
+
         }
     }
     public class SaveAction extends AbstractAction {
@@ -246,7 +244,7 @@ public class CDConfigPanel extends JPanel{
                 }
                 public String getDescription() {
                     return "CalcDalton-configfiles";
-                }            
+                }
             });
             int result=jfc.showSaveDialog(null);
             if(JFileChooser.APPROVE_OPTION == result){
@@ -267,10 +265,10 @@ public class CDConfigPanel extends JPanel{
                                                     +"saved. An error occured.","", JOptionPane.WARNING_MESSAGE);
                 }
             }
-                
+
         }
     }
-    
+
     //private vars
 	private SpaltStelleDownAction spaltDownAction;
     private SpaltStelleUpAction spaltUpAction;
@@ -282,9 +280,9 @@ public class CDConfigPanel extends JPanel{
     JCheckBox cbAllowOverlap;
     DoubleValueIntervallPanel abstandPanel;
 	DoubleValueIntervallPanel verbMassePanel;
-	
-	final Vector bruchstelleVector;	
-	
+
+	final Vector bruchstelleVector;
+
     public CDConfigPanel(){
         bruchstelleVector = new Vector();
         abstandPanel = new DoubleValueIntervallPanel("Excluded peak distances (D)","No primer or product will have a mass distance of this range.",new double[]{20.0,36.0},new double[]{24.0, 39.9});
@@ -292,10 +290,10 @@ public class CDConfigPanel extends JPanel{
 		initialize();
         setValuesFrom(new CDOptionsImpl());
     }
-    
+
     public CalcDaltonOptionsProvider getCalcDaltonOptionsProvider() {
         CDOptionsImpl c=new CDOptionsImpl();
-       
+
         int[] br=new int[bruchstelleVector.size()];
         int i=0;
         for (Iterator it = bruchstelleVector.iterator(); it.hasNext();i++) {
@@ -311,7 +309,7 @@ public class CDConfigPanel extends JPanel{
         c.setCalcDaltonVerbTo(verbMassePanel.getTo());
         return c;
     }
-    
+
     public void setValuesFrom(CalcDaltonOptionsProvider cfg) {
         bruchstelleVector.removeAllElements();
         int[] br=cfg.getPhotolinkerPositions();
@@ -325,7 +323,7 @@ public class CDConfigPanel extends JPanel{
             verbMassePanel.reset(cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
     }
 
-    
+
     public int getMaxBruchstelle(){
         int max=0;
         for (int i= 0; i < bruchstelleVector.size(); i++) {
@@ -341,13 +339,13 @@ public class CDConfigPanel extends JPanel{
         JButton btJb_up;
         JButton btJb_down;
         JButton btAddspalt;
-    	
-        
+
+
         double p=TableLayoutConstants.PREFERRED;
         double f=TableLayoutConstants.FILL;
         double b=5;
         double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p}};
-		
+
         setLayout(new TableLayout(settingsSize));
         JPanel bruchStellenPanel=new JPanel();
         add(bruchStellenPanel,"1,1");
@@ -386,7 +384,7 @@ public class CDConfigPanel extends JPanel{
 
         add(abstandPanel,"1,3");
 		add(verbMassePanel,"1,5");
-        
+
         JPanel peakPanel = new JPanel();
         double[][] peakSizes={{b,f,b},{b,p,b}};
         peakPanel.setLayout(new TableLayout(peakSizes));

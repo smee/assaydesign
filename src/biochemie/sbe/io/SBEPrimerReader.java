@@ -1,8 +1,6 @@
 /*
  * Created on 23.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.io;
 
@@ -19,9 +17,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.domspec.SBEPrimer;
@@ -35,14 +31,12 @@ import biochemie.util.Helper;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SBEPrimerReader {
 	protected List list;
     protected List sbec;
     protected SBEOptionsProvider cfg;
-    
+
     public SBEPrimerReader() {
 
     }
@@ -56,64 +50,19 @@ public class SBEPrimerReader {
         this.cfg = cfg;
     	BufferedReader br= new BufferedReader(new FileReader(new File(filename)));
         list = new LinkedList();
-        
+
         String line=br.readLine(); //skip header
-        
+
         while (null != (line = br.readLine())) {
             if (!SBEConfig.isEmptyRow(line))
                 list.add(line);
         }
     }
-    /**
-     * Liest n-te Zeile ein und setzt alle Variablen auf eingelesene Werte. Es werden keine
-     * Fehler abgefangen!
-     * SBE-ID;5' Sequenz;SNP Variante;3' Sequenz;SNP 5';PCR Produkt;
-     * Feste Photolinkerposition (leer, wenn egal);Min Primer Temp;Opt. Primer Temp;Max Primer Temp;
-     * Min GC Gehalt;Max GC Gehalt;FensterGröße;Bindend im Fenster;
-     * Photolinkerpositionen von;Photolinkerpositionen bis;Maximale Plexnummer;
-     * Photolinkerpositionen;Spezifizierte Absände;Peakdistance;polyX
-     */
     private SBECandidate useRow(int n) throws WrongValueException  {
         if(n>=getCount() || 0 > n)
             return null;
-        String line=SBEPrimerReader.clearEmptyFields((String)list.get(n));
-        StringTokenizer st=new StringTokenizer(line,";\"");
-        String[] seq=new String[2];
-        String hair5="",hair3="";
-        int productlen;
-        st=new StringTokenizer(line,";\"");
-        String id=st.nextToken() ;  //id
-        seq[0]=Helper.getNuklFromString(st.nextToken()).toUpperCase() ;//left seq.  
-        hair5=Helper.getNuklFromString(st.nextToken()).toUpperCase();//Definitiver Hairpin 5'
-        String snp=Helper.getNuklFromString(st.nextToken()).toUpperCase() ;  //SNP
-        seq[1]=Helper.getNuklFromString(st.nextToken()).toUpperCase(); //right seq.
-        hair3=Helper.getNuklFromString(st.nextToken()).toUpperCase() ;//Definitiver Hairpin 3'
-        String temp=st.nextToken();
-        try{
-			productlen=Integer.parseInt(temp); 
-        }catch (NumberFormatException e) {
-			productlen=temp.length() ;//PCR-Produktlaenge
-		}
-        
-        int festeBruchstelle=-1;
-        if(st.hasMoreTokens()){
-            String tmp=st.nextToken().trim();
-            if(null != tmp && 0 != tmp.length())
-                try {
-                    festeBruchstelle= Integer.parseInt(tmp);
-                } catch (NumberFormatException e1) {
-                    throw new WrongValueException("Falscher Parameter: \""+tmp+"\"; sollte z.B. sein \"9\"");
-                }
-        }
-        String givenMultiplexid="";
-        if(st.hasMoreTokens())
-            givenMultiplexid=st.nextToken().trim();
-        String unwanted = "";
-        if(st.hasMoreTokens())
-            unwanted = st.nextToken().trim();
-        
-        SBECandidate struct=new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,festeBruchstelle,hair5,hair3,givenMultiplexid,unwanted);
-        return struct;
+        String line=Helper.clearEmptyCSVEntries((String)list.get(n));
+        return SBECandidate.getSBECandidateFrom(cfg,line);
     }
     /**
      * Erzeuge Liste mit Kandidaten. Funktioniert nur einmal, da die originale Liste intern gehalten wird, damit beim Speichern spaeter
@@ -132,7 +81,7 @@ public class SBEPrimerReader {
         }
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate s = (SBECandidate) it.next();
-            if(0 != s.getGivenMultiplexID().length() && !s.isUserGivenPL()) {
+            if(0 != s.getGivenMultiplexID().length() && !s.hasPL()) {
                 throw new IllegalArgumentException("Primer ID="+s.getId()+" has no given photolinker, so it can't be in the given multiplex "+s.getGivenMultiplexID()+'!');
             }
         }
@@ -146,7 +95,7 @@ public class SBEPrimerReader {
 		Collections.sort(sbec,new Comparator() {
             public int compare(Object arg0, Object arg1) {
                 return ((SBECandidate)arg0).getGivenMultiplexID().compareTo(((SBECandidate)arg1).getGivenMultiplexID());
-            }            
+            }
         });
         List l=new ArrayList();
         if(0 == sbec.size())
@@ -174,17 +123,17 @@ public class SBEPrimerReader {
      */
     private int getCount() {
         return list.size();
-    } 
+    }
     /**
      * @param outname
      */
     public void writeSBEResults(String outname) {
         writeSBEResults(outname,sbec);
     }
-    
+
     public static void writeSBEResults(String filename, List sbec) {
         StringBuffer sb=new StringBuffer(StringUtils.join(SBECandidate.getCsvheader(),';') +"\n");
-                
+
         for (int i= 0; i < sbec.size(); i++) {
             String line=((MultiplexableFactory) sbec.get(i)).getCSVRow();
             sb.append(line);
@@ -198,24 +147,6 @@ public class SBEPrimerReader {
             System.out.println("Fehler beim Schreiben von "+filename+". Fehler: "+e.getMessage());
         }
     }
-    /**
-     * Fuegt leerzeichen ein, damit Stringtokenizer funzt
-     * @param string
-     */
-    public static String clearEmptyFields(String string) {
-        int index=0,oldindex=0;
-        
-        StringBuffer sb=new StringBuffer(string.length()+10);
-        if(';' == string.charAt(0))
-            sb.append(' ');
-        while(0 <= (index = string.indexOf(";;", oldindex))) {
-            sb.append(string.substring(oldindex,index+1));
-            sb.append(' ');
-            oldindex=index+1;
-        }
-        sb.append(string.substring(oldindex));
-        return sb.toString();
-    }
     static class MegaKnotenFactory implements MultiplexableFactory, Multiplexable{
 
         private List knoten;
@@ -223,7 +154,7 @@ public class SBEPrimerReader {
 		private String edgeReason;
 		private SBEOptionsProvider cfg;
         private String givenId;
-        
+
         public MegaKnotenFactory(List knoten2, String givenid, SBEOptionsProvider cfg) {
             this.knoten=knoten2;
             this.cfg=cfg;
@@ -280,7 +211,7 @@ public class SBEPrimerReader {
                 other.add(o);
             else if(o instanceof MegaKnotenFactory) {
                 other.addAll(((MegaKnotenFactory)o).multiplexables);
-                differentGivenMultiplexes = givenId.length()!=0 
+                differentGivenMultiplexes = givenId.length()!=0
                 && ((MegaKnotenFactory)o).givenId.length()!=0
                 && !givenId.equalsIgnoreCase(((MegaKnotenFactory)o).givenId);
             }
@@ -294,7 +225,7 @@ public class SBEPrimerReader {
                     }else
                         if(!m.passtMit(m2)){
                             edgeReason=m.getEdgeReason();
-                            return false;   
+                            return false;
                         }
                 }
             }

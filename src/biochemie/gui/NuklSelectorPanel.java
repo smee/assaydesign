@@ -1,8 +1,6 @@
 /*
  * Created on 11.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.gui;
 
@@ -13,8 +11,6 @@ import javax.swing.JCheckBox;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class NuklSelectorPanel extends MyPanel {
 
@@ -22,7 +18,7 @@ public class NuklSelectorPanel extends MyPanel {
 	private JCheckBox cbG = null;
 	private JCheckBox cbC = null;
 	private JCheckBox cbT = null;
-	
+
 	private String title="SNP";
 	/**
 	 * This is the default constructor
@@ -39,11 +35,11 @@ public class NuklSelectorPanel extends MyPanel {
 	}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
-		
+
 		GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
@@ -86,10 +82,10 @@ public class NuklSelectorPanel extends MyPanel {
 		this.add(getCbT(), gridBagConstraints14);
 	}
 	/**
-	 * This method initializes cbA	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbA
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbA() {
 		if (cbA == null) {
 			cbA = new JCheckBox();
@@ -98,10 +94,10 @@ public class NuklSelectorPanel extends MyPanel {
 		return cbA;
 	}
 	/**
-	 * This method initializes cbG	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbG
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbG() {
 		if (cbG == null) {
 			cbG = new JCheckBox();
@@ -110,10 +106,10 @@ public class NuklSelectorPanel extends MyPanel {
 		return cbG;
 	}
 	/**
-	 * This method initializes cbC	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbC
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbC() {
 		if (cbC == null) {
 			cbC = new JCheckBox();
@@ -122,10 +118,10 @@ public class NuklSelectorPanel extends MyPanel {
 		return cbC;
 	}
 	/**
-	 * This method initializes cbT	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbT
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbT() {
 		if (cbT == null) {
 			cbT = new JCheckBox();
@@ -145,7 +141,7 @@ public class NuklSelectorPanel extends MyPanel {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public String getSelectedNukleotides(){
 		String result="";
 		if(cbA.isSelected())
@@ -156,12 +152,12 @@ public class NuklSelectorPanel extends MyPanel {
 			result+="G";
 		if(cbT.isSelected())
 			result+="T";
-		
+
 		return result;
 	}
     public void setSelectedNukleotides(String n) {
         n=n.toUpperCase();
-        
+
        cbA.setSelected(n.indexOf('A') != -1);
        cbC.setSelected(n.indexOf('C') != -1);
        cbG.setSelected(n.indexOf('G') != -1);

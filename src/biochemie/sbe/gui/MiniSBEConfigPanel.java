@@ -1,8 +1,6 @@
 /*
  * Created on 21.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -20,8 +18,6 @@ import javax.swing.event.ChangeListener;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MiniSBEConfigPanel extends JPanel {
 
@@ -54,7 +50,7 @@ public class MiniSBEConfigPanel extends JPanel {
 	}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
@@ -64,7 +60,7 @@ public class MiniSBEConfigPanel extends JPanel {
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setSize(418, 263);
-		
+
 		gridBagConstraints1.gridx = 0;
 		gridBagConstraints1.gridy = 1;
 		gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -77,10 +73,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		this.add(getJPanel2(), null);
 	}
 	/**
-	 * This method initializes jSpinner	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getMinTspinner() {
 		if (minTspinner == null) {
 			minTspinner = new JSpinner();
@@ -90,10 +86,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return minTspinner;
 	}
 	/**
-	 * This method initializes jSpinner1	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner1
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getOptTspinner() {
 		if (optTspinner == null) {
 			optTspinner = new JSpinner();
@@ -111,16 +107,16 @@ public class MiniSBEConfigPanel extends JPanel {
 						maxmodel.setValue(new Integer(optT.intValue() + 1));
 					minmodel.setMaximum(new Integer(optT.intValue() - 1));
 					maxmodel.setMinimum(new Integer(optT.intValue() + 1));
-				}				
+				}
 			});
 		}
 		return optTspinner;
 	}
 	/**
-	 * This method initializes jSpinner2	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner2
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getMaxTspinner() {
 		if (maxTspinner == null) {
 			maxTspinner = new JSpinner();
@@ -130,10 +126,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return maxTspinner;
 	}
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
@@ -149,7 +145,7 @@ public class MiniSBEConfigPanel extends JPanel {
 			gridBagConstraints17.gridy = 1;
 			gridBagConstraints17.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints17.insets = new java.awt.Insets(0,10,10,0);
-			
+
 			gridBagConstraints7.gridx = -1;
 			gridBagConstraints7.gridy = -1;
 			gridBagConstraints7.insets = new java.awt.Insets(0,10,10,10);
@@ -177,10 +173,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return jPanel;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel1() {
 		if (jPanel1 == null) {
 			jLabel4 = new JLabel();
@@ -216,10 +212,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return jPanel1;
 	}
 	/**
-	 * This method initializes jSpinner	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getMingcSpinner() {
 		if (mingcSpinner == null) {
 			mingcSpinner = new JSpinner();
@@ -229,10 +225,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return mingcSpinner;
 	}
 	/**
-	 * This method initializes jSpinner1	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner1
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getMaxgcSpinner() {
 		if (maxgcSpinner == null) {
 			maxgcSpinner = new JSpinner();
@@ -242,10 +238,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return maxgcSpinner;
 	}
 	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel2
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
 			jLabel7 = new JLabel();
@@ -293,10 +289,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return jPanel2;
 	}
 	/**
-	 * This method initializes jSpinner2	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner2
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getPolyxSpinner() {
 		if (polyxSpinner == null) {
 			polyxSpinner = new JSpinner();
@@ -306,10 +302,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return polyxSpinner;
 	}
 	/**
-	 * This method initializes jSpinner3	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner3
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getMaxplexSpinner() {
 		if (maxplexSpinner == null) {
 			maxplexSpinner = new JSpinner();
@@ -319,10 +315,10 @@ public class MiniSBEConfigPanel extends JPanel {
 		return maxplexSpinner;
 	}
 	/**
-	 * This method initializes jSpinner	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	public JSpinner getPcrpdiffSpinner() {
 		if (pcrpdiffSpinner == null) {
 			pcrpdiffSpinner = new JSpinner();

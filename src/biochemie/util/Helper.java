@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
+
 
 
 
@@ -36,7 +38,7 @@ import java.util.StringTokenizer;
  */
 public class Helper {
 
-    
+
     public static int[] clone(int[]arr) {
         if(null == arr)
             return null;
@@ -70,31 +72,24 @@ public class Helper {
 
             switch (rev.charAt(i)) {
                 case 'A' :
+                case 'a' :
                     letter= 'T';
                     break;
-                case 'a' :
-                    letter= 't';
-                    break;
                 case 'C' :
+                case 'c' :
                     letter= 'G';
                     break;
-                case 'c' :
-                    letter= 'g';
-                    break;
                 case 'G' :
+                case 'g' :
                     letter= 'C';
                     break;
-                case 'g' :
-                    letter= 'c';
-                    break;
                 case 'T' :
+                case 't' :
                     letter= 'A';
                     break;
-                case 't' :
-                    letter= 'a';
-                    break;
+
                 default :
-                    letter= rev.charAt(i);
+                    letter= Character.toUpperCase(rev.charAt(i));
                     break;
             }
             rev.setCharAt(i, letter);
@@ -107,7 +102,7 @@ public class Helper {
      * @return
      */
     public static String revcomplPrimer(String primer) {
-        return complPrimer(new StringBuffer(primer).reverse().toString());
+        return complPrimer(revPrimer(primer));
     }
     public static String dateFunc() {
         Calendar calendar= Calendar.getInstance();
@@ -141,7 +136,7 @@ public class Helper {
     }
 
     /**
-     * 
+     *
      * @param primer
      * @param i von 3' aus gerechnet mit 0-Index
      * @param windowsize
@@ -175,30 +170,34 @@ public class Helper {
         return new String(sb);
     }
     /**
-     * Erwartet zwei Primer in 5'-3' Ausrichtung, rev. den zweiten und zeigt Matches an.
+     * Erwartet zwei Primer in 5'-3' Ausrichtung, reverst dann den zweiten und zeigt Matches an.
      * @param primer
      * @param primer2
-     * @param pos
+     * @param pos anzahl der leerzeichen, die der zweite primer verschoben werden muss, damit es matcht
      */
     public static String outputXDimer(String primer, String primer2, int pos, int windowsize) {
-            StringBuffer sb= new StringBuffer(primer + '\n');
-        try {
+            StringBuffer sb= new StringBuffer();
+            /*
+             * Es kann sein, dass  pos negativ ist, dann muss die erste Zeile auch nach rechts verschoben werden.
+             */
+            if(pos < 0 ) {
+                sb.append(StringUtils.repeat(" ", Math.abs(pos)));
+            }
+            sb.append(primer);
+            sb.append('\n');
+            sb.append(StringUtils.repeat(" ",Math.abs(pos)));
+
             String rcPrimer= revcomplPrimer(primer2);
-            for (int i= 0; i < pos; i++)
-                sb.append(' ');
-            for (int i= pos; i < primer.length() && i - pos < rcPrimer.length(); i++) {
+
+            for (int i= Math.max(pos,0); i < primer.length() && i - pos < rcPrimer.length(); i++) {
                 if (primer.charAt(i) == rcPrimer.charAt(i - pos) && isNukleotid(primer.charAt(i)))
                     sb.append('|');
                 else
                     sb.append(' ');
             }
             sb.append('\n');
-            for (int i= 0; i < pos; i++)
-                sb.append(' ');
+            sb.append(StringUtils.repeat(" ",pos));
             sb.append(revPrimer(primer2));
-        } catch (StringIndexOutOfBoundsException e) {
-        	e.printStackTrace();
-        }
         return new String(sb);
     }
     /**
@@ -229,6 +228,7 @@ public class Helper {
          * in a reaction mixture.*/
         if (null == primer || 0 == primer.length())
             return 0;
+        primer=Helper.getNuklFromString(primer);//weil ich kenne nur ACGT
         /**
          * Nucleic acid concentration - Default value = 250 pM.
          * The value of nucleic acid concentration (C) is the concentration of the target sequence.
@@ -368,7 +368,7 @@ public class Helper {
         }
 		sb.append(']');
         return sb.toString();
-    }    
+    }
     public static String toStringln(Collection list) {
         return toStringln(list.toArray(new Object[list.size()]));
     }
@@ -400,11 +400,11 @@ public class Helper {
         return true;
     }
     /**
-     * Berechnet den prozentualen Anteil der Basen in in <code>nukl</code>. 
+     * Berechnet den prozentualen Anteil der Basen in in <code>nukl</code>.
      * Beispiel: <code>Helper.getXGehalt("ACGTggtTacg","cCgG");</code> für Berechung
      *  des GC-Gehaltes.
      * @param primer Sequenz, die untersucht wird.
-     * @param nukl String, der Buchstaben enthält, deren prozentualer Anteil interessiert. 
+     * @param nukl String, der Buchstaben enthält, deren prozentualer Anteil interessiert.
      * @return
      */
     public static double getXGehalt(String primer, String nukl) {
@@ -427,7 +427,7 @@ public class Helper {
     }
     /**
      * Liefert das Nukleotid, welches von einer SEkundärstruktur (HAirpin, Homodimer, Crossdimer)
-     * eingebaut werden würde. 
+     * eingebaut werden würde.
      * @param primer
      * @param bruchstelle
      * @return
@@ -457,7 +457,7 @@ public class Helper {
         return sb.toString();
     }
 
-    
+
     /**
      * Liefert den groessten int-Wert in einem Array.
      * @param arr
@@ -516,7 +516,7 @@ public class Helper {
         return val;
     }
     /**
-     * Durchsucht Array nach einem Wert. Liefert dessen Index zurueck, wenn der Wert enthalten ist, sonst -1. 
+     * Durchsucht Array nach einem Wert. Liefert dessen Index zurueck, wenn der Wert enthalten ist, sonst -1.
      * Liefert immer den ersten gefundenen Wert.
      * @param array
      * @param value
@@ -532,8 +532,8 @@ public class Helper {
         }
         return val;
     }
-    
-    
+
+
 	public static void copyFile(File srcFile, File dstFile)	throws IOException {
 	    BufferedInputStream in =
 	        new BufferedInputStream(new FileInputStream(srcFile));
@@ -541,11 +541,11 @@ public class Helper {
 	        new BufferedOutputStream(new FileOutputStream(dstFile));
 	    byte[] buffer = new byte[2048];
 	    int count;
-	    
+
 	    while (-1 != (count = in.read(buffer))) {
 	        out.write(buffer, 0, count);
 	    }
-	    
+
 	    in.close();
 	    out.close();
 	}
@@ -593,8 +593,8 @@ public class Helper {
 	public static int[] tokenizeToInt(String s) {
 		if(s == null || s.length() == 0)
 			return new int[0];
-		
-		List l = new LinkedList();		
+
+		List l = new LinkedList();
 		StringTokenizer st =new StringTokenizer(s);
 		while(st.hasMoreTokens()){
 			try{
@@ -618,8 +618,8 @@ public class Helper {
 	public static float[] tokenizeToFloat(String s) {
 		if(s == null || s.length() == 0)
 			return new float[0];
-		
-		List l = new LinkedList();		
+
+		List l = new LinkedList();
 		StringTokenizer st =new StringTokenizer(s);
 		while(st.hasMoreTokens()){
 			try{
@@ -643,8 +643,8 @@ public class Helper {
 	public static double[] tokenizeToDouble(String s) {
 		if(s == null || s.length() == 0)
 			return new double[0];
-		
-		List l = new LinkedList();		
+
+		List l = new LinkedList();
 		StringTokenizer st =new StringTokenizer(s);
 		while(st.hasMoreTokens()){
 			try{
@@ -678,5 +678,29 @@ public class Helper {
         if(pos >0)
             return seq.substring(0,seq.length() - pos )+"L"+seq.substring(seq.length() - pos + 1);
         return seq;
+    }
+    public static int getPosOfPl(String seq) {
+        int pos = seq.indexOf('L');
+        if(pos == -1)
+            return -1;
+        return seq.length() - pos;
+    }
+    /**
+     * Fuegt leerzeichen ein, damit Stringtokenizer funzt
+     * @param string
+     */
+    public static String clearEmptyCSVEntries(String string) {
+        int index=0,oldindex=0;
+
+        StringBuffer sb=new StringBuffer(string.length()+10);
+        if(';' == string.charAt(0))
+            sb.append(' ');
+        while(0 <= (index = string.indexOf(";;", oldindex))) {
+            sb.append(string.substring(oldindex,index+1));
+            sb.append(' ');
+            oldindex=index+1;
+        }
+        sb.append(string.substring(oldindex));
+        return sb.toString();
     }
 }

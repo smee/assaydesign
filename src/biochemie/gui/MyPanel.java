@@ -1,8 +1,6 @@
 /*
  * Created on 11.01.2005
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.gui;
 
@@ -15,8 +13,6 @@ import javax.swing.JPanel;
 /**
  * @author sdienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MyPanel extends JPanel {
 
@@ -26,7 +22,6 @@ public class MyPanel extends JPanel {
      */
     public MyPanel(LayoutManager layout, boolean isDoubleBuffered) {
         super(layout, isDoubleBuffered);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -34,7 +29,6 @@ public class MyPanel extends JPanel {
      */
     public MyPanel(LayoutManager layout) {
         super(layout);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -42,15 +36,13 @@ public class MyPanel extends JPanel {
      */
     public MyPanel(boolean isDoubleBuffered) {
         super(isDoubleBuffered);
-        // TODO Auto-generated constructor stub
     }
 
     /**
-     * 
+     *
      */
     public MyPanel() {
         super();
-        // TODO Auto-generated constructor stub
     }
     /**
      * Setzt Hintergrundfarbe rekursiv bei allen enthaltenen JComponents.
@@ -72,6 +64,6 @@ public class MyPanel extends JPanel {
         for (int i = 0; i < num; i++) {
             ((JComponent)getComponent(i)).setToolTipText(t);
         }
-        
+
     }
 }

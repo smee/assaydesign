@@ -1,8 +1,6 @@
 /*
  * Created on 11.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -17,8 +15,6 @@ import biochemie.gui.MyPanel;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class HairpinSelectionPanel extends MyPanel {
 
@@ -29,8 +25,8 @@ public class HairpinSelectionPanel extends MyPanel {
             boolean selected=e.getStateChange() == ItemEvent.SELECTED;
             if(selected == false)//dann is egal
                 return;
-            
-            if(src == getCbNone() || src == getCbPred()) {      
+
+            if(src == getCbNone() || src == getCbPred()) {
                     getCbA().setSelected(false);
                     getCbC().setSelected(false);
                     getCbG().setSelected(false);
@@ -44,13 +40,13 @@ public class HairpinSelectionPanel extends MyPanel {
                 getCbPred().setSelected(false);
             }
         }
-        
+
     }
 	private JCheckBox cbA = null;
 	private JCheckBox cbG = null;
 	private JCheckBox cbC = null;
 	private JCheckBox cbT = null;
-	
+
 	private String title="Hairpin 5'";
 	private JCheckBox cbNone = null;
 	private JCheckBox cbPred = null;
@@ -70,11 +66,11 @@ public class HairpinSelectionPanel extends MyPanel {
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private  void initialize() {
-		
+
 		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
@@ -124,10 +120,10 @@ public class HairpinSelectionPanel extends MyPanel {
 	}
 
 	/**
-	 * This method initializes cbA	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbA
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbA() {
 		if (cbA == null) {
 			cbA = new JCheckBox();
@@ -137,10 +133,10 @@ public class HairpinSelectionPanel extends MyPanel {
 		return cbA;
 	}
 	/**
-	 * This method initializes cbG	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbG
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbG() {
 		if (cbG == null) {
 			cbG = new JCheckBox();
@@ -150,10 +146,10 @@ public class HairpinSelectionPanel extends MyPanel {
 		return cbG;
 	}
 	/**
-	 * This method initializes cbC	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbC
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbC() {
 		if (cbC == null) {
 			cbC = new JCheckBox();
@@ -163,10 +159,10 @@ public class HairpinSelectionPanel extends MyPanel {
 		return cbC;
 	}
 	/**
-	 * This method initializes cbT	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbT
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbT() {
 		if (cbT == null) {
 			cbT = new JCheckBox();
@@ -188,14 +184,14 @@ public class HairpinSelectionPanel extends MyPanel {
 		this.title = title;
 		this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, title, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 	}
-	
+
 	public String getSelectedNukleotides(){
 		if(cbNone.isSelected())
 			return "none";
-		
+
 		if(getCbPred().isSelected())
 			return "";
-		
+
 		String result="";
 		if(cbA.isSelected())
 			result+="A";
@@ -205,12 +201,12 @@ public class HairpinSelectionPanel extends MyPanel {
 			result+="G";
 		if(cbT.isSelected())
 			result+="T";
-		
+
 		return result;
 	}
     public void setSelectedNukleotides(String n) {
         n=n.toUpperCase();
-        
+
        cbNone.setSelected(n.indexOf("NONE") != -1);
        cbA.setSelected(n.indexOf('A') != -1);
        cbC.setSelected(n.indexOf('C') != -1);
@@ -218,10 +214,10 @@ public class HairpinSelectionPanel extends MyPanel {
        cbT.setSelected(n.indexOf('T') != -1);
     }
 	/**
-	 * This method initializes cbNone	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes cbNone
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbNone() {
 		if (cbNone == null) {
 			cbNone = new JCheckBox();
@@ -240,14 +236,14 @@ public class HairpinSelectionPanel extends MyPanel {
         return listener;
     }
     /**
-	 * This method initializes jCheckBox	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes jCheckBox
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getCbPred() {
 		if (cbPred == null) {
             cbPred = new JCheckBox();
-            cbPred.setText("predicted");						
+            cbPred.setText("predicted");
             cbPred.addItemListener(getMyItemListener());
             cbPred.setSelected(true);
 		}

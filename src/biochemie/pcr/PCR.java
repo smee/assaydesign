@@ -19,21 +19,19 @@ import biochemie.pcr.modules.RepetetiveSeq;
 import biochemie.pcr.modules.SNP;
 import biochemie.sbe.WrongValueException;
 
-/** 
- * @author Steffen Dienst 
+/**
+ * @author Steffen Dienst
  *
  */
 /*
- * TODO verstecken des primer3-parameterfiles, alles in pcrconfig.default
- * TODO verbindliches Ausgabeformat (XML?)
  *
  * @author Steffen
  *
  */
-public class PCR { 
+public class PCR {
 	public static boolean verbose=true;
     public static boolean debug=false;
-	
+
 	PCRConfig config=null;
 	GCDiff gcdiffObj=null;
 	RepetetiveSeq repseqObj=null;
@@ -43,7 +41,7 @@ public class PCR {
 	BLAT blatObj=null;
 	SNP snpObj=null;
 	ExonIntron exonObj=null;
-	
+
 	boolean gcdiffOn=true;
 	boolean snpOn=true;
 	boolean hairOn=true;
@@ -52,9 +50,9 @@ public class PCR {
 	boolean blatOn=true;
 	boolean repOn=true;
 	boolean exonOn=false;
-	
+
 	private int maxscore = 100;
-	
+
 	public PCR(String[] args) {
 		//Einlesen der Konfiguration
 		config=new UI().parseCmdLineParameter(args);
@@ -75,7 +73,7 @@ public class PCR {
 	 * mit Grenzen,...
 	 */
 	private void setFlagsAndParamsFromConfig() {
-		
+
 		if(config.getProperty("GCDIFF").equalsIgnoreCase("true")) {
 			this.gcdiffOn=true;
 			this.gcdiffObj=new GCDiff(config);
@@ -136,7 +134,7 @@ public class PCR {
         }
     	if(PCR.verbose)
 			System.out.println("Lese Konfiguration ein...");
-		pcr.setFlagsAndParamsFromConfig();	
+		pcr.setFlagsAndParamsFromConfig();
 		if(PCR.verbose)
 			System.out.println("Starte Analyse...");
 		try {
@@ -144,7 +142,7 @@ public class PCR {
         } catch (IOException e) {
             UI.errorDisplay("Fehler beim Dateizugriff!\nFehlermeldung: "+e.getMessage());
         }
-		
+
 	}
 
 	public void startAnalysis() throws IOException{
@@ -155,7 +153,7 @@ public class PCR {
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
 			int solutions=runAnalysis(file);
-			if(solutions > 0) 
+			if(solutions > 0)
 				break;   //loesungen gefunden, also ferdsch :)
 		}
 	}
@@ -165,10 +163,10 @@ public class PCR {
 	private int runAnalysis(String filename) throws IOException {
 		if(PCR.debug) {
 			System.out.println("Verwende folgende Parameter: "+this);
-        }         
+        }
         Primer3Manager primer3=new Primer3Manager(config);
         primer3.runPrimer3(filename);
-                
+
 		if(0 == primer3.getNumberOfResults()){
 			//UI.errorDisplay("Keine Ergebnisse von Primer3 --> nix zu filtern.");
 			return 0;
@@ -179,7 +177,7 @@ public class PCR {
 //		}
         //Starte Module
         PrimerPair[] pps=null;
-        java.util.List survivorsList= null; 
+        java.util.List survivorsList= null;
         FileWriter debugout=null;
         String outfilename=config.getProperty("OUTFILE");
         boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);
@@ -237,7 +235,7 @@ public class PCR {
             countAndMarkSuccessfulPairs(pps);
             if(null == survivorsList)
                 survivorsList=new ArrayList();
-    
+
             for(int i=0;i<pps.length;i++) {
                 if(pps[i].okay){
                     survivorsList.add(pps[i]);
@@ -252,7 +250,7 @@ public class PCR {
             }
         }
         final int solutionsCont=survivorsList.size();
-        
+
         pps=(PrimerPair[])survivorsList.toArray(new PrimerPair[0]);
 		if (blatOn) {
 			try {
@@ -272,7 +270,7 @@ public class PCR {
 			out.write(PrimerPair.getCSVHeaderLine());
 			out.write("\n");
 		}
-        //TODO in csv-ausgabe sowohl durchnummerieren als auch ursprüngliche Pos. in prinmer3-liste angeben (zwei Spalten)
+
     	int count=1;
 		for(int i=0;i<pps.length;i++) {
 			if(pps[i].okay) {
@@ -300,7 +298,7 @@ public class PCR {
         }
         return solutionsCont;
 	}
-	
+
 	private int countAndMarkSuccessfulPairs(PrimerPair[] pps) {
 		int count=pps.length;
 		for(int i=0;i<pps.length;i++) {

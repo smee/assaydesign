@@ -1,8 +1,6 @@
 /*
  * Created on 21.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -46,8 +44,6 @@ import biochemie.util.FileSelector;
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SBEConfigDialog extends JDialog {
 
@@ -82,7 +78,7 @@ public class SBEConfigDialog extends JDialog {
 
 	private JCheckBox drawGraphesCheckbox = null;
 	private JCheckBox debugCheckBox = null;
-	
+
     private Action saveaction;
     private Action loadaction;
     /**
@@ -90,25 +86,25 @@ public class SBEConfigDialog extends JDialog {
 	 */
 	public SBEConfigDialog(JFrame parent) {
 		super(parent,true);
-		initialize();	
-		
+		initialize();
+
 	}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
         SBEOptionsProvider c = new SBEConfig();
         setPropertiesFrom(c);
-        
+
 		this.setTitle("Preferences");
 		this.setSize(454, 638);
 		this.setContentPane(getJContentPane());
 	}
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private javax.swing.JPanel getJContentPane() {
@@ -121,10 +117,10 @@ public class SBEConfigDialog extends JDialog {
 		return jContentPane;
 	}
 	/**
-	 * This method initializes jTabbedPane	
-	 * 	
-	 * @return javax.swing.JTabbedPane	
-	 */    
+	 * This method initializes jTabbedPane
+	 *
+	 * @return javax.swing.JTabbedPane
+	 */
 	private JTabbedPane getJTabbedPane() {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
@@ -142,10 +138,10 @@ public class SBEConfigDialog extends JDialog {
 		return jTabbedPane;
 	}
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			jPanel = new JPanel();
@@ -154,24 +150,24 @@ public class SBEConfigDialog extends JDialog {
 		return jPanel;
 	}
 	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getJButton() {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setText("Okay");
-			jButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					SBEConfigDialog.this.setVisible(false);                    
+			jButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					SBEConfigDialog.this.setVisible(false);
 				}
 			});
 		}
 		return jButton;
 	}
 	/**
-	 * 
+	 *
 	 */
 	public SBEOptionsProvider getSBEOptionsFromGui() {
 	    sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
@@ -197,10 +193,10 @@ public class SBEConfigDialog extends JDialog {
 	    return sbeconfig;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private CDConfigPanel getCdPanel() {
 		if (cdPanel == null) {
 			cdPanel = new CDConfigPanel();
@@ -208,10 +204,10 @@ public class SBEConfigDialog extends JDialog {
 		return cdPanel;
 	}
 	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel2
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private MiniSBEConfigPanel getSbePanel() {
 		if (sbePanel == null) {
 			sbePanel = new MiniSBEConfigPanel();
@@ -219,24 +215,24 @@ public class SBEConfigDialog extends JDialog {
 		return sbePanel;
 	}
 	/**
-	 * This method initializes jPanel3	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel3
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getAdvPanel() {
 		if (advPanel == null) {
 			advPanel = new JPanel();
 			advPanel.setLayout(new BorderLayout());
-			advPanel.add(getJToggleButton(), java.awt.BorderLayout.NORTH);			
+			advPanel.add(getJToggleButton(), java.awt.BorderLayout.NORTH);
 			advPanel.add(getJScrollPane(), java.awt.BorderLayout.CENTER);
 		}
 		return advPanel;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getRestPanel() {
 		if (restPanel == null) {
 			jLabel = new JLabel();
@@ -259,10 +255,10 @@ public class SBEConfigDialog extends JDialog {
 		return restPanel;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getSavePanel() {
 		if (savePanel == null) {
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
@@ -286,10 +282,10 @@ public class SBEConfigDialog extends JDialog {
 		return savePanel;
 	}
 	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */    
+	 * This method initializes jScrollPane
+	 *
+	 * @return javax.swing.JScrollPane
+	 */
 	private JScrollPane getCdScrollPane() {
 		if (cdScrollPane == null) {
 			cdScrollPane = new JScrollPane();
@@ -298,10 +294,10 @@ public class SBEConfigDialog extends JDialog {
 		return cdScrollPane;
 	}
 	/**
-	 * This method initializes PBSequenceField	
-	 * 	
-	 * @return biochemie.calcdalton.gui.PBSequenceField	
-	 */    
+	 * This method initializes PBSequenceField
+	 *
+	 * @return biochemie.calcdalton.gui.PBSequenceField
+	 */
 	private PBSequenceField getColortimeTf() {
 		if (colortimeTf == null) {
 			colortimeTf = new PBSequenceField();
@@ -312,10 +308,10 @@ public class SBEConfigDialog extends JDialog {
 		return colortimeTf;
 	}
 	/**
-	 * This method initializes jButton1	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton1
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getLoadButton() {
 		if (loadButton == null) {
 			loadButton = new JButton();
@@ -324,10 +320,10 @@ public class SBEConfigDialog extends JDialog {
 		return loadButton;
 	}
 	/**
-	 * This method initializes jButton2	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton2
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getSaveButton() {
 		if (saveButton == null) {
 			saveButton = new JButton();
@@ -336,10 +332,10 @@ public class SBEConfigDialog extends JDialog {
 		return saveButton;
 	}
 	/**
-	 * This method initializes jButton3	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton3
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getResetButton() {
 		if (resetButton == null) {
 			resetButton = new JButton();
@@ -348,17 +344,17 @@ public class SBEConfigDialog extends JDialog {
 		return resetButton;
 	}
 	/**
-	 * This method initializes jToggleButton	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */    
+	 * This method initializes jToggleButton
+	 *
+	 * @return javax.swing.JToggleButton
+	 */
 	private JToggleButton getJToggleButton() {
 		if (jToggleButton == null) {
 			jToggleButton = new JToggleButton();
 			jToggleButton.setText("Enable advanced settings");
 			jToggleButton.setToolTipText("Notice: Advanced expert settings are ignored in the standard mode!");
-			jToggleButton.addItemListener(new java.awt.event.ItemListener() { 
-				public void itemStateChanged(java.awt.event.ItemEvent e) {  
+			jToggleButton.addItemListener(new java.awt.event.ItemListener() {
+				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					boolean val = e.getStateChange() == ItemEvent.SELECTED;
 					getAdvSettingsPanel().setVisible(val);
 				}
@@ -367,10 +363,10 @@ public class SBEConfigDialog extends JDialog {
 		return jToggleButton;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getAdvSettingsPanel() {
 		if (advSettingsPanel == null) {
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
@@ -423,10 +419,10 @@ public class SBEConfigDialog extends JDialog {
 		return advSettingsPanel;
 	}
 	/**
-	 * This method initializes integerValueIntervallPanel1	
-	 * 	
-	 * @return biochemie.gui.IntegerValueIntervallPanel	
-	 */    
+	 * This method initializes integerValueIntervallPanel1
+	 *
+	 * @return biochemie.gui.IntegerValueIntervallPanel
+	 */
 	private IntegerValueIntervallPanel getHairpinValuePanel() {
 		if (hairpinValuePanel == null) {
 			hairpinValuePanel = new IntegerValueIntervallPanel();
@@ -439,10 +435,10 @@ public class SBEConfigDialog extends JDialog {
 		return hairpinValuePanel;
 	}
 	/**
-	 * This method initializes integerValueIntervallPanel1	
-	 * 	
-	 * @return biochemie.gui.IntegerValueIntervallPanel	
-	 */    
+	 * This method initializes integerValueIntervallPanel1
+	 *
+	 * @return biochemie.gui.IntegerValueIntervallPanel
+	 */
 	private IntegerValueIntervallPanel getHomodimerValuePanel() {
 		if (homodimerValuePanel == null) {
 			homodimerValuePanel = new IntegerValueIntervallPanel();
@@ -455,10 +451,10 @@ public class SBEConfigDialog extends JDialog {
 		return homodimerValuePanel;
 	}
 	/**
-	 * This method initializes integerValueIntervallPanel1	
-	 * 	
-	 * @return biochemie.gui.IntegerValueIntervallPanel	
-	 */    
+	 * This method initializes integerValueIntervallPanel1
+	 *
+	 * @return biochemie.gui.IntegerValueIntervallPanel
+	 */
 	private IntegerValueIntervallPanel getCrossdimerValuePanel() {
 		if (crossdimerValuePanel == null) {
 			crossdimerValuePanel = new IntegerValueIntervallPanel();
@@ -471,10 +467,10 @@ public class SBEConfigDialog extends JDialog {
 		return crossdimerValuePanel;
 	}
 	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */    
+	 * This method initializes jScrollPane
+	 *
+	 * @return javax.swing.JScrollPane
+	 */
 	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
@@ -483,10 +479,10 @@ public class SBEConfigDialog extends JDialog {
 		return jScrollPane;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getCandlenpanel() {
 		if (candlenpanel == null) {
 			jLabel1 = new JLabel();
@@ -508,10 +504,10 @@ public class SBEConfigDialog extends JDialog {
 		return candlenpanel;
 	}
 	/**
-	 * This method initializes jSpinner1	
-	 * 	
-	 * @return javax.swing.JSpinner	
-	 */    
+	 * This method initializes jSpinner1
+	 *
+	 * @return javax.swing.JSpinner
+	 */
 	private JSpinner getCandlenSpinner() {
 		if (candlenSpinner == null) {
 			candlenSpinner = new JSpinner();
@@ -520,10 +516,10 @@ public class SBEConfigDialog extends JDialog {
 		return candlenSpinner;
 	}
 	/**
-	 * This method initializes drawGraphesCheckbox	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes drawGraphesCheckbox
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getEvilCrossdimerCheckBox() {
 		if (evilCrossdimerCheckBox == null) {
 			evilCrossdimerCheckBox = new JCheckBox();
@@ -535,18 +531,18 @@ public class SBEConfigDialog extends JDialog {
         //setze Calcdalton-Optionen
         CDConfigPanel cdp=getCdPanel();
         cdp.setValuesFrom(c);
-        
+
         getCandlenSpinner().setValue(new Integer(c.getMinCandidateLen()));
         getColortimeTf().setText(c.getCalcTime() +"");
-        
-        
+
+
         //setze minisbeoptionen
         MiniSBEConfigPanel mp= getSbePanel();
         mp.getMingcSpinner().setValue(new Double(c.getMinGC()));
         mp.getMaxgcSpinner().setValue(new Double(c.getMaxGC()));
         mp.getMinTspinner().setValue(new Double(c.getMinTemperature()));
         mp.getOptTspinner().setValue(new Double(c.getOptTemperature()));
-        mp.getMaxTspinner().setValue(new Double(c.getMaxTemperature()));                
+        mp.getMaxTspinner().setValue(new Double(c.getMaxTemperature()));
         mp.getPolyxSpinner().setValue(new Integer(c.getPolyX()));
         mp.getMaxplexSpinner().setValue(new Integer(c.getMaxPlex()));
         mp.getPcrpdiffSpinner().setValue(new Integer(c.getMinProductLenDiff()));
@@ -602,7 +598,7 @@ public class SBEConfigDialog extends JDialog {
                 }
                 public String getDescription() {
                     return "MiniSBE-configfiles (*.cfg)";
-                }            
+                }
             };
             File file = FileSelector.getUserSelectedFile(SBEConfigDialog.this,"Load config...",filter,FileSelector.OPEN_DIALOG);
             if(file != null){
@@ -619,7 +615,7 @@ public class SBEConfigDialog extends JDialog {
 			} catch (IOException  e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(SBEConfigDialog.this,e.getMessage(),"Error loading file "+file.getName(),JOptionPane.ERROR_MESSAGE);
-			} 			
+			}
 		}
     }
     protected class SaveAction extends AbstractAction {
@@ -644,7 +640,7 @@ public class SBEConfigDialog extends JDialog {
                 }
                 public String getDescription() {
                     return "MiniSBE-configfiles (*.cfg)";
-                }            
+                }
             };
             File file = FileSelector.getUserSelectedFile( SBEConfigDialog.this,"save config...",filter,FileSelector.SAVE_DIALOG);
             if(file != null){
@@ -664,15 +660,15 @@ public class SBEConfigDialog extends JDialog {
                                                     +"saved. An error occured.","", JOptionPane.WARNING_MESSAGE);
                 }
             }
-                
+
         }
     }
-    
+
 	/**
-	 * This method initializes drawGraphesCheckbox	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes drawGraphesCheckbox
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getDrawGraphesCheckbox() {
 		if (drawGraphesCheckbox == null) {
 			drawGraphesCheckbox = new JCheckBox();
@@ -681,10 +677,10 @@ public class SBEConfigDialog extends JDialog {
 		return drawGraphesCheckbox;
 	}
 	/**
-	 * This method initializes jCheckBox	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes jCheckBox
+	 *
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getDebugCheckBox() {
 		if (debugCheckBox == null) {
 			debugCheckBox = new JCheckBox();

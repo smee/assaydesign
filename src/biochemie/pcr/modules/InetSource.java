@@ -1,8 +1,6 @@
 /*
  * Created on 25.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.pcr.modules;
 
@@ -42,7 +40,7 @@ public class InetSource implements BlatSource{
     int blathash;
 	private String hgsid;
 	private final PCRConfig config;
-    
+
 	/**
 	 * @param cfg
 	 * @throws BlatException
@@ -51,7 +49,7 @@ public class InetSource implements BlatSource{
     	this.config = cfg;
 		ORIGINALHASH= config.getInteger("BLAT_HASHCODE",-1);
     	GENOMEASSEMBLY = config.getString("ASSEMBLY","hg16");
-        initProperties();			
+        initProperties();
 	}
 	private void initProperties() throws BlatException{
 		blathash= getAndHashAktuelleBLATPage();
@@ -119,7 +117,7 @@ public class InetSource implements BlatSource{
     /**
      * K&uuml;mmert sich darum, die Ergebnisseite der BLAT-Analyse zu holen.
      * @param pcrproduct alles, was als input ans script geschickt wird. Entweder eine
-     * einzelne sequenz oder mit ">eindeutige ID\n"sequenz1 ... 
+     * einzelne sequenz oder mit ">eindeutige ID\n"sequenz1 ...
      * @return Html-Page von BLAT
      */
     private String getBLATAnalysisFromINet(String pcrproduct) throws INetError {
@@ -245,14 +243,14 @@ public class InetSource implements BlatSource{
             try{
             	chromosome = Integer.parseInt(st.nextToken());
             }catch (NumberFormatException e) {}
-			
-     	
+
+
 			l.add(new BlatResultEntry(start, end,chromosome));
 		}
 		return l;
 	}
     /**
-     * Durchsucht BLAT-result nach allen Zeilen einer anfrage. 
+     * Durchsucht BLAT-result nach allen Zeilen einer anfrage.
      * @param htmlpage BLAT-result
      * @param signatur eindeutige ID einer anfrage (bei einzelner Anfrage immer "YourSeq")
      * @return String[] mit Zeilen
@@ -280,11 +278,11 @@ public class InetSource implements BlatSource{
 		try {
 			String html= getBLATAnalysisFromINet(pcrproduct);
 			return retrieveBlatergs(html);
-			
+
 		} catch (INetError e) {
 			throw new BlatException(e);
 		}
-		
+
 	}
-	
+
 }

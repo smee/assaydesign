@@ -1,8 +1,6 @@
 /*
  * Created on 12.11.2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package biochemie.sbe.gui;
 
@@ -70,13 +68,12 @@ import biochemie.sbe.gui.actions.ShowDiffAction;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.util.ConsoleWindow;
 import biochemie.util.FileSelector;
+import biochemie.util.Helper;
 import biochemie.util.MyAction;
 
 /**
  * @author Steffen Dienst
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MiniSBEGui extends JFrame {
 
@@ -88,8 +85,8 @@ public class MiniSBEGui extends JFrame {
         }
         public void actionPerformed(ActionEvent e) {
         	final List sbec= new ArrayList(sbepanels.size());
-        	
-        	
+
+
         	final SBEOptionsProvider cfg = getConfigDialog().getSBEOptionsFromGui();
         	for (Iterator it = sbepanels.iterator(); it.hasNext();) {
         		SBECandidatePanel p = (SBECandidatePanel) it.next();
@@ -104,11 +101,11 @@ public class MiniSBEGui extends JFrame {
         			return m;
         		}
         		public void finished() {
-        			showResultFrame(sbec,cfg);					            
+        			showResultFrame(sbec,cfg);
         		}
         	};
         	sw.start();
-        	
+
         }
 
         /**
@@ -121,7 +118,7 @@ public class MiniSBEGui extends JFrame {
 
             final TableModel model = new MiniSBEResultTableModel(sbec);
             model.addTableModelListener(this);
-            
+
             //TableSorter sorter = new TableSorter(model);
 //            JTableEx table = new JTableEx(sorter) {
             JTableEx table = new JTableEx(model) {
@@ -134,7 +131,7 @@ public class MiniSBEGui extends JFrame {
                     }else if(col == 8 || col == 9 ){
                     	return splittedHtmlLine(model.getValueAt(row,col).toString());
                     }else {
-                        return super.getToolTipText(event);                        
+                        return super.getToolTipText(event);
                     }
                 }
             };
@@ -148,10 +145,10 @@ public class MiniSBEGui extends JFrame {
             frame.getContentPane().add(scrollpane,BorderLayout.CENTER);
             JToolBar toolbar =new JToolBar();
             frame.getContentPane().add(toolbar, BorderLayout.NORTH);
-            
+
             JButton saveresultsbutton = new JButton(new SaveResultsAction(sbec));
             toolbar.add(saveresultsbutton);
-            
+
             JButton showdiffs = new JButton(new ShowDiffAction(sbec,cfg));
             toolbar.add(showdiffs);
             frame.pack();
@@ -183,7 +180,7 @@ public class MiniSBEGui extends JFrame {
             if(!s.hasValidPrimer())
                 return null;
             StringBuffer sb = new StringBuffer("<html>");
-            
+
             Set sek=s.getSekStrucs();
             for (Iterator it = sek.iterator(); it.hasNext();) {
                 SBESekStruktur struk = (SBESekStruktur) it.next();
@@ -192,7 +189,7 @@ public class MiniSBEGui extends JFrame {
                 sb.append(struk.getAsciiArt().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
                 sb.append("<br>");
             }
-            sb.append("</html>"); 
+            sb.append("</html>");
             return new String(sb);
         }
 
@@ -218,8 +215,9 @@ public class MiniSBEGui extends JFrame {
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(ActionEvent e) {
-        	SBEConfigDialog dia=getConfigDialog(); 
+        	SBEConfigDialog dia=getConfigDialog();
         	dia.setVisible(true);
+            System.out.println("Still showing preferneces... ?");
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel panel = (SBECandidatePanel) it.next();
                 panel.refreshData(dia.getSBEOptionsFromGui());
@@ -232,11 +230,11 @@ public class MiniSBEGui extends JFrame {
                     ,AddPanelAction.class.getClassLoader().getResource("images/add.gif")
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
         }
-        public void actionPerformed(java.awt.event.ActionEvent e) {    
+        public void actionPerformed(java.awt.event.ActionEvent e) {
             addSBECandidatePanel(sbepanels.size());
             getSbepanelsPanel().revalidate();
             getSbepanelsPanel().repaint();
-            
+
         }
     }
 	private class NewAssayDesignAction extends MyAction {
@@ -245,7 +243,7 @@ public class MiniSBEGui extends JFrame {
                     ,NewAssayDesignAction.class.getClassLoader().getResource("images/new.gif")
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         }
-        public void actionPerformed(java.awt.event.ActionEvent e) {    
+        public void actionPerformed(java.awt.event.ActionEvent e) {
             getSbepanelsPanel().removeAll();
             sbepanels.clear();
             getSbepanelsPanel().revalidate();
@@ -259,7 +257,7 @@ public class MiniSBEGui extends JFrame {
                     LoadPrimerAction.class.getClassLoader().getResource("images/open.gif")
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         }
-        public void actionPerformed(java.awt.event.ActionEvent e) {    
+        public void actionPerformed(java.awt.event.ActionEvent e) {
 
             FileFilter filter = new FileFilter(){
                 public boolean accept(File f) {
@@ -271,7 +269,7 @@ public class MiniSBEGui extends JFrame {
                 }
                 public String getDescription() {
                     return "MiniSBE-primerfiles (.csv)";
-                }            
+                }
             };
             File file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Load sbeprimers...",filter,FileSelector.OPEN_DIALOG);
             if(file !=null){
@@ -280,7 +278,7 @@ public class MiniSBEGui extends JFrame {
                     BufferedReader br = new BufferedReader(new FileReader(file));
                     String line=br.readLine();//skip header
                     while((line=br.readLine())!=null) {
-                        primerlines.add(SBEPrimerReader.clearEmptyFields(line));
+                        primerlines.add(Helper.clearEmptyCSVEntries(line));
                     }
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -309,7 +307,7 @@ public class MiniSBEGui extends JFrame {
                     ,SavePrimerAction.class.getClassLoader().getResource("images/save.gif"),
                     KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         }
-        public void actionPerformed(java.awt.event.ActionEvent e) {    
+        public void actionPerformed(java.awt.event.ActionEvent e) {
             File file=null;
             FileFilter filter=new FileFilter(){
                 public boolean accept(File f) {
@@ -321,7 +319,7 @@ public class MiniSBEGui extends JFrame {
                 }
                 public String getDescription() {
                     return "MiniSBE-primerfiles (.csv)";
-                }            
+                }
             };
             file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Save sbeprimers...",filter,FileSelector.SAVE_DIALOG);
             if(file != null){
@@ -380,7 +378,7 @@ public class MiniSBEGui extends JFrame {
     private static final String WINDOW_Y_KEY = "WINDOW_Y";
     private static final String WINDOW_WIDTH_KEY = "WINDOW_WIDTH";
     private static final String WINDOW_HEIGHT_KEY = "WINDOW_HEIGHT";
-    
+
     private javax.swing.JPanel jContentPane = null;
 
 	private JMenuBar jJMenuBar = null;
@@ -402,10 +400,10 @@ public class MiniSBEGui extends JFrame {
 	private JPanel jPanel1 = null;
 	private JToggleButton expertToggleButton = null;
 	private SBEConfigDialog dialog = null;
-	
+
 	private int sbe_anzahl=0;
 	List sbepanels;
-    
+
     private Action newAction;
     private Action panelAction;
     private Action loadPrimerAction;
@@ -422,16 +420,16 @@ public class MiniSBEGui extends JFrame {
 	 */
 	public MiniSBEGui() {
 		super();
-		
+
 		while( sbe_anzahl < 1) {
 			try{
                 String input=JOptionPane.showInputDialog(null,"Please enter assay size level (1-?):","1");
                 if(null == input)
                     System.exit(0);
 				sbe_anzahl = Integer.parseInt(input);
-				
+
 			}
-		catch(NumberFormatException nfe){}		
+		catch(NumberFormatException nfe){}
 		}
 		initialize();
 		int windowX = prefs.getInt(WINDOW_X_KEY, DEFAULT_WINDOW_X);
@@ -455,13 +453,13 @@ public class MiniSBEGui extends JFrame {
 		}
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
         UIManager.put("ToolTip.font",new Font("Monospaced",Font.PLAIN,11)); //neuer font fuer tooltips, wegen nicht proportionalem font
 		this.sbepanels=new LinkedList();
-		getConfigDialog();//damit parameter initialisiert werden	
+		getConfigDialog();//damit parameter initialisiert werden
 		this.setJMenuBar(getJJMenuBar());
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
@@ -469,7 +467,7 @@ public class MiniSBEGui extends JFrame {
 	}
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private javax.swing.JPanel getJContentPane() {
@@ -483,10 +481,10 @@ public class MiniSBEGui extends JFrame {
 		return jContentPane;
 	}
 	/**
-	 * This method initializes jJMenuBar	
-	 * 	
-	 * @return javax.swing.JMenuBar	
-	 */    
+	 * This method initializes jJMenuBar
+	 *
+	 * @return javax.swing.JMenuBar
+	 */
 	private JMenuBar getJJMenuBar() {
 		if (jJMenuBar == null) {
 			jJMenuBar = new JMenuBar();
@@ -496,10 +494,10 @@ public class MiniSBEGui extends JFrame {
 		return jJMenuBar;
 	}
 	/**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */    
+	 * This method initializes jMenu
+	 *
+	 * @return javax.swing.JMenu
+	 */
 	private JMenu getFileMenu() {
 		if (fileMenu == null) {
 			fileMenu = new JMenu();
@@ -540,10 +538,10 @@ public class MiniSBEGui extends JFrame {
         return newAction;
     }
     /**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */    
+	 * This method initializes jMenu
+	 *
+	 * @return javax.swing.JMenu
+	 */
 	private JMenu getHelpMenu() {
 		if (helpMenu == null) {
 			helpMenu = new JMenu();
@@ -554,10 +552,10 @@ public class MiniSBEGui extends JFrame {
 		return helpMenu;
 	}
 	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes jMenuItem
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getAddPanelMenuItem() {
 		if (addPanelMenuItem == null) {
 			addPanelMenuItem = new JMenuItem();
@@ -566,10 +564,10 @@ public class MiniSBEGui extends JFrame {
 		return addPanelMenuItem;
 	}
 	/**
-	 * This method initializes jMenuItem1	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes jMenuItem1
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getOpenMenuItem() {
 		if (openMenuItem == null) {
 			openMenuItem = new JMenuItem();
@@ -587,10 +585,10 @@ public class MiniSBEGui extends JFrame {
         return loadPrimerAction;
     }
     /**
-	 * This method initializes jMenuItem2	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes jMenuItem2
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getSaveMenuItem() {
 		if (saveMenuItem == null) {
 			saveMenuItem = new JMenuItem();
@@ -608,10 +606,10 @@ public class MiniSBEGui extends JFrame {
         return savePrimerAction;
     }
     /**
-	 * This method initializes jMenuItem3	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes jMenuItem3
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getHelpMenuItem() {
 		if (helpMenuItem == null) {
 			helpMenuItem = new JMenuItem();
@@ -620,10 +618,10 @@ public class MiniSBEGui extends JFrame {
 		return helpMenuItem;
 	}
 	/**
-	 * This method initializes jMenuItem4	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes jMenuItem4
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getAboutMenuItem() {
 		if (aboutMenuItem == null) {
 			aboutMenuItem = new JMenuItem();
@@ -632,10 +630,10 @@ public class MiniSBEGui extends JFrame {
 		return aboutMenuItem;
 	}
 	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes jMenuItem
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getJMenuItem() {
 		if (jMenuItem == null) {
 			jMenuItem = new JMenuItem();
@@ -644,10 +642,10 @@ public class MiniSBEGui extends JFrame {
 		return jMenuItem;
 	}
 	/**
-	 * This method initializes jToolBar	
-	 * 	
-	 * @return javax.swing.JToolBar	
-	 */    
+	 * This method initializes jToolBar
+	 *
+	 * @return javax.swing.JToolBar
+	 */
 	private JToolBar getJToolBar() {
 		if (jToolBar == null) {
 			jToolBar = new JToolBar();
@@ -670,10 +668,10 @@ public class MiniSBEGui extends JFrame {
         return consoleButton;
     }
     /**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getPrefButton() {
 		if (prefButton == null) {
 			prefButton = new JButton();
@@ -690,10 +688,10 @@ public class MiniSBEGui extends JFrame {
 		return dialog;
 	}
 	/**
-	 * This method initializes addPanelButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes addPanelButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private Action getAddPanelAction() {
 		if (panelAction == null) {
             panelAction = new AddPanelAction();
@@ -701,10 +699,10 @@ public class MiniSBEGui extends JFrame {
 		return panelAction;
 	}
 	/**
-	 * This method initializes jButton2	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton2
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getJButton2() {
 		if (jButton2 == null) {
 			jButton2 = new JButton();
@@ -713,10 +711,10 @@ public class MiniSBEGui extends JFrame {
 		return jButton2;
 	}
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getSbepanelsPanel() {
 		if (sbepanelsPanel == null) {
 			sbepanelsPanel = new JPanel();
@@ -739,10 +737,10 @@ public class MiniSBEGui extends JFrame {
         sbepanelsPanel.add(p);
     }
     /**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */    
+	 * This method initializes jScrollPane
+	 *
+	 * @return javax.swing.JScrollPane
+	 */
 	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
@@ -751,23 +749,23 @@ public class MiniSBEGui extends JFrame {
 		return jScrollPane;
 	}
 	/**
-	 * This method initializes jButton4	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton4
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getCalcButton() {
 		if (calcButton == null) {
 			calcButton = new JButton();
 			calcButton.setAction(new CalculateAction());
-			
+
 		}
 		return calcButton;
 	}
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel1() {
 		if (jPanel1 == null) {
 			jPanel1 = new JPanel();
@@ -776,16 +774,16 @@ public class MiniSBEGui extends JFrame {
 		return jPanel1;
 	}
 	/**
-	 * This method initializes jToggleButton	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */    
+	 * This method initializes jToggleButton
+	 *
+	 * @return javax.swing.JToggleButton
+	 */
 	private JToggleButton getExpertToggleButton() {
 		if (expertToggleButton == null) {
 			expertToggleButton = new JToggleButton();
 			expertToggleButton.setText("Expertmode");
-			expertToggleButton.addItemListener(new java.awt.event.ItemListener() { 
-				public void itemStateChanged(java.awt.event.ItemEvent e) {  
+			expertToggleButton.addItemListener(new java.awt.event.ItemListener() {
+				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					expertmode = e.getStateChange() == ItemEvent.SELECTED;
                     expertToggleButton.setText(expertmode?"To Standardmode":"To Expertmode");
 					for (Iterator it = sbepanels.iterator(); it.hasNext();) {
@@ -797,7 +795,7 @@ public class MiniSBEGui extends JFrame {
 		}
 		return expertToggleButton;
 	}
-    
+
 
     /**
      * Modifies the user generated filters for a given SBECandidate id.
@@ -821,7 +819,7 @@ public class MiniSBEGui extends JFrame {
             }
         }
     }
-    
+
  	public static void main(String[] args) {
  	    if(args.length == 0) {
             MiniSBE.initLogfile(".");
@@ -846,7 +844,7 @@ public class MiniSBEGui extends JFrame {
         public ConsoleViewAction() {
             super("show logfile","shows the logfile contents", null, KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
         }
-    
+
         public void actionPerformed(ActionEvent e) {
             if(console == null) {
                 PrintStream out = System.out;
@@ -855,6 +853,6 @@ public class MiniSBEGui extends JFrame {
             }
             ConsoleWindow.showInstalledConsole();
         }
-        
+
     }
   }  //  @jve:decl-index=0:visual-constraint="10,102"
