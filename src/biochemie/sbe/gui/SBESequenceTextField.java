@@ -4,12 +4,7 @@
  */
 package biochemie.sbe.gui;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.MutableComboBoxModel;
-import javax.swing.event.ListDataListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.util.Helper;

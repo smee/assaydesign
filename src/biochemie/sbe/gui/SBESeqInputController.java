@@ -17,7 +17,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.gui.PLSelectorPanel;
 import biochemie.util.Helper;
 
@@ -31,7 +30,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     Border okayBorder;
     
     private SBESequenceTextField left;
-    private PBSequenceField right;
+    private JTextField right;
     private PLSelectorPanel plpanel;
     private boolean isOkay;
     private char replacedNukl = 0;
@@ -47,13 +46,12 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private SBECandidatePanel panel;
     private JCheckBox fixedcb;
     
-    public SBESeqInputController(SBECandidatePanel panel) {
-        this.panel=panel;
-        this.left=panel.getSeq5tf();
-        this.right=panel.getSeq3tf();
-        this.plpanel=panel.getPLSelectorPanel();
+    public SBESeqInputController(SBESequenceTextField tf, JTextField tfright,PLSelectorPanel panel, JCheckBox fix) {
+        this.left=tf;
+        this.right=tfright==null?new JTextField():tfright;
+        this.plpanel=panel;
         
-        this.fixedcb=panel.getFixedPrimerCB();
+        this.fixedcb=fix==null?new JCheckBox():fix;
         fixedcb.setEnabled(false);
         fixedcb.setSelected(false);
         left.getDocument().addDocumentListener(this);
@@ -70,7 +68,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * @param e
      */
     private void handleChange(DocumentEvent e){
-        System.out.println("text: "+left.getText()+", "+_seq+", repl: "+replacedNukl);
+        //System.out.println("text: "+left.getText()+", "+_seq+", repl: "+replacedNukl);
         if(_seq.equals(left.getText()))
             return;//nix hat sich geaendert
         _seq=left.getText();
@@ -90,7 +88,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             setToolTipAndBorder(left,TOOSHORT,true);
             return;
         }
-        if(rtext.length() != 0 && rtext.length()<maxpl) {
+        if(rtext == null || rtext.length() != 0 && rtext.length()<maxpl) {
             setToolTipAndBorder(right,TOOSHORT,true);
             return;
         }
@@ -178,7 +176,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     public void itemStateChanged(ItemEvent e) {
         if(e.getStateChange() == ItemEvent.DESELECTED)//geht uns nix an
             return;
-        System.out.println("pl: "+e.getItem()+", "+_seq+", repl: "+replacedNukl);
+        //System.out.println("pl: "+e.getItem()+", "+_seq+", repl: "+replacedNukl);
         String newseq=_seq;
         try {
             Object item=e.getItem();

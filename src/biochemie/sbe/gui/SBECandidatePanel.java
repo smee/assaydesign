@@ -4,14 +4,12 @@
  */
 package biochemie.sbe.gui;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.StringTokenizer;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -155,7 +153,7 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
 		this.add(getTfId(), gridBagConstraints31);
 		this.add(jLabel, gridBagConstraints1);
-        inputcontroller = new SBESeqInputController(this);
+        inputcontroller = new SBESeqInputController(getSeq5tf(),getSeq3tf(),getPLSelectorPanel(),getFixedPrimerCB());
         setExpertMode(false);
         gridBagConstraints13.gridx = 12;
         gridBagConstraints13.gridy = 0;
