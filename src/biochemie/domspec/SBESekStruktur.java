@@ -10,13 +10,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.util.Helper;
 
-/*
- * TODO "All crossdimers are evil" hat neue Funktion: wenn durch crossdimer nukl. eingebaut werden, entstehen moeglicherweise neue kanten.
- * TODO z.b. a macht mit b crossdimer, baut ein G ein, dann muss jetzt zwischen A/B und allen Primern, die ein G im SNP haben auch eine Kante rein!
- * Das eigentliche Problem ist, dass es sich hierbei um bedingte Kanten handelt, sie sind nur relevant, wenn die beiden Primer, die den Crossdimer bilden
- * in einem MUltiplex waeren. Aber bis das modelliert werden kann, werden eben einfach alle Kanten vollwertig verwendet.
- *
- */
 public class SBESekStruktur extends SekStruktur{
     private boolean incomp=false;
     private boolean verh=false;
