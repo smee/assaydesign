@@ -135,25 +135,51 @@ public abstract class Multiplexer {
 			return p1.getName()+"_"+p2.getName();
 		}
 		public boolean passtMit(Multiplexable other) {
-			assert other instanceof SBEPrimer;
-			SBEPrimer o = (SBEPrimer)other;
-			
-			String snp=o.getSNP();
-			for (int i = 0; i < einbau.length(); i++) {
-				if(snp.indexOf(einbau.charAt(i))!=-1){//inkompatibel mit diesem Primer
-					edgeReason="imcomp._CD_nucleotide";
-					return false;
-				}
-			}
-			if(!p1.passtMit(other)){
-				edgeReason=p1.getEdgeReason();
-				return false;
-			}else{
-				boolean result=p2.passtMit(other);
-				edgeReason=p2.getEdgeReason();
-				return result;
-			}
+            if(other instanceof SBEPrimer) {
+                SBEPrimer o = (SBEPrimer)other;                
+                return passenWirMit(o);
+            }else if(other instanceof SBEPrimerProxy) {
+                SBEPrimerProxy otherproxy = (SBEPrimerProxy)other;
+                if(otherproxy.passenEinbautenMit(p1)==false || otherproxy.passenEinbautenMit(p2)==false) {
+                    edgeReason=otherproxy.getEdgeReason();
+                    return false;
+                }else
+                    return passenWirMit(otherproxy.p1) && passenWirMit(otherproxy.p2);
+            }else {
+                throw new IllegalArgumentException("Error: Can't compare SBEPrimerProxy with instance of "+other.getClass().getName()+"!");
+            }
 		}
+        /**
+         * @param other
+         * @param other
+         * @return
+         */
+        private boolean passenWirMit(SBEPrimer other) {
+            if(passenEinbautenMit(other)==false)
+                return false;
+            if(!p1.passtMit(other)){
+                edgeReason=p1.getEdgeReason();
+                return false;
+            }else{
+                boolean result=p2.passtMit(other);
+                edgeReason=p2.getEdgeReason();
+                return result;
+            }
+        }
+        /**
+         * @param other
+         * @return
+         */
+        private boolean passenEinbautenMit(SBEPrimer other) {
+            String snp=other.getSNP();
+            for (int i = 0; i < einbau.length(); i++) {
+                if(snp.indexOf(einbau.charAt(i))!=-1){//inkompatibel mit diesem Primer
+                    edgeReason="imcomp._CD_nucleotide";
+                    return false;
+                }
+            }
+            return true;
+        }
 		public int maxPlexSize() {
 			return Math.min(p1.maxPlexSize(), p2.maxPlexSize()) - 1;
 		}
