@@ -84,7 +84,7 @@ public abstract class GeneralConfig extends Observable{
             
             while((line = in.readLine()) != null) {
             	temp=line.trim();
-                if (!temp.startsWith("#") && temp.indexOf('=') != -1) {
+                if (!temp.startsWith("#") && temp.indexOf('=') != -1 && temp.length() > 1) {
                     temp= temp.substring(0, temp.indexOf('=')).trim();
                     if(temp.length() > 0 && isValidKey(temp)){
                     	sb.append(temp + '=');
@@ -94,7 +94,8 @@ public abstract class GeneralConfig extends Observable{
                         sb.append(line + '\n');
                     }
                 } else {//kommentar oder unsinnige zeile, kein Parameter
-                    sb.append(line + '\n');
+                    //wird weggelassen, weil es ja eh n problem beim spaeteren einlesen geben wuerde.
+                    System.out.println("unknown parameterline: "+temp);
                 }
             }
             in.close();
