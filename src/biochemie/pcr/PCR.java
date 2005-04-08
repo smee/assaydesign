@@ -147,6 +147,10 @@ public class PCR {
 	}
 
 	public void startAnalysis() throws IOException{
+        if(PCR.debug) {
+            System.out.println("Verwende folgende Parameter: "+this);
+        }
+        
 		StringTokenizer st = new StringTokenizer(config.getProperty("INFILES"));
 		final int primernum=config.getInteger("PRIMER_NUM_RETURN",30);
 		int counter=0;
@@ -154,24 +158,23 @@ public class PCR {
         if(null == outfilename || 0 == outfilename.length()) {
             outfilename=biochemie.util.Helper.dateFunc()+".txt";
         }
+        int cyclescount=0;
 		while (st.hasMoreTokens()) {
 			String file = st.nextToken();
 			if(PCR.debug)
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
-			int solutions=runAnalysis(file,outfilename);
+			int solutions=runAnalysis(file,outfilename,cyclescount>0);
 			counter+=solutions;
 			if(counter >= primernum)
 				break;   //genug loesungen gefunden, also ferdsch :)
+            cyclescount++;
 		}
 	}
 	/**
 	 * Starte die eigentliche Arbeit. Liefert die Anzahl gefundener Loesungen.
 	 */
-	private int runAnalysis(String filename, String outfilename) throws IOException {
-	    if(PCR.debug) {
-	        System.out.println("Verwende folgende Parameter: "+this);
-	    }
+	private int runAnalysis(String filename, String outfilename, boolean append) throws IOException {
 	    Primer3Manager primer3=new Primer3Manager(config, PCR.debug);
 	    primer3.runPrimer3(filename);
 	    
@@ -189,8 +192,8 @@ public class PCR {
 	    
 	    if(outputcsv)
 	        outfilename += ".csv";
-	    FileWriter notokayout=new FileWriter("not_ok_"+outfilename,true);
-	    FileWriter combined=new FileWriter("combined_"+outfilename,true);
+	    FileWriter notokayout=new FileWriter("not_ok_"+outfilename,append);
+	    FileWriter combined=new FileWriter("combined_"+outfilename,append);
 	    if(outputcsv) {
 	        notokayout.write(PrimerPair.getCSVHeaderLine());
 	        combined.write(PrimerPair.getCSVHeaderLine());
@@ -200,7 +203,7 @@ public class PCR {
 	    
 	    
 	    File outfile=new File(outfilename);
-	    FileWriter out=new FileWriter(outfile);
+	    FileWriter out=new FileWriter(outfile,append);
 	    if(outputcsv){
 	        out.write(PrimerPair.getCSVHeaderLine());
 	        out.write("\n");
@@ -233,6 +236,7 @@ public class PCR {
 	    }
 	    out.close();
 	    notokayout.close();
+        combined.close();
 	    if(PCR.verbose) {
 	        System.out.println("Fertig mit "+filename);
 	    }

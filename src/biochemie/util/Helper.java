@@ -369,6 +369,7 @@ public class Helper {
             sb.append(array[i] );
             sb.append('\n');
         }
+        sb.deleteCharAt(sb.length()-1);
 		sb.append(']');
         return sb.toString();
     }

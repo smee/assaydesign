@@ -69,6 +69,7 @@ public class PCRConfig extends GeneralConfig {
             ,{"OUTPUT_CSV","false"}
             ,{"ASSEMBLY","hg16"}
             ,{"BLAT_HASHCODE","-1"}
-            ,{"PRIMER_NUM_RETURN","50"}};
+            ,{"PRIMER_NUM_RETURN","50"}
+            ,{"PRIMER3COMMAND","primer3.exe"}};
     }
 }

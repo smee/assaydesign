@@ -5,7 +5,6 @@
 package biochemie.pcr.io;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class Primer3Manager {
     private int indexbase=-1;
     private PCRConfig config;
     private String primer3output;
-    private final String primer3exe;
+    private String primer3exe;
     private int numberOfResults=0;
     private BufferedReader input=null;
 	private String feste5seq;
@@ -43,7 +42,7 @@ public class Primer3Manager {
     public Primer3Manager(PCRConfig config, boolean debug){
         this.config=config;
         this.feste5seq=Helper.getNuklFromString(config.getProperty("FESTE5SEQ"));
-        this.primer3exe="primer3.exe";
+        this.primer3exe=config.getString("PRIMER3COMMAND");
         this.debug=debug;
     }
 
@@ -99,36 +98,34 @@ public class Primer3Manager {
         this.primer3output=filename+".tmp";
         try {
             String osName = System.getProperty("os.name" );
-            String aufruf=null;
+            String[] aufruf=new String[3];
             if( osName.equals( "Windows NT" )
                 || osName.equals( "Windows XP" )
                 || osName.equals( "Windows 2000"))
             {
-                aufruf = "cmd.exe /C ";
+                aufruf[0] = "cmd.exe";
+                aufruf[1] = "/C";
             }
             else if( osName.equals( "Windows 95") || osName.equals( "Windows 98") )
             {
-                aufruf = "command.com /C ";
+                aufruf[0] = "command.com";
+                aufruf[1] = "/C";
             }
             else if( osName.toLowerCase().indexOf("linux") != -1) {
-                aufruf="/bin/bash -c ";
+                aufruf[0]="/bin/sh";
+                aufruf[1] = "-c";
             }
               else {
                   //aufruf = "/bin/sh "+ primer3output;
                   UI.errorDisplay("OS "+osName+" not supported, yet. Sorry.");
               }
-            aufruf+='\"'+primer3exe+" < "+filename+" >"+primer3output+'\"';
+            aufruf[2]=primer3exe+" < "+filename+" > "+primer3output;
+            //aufruf[2]="/home/sdienst/bin/primer3.exe <test.in > test.in.tmp";
             if(debug){
-            	System.out.println("calling primer3 via: "+aufruf);
+            	System.out.println("calling primer3 via: "+Helper.toString(aufruf));
             }
-            File f=new File("primer3.exe");
-            if(!f.exists())
-            	UI.errorDisplay("primer3.exe muss im Pfad vorhanden sein!");
             if(PCR.verbose) {
                 System.out.println("Starte PRIMER3 (kann je nach Parametern dauern!)...");
-            }
-            if(debug){
-            	System.out.println("Aufruf lautet: "+aufruf);
             }
             /*
              * Das Problem ist folgendes: Es gibt scheinbar Deadlocks beim lesen/schreiben der Ein-/Ausgabe des Prozesses.
@@ -147,6 +144,8 @@ public class Primer3Manager {
 */
             if(0 != primerprocess.waitFor()) {
                 switch (primerprocess.exitValue()) {
+                    case 0:
+                        break;//alles i.O.
                     case -1 :
                         UI.errorDisplay("Kritischer Fehler beim Aufruf von Primer3.");
                         break;
@@ -160,6 +159,7 @@ public class Primer3Manager {
                         UI.errorDisplay("Fehler in der Eingabe von Primer3. Fehler steht in der Ausgabedatei unter \"PRIMER_ERROR\"");
                         break;
                     default :
+                        System.err.println("Got return code "+primerprocess.exitValue()+" from primer3!");
                         break;
                 }
             }

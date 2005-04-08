@@ -176,7 +176,7 @@ public class UI {
 						}else
 						if(args[i].substring(1).equalsIgnoreCase("debug")) {
 							config.setProperty("DEBUG","true");
-                            if(!Boolean.getBoolean("DEBUG"))
+                            if(!Boolean.getBoolean("DEBUG") && !Boolean.getBoolean("DEBUG"))
                                 biochemie.util.LogStdStreams.initializeErrorLogging("pcr.log", "---------Program started: " + new Date()+" -----------", true,true);
 						}else
 						if(args[i].substring(1).equalsIgnoreCase("blat")) {

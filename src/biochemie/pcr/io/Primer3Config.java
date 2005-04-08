@@ -23,20 +23,36 @@ public class Primer3Config extends GeneralConfig {
 		prop.remove("");//= entfernen
 	}
 
-	public void updateConfigFile(String filename) throws IOException {
-		super.updateConfigFile(filename);
-		try {
-			BufferedWriter out=new BufferedWriter(new FileWriter(filename,true));
-			out.write("=\n");
-			out.close();
-		} catch (IOException e) {
-			UI.errorDisplay("Fehler beim Schreiben auf "+filename);
-		}
-	}
 
-	protected String[][] getInitializedProperties() {
+
+    /* (non-Javadoc)
+     * @see biochemie.util.config.GeneralConfig#updateConfigFile(java.lang.String)
+     */
+    public void updateConfigFile(String filename) throws IOException {
+        super.updateConfigFile(filename);
+        appendEqualSign(filename);
+    }
+
+
+
+    /**
+     * @param filename
+     */
+    private void appendEqualSign(String filename) {
+        try {
+            BufferedWriter out=new BufferedWriter(new FileWriter(filename,true));
+            out.write("=\n");
+            out.close();
+        } catch (IOException e) {
+            UI.errorDisplay("Fehler beim Schreiben auf "+filename);
+        }
+    }
+
+
+
+    protected String[][] getInitializedProperties() {
 	    return new String[][]{
-	            {"SEQUENCE","A"}
+	             {"SEQUENCE","A"}
                 ,{"PRIMER_NUM_RETURN","1000"}
                 ,{"PRIMER_MAX_POLY_X",""}
                 ,{"PRIMER_PRODUCT_SIZE_RANGE",""}
@@ -45,4 +61,9 @@ public class Primer3Config extends GeneralConfig {
                 ,{"TARGET",""}
                 };
 	}
+
+    public void writeConfigTo(String filename) throws IOException {
+        super.writeConfigTo(filename);
+        appendEqualSign(filename);
+    }
 }
