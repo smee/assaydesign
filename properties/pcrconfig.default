@@ -40,8 +40,8 @@ DEBUG=true
 # Format: start, length : Alles aus der Sequenz von start bis start+length muss von den primern umschlossen sein
 TARGET=200, 50
 
-# Anzahl von pcrprimern, die primer3 maximal liefern soll
-PRIMER_NUM_RETURN=1000
+# Anzahl von pcrprimerpaaren, die min. die Filter ueberstehen sollen.
+NUM_OF_SUCCESSFUL_PAIRS=50
 
 # Modulparameter:
 # ----------------
