@@ -152,7 +152,7 @@ public class PCR {
         }
         
 		StringTokenizer st = new StringTokenizer(config.getProperty("INFILES"));
-		final int primernum=config.getInteger("PRIMER_NUM_RETURN",30);
+		final int primernum=config.getInteger("NUM_OF_SUCCESSFUL_PAIRS",30);
 		int counter=0;
 		String outfilename=config.getProperty("OUTFILE");
         if(null == outfilename || 0 == outfilename.length()) {
@@ -164,18 +164,23 @@ public class PCR {
 			if(PCR.debug)
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
-			int solutions=runAnalysis(file,outfilename,cyclescount>0);
+            
+			int solutions=runAnalysis(file,outfilename,cyclescount);
 			counter+=solutions;
-			if(counter >= primernum)
-				break;   //genug loesungen gefunden, also ferdsch :)
+			if(counter >= primernum) {
+				System.out.println("Got "+counter+" solutions, stopping calculations.");
+                break;   //genug loesungen gefunden, also ferdsch :)
+                
+            }
             cyclescount++;
 		}
 	}
 	/**
 	 * Starte die eigentliche Arbeit. Liefert die Anzahl gefundener Loesungen.
 	 */
-	private int runAnalysis(String filename, String outfilename, boolean append) throws IOException {
-	    Primer3Manager primer3=new Primer3Manager(config, PCR.debug);
+	private int runAnalysis(String filename, String outfilename, int cyclescount) throws IOException {
+	    boolean append=cyclescount>0;
+        Primer3Manager primer3=new Primer3Manager(config, PCR.debug);
 	    primer3.runPrimer3(filename);
 	    
 	    if(0 == primer3.getNumberOfResults()){
@@ -218,7 +223,7 @@ public class PCR {
 	            if(!outputcsv)
 	                line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
 	            else
-	                line=pps[i].toCSVString(i+1);
+	                line=pps[i].toCSVString(i+1,cyclescount+1);
 	            out.write(line);
 	            out.write("\n");
                 combined.write(line);
@@ -227,7 +232,7 @@ public class PCR {
 	            if(!outputcsv)
 	                line="\nNr. "+(-1)+'\n'+pps[i].toString();
 	            else
-	                line=pps[i].toCSVString(i+1);
+	                line=pps[i].toCSVString(i+1,cyclescount+1);
 	            notokayout.write(line);
 	            notokayout.write("\n");
                 combined.write(line);

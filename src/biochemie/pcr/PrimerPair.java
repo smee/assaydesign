@@ -176,7 +176,7 @@ public class PrimerPair {
 	/**
 	 * @return
 	 */
-	public String toCSVString(int num) {
+	public String toCSVString(int num,int cyclenum) {
         StringBuffer sb=new StringBuffer(Integer.toString(num));
         sb.append(';');
         sb.append(posinfile);
@@ -204,6 +204,8 @@ public class PrimerPair {
         	sb.append(';');
         }
         sb.append(sum);
+        sb.append(';');
+        sb.append(cyclenum);
         return sb.toString() ;      
 	}
 	
@@ -220,7 +222,8 @@ public class PrimerPair {
         	sb.append(scorenames[i]);
         	sb.append(';');
         }
-		sb.append("sum;");
+		sb.append("Sum;");
+		sb.append("no. of cycle;");
         return sb.toString();
 	}
 }
