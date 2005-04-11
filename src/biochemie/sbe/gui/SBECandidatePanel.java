@@ -63,13 +63,14 @@ public class SBECandidatePanel extends MyPanel {
         }    
     };
     private MyChangeListener cl=new MyChangeListener();
+    
 	/**
 	 * This is the default constructor
 	 * @param
 	 */
-	public SBECandidatePanel(String id) {
+	public SBECandidatePanel(String id, int maxlen) {
 		super();
-		initialize();
+		initialize(maxlen);
         getTfId().setText(id);
 	}
 
@@ -78,7 +79,7 @@ public class SBECandidatePanel extends MyPanel {
 	 *
 	 * @return void
 	 */
-	private  void initialize() {
+	private  void initialize(int minlen) {
 		GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
@@ -169,7 +170,11 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
 		this.add(getTfId(), gridBagConstraints31);
 		this.add(jLabel, gridBagConstraints1);
-        inputcontroller = new SBESeqInputController(getSeq5tf(),getSeq3tf(),getPLSelectorPanel(),getFixedPrimerCB());
+        inputcontroller = new SBESeqInputController(getSeq5tf(),
+                                                    getSeq3tf(),
+                                                    getPLSelectorPanel(),
+                                                    getFixedPrimerCB(),
+                                                    minlen);
         setExpertMode(false);
         gridBagConstraints13.gridx = 12;
         gridBagConstraints13.gridy = 0;

@@ -106,7 +106,7 @@ public class SBEPanel extends JPanel
 
         add(plpanel,"5,1,C,C");
         
-        new SBESeqInputController(tfSequence,null,plpanel,null);
+        new SBESeqInputController(tfSequence,null,plpanel,null,0);
     }
 
 

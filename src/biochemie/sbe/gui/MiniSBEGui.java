@@ -750,7 +750,7 @@ public class MiniSBEGui extends JFrame {
      * @param index
      */
     private void addSBECandidatePanel(int index) {
-        SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1));
+        SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1), getConfigDialog().getSBEOptionsFromGui().getMinCandidateLen());
         p.setUnchanged();
         p.setExpertMode(expertmode);
         if(index%2 == 1)

@@ -38,7 +38,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Die Sequenz, die durch die beiden GUI-Elemente repraesentiert werden soll.
      */
     private String _seq;
-    
+    private final int minlen;
     /**
      * Ich setze gerade den PL, nicht der user
      */
@@ -46,8 +46,9 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private SBECandidatePanel panel;
     private JCheckBox fixedcb;
     
-    public SBESeqInputController(SBESequenceTextField tf, JTextField tfright,PLSelectorPanel panel, JCheckBox fix) {
+    public SBESeqInputController(SBESequenceTextField tf, JTextField tfright,PLSelectorPanel panel, JCheckBox fix, int minlength) {
         this.left=tf;
+        this.minlen=minlength;
         this.right=tfright==null?new JTextField():tfright;
         this.plpanel=panel;
         
@@ -80,8 +81,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         if(_seq==null) return;
         
         //sind die eingegebenen seq. lang genug?
-        int maxpl = plpanel.getMaxSelectablePl();
-        final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+"characters!";
+        int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);
+        final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+" characters!";
         
         if(_seq.length()<maxpl) {
             plpanel.setEnabled(false);
