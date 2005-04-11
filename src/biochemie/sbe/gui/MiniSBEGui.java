@@ -924,7 +924,6 @@ public class MiniSBEGui extends JFrame {
             }
 
             private SBECandidate findSBECandidateWithID(String id) {
-                System.out.println(id);
                 for (Iterator iter = sbec.iterator(); iter.hasNext();) {
                     SBECandidate s = (SBECandidate) iter.next();
                     if(s.getId().equals(id))

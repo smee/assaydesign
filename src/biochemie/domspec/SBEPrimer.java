@@ -108,8 +108,7 @@ public class SBEPrimer extends Primer{
      * @param bautein
      */
     private void init(String bautein,boolean usergiven) {
-        boolean hh= usergiven && (bautein.length() == 0 || !bautein.equalsIgnoreCase("none"));//vom benutzer vorgegebene Sekundaerstrukturen
-        if(hh){
+        if(!usergiven){
             int incompHairpin=0,incompHomodimer=0;
             HashSet positions=new HashSet();
             for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
