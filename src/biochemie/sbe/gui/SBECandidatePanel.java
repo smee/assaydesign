@@ -11,6 +11,8 @@ import java.util.StringTokenizer;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -46,7 +48,21 @@ public class SBECandidatePanel extends MyPanel {
     private boolean isExpertMode;
 	private StringEntryPanel filtersPanel = null;
 	private JCheckBox fixedPrimerCB = null;
-
+    private class MyChangeListener implements DocumentListener, ChangeListener{
+        public void changedUpdate(DocumentEvent e) {
+            dirty();
+        }
+        public void insertUpdate(DocumentEvent e) {
+            dirty();
+        }
+        public void removeUpdate(DocumentEvent e) {
+            dirty();            
+        }
+        public void stateChanged(ChangeEvent e) {
+            dirty();
+        }    
+    };
+    private MyChangeListener cl=new MyChangeListener();
 	/**
 	 * This is the default constructor
 	 * @param
@@ -174,6 +190,7 @@ public class SBECandidatePanel extends MyPanel {
         this.add(getPcrLenPanel(), gridBagConstraints6);
         this.add(getFiltersPanel(), gridBagConstraints13);
         this.add(getFixedPrimerCB(), gridBagConstraints15);
+        setUnchanged();
 	}
 	/**
 	 * This method initializes PBSequenceField
@@ -187,6 +204,7 @@ public class SBECandidatePanel extends MyPanel {
 			seq5tf.setUpper(true);
 			seq5tf.setValidChars("ACGTacgt");
 			seq5tf.setColumns(10);
+            seq5tf.getDocument().addDocumentListener(cl);
 		}
 		return seq5tf;
 	}
@@ -226,6 +244,7 @@ public class SBECandidatePanel extends MyPanel {
                     updateTooltip();
                 }
                 private void updateTooltip() {
+                    dirty();
                     if(tfId.getText().length() == 0)
                         tfId.setToolTipText("Input SB-Primer Identification");
                     else
@@ -261,6 +280,7 @@ public class SBECandidatePanel extends MyPanel {
 		if (seq3tf == null) {
 			seq3tf = new PBSequenceField(100,true,"ACGTacgt");
 			seq3tf.setColumns(10);
+            seq3tf.getDocument().addDocumentListener(cl);
 		}
 		return seq3tf;
 	}
@@ -409,8 +429,7 @@ public class SBECandidatePanel extends MyPanel {
      * @param id
      */
     public void setValuesFromCSVLine(String line) {
-        //System.out.println("Parsing inputline: ");
-        //System.out.println(line);
+        dirty();
         StringTokenizer stok = new StringTokenizer(line,";\"");
         String id = stok.nextToken();
         String l = stok.nextToken();
@@ -475,6 +494,7 @@ public class SBECandidatePanel extends MyPanel {
      * @param oldfilters
      */
     public void setFilters(String f) {
+        dirty();
         getFiltersPanel().setText(f);
     }
 	/**
@@ -487,7 +507,33 @@ public class SBECandidatePanel extends MyPanel {
 			fixedPrimerCB = new JCheckBox();
 			fixedPrimerCB.setText("Fix");
 			fixedPrimerCB.setToolTipText("If checked, length of 5' sequence will not be adjusted to the specified temperature and it will be used as is for multiplexing");
+            fixedPrimerCB.addChangeListener((ChangeListener) cl);
 		}
 		return fixedPrimerCB;
 	}
+
+    /* (non-Javadoc)
+     * @see biochemie.gui.MyPanel#setUnchanged()
+     */
+    public void setUnchanged() {
+        super.setUnchanged();
+        getFiltersPanel().setUnchanged();
+        getHairpin3SelectionPanel().setUnchanged();
+        getHairpin5SelectionPanel().setUnchanged();
+        getSNPSelectorPanel().setUnchanged();
+        getPcrLenPanel().setUnchanged();
+    }
+
+    /* (non-Javadoc)
+     * @see biochemie.gui.MyPanel#hasChanged()
+     */
+    public boolean hasChanged() {
+        return super.hasChanged() || 
+        getFiltersPanel().hasChanged() ||
+        getHairpin3SelectionPanel().hasChanged() ||
+        getHairpin5SelectionPanel().hasChanged() ||
+        getSNPSelectorPanel().hasChanged() ||
+        getPcrLenPanel().hasChanged();
+    }
+    
      }  //  @jve:decl-index=0:visual-constraint="65,28"

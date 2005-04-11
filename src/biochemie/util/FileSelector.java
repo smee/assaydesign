@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -54,14 +55,21 @@ public class FileSelector {
         jfc.setFileFilter(filter);
         int result = -1;
         File toreturn = null;
-        if(dialogtype == JFileChooser.OPEN_DIALOG) 
+        if(dialogtype == OPEN_DIALOG) 
             result = jfc.showOpenDialog(parent);
-        else
+        else 
             result = jfc.showSaveDialog(parent);
         
         if(result == JFileChooser.APPROVE_OPTION) {
             toreturn  = jfc.getSelectedFile();
             setLastUsedDirectory(toreturn);
+            if(dialogtype == SAVE_DIALOG && toreturn.exists()) {
+                int answer=JOptionPane.showConfirmDialog(parent,"The contents of the file will be lost. Do you want to continue?");
+                if(answer==JOptionPane.NO_OPTION)
+                    return getUserSelectedFile(parent,title,filter,dialogtype);
+                else if(answer==JOptionPane.CANCEL_OPTION)
+                    return null;
+            }
         }
         return toreturn;
     }

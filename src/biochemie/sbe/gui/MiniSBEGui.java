@@ -231,7 +231,7 @@ public class MiniSBEGui extends JFrame {
         public void actionPerformed(java.awt.event.ActionEvent e) {
             if(sbepanels.size() == 0)
                 return;//nothing to do
-            int answer = askUserForSave();
+            int answer = askUserForSaveIfNeeded();
             if (answer == JOptionPane.CANCEL_OPTION)
                 return;
 
@@ -249,8 +249,12 @@ public class MiniSBEGui extends JFrame {
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            getNewAction().actionPerformed(e);//loesche alle bestehenden primer in der gui
+            //getNewAction().actionPerformed(e);//loesche alle bestehenden primer in der gui
+            int answer = askUserForSaveIfNeeded();
+            if (answer == JOptionPane.CANCEL_OPTION)
+                return;
 
+            
             FileFilter filter = new FileFilter(){
                 public boolean accept(File f) {
                     if(f.isDirectory())
@@ -265,6 +269,8 @@ public class MiniSBEGui extends JFrame {
             };
             File file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Load sbeprimers...",filter,FileSelector.OPEN_DIALOG);
             if(file !=null){
+                getSbepanelsPanel().removeAll();//XXX eigentlich die Aufgabe von newaction
+                sbepanels.clear();
                 List primerlines = new LinkedList();
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(file));
@@ -283,7 +289,9 @@ public class MiniSBEGui extends JFrame {
                 int i=0;
                 for (Iterator it = primerlines.iterator(); it.hasNext();i++) {
                     try {
-                        ((SBECandidatePanel)sbepanels.get(i)).setValuesFromCSVLine((String)it.next());
+                        SBECandidatePanel p=((SBECandidatePanel)sbepanels.get(i));
+                        p.setValuesFromCSVLine((String)it.next());
+                        p.setUnchanged();
                     } catch (RuntimeException e2) {
                         e2.printStackTrace();
                         JOptionPane.showMessageDialog(MiniSBEGui.this,"Encountered error while parsing input file: "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
@@ -453,7 +461,7 @@ public class MiniSBEGui extends JFrame {
 	}
 	private void exitApp() {
 //		 Save the state of the window as preferences
-        int answer = askUserForSave();
+        int answer = askUserForSaveIfNeeded();
         if (answer == JOptionPane.CANCEL_OPTION)
             return;
 		prefs.putInt(WINDOW_WIDTH_KEY, getWidth());
@@ -743,6 +751,7 @@ public class MiniSBEGui extends JFrame {
      */
     private void addSBECandidatePanel(int index) {
         SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1));
+        p.setUnchanged();
         p.setExpertMode(expertmode);
         if(index%2 == 1)
         	p.setBackground(new Color(230,230,255));
@@ -952,10 +961,18 @@ public class MiniSBEGui extends JFrame {
      * Saves, if the user clicks yes, returns the value received from  JOptionPane.
      * @return
      */
-    protected int askUserForSave() {
-        int answer=JOptionPane.showConfirmDialog(null,"Would you like to save?","New assay design",JOptionPane.YES_NO_CANCEL_OPTION);
-        if(answer == JOptionPane.YES_OPTION)
-            getSavePrimerAction().actionPerformed(new ActionEvent(this,0,"save"));
+    protected int askUserForSaveIfNeeded() {
+        boolean dirty=false;
+        for (Iterator iter = this.sbepanels.iterator(); iter.hasNext();) {
+            SBECandidatePanel panel = (SBECandidatePanel) iter.next();
+            dirty = dirty || panel.hasChanged();
+        }
+        int answer=JOptionPane.NO_OPTION;
+        if(dirty) {
+            answer=JOptionPane.showConfirmDialog(null,"Would you like to save?","New assay design",JOptionPane.YES_NO_CANCEL_OPTION);
+            if(answer == JOptionPane.YES_OPTION)
+                getSavePrimerAction().actionPerformed(new ActionEvent(this,0,"save"));
+        }
         return answer;
     }
   }  //  @jve:decl-index=0:visual-constraint="10,102"

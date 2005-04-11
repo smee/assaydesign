@@ -21,6 +21,7 @@ public class HairpinSelectionPanel extends MyPanel {
     private class SelectionListener implements ItemListener{
 
         public void itemStateChanged(ItemEvent e) {
+            dirty();
             JCheckBox src=(JCheckBox) e.getSource();
             boolean selected=e.getStateChange() == ItemEvent.SELECTED;
             if(selected == false)//dann is egal
@@ -117,6 +118,7 @@ public class HairpinSelectionPanel extends MyPanel {
 		this.add(getCbPred(), gridBagConstraints5);
 		String t="Define experimentally observed Hairpins";
 		setRekTooltip(t);
+        setUnchanged();
 	}
 
 	/**
@@ -205,6 +207,7 @@ public class HairpinSelectionPanel extends MyPanel {
 		return result;
 	}
     public void setSelectedNukleotides(String n) {
+        dirty();
         n=n.toUpperCase();
 
        cbNone.setSelected(n.indexOf("NONE") != -1);

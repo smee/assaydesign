@@ -6,8 +6,12 @@ package biochemie.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JCheckBox;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 /**
  * @author Steffen Dienst
  *
@@ -20,6 +24,11 @@ public class NuklSelectorPanel extends MyPanel {
 	private JCheckBox cbT = null;
 
 	private String title="SNP";
+    private ItemListener cl=new ItemListener(){
+        public void itemStateChanged(ItemEvent e) {
+            dirty();            
+        }        
+    };
 	/**
 	 * This is the default constructor
 	 */
@@ -80,6 +89,7 @@ public class NuklSelectorPanel extends MyPanel {
 		this.add(getCbG(), gridBagConstraints12);
 		this.add(getCbC(), gridBagConstraints13);
 		this.add(getCbT(), gridBagConstraints14);
+        setUnchanged();
 	}
 	/**
 	 * This method initializes cbA
@@ -90,6 +100,7 @@ public class NuklSelectorPanel extends MyPanel {
 		if (cbA == null) {
 			cbA = new JCheckBox();
 			cbA.setText("A");
+            cbA.addItemListener(cl);
 		}
 		return cbA;
 	}
@@ -102,6 +113,7 @@ public class NuklSelectorPanel extends MyPanel {
 		if (cbG == null) {
 			cbG = new JCheckBox();
 			cbG.setText("G");
+            cbG.addItemListener(cl);
 		}
 		return cbG;
 	}
@@ -114,6 +126,7 @@ public class NuklSelectorPanel extends MyPanel {
 		if (cbC == null) {
 			cbC = new JCheckBox();
 			cbC.setText("C");
+            cbC.addItemListener(cl);
 		}
 		return cbC;
 	}
@@ -126,6 +139,7 @@ public class NuklSelectorPanel extends MyPanel {
 		if (cbT == null) {
 			cbT = new JCheckBox();
 			cbT.setText("T");
+            cbT.addItemListener(cl);
 		}
 		return cbT;
 	}
@@ -156,6 +170,7 @@ public class NuklSelectorPanel extends MyPanel {
 		return result;
 	}
     public void setSelectedNukleotides(String n) {
+        dirty();
         n=n.toUpperCase();
 
        cbA.setSelected(n.indexOf('A') != -1);
@@ -163,4 +178,5 @@ public class NuklSelectorPanel extends MyPanel {
        cbG.setSelected(n.indexOf('G') != -1);
        cbT.setSelected(n.indexOf('T') != -1);
     }
+
  }  //  @jve:decl-index=0:visual-constraint="10,10"

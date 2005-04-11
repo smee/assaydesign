@@ -41,6 +41,7 @@ public class PLSelectorPanel extends MyPanel {
 	}
 
 	public void setPLPositions(int[] br){
+        dirty();
         MutableComboBoxModel m = ((MutableComboBoxModel)getComboPL().getModel());
         int sel=getComboPL().getSelectedIndex();
         if(sel == -1)
@@ -82,6 +83,7 @@ public int getMaxSelectablePl() {
      * @return
 	 */
 	public void setSelectedPL(int pl){
+        dirty();
         if(pl <= 0) {
             getComboPL().getModel().setSelectedItem("auto");
             return;
@@ -114,6 +116,7 @@ public int getMaxSelectablePl() {
 		gridBagConstraints6.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		this.add(getComboPL(), gridBagConstraints6);
 		setRekTooltip(null);
+        setUnchanged();
 	}
 	/**
 	 * This method initializes jComboBox
@@ -130,8 +133,10 @@ public int getMaxSelectablePl() {
 	 *
 	 */
 	public void setAuto() {
-        if(getComboPL().getModel().getSize()>0)
+        if(getComboPL().getModel().getSize()>0) {
+            dirty();
             getComboPL().setSelectedIndex(0);
+        }
 	}
 
 	/**
@@ -150,6 +155,7 @@ public int getMaxSelectablePl() {
     }
 
     public void setModel(MutableComboBoxModel model) {
+        dirty();
         getComboPL().setModel(model);
     }
  }

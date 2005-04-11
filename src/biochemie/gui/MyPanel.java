@@ -14,8 +14,8 @@ import javax.swing.JPanel;
  * @author sdienst
  *
  */
-public class MyPanel extends JPanel {
-
+public abstract class MyPanel extends JPanel implements ChangeWatcher{
+    private boolean dirtyFlag=false;
     /**
      * @param layout
      * @param isDoubleBuffered
@@ -66,5 +66,16 @@ public class MyPanel extends JPanel {
             ((JComponent)getComponent(i)).setToolTipText(t);
         }
 
+    }
+
+    public boolean hasChanged() {
+        return dirtyFlag;
+    }
+
+    public void setUnchanged() {
+        dirtyFlag=false;
+    }
+    protected void dirty() {
+        dirtyFlag=true;
     }
 }

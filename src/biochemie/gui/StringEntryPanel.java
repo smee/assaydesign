@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import biochemie.calcdalton.gui.PBSequenceField;
 /**
@@ -60,6 +62,7 @@ public class StringEntryPanel extends MyPanel {
 		gridBagConstraints3.insets = new java.awt.Insets(0,5,0,5);
 		this.add(getLabelTf(), gridBagConstraints2);
 		this.add(getPBSequenceField(), gridBagConstraints3);
+        setUnchanged();
 	}
 	/**
 	 * This method initializes jTextField
@@ -88,6 +91,18 @@ public class StringEntryPanel extends MyPanel {
 										  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 										  "0123456789" +
 										  ",.-=_+[]|<>?!#$%&*() ");
+            PBSequenceField.getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
+                    dirty();
+                }
+                public void insertUpdate(DocumentEvent e) {
+                    dirty();                    
+                }
+                public void removeUpdate(DocumentEvent e) {
+                    dirty();                    
+                }
+            });
+           
 		}
 		return PBSequenceField;
 	}
@@ -106,6 +121,7 @@ public class StringEntryPanel extends MyPanel {
 	 * @param string
 	 */
 	public void setText(String string) {
+        dirty();
 		getPBSequenceField().setText(string);
 	}
     public void setMaxLen(int len) {
