@@ -76,6 +76,7 @@ import biochemie.util.GUIHelper;
 import biochemie.util.Helper;
 import biochemie.util.MyAction;
 import biochemie.util.SwingWorker;
+import biochemie.util.TableSorter;
 
 /**
  * @author Steffen Dienst
@@ -177,6 +178,8 @@ public class MiniSBEGui extends JFrame {
         public void tableChanged(TableModelEvent e) {
             int row = e.getFirstRow();
             int column = e.getColumn();
+            if(row < 0 || column < 0 ) //structural change, like sorting
+                return;
             TableModel model = (TableModel)e.getSource();
 
             Boolean filter = (Boolean) model.getValueAt(row, column);
@@ -873,17 +876,17 @@ public class MiniSBEGui extends JFrame {
     public static JTable createResultTable(final List sbec) {
         final TableModel model = new MiniSBEResultTableModel(sbec);
 
-        //TableSorter sorter = new TableSorter(model);
-//        JTableEx table = new JTableEx(sorter) {
-        JTableEx table = new JTableEx(model) {
+        final TableSorter sorter = new TableSorter(model);
+        JTableEx table = new JTableEx(sorter) {
+//        JTableEx table = new JTableEx(model) {
             public String getToolTipText(MouseEvent event) {
                 Point p= event.getPoint();
                 int row= rowAtPoint(p);
                 int col= columnAtPoint(p);
                 if(col == 10) {//XXX
-                    return getSekStrukTooltipFor((SBECandidate)sbec.get(row));
+                    return getSekStrukTooltipFor((String) sorter.getValueAt(row,1));
                 }else if(col == 8 || col == 9 ){
-                    return splittedHtmlLine(model.getValueAt(row,col).toString());
+                    return splittedHtmlLine(sorter.getValueAt(row,col).toString());
                 }else {
                     return super.getToolTipText(event);
                 }
@@ -893,8 +896,9 @@ public class MiniSBEGui extends JFrame {
              * @param candidate
              * @return
              */
-            protected String getSekStrukTooltipFor(SBECandidate s) {
-                if(!s.hasValidPrimer())
+            protected String getSekStrukTooltipFor(String id) {
+                SBECandidate s=findSBECandidateWithID(id);
+                if(s==null || !s.hasValidPrimer())
                     return null;
                 StringBuffer sb = new StringBuffer("<html>");
 
@@ -908,6 +912,16 @@ public class MiniSBEGui extends JFrame {
                 }
                 sb.append("</html>");
                 return new String(sb);
+            }
+
+            private SBECandidate findSBECandidateWithID(String id) {
+                System.out.println(id);
+                for (Iterator iter = sbec.iterator(); iter.hasNext();) {
+                    SBECandidate s = (SBECandidate) iter.next();
+                    if(s.getId().equals(id))
+                        return s;
+                }
+                return null;
             }
 
             /**
@@ -926,7 +940,7 @@ public class MiniSBEGui extends JFrame {
             }
         };
         table.setPreferredScrollableViewportSize(new Dimension(400,table.getPreferredSize().height));
-        //sorter.setTableHeader(table.getTableHeader());
+        sorter.setTableHeader(table.getTableHeader());
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for(int j=0; j <table.getColumnCount();j++){
             TableColumn column = table.getColumnModel().getColumn(j);
