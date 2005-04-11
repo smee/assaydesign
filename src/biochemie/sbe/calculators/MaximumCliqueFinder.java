@@ -42,6 +42,7 @@ public class MaximumCliqueFinder implements Interruptible{
     GraphWriter gw;
     private volatile boolean interrupted=false;
     private Thread calcThread;
+    private int oldbest;
     
     public MaximumCliqueFinder(boolean[][] admatrix,int maxplexnr,boolean debug) {
         this.debug=debug;
@@ -147,7 +148,7 @@ public class MaximumCliqueFinder implements Interruptible{
         calcThread=Thread.currentThread();
         maxclique=new HashSet();
         int ub=Integer.MAX_VALUE;
-        
+        oldbest = 0;
         for (Iterator it = graphes.iterator(); it.hasNext();) {
             UndirectedSubgraph sg = (UndirectedSubgraph) it.next();
             if(sg.edgeSet().size()<maxclique.size()) continue;   //kann keine groessere Clique enthalten
@@ -164,7 +165,6 @@ public class MaximumCliqueFinder implements Interruptible{
         }
         return maxclique.size();
     }
-//    int depth=-1;
     /**
      * Findet die größtmögliche maximale Clique. Das ganze basiert auf dem Paper 
      * "Exact Coloring of Real-Life Graphs is Easy" von Olivier Coudert
@@ -175,7 +175,6 @@ public class MaximumCliqueFinder implements Interruptible{
      * @return
      */
     private Set findMaxClique(final UndirectedGraph g, Set c, Set best, int ub) {
-//        depth++;
         if(calcThread.isInterrupted()) {//muss leider aufhören :(
             return best;
         }
@@ -192,11 +191,9 @@ public class MaximumCliqueFinder implements Interruptible{
         List r=null;
         do {
             r=findRemovableVertices(g,c.size()-best.size());
-            Algorithms.foreach(r.iterator(),new UnaryProcedure() {
-                public void run(Object obj) {
-                    g.removeVertex(obj);
-                }
-            });
+            for (Iterator iter = r.iterator(); iter.hasNext();) {
+               g.removeVertex(iter.next());                
+            }
         }while(!r.isEmpty());//wenn Knoten entfernt werden, werden Farben frei, also verändert sich das q anderer Knoten, so daß vielleicht noch mehr entfernt werden können
         /* Es kann keine größere Clique als best mehr gefunden werden,
          * Regel A im Paper:
@@ -233,19 +230,19 @@ public class MaximumCliqueFinder implements Interruptible{
         assert g1.vertexSet().size()==vertices.size();//sicherstellen, dass nur die Nachbarn von v im Graphen enthalten sind
         Set newc=new HashSet(c);
         newc.add(v);
-        int oldbest=best.size();
         best=findMaxClique(g1,newc,best,ub);
         if(debug)            
             if(best.size()>oldbest) {
                 System.out.println(v+" is in clique of size "+best.size());
+                oldbest=best.size();
             }
         if(ub==best.size()) {
             return best;
         }
         //Regel c: v darf nicht entfernt werden, wenn...
-        if(g.degreeOf(v)>=g.vertexSet().size()-2) {
-            return best;
-        }
+//        if(g.degreeOf(v)>=g.vertexSet().size()-2) {
+//            return best;
+//        }
         vertices=new HashSet(g.vertexSet());
         vertices.remove(v);
         g1=new UndirectedSubgraph(g,vertices,null);
