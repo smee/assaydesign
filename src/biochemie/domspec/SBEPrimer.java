@@ -21,6 +21,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.calcdalton.CalcDalton;
 import biochemie.sbe.SBEOptions;
+import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 
@@ -153,13 +154,12 @@ public class SBEPrimer extends Primer{
     public boolean equals(Object o){
         if ( !(o instanceof Primer) ) {
             return false;
+        }else {
+            SBEPrimer other = (SBEPrimer)o;
+            return getId().equals(other.getId())
+                    && getBruchstelle()==other.getBruchstelle()
+                    && getType().equals(other.getType());
         }
-        SBEPrimer rhs = (SBEPrimer) o;
-        return new EqualsBuilder()
-        .appendSuper(super.equals(o))
-        .append(this.getId(), rhs.getId())
-        .append(getBruchstelle(), rhs.getBruchstelle())
-        .isEquals();
     }
     public int hashCode() {
         return new HashCodeBuilder(17, 37).

@@ -63,6 +63,8 @@ public class GraphHelper {
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
                 if(!s1.passtMit(s2)) {
+                    if(s1.equals(s2))
+                        System.out.println(s1.getName()+" equals "+s2.getName());
                     g.addEdge(s1,s2);
                     if(writegraph)
                         gw.addArc(i,j,s1.getEdgeReason());

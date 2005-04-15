@@ -80,7 +80,7 @@ public  class ReusableThread extends Thread implements ActionListener{
             while(!resultFetched)
                 wait();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
     

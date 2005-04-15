@@ -176,7 +176,9 @@ public class MaximumCliqueFinder implements Interruptible{
      */
     private Set findMaxClique(final UndirectedGraph g, Set c, Set best, int ub) {
         if(calcThread.isInterrupted()) {//muss leider aufhören :(
-            return best;
+            if(best.size()>0)
+                return best;
+            else return c;
         }
         if(0 == g.vertexSet().size())
             return c;

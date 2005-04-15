@@ -148,9 +148,9 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         	primercandidates.add(primer);
         }else
         	createValidCandidate(l, bautEin5,r,bautEin3);
-        this.logstring=bos.toString();
+        //this.logstring=bos.toString();
         System.setOut(orgout);
-        System.out.println(logstring);
+        System.out.println(bos.toString());
      }
 
     /**

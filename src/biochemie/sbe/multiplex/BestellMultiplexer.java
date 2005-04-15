@@ -36,11 +36,10 @@ public class BestellMultiplexer extends Multiplexer {
 	public void findMultiplexes(List mult) {
         System.out.println("Using BestellMultiplexer... (maximizes the size of multiplexes)");
         boolean drawGraph=cfg.isDrawGraphes();
-
+        System.out.println("Creating graph with "+mult.size()+" vertices...");
 	    UndirectedGraph g=GraphHelper.createIncompGraph(mult,drawGraph,0);
 	    UndirectedGraph grev=GraphHelper.getKomplementaerGraph(g);
-	    if(debug)
-	        System.out.println("RevGraph consists of "+grev.vertexSet().size()+" vertices, "+grev.edgeSet().size()+" edges.");
+        System.out.println("RevGraph consists of "+grev.vertexSet().size()+" vertices, "+grev.edgeSet().size()+" edges.");
 	    
 	    int maxplexnr= cfg.getMaxPlex();
 	    if(maxplexnr>mult.size())
