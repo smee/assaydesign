@@ -32,7 +32,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private SBESequenceTextField left;
     private JTextField right;
     private PLSelectorPanel plpanel;
-    private boolean isOkay;
+    private boolean isOkay=true;
     private char replacedNukl = 0;
     /**
      * Die Sequenz, die durch die beiden GUI-Elemente repraesentiert werden soll.
