@@ -1,4 +1,6 @@
 package biochemie.sbe;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,6 +102,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     private String givenMultiplexID;
 	private final SBEOptions cfg;
     private String unwanted;
+    private String logstring;
 
     /**
      * Konstruktor fuer nur einen Primer.
@@ -133,6 +136,10 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         this.primercandidates=new ArrayList();
         this.cfg = cfg;
         this.unwanted=unwanted;
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        PrintStream orgout=System.out;
+        System.setOut(new PrintStream(bos));
         System.out.println("\nAnalyzing Seq.ID: " + id + "\n------------------------");
 
         if(userGiven){
@@ -141,6 +148,9 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         	primercandidates.add(primer);
         }else
         	createValidCandidate(l, bautEin5,r,bautEin3);
+        this.logstring=bos.toString();
+        System.setOut(orgout);
+        System.out.println(logstring);
      }
 
     /**
@@ -258,7 +268,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
                 }
             }
         }
-        final int allcount = liste.size();
+        int allcount = liste.size();
 
         //lege Liste mit Filtern an, die verwendet werden sollen
         List kf=new ArrayList();

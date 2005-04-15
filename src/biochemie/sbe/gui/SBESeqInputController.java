@@ -111,7 +111,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             return;
         }
         
-        right.setText("");
+        //right.setText("");
         right.setEnabled(false); //schalt mer aus, brauchen wir nicht mehr
         
         int br=Helper.getPosOfPl(_seq);
@@ -191,7 +191,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     char torepl = _seq.charAt(_seq.length() - pl);
                     if(torepl!='L') {
                         replacedNukl=torepl;
-                        right.setText("");
+                        //right.setText("");
                         right.setEnabled(false);
                         newseq=biochemie.util.Helper.replacePL(_seq,pl);
                     }
@@ -202,7 +202,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     throw new IllegalStateException("There should be a PL in "+_seq+"!");
                 
                 if(item instanceof String) {//auto
-                    right.setText("");
+                    //right.setText("");
                     newseq=Helper.replaceNukl(_seq,pos,replacedNukl);
                     replacedNukl = 0;
                 }else {//pl veraendert

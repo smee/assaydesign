@@ -395,7 +395,7 @@ public class SBECandidatePanel extends MyPanel {
             return null;
         }
         String l=getSeq5tf().getText();
-        String r=getSeq3tf().getText();
+        String r=getSeq3tf().isEnabled()?getSeq3tf().getText():"";
         if(l.length() == 0 && r.length()==0) //keine primer da
             return null;
 
