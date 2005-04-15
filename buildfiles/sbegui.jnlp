@@ -13,7 +13,7 @@
   <all-permissions/>
 </security>
 <resources>
-  <j2se version="1.4+" />
+  <j2se version="1.4+" max-heap-size="150m"/>
   <jar href="sbeguitest.jar"/>
   <jar href="jfreechart-0.9.21.jar"/>
 </resources>
