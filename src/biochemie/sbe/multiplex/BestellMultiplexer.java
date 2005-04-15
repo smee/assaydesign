@@ -4,6 +4,9 @@
  */
 package biochemie.sbe.multiplex;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -35,6 +38,16 @@ public class BestellMultiplexer extends Multiplexer {
     
 	public void findMultiplexes(List mult) {
         System.out.println("Using BestellMultiplexer... (maximizes the size of multiplexes)");
+//        Collections.sort(mult, new Comparator() {
+//            public int compare(Object o1, Object o2) {
+//                return ((Multiplexable)o1).getName().compareTo(((Multiplexable)o2).getName());
+//            }            
+//        });
+//        for (Iterator it = mult.iterator(); it.hasNext();) {
+//            Multiplexable m = (Multiplexable) it.next();
+//            System.out.println(m.getName());
+//        }
+//        System.exit(0);
         boolean drawGraph=cfg.isDrawGraphes();
         System.out.println("Creating graph with "+mult.size()+" vertices...");
 	    UndirectedGraph g=GraphHelper.createIncompGraph(mult,drawGraph,0);
