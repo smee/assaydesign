@@ -97,7 +97,7 @@ public class InetSource implements BlatSource{
                 cookie= cookie.substring(0, cookie.indexOf(';'));
             }
             if(PCR.debug) {
-                writeStringToFile(sb.toString(),"main");
+                writeStringToFile(sb.toString(),"homepage");
             }
             if (Helper.isJava14()) {
                 this.hgsid= sb.substring(sb.indexOf("hgsid=") + 6);
