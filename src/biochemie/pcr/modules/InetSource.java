@@ -62,6 +62,8 @@ public class InetSource implements BlatSource{
             System.setProperty( "proxyPort", port);
             if(!"true".equals(System.getProperty("proxySet")))
                 System.err.println("!!! Proxy couldn't be enabled !!!");
+            else
+                System.out.println("Proxy enabled!");
         }
         /**
          * Hashcode der aktuellen Seite OHNE die hgsid!

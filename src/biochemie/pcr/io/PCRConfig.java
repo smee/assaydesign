@@ -63,9 +63,8 @@ public class PCRConfig extends GeneralConfig {
             ,{"PROXYHOST","139.18.233.236"}
             ,{"PROXYPORT","8080"}
             ,{"SEQUENCE",""}
-            ,{"TARGET",""}
             ,{"PRIMER_NUM_RETURN",""}
-            //,{"PARAM_SNP_OF_INTEREST",""}//TODO
+            ,{"PARAM_SNP_OF_INTEREST",""}
             ,{"OUTPUT_CSV","false"}
             ,{"ASSEMBLY","hg16"}
             ,{"BLAT_HASHCODE","-1"}
