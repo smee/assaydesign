@@ -53,6 +53,7 @@ public class InetSource implements BlatSource{
         if(config.getBoolean("USEPROXY",false)){
             String host=config.getString("PROXYHOST");
             String port=config.getString("PROXYPORT");
+
             if(PCR.debug)
                 System.out.println("using proxy: "+host+", port: "+port);
             System.getProperties().put( "proxySet", "true" );
@@ -89,6 +90,9 @@ public class InetSource implements BlatSource{
             this.cookie= urlcon.getHeaderField("Set-Cookie");
             if (null != cookie && -1 != cookie.indexOf(';')) {
                 cookie= cookie.substring(0, cookie.indexOf(';'));
+            }
+            if(PCR.debug) {
+                writeStringToFile(sb.toString(),"main");
             }
             if (Helper.isJava14()) {
                 this.hgsid= sb.substring(sb.indexOf("hgsid=") + 6);
@@ -127,17 +131,7 @@ public class InetSource implements BlatSource{
     private String getBLATAnalysisFromINet(String pcrproduct) throws INetError {
         if (PCR.debug) {
             System.out.println("Speichere BLAT-Anfrage nach blatanfrage_"+Thread.currentThread().getName()+".txt...");
-            try {
-                FileWriter fw= new FileWriter("blatanfrage_"+Thread.currentThread().getName()+".txt",false);
-                fw.write("--------------------------------\n");
-                fw.write(pcrproduct);
-                fw.write("\n");
-                fw.close();
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writeStringToFile(pcrproduct, "anfrage");
         }
         String boundary= "--5f2tvOMbtHiVGgYuoWOeTb";
         try {
@@ -221,6 +215,22 @@ public class InetSource implements BlatSource{
         }
     }
 	/**
+     * @param pcrproduct
+     */
+    private void writeStringToFile(String pcrproduct, String suffix) {
+        try {
+            FileWriter fw= new FileWriter("blatanfrage_"+suffix+".txt",false);
+            fw.write("--------------------------------\n");
+            fw.write(pcrproduct);
+            fw.write("\n");
+            fw.close();
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * Creates instanzes of private class BlatErg.
 	 * @param res
 	 * @param i
