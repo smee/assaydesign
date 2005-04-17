@@ -57,9 +57,9 @@ public class InetSource implements BlatSource{
             if(PCR.debug)
                 System.out.println("using proxy: "+host+", port: "+port);
             
-            System.getProperties().put( "proxySet", "true" );
-            System.getProperties().put( "proxyHost",host);
-            System.getProperties().put( "proxyPort", port);
+            System.setProperty( "proxySet", "true" );
+            System.setProperty( "proxyHost",host);
+            System.setProperty( "proxyPort", port);
         }
         /**
          * Hashcode der aktuellen Seite OHNE die hgsid!
@@ -82,9 +82,6 @@ public class InetSource implements BlatSource{
 		try {
             URL url= new URL(blaturl + "?command=start");
             HttpURLConnection urlcon=  (HttpURLConnection) url.openConnection();
-            if(config.getBoolean("USEPROXY",false) && urlcon.usingProxy()==false) {
-                System.err.println("Error: should be using proxy, but I'am not!");                
-            }
             in= new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
             StringBuffer sb= new StringBuffer();
             String s;
