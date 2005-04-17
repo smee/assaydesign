@@ -56,6 +56,7 @@ public class InetSource implements BlatSource{
 
             if(PCR.debug)
                 System.out.println("using proxy: "+host+", port: "+port);
+            
             System.getProperties().put( "proxySet", "true" );
             System.getProperties().put( "proxyHost",host);
             System.getProperties().put( "proxyPort", port);
@@ -77,20 +78,13 @@ public class InetSource implements BlatSource{
      * @return
      */
     private int getAndHashAktuelleBLATPage() throws BlatException {
-        if(config.getBoolean("USEPROXY",false)){
-            String host=config.getString("PROXYHOST");
-            String port=config.getString("PROXYPORT");
-
-            if(PCR.debug)
-                System.out.println("using proxy: "+host+", port: "+port);
-            System.getProperties().put( "proxySet", "true" );
-            System.getProperties().put( "proxyHost",host);
-            System.getProperties().put( "proxyPort", port);
-        }
 		BufferedReader in=null;
 		try {
             URL url= new URL(blaturl + "?command=start");
-            URLConnection urlcon= url.openConnection();
+            HttpURLConnection urlcon=  (HttpURLConnection) url.openConnection();
+            if(config.getBoolean("USEPROXY",false) && urlcon.usingProxy()==false) {
+                System.err.println("Error: should be using proxy, but I'am not!");                
+            }
             in= new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
             StringBuffer sb= new StringBuffer();
             String s;
