@@ -96,6 +96,7 @@ public abstract class GeneralConfig extends Observable{
                 } else {//kommentar oder unsinnige zeile, kein Parameter
                     //wird weggelassen, weil es ja eh n problem beim spaeteren einlesen geben wuerde.
                     //System.out.println("unknown parameterline: "+temp);
+                    sb.append(line + '\n');
                 }
             }
             in.close();
