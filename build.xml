@@ -90,7 +90,7 @@
 
 <!--**********************************************************-->
   <target name="calcdalton" 
-  		  depends="compile" 
+  		  depends="clean, compile" 
   		  description="generates standalone CalcDalton-App" >
 	<!--erstelle jar-File mit allen relevanten Klassen-->
 	<classfileset id="cdclasses" dir="${build}">
