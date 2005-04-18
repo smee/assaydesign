@@ -128,7 +128,7 @@ public class SekStruktur  implements Cloneable{
     public Primer getCrossDimerPrimer() {
         if(CROSSDIMER != getType())
             throw new IllegalArgumentException("trying to get the other involved primer, althoug this is no crossdimer!");
-        return p;
+        return other;
     }
 
 	public Object clone() throws CloneNotSupportedException {

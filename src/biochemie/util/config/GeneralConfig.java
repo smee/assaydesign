@@ -84,14 +84,15 @@ public abstract class GeneralConfig extends Observable{
             
             while((line = in.readLine()) != null) {
             	temp=line.trim();
-                if (!temp.startsWith("#") && temp.indexOf('=') != -1 && temp.length() > 1) {
+                if (!temp.startsWith("#") && temp.indexOf('=') != -1) {
                     temp= temp.substring(0, temp.indexOf('=')).trim();
                     if(temp.length() > 0 && isValidKey(temp)){
                     	sb.append(temp + '=');
                     	sb.append(prop.getProperty(temp) + '\n');
                         s.remove(temp);//hat mer schon
                     }else {//mir nicht bekannter parameter
-                        sb.append(line + '\n');
+                        if(!"=".equals(line.trim()))//einzelnes = lassen wir weg
+                        	sb.append(line + '\n');
                     }
                 } else {//kommentar oder unsinnige zeile, kein Parameter
                     //wird weggelassen, weil es ja eh n problem beim spaeteren einlesen geben wuerde.

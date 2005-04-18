@@ -75,14 +75,14 @@ public class MiniSBE {
             }
             if(0 == structs.size()) break; //s gibbet nix zu multiplexen
 
-            if(cfg.getAllCrossdimersAreEvil() == false)
-                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
             
-            if(allgiven)//wenn alle Primer vorgegeben sind, muss ich Experimente finden
+            if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
                 m1.findMultiplexes(structs);
-            else
+            }else{
+	            if(cfg.getAllCrossdimersAreEvil() == false)
+	                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
                 m2.findMultiplexes(structs);
-
+            }
         }
     }
 

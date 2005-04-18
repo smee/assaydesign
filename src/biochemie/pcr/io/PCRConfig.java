@@ -42,7 +42,6 @@ public class PCRConfig extends GeneralConfig {
             ,{"SCORE_SNP_DISTANCES","50 40 30 20 10"}
             ,{"SCORE_NO_EXON_INTRON_BETWEEN_PRIMER","100"}
             ,{"PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED","25"}
-            ,{"PARAM_SNP_OF_INTEREST",""}
             ,{"MIN_ACCEPTED_MISSPRIMING_PRIMER_DISTANCE","3000"}
             ,{"PERFORM_BLAT_WITH_BOTH_SIDES_INDEPENDENTLY_IF_PCR_LARGER_THAN","500"}
             ,{"SNP_LIST",""}

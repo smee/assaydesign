@@ -482,7 +482,7 @@ public class MiniSBEGui extends JFrame {
 		this.setJMenuBar(getJJMenuBar());
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
-        setTitle("MiniSBE (freeze 1) BETA");
+        setTitle("MiniSBE (freeze 1) 18.04.2005 12:58");
 	}
 	/**
 	 * This method initializes jContentPane
