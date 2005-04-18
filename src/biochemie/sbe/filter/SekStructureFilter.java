@@ -79,7 +79,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
                 return new Integer(((Integer)left).intValue() + inc);
             }            
         });
-        return count.intValue() > 1;
+        return count.intValue() >= 1;
     }
     private int count=0;
     private final String reason="unavoidable sec.struks: ";

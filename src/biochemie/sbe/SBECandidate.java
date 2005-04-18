@@ -143,11 +143,11 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         System.out.println("\nAnalyzing Seq.ID: " + id + "\n------------------------");
 
         if(userGiven){
-        	SBEPrimer primer = new SBEPrimer(cfg, id, l, snp, SBEPrimer._5_,bautEin5, productlen, true);
+        	SBEPrimer primer = new SBEPrimer(cfg, id, leftstring, snp, SBEPrimer._5_,bautEin5, productlen, true);
             primer.addObserver(this);
         	primercandidates.add(primer);
         }else
-        	createValidCandidate(l, bautEin5,r,bautEin3);
+        	createValidCandidate(leftstring, bautEin5,rightstring,bautEin3);
         //this.logstring=bos.toString();
         System.setOut(orgout);
         System.out.println(bos.toString());
