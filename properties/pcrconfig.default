@@ -37,9 +37,6 @@ FESTE5SEQ=AAAA
 #soll spaeter raus
 DEBUG=true
 
-# Format: start, length : Alles aus der Sequenz von start bis start+length muss von den primern umschlossen sein
-TARGET=200, 50
-
 # Anzahl von pcrprimerpaaren, die min. die Filter ueberstehen sollen.
 NUM_OF_SUCCESSFUL_PAIRS=50
 
@@ -65,7 +62,7 @@ PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER=true
 PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED=25
 
 #Position of the interesting SNP
-PARAM_SNP_OF_INTEREST=
+PARAM_SNP_OF_INTEREST= 555
 
 #es muss mindestens eine Exon/Intron-Grenze zwischen den Primern liegen
 PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER=true
