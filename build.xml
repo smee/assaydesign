@@ -229,7 +229,7 @@
   		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar"/>
   		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar
   			                                                                :${lib}/xml.jar
-  			                                                                :${lib}/biojava-1.30-jdk14.jar
+  			                                                                :${lib}/biojava.jar
   			                                                                :${lib}/bytecode-0.92.jar
   			                                                                :${lib}/jakarta-regexp.jar
   			                                                                :${lib}/jgrapht-0.5.3.jar
@@ -271,7 +271,6 @@
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
-    <delete dir="${dist}"/>
     <delete dir="tmp"/>
   </target>
  
