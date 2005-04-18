@@ -10,14 +10,21 @@ import java.io.FileReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.biojava.bio.BioError;
 import org.biojava.bio.BioException;
+import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Feature;
 import org.biojava.bio.seq.FeatureFilter;
 import org.biojava.bio.seq.FeatureHolder;
 import org.biojava.bio.seq.Sequence;
 import org.biojava.bio.seq.SequenceIterator;
+import org.biojava.bio.seq.io.EmblLikeFormat;
 import org.biojava.bio.seq.io.SeqIOTools;
+import org.biojava.bio.seq.io.StreamReader;
+import org.biojava.bio.seq.io.SymbolTokenization;
 import org.biojava.bio.symbol.Location;
+import org.biojava.utils.ParseErrorEvent;
+import org.biojava.utils.ParseErrorListener;
 
 /**
  *
@@ -30,7 +37,27 @@ public class EMBLParser {
         BufferedReader br= null;
         //create a buffered reader to read the sequence file specified by args[0]
         br= new BufferedReader(new FileReader(filename));
-        SequenceIterator sequence= SeqIOTools.readEmbl(br);
+        
+        EmblLikeFormat ef=new EmblLikeFormat();
+        ef.addParseErrorListener(new ParseErrorListener(){
+			public void BadLineParsed(ParseErrorEvent theEvent) {
+				System.out.println(theEvent.getMessage());
+				System.out.println(theEvent.getSource());
+				System.exit(1);
+			}
+        });
+        SymbolTokenization tok=null;
+        try {
+            tok= DNATools.getDNA().getTokenization("token");
+        } catch (BioException ex) {
+            throw new BioError(ex, "Assertion failing:"
+                               + " Couldn't get DNA token parser");
+        }
+        SequenceIterator sequence=  new StreamReader(br,
+                ef,
+                tok,
+                SeqIOTools.getEmblBuilderFactory()); 
+        	//SeqIOTools.readEmbl(br);
         try {
             seq=sequence.nextSequence();
         } catch (NoSuchElementException e) {
@@ -50,6 +77,7 @@ public class EMBLParser {
         StringBuffer sb=new StringBuffer();
         for (Iterator fi= seq.features(); fi.hasNext();) {
             Feature f= (Feature) fi.next();
+            
             if(f.getType().equals("repeat_region")) {
                 Location loc=f.getLocation();
                 if(!loc.isContiguous()) {
