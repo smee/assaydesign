@@ -84,7 +84,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);
         final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+" characters!";
         
-        if(_seq.length()<maxpl) {
+        if(_seq.length()<maxpl && _seq.length()!=0) {
             plpanel.setEnabled(false);
             setToolTipAndBorder(left,TOOSHORT,true);
             return;
