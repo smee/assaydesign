@@ -84,7 +84,7 @@ import biochemie.util.TableSorter;
  */
 public class MiniSBEGui extends JFrame {
 
-	public class CalculateAction extends MyAction implements TableModelListener {
+	public class CalculateAction extends MyAction {
         public CalculateAction() {
             super("Calculate","Start calculation",
                     CalculateAction.class.getClassLoader().getResource("images/play.gif"),
@@ -154,7 +154,6 @@ public class MiniSBEGui extends JFrame {
             frame.getContentPane().setLayout(new BorderLayout());
 
             JTable table = createResultTable(sbec);
-            table.getModel().addTableModelListener(this);
             JScrollPane scrollpane = new JScrollPane(table);
             frame.getContentPane().add(scrollpane,BorderLayout.CENTER);
             JToolBar toolbar =new JToolBar();
@@ -171,25 +170,97 @@ public class MiniSBEGui extends JFrame {
             frame.setVisible(true);
         }
 
+        public JTable createResultTable(final List sbec) {
+            final TableModel model = new MiniSBEResultTableModel(sbec);
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
-         */
-        public void tableChanged(TableModelEvent e) {
-            int row = e.getFirstRow();
-            int column = e.getColumn();
-            if(row < 0 || column < 0 ) //structural change, like sorting
-                return;
-            TableModel model = (TableModel)e.getSource();
+            final TableSorter sorter = new TableSorter(model);
+            JTableEx table = new JTableEx(sorter) {
+//            JTableEx table = new JTableEx(model) {
+                public String getToolTipText(MouseEvent event) {
+                    Point p= event.getPoint();
+                    int row= rowAtPoint(p);
+                    int col= columnAtPoint(p);
+                    if(col == 10) {//XXX
+                        return getSekStrukTooltipFor((String) sorter.getValueAt(row,1));
+                    }else if(col == 8 || col == 9 ){
+                        return splittedHtmlLine(sorter.getValueAt(row,col).toString());
+                    }else {
+                        return super.getToolTipText(event);
+                    }
+                }
 
-            Boolean filter = (Boolean) model.getValueAt(row, column);
-            String id = (String) model.getValueAt(row,1);
-            String filterstring;
-            if(column == 20)
-                filterstring=((MiniSBEResultTableModel)model).getFilterFor(id);
-            else
-                filterstring=((MiniSBEResultTableModel)model).getPLFilterFor(id);
-            modifyUserFilterFor(id,filterstring,filter.booleanValue());
+                /**
+                 * @param candidate
+                 * @return
+                 */
+                protected String getSekStrukTooltipFor(String id) {
+                    SBECandidate s=findSBECandidateWithID(id);
+                    if(s==null || !s.hasValidPrimer())
+                        return null;
+                    StringBuffer sb = new StringBuffer("<html>");
+
+                    Set sek=s.getSekStrucs();
+                    for (Iterator it = sek.iterator(); it.hasNext();) {
+                        SBESekStruktur struk = (SBESekStruktur) it.next();
+                        sb.append(struk.toString().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
+                        sb.append("<br>");
+                        sb.append(struk.getAsciiArt().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
+                        sb.append("<br>");
+                    }
+                    sb.append("</html>");
+                    return new String(sb);
+                }
+
+                private SBECandidate findSBECandidateWithID(String id) {
+                    for (Iterator iter = sbec.iterator(); iter.hasNext();) {
+                        SBECandidate s = (SBECandidate) iter.next();
+                        if(s.getId().equals(id))
+                            return s;
+                    }
+                    return null;
+                }
+
+                /**
+                 * @param event
+                 * @return
+                 */
+                protected String splittedHtmlLine(String line) {
+                    StringBuffer sb= new StringBuffer("<html>");
+                    StringTokenizer st= new StringTokenizer(line,",");
+                    while(st.hasMoreTokens()){
+                        sb.append(st.nextToken());
+                        sb.append("<br>");
+                    }
+                    sb.append("</html>");
+                    return new String(sb);
+                }
+            };
+            table.setPreferredScrollableViewportSize(new Dimension(400,table.getPreferredSize().height));
+            sorter.setTableHeader(table.getTableHeader());
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            for(int j=0; j <table.getColumnCount();j++){
+                TableColumn column = table.getColumnModel().getColumn(j);
+                column.setPreferredWidth(100);
+            }
+            model.addTableModelListener(new TableModelListener() {
+                public void tableChanged(TableModelEvent e) {
+                    int row = e.getFirstRow();
+                    int column = e.getColumn();
+                    if(row < 0 || column < 0 ) //structural change, like sorting
+                        return;
+                    TableModel model = (TableModel)e.getSource();
+
+                    Boolean filter = (Boolean) model.getValueAt(row, column);
+                    String id = (String) model.getValueAt(row,1);
+                    String filterstring;
+                    if(column == 20)
+                        filterstring=((MiniSBEResultTableModel)model).getFilterFor(id);
+                    else
+                        filterstring=((MiniSBEResultTableModel)model).getPLFilterFor(id);
+                    modifyUserFilterFor(id,filterstring,filter.booleanValue());
+                } 
+            });
+            return table;
         }
 
     }
@@ -882,80 +953,7 @@ public class MiniSBEGui extends JFrame {
      * @param sbec
      * @return
      */
-    public static JTable createResultTable(final List sbec) {
-        final TableModel model = new MiniSBEResultTableModel(sbec);
-
-        final TableSorter sorter = new TableSorter(model);
-        JTableEx table = new JTableEx(sorter) {
-//        JTableEx table = new JTableEx(model) {
-            public String getToolTipText(MouseEvent event) {
-                Point p= event.getPoint();
-                int row= rowAtPoint(p);
-                int col= columnAtPoint(p);
-                if(col == 10) {//XXX
-                    return getSekStrukTooltipFor((String) sorter.getValueAt(row,1));
-                }else if(col == 8 || col == 9 ){
-                    return splittedHtmlLine(sorter.getValueAt(row,col).toString());
-                }else {
-                    return super.getToolTipText(event);
-                }
-            }
-
-            /**
-             * @param candidate
-             * @return
-             */
-            protected String getSekStrukTooltipFor(String id) {
-                SBECandidate s=findSBECandidateWithID(id);
-                if(s==null || !s.hasValidPrimer())
-                    return null;
-                StringBuffer sb = new StringBuffer("<html>");
-
-                Set sek=s.getSekStrucs();
-                for (Iterator it = sek.iterator(); it.hasNext();) {
-                    SBESekStruktur struk = (SBESekStruktur) it.next();
-                    sb.append(struk.toString().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
-                    sb.append("<br>");
-                    sb.append(struk.getAsciiArt().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
-                    sb.append("<br>");
-                }
-                sb.append("</html>");
-                return new String(sb);
-            }
-
-            private SBECandidate findSBECandidateWithID(String id) {
-                for (Iterator iter = sbec.iterator(); iter.hasNext();) {
-                    SBECandidate s = (SBECandidate) iter.next();
-                    if(s.getId().equals(id))
-                        return s;
-                }
-                return null;
-            }
-
-            /**
-             * @param event
-             * @return
-             */
-            protected String splittedHtmlLine(String line) {
-                StringBuffer sb= new StringBuffer("<html>");
-                StringTokenizer st= new StringTokenizer(line,",");
-                while(st.hasMoreTokens()){
-                    sb.append(st.nextToken());
-                    sb.append("<br>");
-                }
-                sb.append("</html>");
-                return new String(sb);
-            }
-        };
-        table.setPreferredScrollableViewportSize(new Dimension(400,table.getPreferredSize().height));
-        sorter.setTableHeader(table.getTableHeader());
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        for(int j=0; j <table.getColumnCount();j++){
-            TableColumn column = table.getColumnModel().getColumn(j);
-            column.setPreferredWidth(100);
-        }
-        return table;
-    }
+ 
     /**
      * Saves, if the user clicks yes, returns the value received from  JOptionPane.
      * @return

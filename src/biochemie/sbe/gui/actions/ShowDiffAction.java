@@ -86,19 +86,18 @@ public class ShowDiffAction extends MyAction {
         mid=new String[mids.size()+1];
        diffmodels[0]=generateDiffTableModelFor(null,sbecfilt);
        cdmodels[0]=generateCDModelFor(null,sbecfilt);
-       restables[0]=MiniSBEGui.createResultTable(sbecfilt);
+       restables[0]=calcaction.createResultTable(sbecfilt);
        mid[0]="All multiplexes";
         int i=1;
        for (Iterator it = mids.iterator(); it.hasNext();i++) {
            String  id = (String ) it.next();
            diffmodels[i]=generateDiffTableModelFor(id,sbecfilt);
            cdmodels[i]=generateCDModelFor(id,sbecfilt);
-           restables[i]=MiniSBEGui.createResultTable(getFilteredList(id, sbecfilt));
+           restables[i]=calcaction.createResultTable(getFilteredList(id, sbecfilt));
            mid[i]=id;
        }
        for (int j = 0; j < restables.length; j++) {
         restables[j].setPreferredScrollableViewportSize(TABLE_DIM);
-        restables[j].getModel().addTableModelListener(calcaction);
        }
     }
 

@@ -64,10 +64,11 @@ public class PCRConfig extends GeneralConfig {
             ,{"SEQUENCE",""}
             ,{"PRIMER_NUM_RETURN",""}
             ,{"PARAM_SNP_OF_INTEREST",""}
-            ,{"OUTPUT_CSV","false"}
+            ,{"OUTPUT_CSV","true"}
             ,{"ASSEMBLY","hg16"}
             ,{"BLAT_HASHCODE","-1"}
             ,{"NUM_OF_SUCCESSFUL_PAIRS","50"}
+            ,{"PRIMER_NUM_RETURN","1000"}
             ,{"PRIMER3COMMAND","primer3.exe"}};
     }
 }

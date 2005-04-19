@@ -205,6 +205,7 @@ public class UI {
                     int pos=config.getInteger("PARAM_SNP_OF_INTEREST", -1);
                     int len=config.getInteger("PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED", 25);
                 	p3c.setProperty("TARGET",(pos-len)+","+(len*2+1));
+                	p3c.setProperty("PRIMER_NUM_RETURN",config.getString("PRIMER_NUM_RETURN","1000"));
                 	p3c.updateConfigFile(tok);				
                 }
             } catch (IOException e) {
