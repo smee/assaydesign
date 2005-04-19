@@ -109,7 +109,7 @@ public class SBEPrimer extends Primer{
      * @param bautein
      */
     private void init(String bautein,boolean usergiven) {
-        if(!usergiven){
+        if(usergiven==false && bautein.length()==0){
             int incompHairpin=0,incompHomodimer=0;
             HashSet positions=new HashSet();
             for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
