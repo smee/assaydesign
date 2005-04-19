@@ -209,6 +209,7 @@ public class SBECandidatePanel extends MyPanel {
 			seq5tf.setUpper(true);
 			seq5tf.setValidChars("ACGTacgt");
 			seq5tf.setColumns(10);
+            seq5tf.cutFront(true);
             seq5tf.getDocument().addDocumentListener(cl);
 		}
 		return seq5tf;
@@ -285,6 +286,7 @@ public class SBECandidatePanel extends MyPanel {
 		if (seq3tf == null) {
 			seq3tf = new PBSequenceField(100,true,"ACGTacgt");
 			seq3tf.setColumns(10);
+            seq3tf.cutFront(false);
             seq3tf.getDocument().addDocumentListener(cl);
 		}
 		return seq3tf;

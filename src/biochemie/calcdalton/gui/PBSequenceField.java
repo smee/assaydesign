@@ -36,9 +36,14 @@ public class PBSequenceField extends JTextField
             }
             super.insertString(offs, new String(validstr), a);
 
-          int chartoremoved = getLength();
-          if(chartoremoved > maxLen)
-              remove(0,chartoremoved - maxLen);
+          int len = getLength();
+          if(len > maxLen) {
+              if(cutfront)
+                  remove(0,len - maxLen);
+              else
+                  remove(maxLen,len-maxLen);
+                  
+          }
         }
 
         public CharacterDocument()
@@ -49,6 +54,7 @@ public class PBSequenceField extends JTextField
     public static final String NUMBERS="0123456789";
     public static final String CHARACTERS="abcdefghijklmnopqrstuvwxyz" +
     									  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private boolean cutfront=true;
 
 	/**
 	 * @return Returns the isUpper.
@@ -74,6 +80,13 @@ public class PBSequenceField extends JTextField
 	public void setMaxLen(int maxLen) {
 		this.maxLen = maxLen;
 	}
+    /**
+     * Cut the front of the string if too long or the end.
+     * @param b
+     */
+    public void cutFront(boolean b) {
+        this.cutfront=b;
+    }
 	/**
 	 * @return Returns the validChars.
 	 */
