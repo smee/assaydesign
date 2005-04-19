@@ -45,6 +45,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private boolean IamModifying=false;
     private SBECandidatePanel panel;
     private JCheckBox fixedcb;
+    private boolean settingNewText;
     
     public SBESeqInputController(SBESequenceTextField tf, JTextField tfright,PLSelectorPanel panel, JCheckBox fix, int minlength) {
         this.left=tf;
@@ -70,6 +71,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      */
     private void handleChange(DocumentEvent e){
         //System.out.println("text: "+left.getText()+", "+_seq+", repl: "+replacedNukl);
+        if(settingNewText && left.getText().length()==0)
+            return;//setze grad pl neu
         if(_seq.equals(left.getText()))
             return;//nix hat sich geaendert
         _seq=left.getText();
@@ -220,8 +223,11 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 }
             }
         }finally {
-            if(!left.getText().equals(newseq))
+            if(!left.getText().equals(newseq)) {
+                settingNewText=true;
                 left.setText(newseq);
+                settingNewText=false;
+            }
                 
         }
     }

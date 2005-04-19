@@ -207,7 +207,6 @@ public class SBECandidatePanel extends MyPanel {
 			seq5tf = new SBESequenceTextField();
 			seq5tf.setMaxLen(100);
 			seq5tf.setUpper(true);
-			seq5tf.setValidChars("ACGTacgt");
 			seq5tf.setColumns(10);
             seq5tf.cutFront(true);
             seq5tf.getDocument().addDocumentListener(cl);
