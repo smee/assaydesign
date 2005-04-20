@@ -120,7 +120,7 @@ public abstract class GeneralConfig extends Observable{
      * @return String, wenn der Schlüssel nicht existiert, wird <code>null</code> geliefert.
      */
     public String getString(String key){
-        return prop.getProperty(key);
+        return prop.getProperty(key).trim();
     }
     public int getInteger(String key) throws WrongValueException{
         String val=getString(key);
