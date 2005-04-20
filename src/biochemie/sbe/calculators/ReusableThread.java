@@ -20,7 +20,10 @@ public  class ReusableThread extends Thread implements ActionListener{
     Interruptible i;
     private int msectowait;
     
+    long lasttime;
+    
     public ReusableThread( int msectowait) {
+        System.out.println("Max. calculation time="+msectowait+"ms.");
         tasklist=new ArrayList();
         this.msectowait=msectowait;
         timer=new Timer(msectowait,this);
@@ -51,6 +54,7 @@ public  class ReusableThread extends Thread implements ActionListener{
                     i=(Interruptible) tasklist.remove(0);
                 }
                 setUnavailable();
+                lasttime=System.currentTimeMillis();
                 timer.start();
                 i.start();
                 timer.stop();	                
@@ -59,6 +63,9 @@ public  class ReusableThread extends Thread implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
+        long time=System.currentTimeMillis();
+        System.out.println("timerevent occured after "+(lasttime - time));
+        lasttime=time;
         stopTask();
     }
     /**
@@ -71,6 +78,7 @@ public  class ReusableThread extends Thread implements ActionListener{
 
     private synchronized void setUnavailable() {
         resultFetched=false;
+        resultAvailable=false;
     }
     private synchronized void wakeUp() {
         //System.out.println("notifying Mainthread...");

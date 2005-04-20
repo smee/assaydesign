@@ -170,10 +170,7 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
 		this.add(getTfId(), gridBagConstraints31);
 		this.add(jLabel, gridBagConstraints1);
-        inputcontroller = new SBESeqInputController(getSeq5tf(),
-                                                    getSeq3tf(),
-                                                    getPLSelectorPanel(),
-                                                    getFixedPrimerCB(),
+        inputcontroller = new SBESeqInputController(this,
                                                     minlen);
         setExpertMode(false);
         gridBagConstraints13.gridx = 12;
@@ -414,7 +411,7 @@ public class SBECandidatePanel extends MyPanel {
 
         String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
-        String multiplexid = getMultiplexidPanel().getText();
+        String multiplexid = getMultiplexidPanel().getPBSequenceField().isEnabled()?getMultiplexidPanel().getText():"";
         String unwanted = getFiltersPanel().getText();
         int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
         boolean userGiven=getFixedPrimerCB().isSelected();

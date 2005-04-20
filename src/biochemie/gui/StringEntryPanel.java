@@ -81,7 +81,7 @@ public class StringEntryPanel extends MyPanel {
 	 *
 	 * @return biochemie.calcdalton.gui.PBSequenceField
 	 */
-	private PBSequenceField getPBSequenceField() {
+	public PBSequenceField getPBSequenceField() {
 		if (PBSequenceField == null) {
 			PBSequenceField = new PBSequenceField();
 			PBSequenceField.setMaxLen(20);

@@ -82,6 +82,7 @@ private boolean[][] createAdmatrixFromGraph(UndirectedGraph g){
 	 * Beginnt mit der Suche nach einer Färbung.
 	 */
 	public void start() {
+        long starttime=System.currentTimeMillis();
         best = numnodes+1;
         int col=0;
         for (int i = 0; i < maxcliquesize; i++,col++) {
@@ -93,6 +94,7 @@ private boolean[][] createAdmatrixFromGraph(UndirectedGraph g){
             coloring[i]=col;
         }
 		visit(maxcliquesize,maxcliquesize);
+        System.out.println("Coloring took "+(System.currentTimeMillis() - starttime)+"ms.");
 	}
 	void visit (int u, int usedcolors){
 	    if (usedcolors>=best || (isInterrupted && best<=numnodes))

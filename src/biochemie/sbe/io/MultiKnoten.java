@@ -96,7 +96,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         }
 
         public int maxPlexSize() {
-            return cfg.getMaxPlex()-knoten.size()+1;
+            return Math.max(cfg.getMaxPlex()-knoten.size()+1,1);
         }
         public String getEdgeReason(){
             return edgeReason;

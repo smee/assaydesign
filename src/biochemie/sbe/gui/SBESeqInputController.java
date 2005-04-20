@@ -18,6 +18,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import biochemie.gui.PLSelectorPanel;
+import biochemie.gui.StringEntryPanel;
 import biochemie.util.Helper;
 
 /**
@@ -46,7 +47,14 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private SBECandidatePanel panel;
     private JCheckBox fixedcb;
     private boolean settingNewText;
+    private JTextField midtf=null;
     
+    public SBESeqInputController(SBECandidatePanel panel, int minlen) {        
+        this(panel.getSeq5tf(),panel.getSeq3tf(),panel.getPLSelectorPanel(), panel.getFixedPrimerCB(), minlen);
+        this.midtf = panel.getMultiplexidPanel().getPBSequenceField();
+        if(midtf !=null)
+            midtf.setEnabled(false);
+    }
     public SBESeqInputController(SBESequenceTextField tf, JTextField tfright,PLSelectorPanel panel, JCheckBox fix, int minlength) {
         this.left=tf;
         this.minlen=minlength;
@@ -54,8 +62,9 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         this.plpanel=panel;
         
         this.fixedcb=fix==null?new JCheckBox():fix;
-        fixedcb.setEnabled(false);
         fixedcb.setSelected(false);
+        fixedcb.setEnabled(false);
+
         left.getDocument().addDocumentListener(this);
         plpanel.addPhotolinkerListListener(this);
         plpanel.addItemListener(this);
@@ -109,8 +118,10 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             plpanel.setSelectedPL(-1);//auto
             left.setEnabled(true);
             right.setEnabled(true);
-            fixedcb.setEnabled(false);
             fixedcb.setSelected(false);
+            fixedcb.setEnabled(false);
+            if(midtf != null)
+                midtf.setEnabled(false);
             return;
         }
         
@@ -126,14 +137,18 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             setToolTipAndBorder(left,tooltip,false);
             setToolTipAndBorder(right,"",false);
             fixedcb.setEnabled(true);
+            if(midtf != null)
+                midtf.setEnabled(true);
             plpanel.setSelectedPL(br);
             return;
         }else {//L an der falschen Position!
             plpanel.setEnabled(false);
             plpanel.setSelectedPL(-1);
             setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
-            fixedcb.setEnabled(false);
             fixedcb.setSelected(false);
+            fixedcb.setEnabled(false);
+            if(midtf != null)
+                midtf.setEnabled(false);
         }
     }
     /**
