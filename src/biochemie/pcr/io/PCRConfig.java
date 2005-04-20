@@ -69,6 +69,7 @@ public class PCRConfig extends GeneralConfig {
             ,{"BLAT_HASHCODE","-1"}
             ,{"NUM_OF_SUCCESSFUL_PAIRS","50"}
             ,{"PRIMER_NUM_RETURN","1000"}
+            ,{"FESTE5SEQ",""}
             ,{"PRIMER3COMMAND","primer3.exe"}};
     }
 }
