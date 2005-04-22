@@ -38,9 +38,11 @@ public class Primer3Manager {
     private BufferedReader input=null;
 	private String feste5seq;
     private final boolean debug;
+    private final int offset;
 
     public Primer3Manager(PCRConfig config, boolean debug){
         this.config=config;
+        this.offset=config.getInteger("INTERN_SEQ_OFFSET",0);
         this.feste5seq=Helper.getNuklFromString(config.getProperty("FESTE5SEQ"));
         this.primer3exe=config.getString("PRIMER3COMMAND");
         this.debug=debug;
@@ -297,9 +299,9 @@ public class Primer3Manager {
                         l=feste5seq + block[3].substring(block[3].indexOf('=')+1);
                         r=feste5seq + block[4].substring(block[4].indexOf('=')+1);
                         temp=block[5].substring(block[5].indexOf('=')+1);
-                        int leftpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase;
+                        int leftpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase + offset;
                         temp=block[6].substring(block[6].indexOf('=')+1);
-                        int rightpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase;
+                        int rightpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase + offset;
                         temp=block[9].substring(block[9].indexOf('=')+1);
                         gc1=Float.parseFloat(temp);
                         temp=block[10].substring(block[10].indexOf('=')+1);
@@ -324,9 +326,9 @@ public class Primer3Manager {
                 l=feste5seq + block[3].substring(block[3].indexOf('=')+1);
                 r=feste5seq + block[4].substring(block[4].indexOf('=')+1);
                 temp=block[5].substring(block[5].indexOf('=')+1);
-                int leftpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase;
+                int leftpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase + offset;
                 temp=block[6].substring(block[6].indexOf('=')+1);
-                int rightpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase;
+                int rightpos=Integer.parseInt(temp.substring(0,temp.indexOf(',')))-this.indexbase + offset;
                 temp=block[9].substring(block[9].indexOf('=')+1);
                 gc1=Float.parseFloat(temp);
                 temp=block[10].substring(block[10].indexOf('=')+1);

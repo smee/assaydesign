@@ -70,6 +70,8 @@ public class PCRConfig extends GeneralConfig {
             ,{"NUM_OF_SUCCESSFUL_PAIRS","50"}
             ,{"PRIMER_NUM_RETURN","1000"}
             ,{"FESTE5SEQ",""}
+            ,{"SEQUENCE_OVERHANG_FOR_PRIMER3",""}
+            ,{"INTERN_SEQ_OFFSET",""}
             ,{"PRIMER3COMMAND","primer3.exe"}};
     }
 }

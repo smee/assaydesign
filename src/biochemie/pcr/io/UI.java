@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.StringTokenizer;
 
 import biochemie.pcr.PCR;
+import biochemie.sbe.WrongValueException;
 import biochemie.util.Helper;
 
 /**
@@ -201,8 +202,8 @@ public class UI {
                 while(st.hasMoreTokens()){
                 	String tok = st.nextToken();
                 	Primer3Config p3c=new Primer3Config(tok);
-                	p3c.setProperty("SEQUENCE",config.getProperty("SEQUENCE"));
-                    int pos=config.getInteger("PARAM_SNP_OF_INTEREST", -1);
+                    setOverhangStuff(p3c,config);
+                	int pos=config.getInteger("PARAM_SNP_OF_INTEREST", -1);
                     int len=config.getInteger("PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED", 25);
                 	p3c.setProperty("TARGET",(pos-len)+","+(len*2+1));
                 	p3c.setProperty("PRIMER_NUM_RETURN",config.getString("PRIMER_NUM_RETURN","1000"));
@@ -221,7 +222,22 @@ public class UI {
 			 }
 	}
 
-	/**
+	private void setOverhangStuff(Primer3Config p3c, PCRConfig config2) {
+        String seq=config.getString("SEQUENCE","");
+        int overhang=config.getInteger("SEQUENCE_OVERHANG_FOR_PRIMER3",3000);
+        int posofsnp=0;
+        try {
+            posofsnp=config.getInteger("PARAM_SNP_OF_INTEREST");
+        } catch (WrongValueException e) {
+            errorDisplay("PARAM_SNP_OF_INTEREST has to be a number!");
+        }
+        int min=Math.max(0,posofsnp-overhang);
+        int max=Math.min(posofsnp+overhang, seq.length());
+        config.setProperty("INTERN_SEQ_OFFSET",Integer.toString(min));
+        p3c.setProperty("SEQUENCE",seq.substring(min,max));
+    }
+
+    /**
 	 * Liest von der Kommandozeile interaktiv alle benötigten Parameter ein.
 	 * @return configobjekt
 	 */
