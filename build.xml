@@ -233,6 +233,7 @@
   			                                                                :${lib}/bytecode-0.92.jar
   			                                                                :${lib}/jakarta-regexp.jar
   			                                                                :${lib}/jgrapht-0.5.3.jar
+																            :${lib}/commons-lang-2.0.jar
   			                                                                :${lib}/aspectjrt.jar"/>
 
 	</antcall>
