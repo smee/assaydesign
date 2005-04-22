@@ -107,7 +107,7 @@ public aspect  SaveAllFilesToZip {
 	        e.printStackTrace();
 	    }
 	}
-private Zipentry zipFunc(String filePath) throws IOException
+private ZipEntry zipFunc(String filePath) throws IOException
   {
     File ffilePath = new File(filePath);
     String path = "";
