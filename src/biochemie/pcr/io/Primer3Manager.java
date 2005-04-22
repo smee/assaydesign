@@ -211,7 +211,6 @@ public class Primer3Manager {
                          found3=true;
                      }else if(line.startsWith("SEQUENCE")){
                          String temp=line.substring(line.indexOf('=')+1);
-                         config.setProperty("SEQUENCE",temp);
                          found4=true;
                      }
                  }

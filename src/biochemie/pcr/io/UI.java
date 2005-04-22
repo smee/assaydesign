@@ -203,7 +203,6 @@ public class UI {
                 	String tok = st.nextToken();
                 	Primer3Config p3c=new Primer3Config(tok);
                     setOverhangStuff(p3c,config);
-
                 	p3c.setProperty("PRIMER_NUM_RETURN",config.getString("PRIMER_NUM_RETURN","1000"));
                 	p3c.updateConfigFile(tok);				
                 }
