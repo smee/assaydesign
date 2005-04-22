@@ -48,8 +48,8 @@ public class PrimerPair {
      * @param gcdiff
      */
     public PrimerPair(String l, String r, int leftpos, int rightpos,float gcdiff, int posinfile)  {
-        this.leftp=l;
-        this.rightp=r;
+        this.leftp=l.toUpperCase();
+        this.rightp=r.toUpperCase();
         this.leftpos=leftpos;
         this.rightpos=rightpos;
         this.leftlen=l.length();
