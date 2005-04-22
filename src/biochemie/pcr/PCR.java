@@ -3,6 +3,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import biochemie.pcr.io.PCRConfig;
@@ -195,27 +199,25 @@ public class PCR {
 	    
 	    boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);
 	    
-	    if(outputcsv)
+	    if(outputcsv && outfilename.endsWith(".csv")==false)
 	        outfilename += ".csv";
 	    FileWriter notokayout=new FileWriter("not_ok_"+outfilename,append);
 	    FileWriter combined=new FileWriter("combined_"+outfilename,append);
-	    if(outputcsv) {
-	        notokayout.write(PrimerPair.getCSVHeaderLine());
-	        combined.write(PrimerPair.getCSVHeaderLine());
-        }
-	    notokayout.write("\n");
-	    combined.write("\n");
-	    
-	    
 	    File outfile=new File(outfilename);
 	    FileWriter out=new FileWriter(outfile,append);
-	    if(outputcsv){
+	    
+        if(outputcsv && cyclescount == 0){
+	        notokayout.write(PrimerPair.getCSVHeaderLine());
+	        combined.write(PrimerPair.getCSVHeaderLine());
 	        out.write(PrimerPair.getCSVHeaderLine());
 	        out.write("\n");
-	    }
-	    PrimerPair[] pps=doTheFilterBoogie(primer3);
-	    final int solutioncount=countAndMarkSuccessfulPairs(pps);
+    	    notokayout.write("\n");
+    	    combined.write("\n");
+        }
 	    
+	    
+	    PrimerPair[] pps=doTheFilterBoogie(primer3);
+	    int solutioncount=0;
 	    int count=1;
 	    String line=null;
 	    for(int i=0;i<pps.length;i++) {
@@ -224,6 +226,7 @@ public class PCR {
 	                line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
 	            else
 	                line=pps[i].toCSVString(i+1,cyclescount+1);
+                solutioncount++;
 	            out.write(line);
 	            out.write("\n");
                 combined.write(line);
@@ -248,14 +251,15 @@ public class PCR {
 	    return solutioncount;
 	}
 
-	private int countAndMarkSuccessfulPairs(PrimerPair[] pps) {
-		int count=pps.length;
-		for(int i=0;i<pps.length;i++) {
-			if(pps[i].getOverallScore()>=maxscore) {
-				pps[i].okay=false;
+	private int countAndMarkSuccessfulPairs(List pps) {
+		int count=pps.size();
+        for (Iterator it = pps.iterator(); it.hasNext();) {
+            PrimerPair pair = (PrimerPair) it.next();
+			if(pair.getOverallScore()>=maxscore) {
+				pair.okay=false;
 				count--;
-			}
-		}
+			}            
+        }
 		return count;
 	}
 	/**
@@ -265,7 +269,7 @@ public class PCR {
 	 */
         private PrimerPair[] doTheFilterBoogie(Primer3Manager primer3) {
             PrimerPair[] pps=null;
-            java.util.List allPairs= null;
+            java.util.List allPairs= new ArrayList();
    
             int index=-1;
             String line=null;
@@ -306,22 +310,23 @@ public class PCR {
                         System.out.println("Teste, ob PCR-Produkte Exon/Intron-Grenze enthalten...");
                     exonObj.calcScores(pps);
                 }
-                countAndMarkSuccessfulPairs(pps);
-                if(null == allPairs)
-                    allPairs=new ArrayList();
-
-                for(int i=0;i<pps.length;i++) {
-                    if(pps[i].okay){
-                        allPairs.add(pps[i]);
-                    }
+                for (int i = 0; i < pps.length; i++) {
+                    allPairs.add(pps[i]);
                 }
             }
-            final int solutionsCont=allPairs.size();
-
-            pps=(PrimerPair[])allPairs.toArray(new PrimerPair[0]);
+            
+                final int solutionscount=countAndMarkSuccessfulPairs(allPairs);
+                
+                PrimerPair[] forBlat=new PrimerPair[solutionscount];
+                int idx=0;
+                for (Iterator it = allPairs.iterator(); it.hasNext();) {
+                    PrimerPair pair = (PrimerPair) it.next();
+                    if(pair.okay)
+                        forBlat[idx++]=pair;
+                }
             if (blatOn) {
                 try {
-                    blatObj.calcScores(pps);//alle paare gleichzeitig, weil ja eh die gesamte Seq. an BLAT geschickt wird.
+                    blatObj.calcScores(forBlat);//alle paare gleichzeitig, weil ja eh die gesamte Seq. an BLAT geschickt wird.
                 } catch (BlatException e) {
                     System.err.println("Probleme beim Zugriff auf BLAT-Site");
                     System.err.println("Fehlermeldung: " + e.getMessage());
@@ -329,7 +334,7 @@ public class PCR {
                     blatOn= false;
                 }
             }
-            return pps;
+            return (PrimerPair[]) allPairs.toArray(new PrimerPair[allPairs.size()]);
         }
 
 	public String toString() {
