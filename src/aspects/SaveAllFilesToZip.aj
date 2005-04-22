@@ -31,7 +31,8 @@ public aspect  SaveAllFilesToZip {
 	 * Irgendetwas im Paket biochemie..* verwendet Dateien.
 	 */
 	pointcut fileUsed(String filename): (call ( FileReader.new(String))
-										|| call( FileWriter.new(String))
+										|| call(FileWriter.new(String))
+										|| call(FileWriter.new(String,*))
 										|| call( FileInputStream.new(String))
 										|| call( public static void LogStdStreams.initializeErrorLogging(String,*))
 										|| call( FileOutputStream.new(String,*))
@@ -39,7 +40,7 @@ public aspect  SaveAllFilesToZip {
 										|| call( File.new(String))
 										|| call( PrintStream+.new(String,*))
 										|| call( PrintStream+.new(String)))
-										&& args(filename)
+										&& args(filename,..)
 										&& (within(biochemie..*)
 										        || within(GeneralConfig+)
 										        || within(biochemie.util..*));
@@ -55,9 +56,6 @@ public aspect  SaveAllFilesToZip {
 
 
 	after(): resultsWritten(){
-	    addFile("minisbe.log");
-	    addFile("calcdalton.log");
-	    addFile("pcr.log");
 	    for (java.util.Iterator it=usedFiles.iterator();it.hasNext();) {
 	        String file=(String)it.next();
             if(file==null || file.length()==0 || !(new File(file)).exists()) {
@@ -74,7 +72,7 @@ public aspect  SaveAllFilesToZip {
             filename = new File(filename).getCanonicalPath();
         }catch(IOException e) {}
         usedFiles.add(filename);
-        System.out.println("used file: "+filename);
+        //System.out.println("used file: "+filename);
     }
     
 	private void createZipFile(String[] files){
