@@ -93,7 +93,7 @@ public aspect  SaveAllFilesToZip {
 	            System.out.println("Adding: "+files[i]);
 	            FileInputStream fi = new FileInputStream(files[i]);
 	            origin = new BufferedInputStream(fi, BUFFER);
-	            ZipEntry entry = new ZipEntry(files[i]);
+	            ZipEntry entry = zipFunc(files[i]);
 	            out.putNextEntry(entry);
 	            int count;
 	            while((count = origin.read(data, 0, 
@@ -107,5 +107,15 @@ public aspect  SaveAllFilesToZip {
 	        e.printStackTrace();
 	    }
 	}
-
+private Zipentry zipFunc(String filePath) throws IOException
+  {
+    File ffilePath = new File(filePath);
+    String path = "";
+        File f = new File("");
+        String pathToHere = f.getAbsolutePath();
+        path = ffilePath.getAbsolutePath();
+        path = path.substring(path.indexOf(pathToHere + File.separator)
+            + pathToHere.length());
+    return new ZipEntry(path);
+  }
 }
