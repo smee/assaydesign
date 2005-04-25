@@ -288,11 +288,17 @@ public class Primer3Manager {
             String l,r,temp;
             String[] block;
             int i=0;
+            int blocksize = 20;
             if(0 == aktPos)//sonderfall fuers erste Paar
             try {
                 while(null != (line = input.readLine())){
+                    if(line.startsWith("PRIMER_MISPRIMING_LIBRARY=")){
+                        if(line.substring(0,line.indexOf('=')).trim().length()>0)//wenn eine mispriming library ex., gibts jeweils 23 zeilen
+                            blocksize=23;
+                    }
+                    
                     if(line.startsWith("PRIMER_PAIR_EXPLAIN=")){
-                        block=Primer3Manager.readLines(input,20);
+                        block=Primer3Manager.readLines(input,blocksize);
                         //Helper.outputObjectArray(block);
                         //System.out.println("-------------------");
                         l=feste5seq + block[3].substring(block[3].indexOf('=')+1);
@@ -319,7 +325,7 @@ public class Primer3Manager {
             }
         try {
             while(true){
-                block=Primer3Manager.readLines(input,20);
+                block=Primer3Manager.readLines(input,blocksize);
                 //Helper.outputObjectArray(block);
                 //System.out.println("-------------------");
                 l=feste5seq + block[3].substring(block[3].indexOf('=')+1);
