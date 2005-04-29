@@ -293,7 +293,7 @@ public class Primer3Manager {
             try {
                 while(null != (line = input.readLine())){
                     if(line.startsWith("PRIMER_MISPRIMING_LIBRARY=")){
-                        if(line.substring(0,line.indexOf('=')).trim().length()>0)//wenn eine mispriming library ex., gibts jeweils 23 zeilen
+                        if(line.substring(line.indexOf('=')+1).trim().length()>0)//wenn eine mispriming library ex., gibts jeweils 23 zeilen
                             blocksize=23;
                     }
                     
