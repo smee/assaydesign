@@ -12,6 +12,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
@@ -31,7 +33,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     Border okayBorder;
     
     private SBESequenceTextField left;
-    private JTextField right;
+    private SBESeqInputController other=null;
     private PLSelectorPanel plpanel;
     private boolean isOkay=true;
     private char replacedNukl = 0;
@@ -44,21 +46,33 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Ich setze gerade den PL, nicht der user
      */
     private boolean IamModifying=false;
-    private SBECandidatePanel panel;
     private JCheckBox fixedcb;
     private boolean settingNewText;
-    private JTextField midtf=null;
+    private StringEntryPanel midtf=null;
     
-    public SBESeqInputController(SBECandidatePanel panel, int minlen) {        
-        this(panel.getSeq5tf(),panel.getSeq3tf(),panel.getPLSelectorPanel(), panel.getFixedPrimerCB(), minlen);
-        this.midtf = panel.getMultiplexidPanel().getPBSequenceField();
-        if(midtf !=null)
+    public SBESeqInputController(SBECandidatePanel panel, int minlen, boolean left) {        
+        this(left?panel.getSeq5tf():panel.getSeq3tf(),left?panel.getPlpanel5():panel.getPlpanel3(), panel.getFixedPrimerCB(), minlen);
+        this.midtf = panel.getMultiplexidPanel();
+        if(midtf !=null) {
             midtf.setEnabled(false);
+            fixedcb.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e) {
+                    boolean sel=fixedcb.isSelected();
+                    SBESequenceTextField tf = SBESeqInputController.this.left;
+                    midtf.setEnabled(sel);
+                    if(sel)
+                       midtf.setText("");
+                    if( sel && Helper.getPosOfPl(_seq)<0 )//wenn das hier keine fixe seq. ist
+                        sel=false;
+                    plpanel.setEnabled(!sel);
+                    tf.setEnabled(!sel);
+                }
+            });
+        }
     }
-    public SBESeqInputController(SBESequenceTextField tf, JTextField tfright,PLSelectorPanel panel, JCheckBox fix, int minlength) {
+    public SBESeqInputController(SBESequenceTextField tf, PLSelectorPanel panel, JCheckBox fix, int minlength) {
         this.left=tf;
         this.minlen=minlength;
-        this.right=tfright==null?new JTextField():tfright;
         this.plpanel=panel;
         
         this.fixedcb=fix==null?new JCheckBox():fix;
@@ -74,6 +88,10 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         
         _seq=left.getText();
     }
+    
+    public void setOtherController(SBESeqInputController o) {
+        this.other=o;
+    }
     /**
      * Etwas wurde eingegeben.
      * @param e
@@ -82,27 +100,20 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         //System.out.println("text: "+left.getText()+", "+_seq+", repl: "+replacedNukl);
         if(settingNewText && left.getText().length()==0)
             return;//setze grad pl neu
-        if(_seq.equals(left.getText()))
-            return;//nix hat sich geaendert
-        _seq=left.getText();
-        String rtext=right.getText();
+//        if(_seq.equals(left.getText()))
+//            return;//nix hat sich geaendert
 
+        _seq=left.getText();
 
         plpanel.setEnabled(true);
-        
-        if(_seq==null) return;
         
         //sind die eingegebenen seq. lang genug?
         int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);
         final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+" characters!";
         
-        if(_seq.length()<maxpl && _seq.length()!=0) {
+        if(_seq.length() < maxpl && _seq.length() != 0) {
             plpanel.setEnabled(false);
             setToolTipAndBorder(left,TOOSHORT,true);
-            return;
-        }
-        if(rtext == null || rtext.length() != 0 && rtext.length()<maxpl) {
-            setToolTipAndBorder(right,TOOSHORT,true);
             return;
         }
         //wurde ein L eingegeben?
@@ -112,21 +123,15 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             replacedNukl=0;
             String ltool=_seq.length()==0?INSERT_TT:_seq;
             setToolTipAndBorder(left,_seq,false);
-            String rtool=rtext.length()==0?INSERT_TT:rtext;
-            setToolTipAndBorder(right,rtool,false);
             plpanel.setEnabled(true);
             plpanel.setSelectedPL(-1);//auto
             left.setEnabled(true);
-            right.setEnabled(true);
             fixedcb.setSelected(false);
             fixedcb.setEnabled(false);
-            if(midtf != null)
-                midtf.setEnabled(false);
+            other.setEnabled(true);
             return;
         }
-        
-        //right.setText("");
-        right.setEnabled(false); //schalt mer aus, brauchen wir nicht mehr
+        //also gibt es ein L.
         
         int br=Helper.getPosOfPl(_seq);
         if(plpanel.hasPL(br)){//es gibt diesen PL
@@ -135,10 +140,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             
             String tooltip = _seq.substring(0,pos)+"[L]"+_seq.substring(pos+1);
             setToolTipAndBorder(left,tooltip,false);
-            setToolTipAndBorder(right,"",false);
             fixedcb.setEnabled(true);
-            if(midtf != null)
-                midtf.setEnabled(true);
             plpanel.setSelectedPL(br);
             return;
         }else {//L an der falschen Position!
@@ -147,9 +149,16 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
             fixedcb.setSelected(false);
             fixedcb.setEnabled(false);
-            if(midtf != null)
-                midtf.setEnabled(false);
         }
+    }
+    private void clear() {
+        this._seq="";
+        left.setText(_seq);
+    }
+    
+    private void setEnabled(boolean b) {
+        left.setEnabled(b);
+        plpanel.setEnabled(b);
     }
     /**
      * @param b
@@ -172,8 +181,10 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         handleChange(e);
     }
     
+    
     public void contentsChanged(ListDataEvent e) {
-        handleChange(null);
+        //handleChange(null);
+        //ignorieren wir mal, weil, wird aufgerufen, wenn ein pl gesetzt wird, macht also nich wirklich sinn
     }
     
     public void intervalAdded(ListDataEvent e) {
@@ -193,7 +204,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Wird immer dann aufgerufen, wenn ein PL gesetzt wurde. Entweder vom user oder von uns selbst.
      */
     public void itemStateChanged(ItemEvent e) {
-        if(e.getStateChange() == ItemEvent.DESELECTED)//geht uns nix an
+        if(e.getStateChange() == ItemEvent.DESELECTED || settingNewText)//geht uns nix an
             return;
         //System.out.println("pl: "+e.getItem()+", "+_seq+", repl: "+replacedNukl);
         String newseq=_seq;
@@ -203,14 +214,11 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 if(item instanceof Integer) {//user hat nen pl gewaehlt
                     int pl = ((Integer)item).intValue();
                     if(_seq.length() < pl) {
-                        plpanel.setAuto();
                         return;
                     }
                     char torepl = _seq.charAt(_seq.length() - pl);
                     if(torepl!='L') {
                         replacedNukl=torepl;
-                        //right.setText("");
-                        right.setEnabled(false);
                         newseq=biochemie.util.Helper.replacePL(_seq,pl);
                     }
                 }
@@ -220,7 +228,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     throw new IllegalStateException("There should be a PL in "+_seq+"!");
                 
                 if(item instanceof String) {//auto
-                    //right.setText("");
                     newseq=Helper.replaceNukl(_seq,pos,replacedNukl);
                     replacedNukl = 0;
                 }else {//pl veraendert
@@ -238,7 +245,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 }
             }
         }finally {
-            if(!left.getText().equals(newseq)) {
+            if(!_seq.equals(newseq)) {
+                _seq=newseq;
                 settingNewText=true;
                 left.setText(newseq);
                 settingNewText=false;

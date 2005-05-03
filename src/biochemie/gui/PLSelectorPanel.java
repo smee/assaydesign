@@ -33,6 +33,7 @@ public class PLSelectorPanel extends MyPanel {
 
 	/**
 	 * This is the default constructor
+	 * @param title
 	 */
 	public PLSelectorPanel() {
 		super();
@@ -157,5 +158,9 @@ public int getMaxSelectablePl() {
     public void setModel(MutableComboBoxModel model) {
         dirty();
         getComboPL().setModel(model);
+    }
+    public void setTitle(String title) {
+        this.title=title;
+        this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, title, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
     }
  }

@@ -23,7 +23,14 @@ public class SBESequenceTextField extends PBSequenceField  {
 
 
 
-	public String getSequence(){
+	public SBESequenceTextField(int i, boolean b, String string) {
+        super(i,b,string);
+        setUniqueChars("L");
+    }
+
+
+
+    public String getSequence(){
         if(isEnabled())
             return Helper.getNuklFromString(super.getText().replace('L','A'));
         return "";

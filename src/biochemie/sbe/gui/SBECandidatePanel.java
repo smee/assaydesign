@@ -32,10 +32,10 @@ public class SBECandidatePanel extends MyPanel {
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
 	private SBESequenceTextField seq5tf = null;
-	private PBSequenceField seq3tf = null;
+	private SBESequenceTextField seq3tf = null;
 	private NuklSelectorPanel nuklSelectorPanel = null;
 	private JTextField tfId = null;
-	private PLSelectorPanel PLSelectorPanel = null;
+	private PLSelectorPanel plpanel5 = null;
 	private JLabel jLabel2 = null;
 	private JTextField tfplexid = null;
 	private PBSequenceField pcrlenTf = null;
@@ -43,7 +43,7 @@ public class SBECandidatePanel extends MyPanel {
 	private HairpinSelectionPanel hairpin3SelectionPanel = null;
 	private StringEntryPanel multiplexidPanel = null;
 	private StringEntryPanel pcrLenPanel = null;
-    private SBESeqInputController inputcontroller = null;
+    private SBESeqInputController inputcontrollerL = null;
 
     private boolean isExpertMode;
 	private StringEntryPanel filtersPanel = null;
@@ -63,7 +63,9 @@ public class SBECandidatePanel extends MyPanel {
         }    
     };
     private MyChangeListener cl=new MyChangeListener();
+    private SBESeqInputController inputcontrollerR;
     
+	private PLSelectorPanel plpanel3 = null;
 	/**
 	 * This is the default constructor
 	 * @param
@@ -80,6 +82,7 @@ public class SBECandidatePanel extends MyPanel {
 	 * @return void
 	 */
 	private  void initialize(int minlen) {
+		GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
@@ -112,7 +115,7 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints31.fill = java.awt.GridBagConstraints.NONE;
 		gridBagConstraints31.insets = new java.awt.Insets(0,10,5,10);
 		gridBagConstraints31.anchor = java.awt.GridBagConstraints.CENTER;
-		gridBagConstraints7.gridx = 8;
+		gridBagConstraints7.gridx = 5;
 		gridBagConstraints7.gridy = 0;
 		gridBagConstraints7.gridheight = 2;
 		gridBagConstraints7.insets = new java.awt.Insets(5,10,5,0);
@@ -130,16 +133,16 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints5.gridwidth = 2;
 		gridBagConstraints5.insets = new java.awt.Insets(0,0,5,0);
-		gridBagConstraints11.gridx = 5;
+		gridBagConstraints11.gridx = 7;
 		gridBagConstraints11.gridy = 0;
 		gridBagConstraints11.gridheight = 2;
 		gridBagConstraints11.insets = new java.awt.Insets(5,10,5,0);
-		gridBagConstraints10.gridx = 7;
+		gridBagConstraints10.gridx = 9;
 		gridBagConstraints10.gridy = 0;
 		gridBagConstraints10.insets = new java.awt.Insets(10,10,10,0);
 		gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
 		jLabel2.setText("3'-Sequence");
-		gridBagConstraints12.gridx = 7;
+		gridBagConstraints12.gridx = 9;
 		gridBagConstraints12.gridy = 1;
 		gridBagConstraints12.weightx = 1.0;
 		gridBagConstraints12.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -156,33 +159,38 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints41.gridy = 0;
 		gridBagConstraints41.gridheight = 2;
 		gridBagConstraints41.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints42.gridx = 9;
+		gridBagConstraints42.gridx = 11;
 		gridBagConstraints42.gridy = 0;
 		gridBagConstraints42.gridheight = 2;
 		gridBagConstraints42.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints51.gridx = 10;
+		gridBagConstraints51.gridx = 12;
 		gridBagConstraints51.gridy = 0;
 		gridBagConstraints51.gridheight = 2;
 		gridBagConstraints51.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints6.gridx = 11;
+		gridBagConstraints6.gridx = 13;
 		gridBagConstraints6.gridy = 0;
 		gridBagConstraints6.gridheight = 2;
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
 		this.add(getTfId(), gridBagConstraints31);
 		this.add(jLabel, gridBagConstraints1);
-        inputcontroller = new SBESeqInputController(this,
-                                                    minlen);
+        inputcontrollerL = new SBESeqInputController(this,minlen,true);
+        inputcontrollerR = new SBESeqInputController(this,minlen,false);
+        inputcontrollerL.setOtherController(inputcontrollerR);
+        inputcontrollerR.setOtherController(inputcontrollerL);
+        
         setExpertMode(false);
-        gridBagConstraints13.gridx = 12;
+        gridBagConstraints13.gridx = 14;
         gridBagConstraints13.gridy = 0;
         gridBagConstraints13.gridheight = 2;
         gridBagConstraints13.insets = new java.awt.Insets(10,10,10,10);
         gridBagConstraints15.gridx = 1;
         gridBagConstraints15.gridy = 1;
         gridBagConstraints15.insets = new java.awt.Insets(0,0,0,5);
-        this.add(getPLSelectorPanel(), gridBagConstraints7);
-        this.add(jLabel1, gridBagConstraints4);
-        this.add(getSeq5tf(), gridBagConstraints5);
+        gridBagConstraints16.gridx = 10;
+        gridBagConstraints16.gridy = 0;
+        gridBagConstraints16.gridheight = 2;
+        gridBagConstraints16.insets = new java.awt.Insets(5,10,5,0);
+        this.add(getPlpanel5(), gridBagConstraints7);
         this.add(jLabel2, gridBagConstraints10);
         this.add(getSeq3tf(), gridBagConstraints12);
         this.add(getSNPSelectorPanel(), gridBagConstraints11);
@@ -191,6 +199,9 @@ public class SBECandidatePanel extends MyPanel {
         this.add(getMultiplexidPanel(), gridBagConstraints51);
         this.add(getPcrLenPanel(), gridBagConstraints6);
         this.add(getFiltersPanel(), gridBagConstraints13);
+        this.add(getPlpanel3(), gridBagConstraints16);
+        this.add(jLabel1, gridBagConstraints4);
+        this.add(getSeq5tf(), gridBagConstraints5);
         this.add(getFixedPrimerCB(), gridBagConstraints15);
         setUnchanged();
 	}
@@ -262,25 +273,26 @@ public class SBECandidatePanel extends MyPanel {
         return getTfId().getText();
     }
 	/**
-	 * This method initializes PLSelectorPanel
+	 * This method initializes plpanel5
 	 *
-	 * @return biochemie.gui.PLSelectorPanel
+	 * @return biochemie.gui.plpanel5
 	 */
-    protected PLSelectorPanel getPLSelectorPanel() {
-		if (PLSelectorPanel == null) {
-			PLSelectorPanel = new PLSelectorPanel();
-			PLSelectorPanel.setPreferredSize(new java.awt.Dimension(90,56));
+    protected PLSelectorPanel getPlpanel5() {
+		if (plpanel5 == null) {
+			plpanel5 = new PLSelectorPanel();
+            plpanel5.setTitle("PL 5'");
+			plpanel5.setPreferredSize(new java.awt.Dimension(90,56));
 		}
-		return PLSelectorPanel;
+		return plpanel5;
 	}
 	/**
 	 * This method initializes PBSequenceField
 	 *
 	 * @return biochemie.calcdalton.gui.PBSequenceField
 	 */
-    protected PBSequenceField getSeq3tf() {
+    protected SBESequenceTextField getSeq3tf() {
 		if (seq3tf == null) {
-			seq3tf = new PBSequenceField(100,true,"ACGTacgt");
+			seq3tf = new SBESequenceTextField(100,true,"ACGTacgt");
 			seq3tf.setColumns(10);
             seq3tf.cutFront(false);
             seq3tf.getDocument().addDocumentListener(cl);
@@ -363,7 +375,7 @@ public class SBECandidatePanel extends MyPanel {
         String filters = getFiltersPanel().getText();
         String productlen=getPcrLenPanel().getText();
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
-        int festerpl=getPLSelectorPanel().getSelectedPL();
+        int festerpl=getPlpanel5().getSelectedPL();
         StringBuffer sb=new StringBuffer();
         sb.append(id);
         sb.append(';');
@@ -389,7 +401,7 @@ public class SBECandidatePanel extends MyPanel {
         return new String(sb);
     }
     public SBECandidate getSBECandidate(SBEOptions cfg){
-        if(!inputcontroller.isOkay()) {
+        if(!inputcontrollerL.isOkay()) {
             return null;
         }
         String l=getSeq5tf().getText();
@@ -425,7 +437,7 @@ public class SBECandidatePanel extends MyPanel {
      * @param optionsFromGui
      */
     public void refreshData(SBEOptions cfg) {
-        getPLSelectorPanel().setPLPositions(cfg.getPhotolinkerPositions());
+        getPlpanel5().setPLPositions(cfg.getPhotolinkerPositions());
     }
 
     /**
@@ -464,7 +476,7 @@ public class SBECandidatePanel extends MyPanel {
         getSeq3tf().setText(r);
         getHairpin3SelectionPanel().setSelectedNukleotides(bautein3);
         getPcrLenPanel().setText(Integer.toString(productlen));
-        getPLSelectorPanel().setSelectedPL(pl);
+        getPlpanel5().setSelectedPL(pl);
         getMultiplexidPanel().setText(multiplexid);
         getFiltersPanel().setText(filters);
         getFixedPrimerCB().setSelected(Boolean.valueOf(fixed).booleanValue());
@@ -539,4 +551,16 @@ public class SBECandidatePanel extends MyPanel {
         getPcrLenPanel().hasChanged();
     }
     
-     }  //  @jve:decl-index=0:visual-constraint="65,28"
+	/**
+	 * This method initializes PLSelectorPanel	
+	 * 	
+	 * @return biochemie.gui.PLSelectorPanel	
+	 */    
+	protected PLSelectorPanel getPlpanel3() {
+		if (plpanel3 == null) {
+			plpanel3 = new PLSelectorPanel();
+			plpanel3.setTitle("PL 3'");
+		}
+		return plpanel3;
+	}
+      }  //  @jve:decl-index=0:visual-constraint="65,28"

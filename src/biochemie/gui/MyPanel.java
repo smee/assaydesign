@@ -65,9 +65,19 @@ public abstract class MyPanel extends JPanel implements ChangeWatcher{
         for (int i = 0; i < num; i++) {
             ((JComponent)getComponent(i)).setToolTipText(t);
         }
-
     }
+    
 
+    /* (non-Javadoc)
+     * @see java.awt.Component#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        int num=getComponentCount();
+        for (int i = 0; i < num; i++) {
+            ((JComponent)getComponent(i)).setEnabled(enabled);
+        }
+    }
     public boolean hasChanged() {
         return dirtyFlag;
     }
