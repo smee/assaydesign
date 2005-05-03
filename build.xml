@@ -48,7 +48,9 @@
 <!--**********************************************************-->
   <target name="init">
     <!-- Create the time stamp -->
-    <tstamp/>
+    <tstamp>
+    	<format property="$$$DATE$$$" pattern="dd-MMMM-yyyy, hh:mm" locale="en"/>
+  	</tstamp>
     <mkdir dir="${build}"/>
     <mkdir dir="${build}/images"/>
     <mkdir dir="${build}/help"/>
@@ -79,6 +81,8 @@
 	  <target name="ajcompile" 
 	  		  depends="init"
 	          description="compile the source with aspectj" >
+	  	<replace file="${src}/biochemie/sbe/MiniSBE.java" token="$$$DATE$$$" value="${$$$DATE$$$}"/>
+	  	<replace file="${src}/biochemie/sbe/gui/MiniSBEGui.java" token="$$$DATE$$$" value="${$$$DATE$$$}"/>
 	    <iajc srcdir="${src}"
 	    	   destdir="${build}"
 			   classpathref="project.classpath"

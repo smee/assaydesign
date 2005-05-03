@@ -111,7 +111,7 @@ public class MiniSBE {
     public static void initLogfile(String path) {
         try {
             String startstring="---------Program started: " + new Date()+" -----------\n";
-            startstring+="\tVersion: 08.04.05";
+            startstring+="\tVersion: $$$DATE$$$";
             if(!Boolean.getBoolean("DEBUG"))
                 LogStdStreams.initializeErrorLogging(path+File.separatorChar+"minisbe.log",startstring, true, false);
         } catch (RuntimeException e) {
