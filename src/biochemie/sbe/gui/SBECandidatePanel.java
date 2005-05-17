@@ -400,7 +400,7 @@ public class SBECandidatePanel extends MyPanel {
         sb.append(getFixedPrimerCB().isSelected());
         return new String(sb);
     }
-    public SBECandidate getSBECandidate(SBEOptions cfg){
+    public SBECandidate getSBECandidate(SBEOptions cfg, boolean rememberoutput){
         if(!inputcontrollerL.isOkay()) {
             return null;
         }
@@ -428,7 +428,7 @@ public class SBECandidatePanel extends MyPanel {
         int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
         boolean userGiven=getFixedPrimerCB().isSelected();
 
-        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven);
+        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
         return s;
     }
 

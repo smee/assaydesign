@@ -36,6 +36,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -48,6 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -83,8 +85,54 @@ import biochemie.util.TableSorter;
  *
  */
 public class MiniSBEGui extends JFrame {
+    public class ExplainPrimerAction extends MyAction {
+        private JTable table;
+        
+        public ExplainPrimerAction(JTable table) {
+            super("Show reasoning",
+                    "shows the considered primers and the sortings used for the selected row",
+                    CalculateAction.class.getClassLoader().getResource("images/question.gif"),
+                    null);
+            this.table=table;
+        }
 
-	public class CalculateAction extends MyAction {
+        public void actionPerformed(ActionEvent e) {
+            int row=table.getSelectedRow();
+            if(row < 0)
+                return;
+            String id=(String) table.getValueAt(row,1);
+            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+                SBECandidatePanel panel = (SBECandidatePanel) it.next();
+                if(panel.getTfId().getText().equals(id)) {
+                    showExplanationFrameFor(panel);
+                    return;
+                }
+            }
+        }
+
+        private void showExplanationFrameFor(SBECandidatePanel panel) {
+            SBEOptions cfg=getConfigDialog().getSBEOptionsFromGui();
+            cfg.setDebug(true);
+            String output=panel.getSBECandidate(cfg, true).getOutput();
+            JFrame frame = new JFrame("Detailed report for "+panel.getTfId().getText());
+            frame.getContentPane().setLayout(new BorderLayout());
+            JTextArea ed=new JTextArea(output);
+            ed.setRows(40);
+            ed.setFont(new Font("Courier",Font.PLAIN,11));
+            JScrollPane pane = new JScrollPane(ed);
+            frame.getContentPane().add(pane,BorderLayout.CENTER);
+            frame.pack();
+            frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    System.out.println("closing...");
+                }
+            });
+            //frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setVisible(true);
+            
+        }
+    }
+    public class CalculateAction extends MyAction {
         public CalculateAction() {
             super("Calculate","Start calculation",
                     CalculateAction.class.getClassLoader().getResource("images/play.gif"),
@@ -97,7 +145,7 @@ public class MiniSBEGui extends JFrame {
         	final SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
         	for (Iterator it = sbepanels.iterator(); it.hasNext();) {
         		SBECandidatePanel p = (SBECandidatePanel) it.next();
-        		sbec.add(p.getSBECandidate(cfg));
+        		sbec.add(p.getSBECandidate(cfg, false));
         	}
         	Algorithms.remove(sbec.iterator(),IsNull.instance());
         	final List sbeccoll=SBEPrimerReader.collapseMultiplexes(sbec,cfg);
@@ -165,7 +213,9 @@ public class MiniSBEGui extends JFrame {
             JButton showdiffs = new JButton(new ShowDiffAction(sbec,cfg,this));
             toolbar.add(showdiffs);
             frame.pack();
-
+            JButton showexplanation=new JButton(new ExplainPrimerAction(table));
+            toolbar.add(showexplanation);
+            
             ToolTipManager.sharedInstance().setDismissDelay(100000);
             frame.setVisible(true);
         }
@@ -875,6 +925,7 @@ public class MiniSBEGui extends JFrame {
 		if (expertToggleButton == null) {
 			expertToggleButton = new JToggleButton();
 			expertToggleButton.setText("Expertmode");
+            expertToggleButton.setIcon(new ImageIcon(CalculateAction.class.getClassLoader().getResource("images/doktorhut.gif")));
 			expertToggleButton.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					expertmode = e.getStateChange() == ItemEvent.SELECTED;

@@ -103,6 +103,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
 	private final SBEOptions cfg;
     private String unwanted;
     private String logstring;
+    private String writtenoutput=null;
 
     /**
      * Konstruktor fuer nur einen Primer.
@@ -116,7 +117,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param unwanted
      */
     public SBECandidate(SBEOptions cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted, boolean userGiven) {
-        this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted, userGiven);
+        this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted, userGiven,false);
     }
 
     /**
@@ -126,7 +127,9 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @param givenMultiplexid
      * @param unwanted Ausdruck fuer Primer, die der User nicht will (List a la "3'_length_PL ...", z.B.: "3'_25_11 5'_19_8")
       */
-    public SBECandidate(SBEOptions cfg,String id, String l, String r, String snp, int productlen, String bautEin5, String bautEin3, String givenMultiplexid, String unwanted, boolean userGiven) {
+    public SBECandidate(SBEOptions cfg,String id, String l, String r, 
+            String snp, int productlen, String bautEin5, String bautEin3, 
+            String givenMultiplexid, String unwanted, boolean userGiven, boolean rememberOutput) {
         leftstring=l;
         rightstring= Helper.revcomplPrimer(r);
         this.id=id;
@@ -157,7 +160,10 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         	createValidCandidate(leftstring, bautEin5,rightstring,bautEin3);
         //this.logstring=bos.toString();
         System.setOut(orgout);
-        System.out.println(bos.toString());
+        if(rememberOutput)
+            this.writtenoutput=bos.toString();
+        else
+            System.out.println(bos.toString());
      }
 
     /**
@@ -687,7 +693,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
             String primer = Helper.replacePL(seq[0],festeBruchstelle);
             return new SBECandidate(cfg, id, primer,snp, productlen, hair5, givenMultiplexid, unwanted, userGiven);
         }else
-            return new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,hair5,hair3,givenMultiplexid,unwanted, userGiven);
+            return new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,hair5,hair3,givenMultiplexid,unwanted, userGiven, false);
     }
     private final static String[] csvheader =
         new String[] {
@@ -711,4 +717,8 @@ public class SBECandidate implements MultiplexableFactory, Observer {
             ,"PCR-Product-length"
             ,"Sequence excl.PL"
             ,"Comment"};
+
+    public String getOutput() {
+        return writtenoutput==null?"":writtenoutput;
+    }
 }
