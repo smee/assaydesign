@@ -26,8 +26,8 @@ public class PCRPrimer extends Primer {
     private final int pos, maxplex;
     private final String inputline;
 
-    public PCRPrimer(String id, int pos, String inputline, String seq, String type,double maxtm, double maxgc, int maxplex, CrossDimerAnalysis cda) {
-        super(id,seq);
+    public PCRPrimer(String filename, int pos, String inputline, String seq, String type,double maxtm, double maxgc, int maxplex, CrossDimerAnalysis cda) {
+        super(filename,seq);
         this.maxtm=maxtm;
         this.maxgc=maxgc;
         this.cda=cda;
@@ -81,6 +81,6 @@ public class PCRPrimer extends Primer {
 		return new HashSet();
 	}
     public String getInputLine() {
-        return inputline;
+        return inputline+";"+id;
     }
 }
