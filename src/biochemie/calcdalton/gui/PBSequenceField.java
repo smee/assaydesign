@@ -28,7 +28,8 @@ public class PBSequenceField extends JTextField
                 else
                     x = str.charAt(i);
 
-                if(uniquechars != null && uniquechars.indexOf(x) != -1 && text.indexOf(x) != -1)
+                if(uniquechars != null && uniquechars.indexOf(x) != -1 && 
+                        (text.indexOf(x) != -1 || validstr.indexOf(Character.toString(x))!= -1) )
                 	continue;
 
                 if(validChars == null || validChars.indexOf(x) != -1)
