@@ -60,8 +60,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     boolean sel=fixedcb.isSelected();
                     SBESequenceTextField tf = SBESeqInputController.this.left;
                     midtf.setEnabled(sel);
-                    if(sel)
-                       midtf.setText("");
+//                    if(sel)
+//                       midtf.setText("");
                     if( sel && Helper.getPosOfPl(_seq)<0 )//wenn das hier keine fixe seq. ist
                         sel=false;
                     plpanel.setEnabled(!sel);
