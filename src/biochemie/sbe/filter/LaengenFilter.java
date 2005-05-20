@@ -27,15 +27,17 @@ public class LaengenFilter extends AbstractKandidatenFilter {
      * Filtert alle Seq., deren Laenge kleiner einer Laenge len ist.
      */
     public void filter(List cand) {
+    	StringBuffer sb=new StringBuffer("Primers too short:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             SBEPrimer  p = (SBEPrimer) it.next();
             if(p.getSeq().length()<len){
                 it.remove();
                 count++;
-				if(debug)
-                	System.out.println("not considering "+p.getSeq()+", PL="+p.getBruchstelle()+", length<"+len);
+                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", length<"+len);
+                sb.append("\n");
             }
         }
+        System.out.println(sb);
     }
     private int count=0;
     private final String reason="primer too short: ";

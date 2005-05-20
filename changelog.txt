@@ -1,0 +1,16 @@
+MiniSBE:
+--------
+
+- erweiterung des Excluded 5' 3' mouseover
+- Umstrukturierung der Ausgaben bei der Generierung des optimalen Primers fuer eine Eingabezeile
+
+zu PCR:
+-------
+
+- Die Fehlermeldungen kommen daher, dass im EMBL-File die Laenge der Sequenz mit 1..119141 angegeben ist, aber Features (=Introns, Exons, repetetive Seq.,
+SNPs etc.) an Positionen wie beispielsweise 125325..125463 vorkommen, die werden dann von Biojava ignoriert, bzw.
+als Fehler ausgeben. Denn wie soll man den ein SNP an einer Position hinter der Seq. beruecksichtigen?
+- Der "unklare Parameter" in den defaultfiles is nix, was mit der Anwendung des Tools in Zusammenhang steht. Intern
+schreib ich da an einer Stelle was rein, und lese es an anderer wieder ein. Also ne Zweckentfremdung des Config-Moduls,
+sowas sollte dir nix neues sein :)
+

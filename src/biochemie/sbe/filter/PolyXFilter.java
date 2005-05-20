@@ -27,6 +27,7 @@ public class PolyXFilter extends AbstractKandidatenFilter {
      * @see KandidatenFilter#filter(List)
      */
     public void filter(List cand) {
+    	StringBuffer sb=new StringBuffer("Primers exceeding polyX:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             Primer p= (Primer) it.next();
             String seq=p.getSeq();
@@ -45,14 +46,15 @@ public class PolyXFilter extends AbstractKandidatenFilter {
                         tracingrun=false;
                     if(counter>polyX){
                         it.remove();
-                        count++;
-						if(debug)
-                        	System.out.println("not considering "+seq+", exceeds polyX");  
+                        count++;                        	
+                        sb.append(seq+", exceeds polyX");  
+                        sb.append("\n");
                         break;//beende innere for-Schleife
                     }              
                 }
             }
         }
+        System.out.println(sb);
     }
     private int count=0;
     private final String reason="out of PolyX: ";

@@ -31,7 +31,6 @@ public class PrimerPair {
     public int rightlen;
     public int productlen;
     public float gcdiff;
-    public boolean okay;
     /**
      * Enthält die Punkte an den jeweiligen Positionen.
      */
@@ -56,7 +55,6 @@ public class PrimerPair {
         this.rightlen=r.length();
         this.productlen=this.rightpos-this.leftpos+1;
         this.gcdiff=gcdiff;
-        this.okay=true;        
         this.posinfile = posinfile;
     }
     public int getOverallScore() {
@@ -138,7 +136,6 @@ public class PrimerPair {
         this.rightlen=rightlen;
         this.productlen=this.rightpos-this.leftpos+1;
         this.gcdiff=0;
-        this.okay=true;
     }
     
     public void addBlatScore(int n) {
@@ -225,5 +222,8 @@ public class PrimerPair {
 		sb.append("Sum;");
 		sb.append("no. of cycle;");
         return sb.toString();
+	}
+	public boolean okay(){
+		return getOverallScore()>=PCR.maxscore;
 	}
 }

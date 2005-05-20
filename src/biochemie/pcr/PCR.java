@@ -3,8 +3,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -55,15 +53,11 @@ public class PCR {
 	boolean repOn=true;
 	boolean exonOn=false;
 
-	private int maxscore = 100;
+	public static int maxscore = 100;
     private final int MAXNUM=1000;//anzahl der primerpaare, die jeweils eingelesen werden sollen
 
-	public PCR(String[] args) {
-		//Einlesen der Konfiguration
-		config=new UI().parseCmdLineParameter(args);
-		//ist was schiefgegangen?
-		if(null == config)
-			return;
+	public PCR(PCRConfig cfg) {
+		this.config=cfg;
         PCR.debug = config.getProperty("DEBUG").equals("true");
 		try {
 			maxscore=config.getInteger("SCORE_MAXSCORE");
@@ -133,7 +127,11 @@ public class PCR {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-        PCR pcr=new PCR(args);
+		PCRConfig config=new UI().parseCmdLineParameter(args);
+		if(config == null)
+			return;
+		
+        PCR pcr=new PCR(config);
         if(null == pcr.config) {
             System.exit(1);
         }
@@ -169,14 +167,12 @@ public class PCR {
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
             
-			int solutions=runAnalysis(file,outfilename,cyclescount);
+			int solutions=runAnalysis(file,outfilename,cyclescount++);
 			counter+=solutions;
 			if(counter >= primernum) {
 				System.out.println("Got "+counter+" solutions, stopping calculations.");
                 break;   //genug loesungen gefunden, also ferdsch :)
-                
             }
-            cyclescount++;
 		}
 	}
 	/**
@@ -221,7 +217,7 @@ public class PCR {
 	    int count=1;
 	    String line=null;
 	    for(int i=0;i<pps.length;i++) {
-	        if(pps[i].okay) {
+	        if(pps[i].okay()) {
 	            if(!outputcsv)
 	                line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
 	            else
@@ -251,17 +247,6 @@ public class PCR {
 	    return solutioncount;
 	}
 
-	private int countAndMarkSuccessfulPairs(List pps) {
-		int count=pps.size();
-        for (Iterator it = pps.iterator(); it.hasNext();) {
-            PrimerPair pair = (PrimerPair) it.next();
-			if(pair.getOverallScore()>=maxscore) {
-				pair.okay=false;
-				count--;
-			}            
-        }
-		return count;
-	}
 	/**
      * Liest nacheinander Paare aus dem Ergebnisfile von primer3 ein und schickt sie durch die Filter.
 	 * @param primer3
@@ -272,7 +257,6 @@ public class PCR {
             java.util.List allPairs= new ArrayList();
    
             int index=-1;
-            String line=null;
             while(null != (pps = primer3.getNextResults(MAXNUM))){
                 index++;
                 if(gcdiffOn) {
@@ -315,13 +299,13 @@ public class PCR {
                 }
             }
             
-                final int solutionscount=countAndMarkSuccessfulPairs(allPairs);
+                final int solutionscount=countSuccessfulPairs(allPairs);
                 
                 PrimerPair[] forBlat=new PrimerPair[solutionscount];
                 int idx=0;
                 for (Iterator it = allPairs.iterator(); it.hasNext();) {
                     PrimerPair pair = (PrimerPair) it.next();
-                    if(pair.okay)
+                    if(pair.okay())
                         forBlat[idx++]=pair;
                 }
             if (blatOn) {
@@ -335,6 +319,17 @@ public class PCR {
                 }
             }
             return (PrimerPair[]) allPairs.toArray(new PrimerPair[allPairs.size()]);
+        }
+
+        private int countSuccessfulPairs(List pps) {
+        	int count=pps.size();
+        	for (Iterator it = pps.iterator(); it.hasNext();) {
+        		PrimerPair pair = (PrimerPair) it.next();
+        		if(pair.okay()) {
+        			count--;
+        		}            
+        	}
+        	return count;
         }
 
 	public String toString() {

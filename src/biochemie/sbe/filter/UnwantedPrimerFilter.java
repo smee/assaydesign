@@ -53,6 +53,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     }
 
     public void filter(List cand) {
+    	StringBuffer sb=new StringBuffer("Primers filtered by user:\n ");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             SBEPrimer p=(SBEPrimer) it.next();
             for (int i = 0; i < type.length; i++) {
@@ -61,12 +62,12 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
                    (p.getBruchstelle() == pl[i] || pl[i] < 0)){
                     it.remove();
                     count++;
-                    if(debug)
-                        System.out.println("not considering "+p.getSeq()+", PL="+p.getBruchstelle()+", user doesn't like him!");
+                    sb.append(p.getSeq()+", PL="+p.getBruchstelle());
+                    sb.append("\n");
                 }
-
             }
         }
+        System.out.println(sb);
     }
 
     public int rejectedCount() {

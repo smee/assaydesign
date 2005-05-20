@@ -3,6 +3,8 @@
  *
  */
 package biochemie.sbe.filter;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import biochemie.sbe.SBEOptions;
 public class TemperaturFilter extends AbstractKandidatenFilter {
     private double maxT;
     private double minT;
-    
+    private static NumberFormat nf =new DecimalFormat("0.00");
     public TemperaturFilter(SBEOptions cfg) {
     	super(cfg);
         this.minT= cfg.getMinTemperature();
@@ -27,16 +29,19 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
      * @see KandidatenFilter#filter(List) 
      */
     public void filter(List cand) {
+    	StringBuffer sb=new StringBuffer("Primers out of TM:\n");
+    	
         for (Iterator it= cand.iterator(); it.hasNext();) {
             SBEPrimer p=(SBEPrimer) it.next();
 
             if(p.getTemperature() < minT || p.getTemperature() > maxT){
                 it.remove();
                 count++;
-				if(debug)
-                	System.out.println("not considering "+p.getSeq()+", PL="+p.getBruchstelle()+", Temperature="+p.getTemperature());
+                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", Tm="+nf.format(p.getTemperature())+"°");
+                sb.append("\n");
             }
         }
+        System.out.println(sb);
     }
     private int count=0;
     private final String reason="out of TM: ";

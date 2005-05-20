@@ -29,6 +29,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
     }
    
     public void filter(List cand) {
+    	StringBuffer sb=new StringBuffer("Primers with incomp. sec.strucs:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             SBEPrimer p=(SBEPrimer) it.next();
 
@@ -37,18 +38,19 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
             if(hatMehrereInkompatibleHairpins(p)){
                 it.remove();
                 count++;
-				if(debug)
-                	System.out.println("not considering "+p.getSeq()+", PL="+p.getBruchstelle()+", too many incompatible secondary structures!");
+                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", too many incompatible secondary structures!");
+                sb.append("\n");
             }else {//keine Seq. hat mehrere, jetzt schauen, ob nur eine inkomp. existiert, die nicht verhindert werden kann
                 
                 if(hatNichtVerhinderbareSekStruks(p)) {
                     it.remove();
                     count++;
-                    if(debug)                        
-                        System.out.println("not considering "+p.getSeq()+", PL="+p.getBruchstelle()+", can't avoid incomp. hairpin!");
+                    sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", can't avoid incomp. hairpin!");
+                    sb.append("\n");
                 }
             }
         }
+        System.out.println(sb);
     }
     /**
      * Testet, ob ein Primer mehrere inkompatible Hairpins hat, genauer: Mehr als einen Hintergrund: Ein inkompatibler Hairpin bedeutet,
@@ -82,7 +84,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
         return count.intValue() >= 1;
     }
     private int count=0;
-    private final String reason="unavoidable sec.struks: ";
+    private final String reason="unavoidable incomp. sec.struks: ";
 
     public int rejectedCount() {
         return count;

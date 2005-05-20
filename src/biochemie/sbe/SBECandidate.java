@@ -143,15 +143,16 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintStream orgout=System.out;
         System.setOut(new PrintStream(bos));
-        System.out.println("\nAnalyzing Seq.ID: " + id + "\n------------------------");
 
         if(userGiven){
             if(Helper.getPosOfPl(leftstring) > 0) {
+            	System.out.println("Using given 5' primer.");
                 SBEPrimer primer = new SBEPrimer(cfg, id, leftstring, snp, SBEPrimer._5_,bautEin5, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
             if(Helper.getPosOfPl(rightstring) > 0) {
+            	System.out.println("Using given 3' primer.");
                 SBEPrimer primer = new SBEPrimer(cfg, id, rightstring, snp, SBEPrimer._3_,bautEin3, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
@@ -174,11 +175,10 @@ public class SBECandidate implements MultiplexableFactory, Observer {
     private void createValidCandidate(String l, String b5, String r, String b3) {
         //Erzeuge Array mit Structs sortiert nach Abstand von optimaler Temperatur, alle nicht möglichen Kandidaten sind schon entfernt
         primercandidates=findBestPrimers(createSortedCandidateList(l, b5, r, b3));
-        if (cfg.isDebug()) {
-            System.out.println("Using the following primer as candidates:\n" +
-                               "-----------------------------------------\n"
+        System.out.println("\nPrimer chosen for multiplexing for "+id+":\n" +
+                               "------------------------------------------------\n"
                     + Helper.toStringln(primercandidates.toArray(new Object[primercandidates.size()])));
-        }
+       
         if (0 == primercandidates.size()) {
             System.out.println("==> No Primer found for " + leftstring + " and " + rightstring);
             return;
@@ -241,11 +241,16 @@ public class SBECandidate implements MultiplexableFactory, Observer {
      * @return
      */
     private List createSortedCandidateList(String left, String bautEin5, String right, String bautEin3) {
-        List liste= getFilteredPTTStructList(left, SBEPrimer._5_,bautEin5);
-        liste.addAll(getFilteredPTTStructList(right, SBEPrimer._3_,bautEin3));
+        System.out.println("\nDetailed report for choice of possible 5' primer for " + id +
+		 "\n-----------------------------------------------------------------");
+    	List liste= getFilteredPTTStructList(left, SBEPrimer._5_,bautEin5);
+        System.out.println("\nDetailed report for choice of possible 3' primer for " + id +
+		 "\n-----------------------------------------------------------------");
+    	liste.addAll(getFilteredPTTStructList(right, SBEPrimer._3_,bautEin3));
         Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
 
-        System.out.println("List of possible primer:\n------------------------\n"
+        System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
+        					 "--------------------------------------------------------------------------------"
                 + Helper.toStringln(liste.toArray(new Object[liste.size()])));
         return liste;
     }
@@ -304,12 +309,15 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         int filtcount = 0;
         for (Iterator it = kf.iterator(); it.hasNext();) {
             KandidatenFilter filt = (KandidatenFilter) it.next();
-            String r=filt.rejectReason()+filt.rejectedCount()+"/"+allcount+", ";
-            filtcount += filt.rejectedCount();
-            if(type.equals(SBEPrimer._5_))
-                invalidreason5+=r;
-            else
-                invalidreason3+=r;
+            int actcount=filt.rejectedCount();
+            if(actcount >0){
+            	String r=filt.rejectReason()+actcount+"/"+(allcount-filtcount)+", ";
+            	filtcount += actcount;
+            	if(type.equals(SBEPrimer._5_))
+            		invalidreason5+=r;
+            	else
+            		invalidreason3+=r;
+            }
         }
         String prefix = "All: "+filtcount+"/"+allcount+", ";
         if(type.equals(SBEPrimer._5_)) {

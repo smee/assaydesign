@@ -30,16 +30,18 @@ public class GCFilter extends AbstractKandidatenFilter {
      * @see KandidatenFilter#filter(List)
      */
     public void filter(List cand) {
+    	StringBuffer sb=new StringBuffer("Primers out of GC:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             Primer p=(Primer) it.next();
             double gc=p.getGCGehalt();
             if(gc<gcMin || gc>gcMax){
                 it.remove();
                 count++;
-                if(debug)
-                	System.out.println("not considering "+p.getSeq()+", GC-Value="+gc);
+                sb.append(p.getSeq()+", GC-Value="+gc);
+                sb.append("\n");
             }
         }
+        System.out.println(sb);
     }
     private int count=0;
     private final String reason="out of GC: ";
