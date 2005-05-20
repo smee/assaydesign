@@ -321,9 +321,11 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         }
         String prefix = "All: "+filtcount+"/"+allcount+", ";
         if(type.equals(SBEPrimer._5_)) {
-            invalidreason5=prefix+invalidreason5.substring(0,invalidreason5.length()-2);
+            invalidreason5=prefix+invalidreason5.substring(0,invalidreason5.length());
+            invalidreason5=invalidreason5.substring(0,invalidreason5.length()-2);
         }else {
-            invalidreason3=prefix+invalidreason3.substring(0,invalidreason3.length()-2);
+            invalidreason3=prefix+invalidreason3.substring(0,invalidreason3.length());
+            invalidreason3=invalidreason3.substring(0,invalidreason3.length()-2);
         }
         return erg;
     }

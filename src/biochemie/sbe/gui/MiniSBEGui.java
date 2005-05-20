@@ -11,6 +11,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
@@ -53,6 +54,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.Scrollable;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
@@ -504,6 +506,19 @@ public class MiniSBEGui extends JFrame {
         }
 
     }
+    private class ScrollablePanel extends JPanel implements Scrollable{
+
+        public boolean getScrollableTracksViewportHeight() {return false;}
+        public boolean getScrollableTracksViewportWidth() {return true;}
+        public Dimension getPreferredScrollableViewportSize() {return getPreferredSize();}
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return getScrollableUnitIncrement(visibleRect,orientation,direction);
+        }
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 30;//TODO jeweils eine Zeile weiter
+        }        
+    }
+    
     private static Preferences prefs=Preferences.userNodeForPackage(MiniSBEGui.class);
     private static final int DEFAULT_WINDOW_X = 50;
     private static final int DEFAULT_WINDOW_Y = 50;
@@ -603,7 +618,7 @@ public class MiniSBEGui extends JFrame {
 		this.setJMenuBar(getJJMenuBar());
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
-        setTitle("MiniSBE (freeze 1) $$$DATE$$$");//wird von ant durch aktuelles Datum ersetzt.
+        setTitle("MiniSBE (freeze 1) $20-May-2005, 08:54$");//wird von ant durch aktuelles Datum ersetzt.
 	}
 	/**
 	 * This method initializes jContentPane
@@ -859,7 +874,7 @@ public class MiniSBEGui extends JFrame {
 	 */
 	private JPanel getSbepanelsPanel() {
 		if (sbepanelsPanel == null) {
-			sbepanelsPanel = new JPanel();
+			sbepanelsPanel = new ScrollablePanel();
 			sbepanelsPanel.setLayout(new BoxLayout(sbepanelsPanel, BoxLayout.Y_AXIS));
 			for(int i=0; i<sbe_anzahl;i++){
                 addSBECandidatePanel(i);
