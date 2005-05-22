@@ -4,6 +4,9 @@
  */
 package biochemie.pcr.matcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import biochemie.sbe.multiplex.Multiplexable;
 
 
@@ -18,6 +21,8 @@ class PCRPair implements Multiplexable{
         edgereason="";
     }
     public void setPlexID(String s) {
+        leftp.setPlexID(s);
+        rightp.setPlexID(s);
     }
 
     public String getName() {
@@ -54,9 +59,6 @@ class PCRPair implements Multiplexable{
         return true;
     }
 
-    public int maxPlexSize() {
-        return maxplex;
-    }
     public String toString(){
         return getName();
     }
@@ -68,5 +70,14 @@ class PCRPair implements Multiplexable{
     }
     public String getCSVLine() {
         return leftp.getInputLine();
+    }
+    public int realSize() {
+        return 1;
+    }
+    public List getIncludedElements() {
+        List result= new ArrayList(2);
+        result.add(leftp);
+        result.add(rightp);
+        return result;
     }
 }

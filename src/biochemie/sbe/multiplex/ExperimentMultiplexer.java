@@ -44,7 +44,7 @@ public class ExperimentMultiplexer extends Multiplexer {
 
         UndirectedGraph g=GraphHelper.createIncompGraph(multip,drawGraph, 0);
 
-        SBEColorerProxy itrp=new SBEColorerProxy(g,new HashSet(),debug);
+        SBEColorerProxy itrp=new SBEColorerProxy(g,new HashSet(), cfg.getMaxPlex(),debug);
         rt.setInterruptableJob(itrp);
         List colors=(List) rt.getResult();
         Collections.sort(colors,new Comparator() {//sortieren nach Groesse

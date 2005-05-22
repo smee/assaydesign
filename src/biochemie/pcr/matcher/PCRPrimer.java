@@ -23,17 +23,16 @@ public class PCRPrimer extends Primer {
     private final double maxgc;
     private CrossDimerAnalysis cda;
     private final String type;
-    private final int pos, maxplex;
+    private final int pos;
     private final String inputline;
 
-    public PCRPrimer(String filename, int pos, String inputline, String seq, String type,double maxtm, double maxgc, int maxplex, CrossDimerAnalysis cda) {
+    public PCRPrimer(String filename, int pos, String inputline, String seq, String type,double maxtm, double maxgc, CrossDimerAnalysis cda) {
         super(filename,seq);
         this.maxtm=maxtm;
         this.maxgc=maxgc;
         this.cda=cda;
         this.type=type;
         this.pos=pos;
-        this.maxplex=maxplex;
         this.inputline=inputline;
     }
     public boolean passtMit(Multiplexable o) {
@@ -62,9 +61,6 @@ public class PCRPrimer extends Primer {
         return true;
     }
 
-    public int maxPlexSize() {
-        return maxplex;
-    }
     public String getType() {
         return type;
     }

@@ -44,7 +44,7 @@ import biochemie.util.Helper;
  *
  * @author Steffen
  */
-public class SBECandidate implements MultiplexableFactory, Observer {
+public class SBECandidate implements  MultiplexableFactory, Observer {
 
     private static final class TemperatureDistanceAndHairpinComparator implements Comparator {
         private final double opt;
@@ -94,7 +94,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
 
     SBEPrimer chosen;
     List primercandidates;
-    private String invalidreason3="",invalidreason5="",usedreason="", optimaltempreason5="",optimaltempreason3="";
+    private String invalidreason3="",invalidreason5="",usedreason="";
     private final String id;
     private final String leftstring, rightstring;
     private final String snp;
@@ -250,7 +250,7 @@ public class SBECandidate implements MultiplexableFactory, Observer {
         Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
 
         System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
-        					 "--------------------------------------------------------------------------------"
+        					 "--------------------------------------------------------------------------------\n"
                 + Helper.toStringln(liste.toArray(new Object[liste.size()])));
         return liste;
     }

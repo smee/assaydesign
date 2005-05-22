@@ -46,7 +46,7 @@ public class ColorerStrategy implements MatcherStrategy {
         System.out.println("Time for Coloring: "+seconds+" s");
         System.out.println("Starting coloring search...");
 
-        SBEColorerProxy scp=new SBEColorerProxy(g,new HashSet(),true);
+        SBEColorerProxy scp=new SBEColorerProxy(g,new HashSet(),maxplex,true);
         rt.setInterruptableJob(scp);
         List result=new ArrayList((Collection)rt.getResult());
 

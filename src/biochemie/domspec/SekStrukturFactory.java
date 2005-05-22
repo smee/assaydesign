@@ -57,14 +57,14 @@ public class SekStrukturFactory {
         return getCrossdimer(p,other,cda);
 	}
 	
-	private static HairpinAnalysis getHairpinAnalysisInstance(SBEOptions cfg){
-		return new HairpinAnalysis(cfg.getHairpinWindowsizes(),cfg.getHairpinMinbinds(),Boolean.toString(cfg.isDebug()));
+	public static HairpinAnalysis getHairpinAnalysisInstance(SBEOptions cfg){
+		return new HairpinAnalysis(cfg.getHairpinWindowsizes(),cfg.getHairpinMinbinds(),"false");
 	}
-	private static HomoDimerAnalysis getHomoDimerAnalysisInstance(SBEOptions cfg){
-		return new HomoDimerAnalysis(cfg.getHomodimerWindowsizes(),cfg.getHomodimerMinbinds(),Boolean.toString(cfg.isDebug()));
+    public static HomoDimerAnalysis getHomoDimerAnalysisInstance(SBEOptions cfg){
+		return new HomoDimerAnalysis(cfg.getHomodimerWindowsizes(),cfg.getHomodimerMinbinds(),"false");
 	}
-	private static CrossDimerAnalysis getCrossDimerAnalysisInstance(SBEOptions cfg){
-		return new CrossDimerAnalysis(cfg.getCrossDimerWindowsizes(),cfg.getCrossdimerMinbinds(),Boolean.toString(cfg.isDebug()));
+    public static CrossDimerAnalysis getCrossDimerAnalysisInstance(SBEOptions cfg){
+		return new CrossDimerAnalysis(cfg.getCrossDimerWindowsizes(),cfg.getCrossdimerMinbinds(),"false");
 	}
     /**
      * @param primer

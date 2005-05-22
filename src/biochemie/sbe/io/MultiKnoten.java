@@ -7,32 +7,32 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.sbe.SBEOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
-
+/**
+ * Vereinigung mehrerer SBECandidates, die alle in einen Multiplex sollen.
+ * @author sdienst
+ *
+ */
 public class MultiKnoten implements MultiplexableFactory, Multiplexable{
 
-        private List knoten;
+        private final List factories;
         List multiplexables;
 		String edgeReason;
-		private SBEOptions cfg;
-        private String givenId;
+        private final String givenId;
 
-        public MultiKnoten(List knoten2, String givenid, SBEOptions cfg) {
-            this.knoten=knoten2;
-            this.cfg=cfg;
+        public MultiKnoten(List sbec, String givenid) {
+            this.factories=sbec;
+            if(givenid == null || givenid.length()==0)
+                throw new IllegalArgumentException("Given multiplexid \""+givenid+"\" isn't valid!");
             this.givenId = givenid !=null?givenid:"";
         }
 
         public List getMultiplexables() {
             multiplexables=new ArrayList();
-            for (int j = 0; j < knoten.size(); j++) {
-                Object o = knoten.get(j);
-                if(o instanceof MultiplexableFactory)//sollte n SBECandidate mit nur einem Primer sein, unsauber das
-                    multiplexables.addAll(((MultiplexableFactory)o).getMultiplexables());
-                else
-                    multiplexables.add(o);//Multiplexable, keine Factory
+            for (int j = 0; j < factories.size(); j++) {
+                Object o = factories.get(j);
+                multiplexables.addAll(((MultiplexableFactory)o).getMultiplexables());
             }
             List l=new ArrayList();
             if(multiplexables.size() != 0)//wenn es was zu multiplexen gibt
@@ -42,7 +42,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
 
         public String getCSVRow() {
             StringBuffer sb=new StringBuffer();
-            for (Iterator it = knoten.iterator(); it.hasNext();) {
+            for (Iterator it = factories.iterator(); it.hasNext();) {
                 MultiplexableFactory mf = (MultiplexableFactory) it.next();
                 sb.append(mf.getCSVRow());
                 sb.append('\n');
@@ -61,7 +61,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public String getName() {
             StringBuffer sb = new StringBuffer("[");
             sb.append("gegebenerKnoten, Groesse ");
-            sb.append(knoten.size());
+            sb.append(factories.size());
             sb.append(']');
             return sb.toString();
         }
@@ -69,23 +69,19 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
          * 
          */
         public boolean passtMit(Multiplexable o) {
-            List other=new ArrayList();
-            boolean differentGivenMultiplexes = false;
             if(o instanceof MultiKnoten) {
-                other.addAll(((MultiKnoten)o).multiplexables);
-//                differentGivenMultiplexes = givenId.length()!=0
-//                && ((MultiKnoten)o).givenId.length()!=0
-//                && !givenId.equalsIgnoreCase(((MultiKnoten)o).givenId);
-            }else
-            	other.add(o);
+                boolean differentGivenMultiplexes = !givenId.equalsIgnoreCase(((MultiKnoten)o).givenId);
+                if(differentGivenMultiplexes) {
+                    edgeReason = "differentGivenMultiplexIDs";//kein Test, sollen nicht zusammenkommen
+                    return false;
+                }
+            }
+            
+            List other=o.getIncludedElements();
             for (Iterator it = multiplexables.iterator(); it.hasNext();) {
                 Multiplexable m = (Multiplexable) it.next();
                 for (Iterator iter = other.iterator(); iter.hasNext();) {
                     Multiplexable m2 = (Multiplexable) iter.next();
-//                    if(differentGivenMultiplexes) {
-//                        edgeReason = "differentGivenMultiplexIDs";//kein Test, sollen nicht zusammenkommen
-//                        return false;
-//                    }else
                         if(!m.passtMit(m2)){
                             edgeReason=m.getEdgeReason();
                             return false;
@@ -95,10 +91,15 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
             return true;
         }
 
-        public int maxPlexSize() {
-            return Math.max(cfg.getMaxPlex()-knoten.size()+1,1);
+        public int realSize() {
+            return factories.size();
         }
         public String getEdgeReason(){
             return edgeReason;
         }
+
+        public List getIncludedElements() {
+            return new ArrayList(multiplexables);
+        }
+
     }

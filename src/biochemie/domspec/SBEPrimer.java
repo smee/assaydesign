@@ -110,25 +110,7 @@ public class SBEPrimer extends Primer{
      */
     private void init(String bautein,boolean usergiven) {
         if(usergiven==false && bautein.length()==0){
-            int incompHairpin=0,incompHomodimer=0;
-            HashSet positions=new HashSet();
-            for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
-            	SBESekStruktur s = (SBESekStruktur) it.next();
-                if(Helper.isInkompatibleSekStruktur(seq,s.getPosFrom3(),snp)) {
-                    switch (s.getType()) {
-                        case SBESekStruktur.HAIRPIN :
-                            incompHairpin++;
-                            positions.add(new Integer(s.getPosFrom3()));
-                            break;
-                        case SBESekStruktur.HOMODIMER :
-                            incompHomodimer++;
-                            positions.add(new Integer(s.getPosFrom3()));
-                            break;
-                        default :
-                            break;
-                    }
-                }
-            }
+            sekstruc = null;
         }else{//es wurde schon was vorgegeben
             sekstruc=new HashSet();
             if(!bautein.equalsIgnoreCase("none")){
@@ -339,9 +321,6 @@ public class SBEPrimer extends Primer{
     }
 
 
-    public int maxPlexSize() {
-        return cfg.getMaxPlex();
-    }
     /**
      * Adds crossdimers with the primers in the given set to the internal memory
      * of secondary structures.

@@ -83,8 +83,8 @@ public class PCRMatcher {
         st.nextToken();//start
         st.nextToken();//length
         right=st.nextToken().trim().toUpperCase();
-        PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,maxplex,cda);
-        PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,maxplex,cda);
+        PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,cda);
+        PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,cda);
         primers.add(new PCRPair(p1,p2,maxplex));
         return primers;
     }

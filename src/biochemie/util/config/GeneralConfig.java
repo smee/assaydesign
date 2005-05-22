@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,18 +29,22 @@ public abstract class GeneralConfig extends Observable{
 	
 	protected final Properties prop;
     private final Set keys;
-    ;
+    private boolean isUnmodifiable;
+    
     public GeneralConfig(){
         prop = new Properties();
         String[][] s = getInitializedProperties();
         
-        keys = new HashSet();
+        Set keys = new HashSet();
         
         for (int i = 0; i < s.length; i++) {
             keys.add(s[i][0]);
             prop.setProperty(s[i][0],s[i][1]);
         }
+        this.keys=Collections.unmodifiableSet(keys);
+        isUnmodifiable = false;
     }
+
     /**
      * Every subclass needs to provide all valid keys and defaultvalues on instantiation in this method.
      * No keys will be accepted later on if they can't be found in this instance of map.
@@ -47,6 +52,10 @@ public abstract class GeneralConfig extends Observable{
      * @return
      */
 	abstract protected String[][] getInitializedProperties();
+    public void setUnmodifiable() {
+        this.isUnmodifiable=true;        
+    }
+    
 	/**
      * Der INputstream wird nicht geschlossen, nachdem er verwendet wurde!
 	 * @param instream
@@ -215,7 +224,8 @@ public abstract class GeneralConfig extends Observable{
 	 * @param string2
 	 */
     public void setProperty(String key, String value) {
-        if(!isValidKey(key))
+            
+        if(!isValidKey(key) || isUnmodifiable )
             return;
 		prop.setProperty(key, value);		
         setChanged();

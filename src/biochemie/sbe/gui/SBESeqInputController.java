@@ -45,7 +45,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     /**
      * Ich setze gerade den PL, nicht der user
      */
-    private boolean IamModifying=false;
     private JCheckBox fixedcb;
     private boolean settingNewText;
     private StringEntryPanel midtf=null;
@@ -60,8 +59,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     boolean sel=fixedcb.isSelected();
                     SBESequenceTextField tf = SBESeqInputController.this.left;
                     midtf.setEnabled(sel);
-//                    if(sel)
-//                       midtf.setText("");
                     if( sel && Helper.getPosOfPl(_seq)<0 )//wenn das hier keine fixe seq. ist
                         sel=false;
                     plpanel.setEnabled(!sel);

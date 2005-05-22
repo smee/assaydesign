@@ -7,14 +7,17 @@
 package biochemie.sbe.multiplex;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.domspec.SekStrukturFactory;
+import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBEOptions;
 
@@ -49,18 +52,6 @@ public abstract class Multiplexer {
     }
 
     /**
-     * @param sbec
-     * @return
-     */
-    private List getNames(List structs) {
-        List names=new ArrayList();
-        for (int i = 0; i < structs.size(); i++) {
-            Multiplexable s1=(Multiplexable) structs.get(i);
-            names.add(s1.getName());
-        }
-        return names;
-    }
-    /**
      * Tags the multiplexables with an unique identifier.
      * @param maxclique
      */
@@ -88,13 +79,15 @@ public abstract class Multiplexer {
     public static  List getEnhancedPrimerList(List sbep,SBEOptions cfg){
         System.out.println("Creating pseudoprimers because of comp. crossdimers. Comparing "+sbep.size()+" primers..");
     	List result=new ArrayList(sbep);
-    	SBEPrimer[] primer=(SBEPrimer[]) sbep.toArray(new SBEPrimer[sbep.size()]);
-    	for (int i = 0; i < primer.length; i++) {
-			for (int j =i+1; j < primer.length; j++) {
-				if(!primer[i].passtMitKompCD(primer[j]))
+    	Multiplexable[] mults=(Multiplexable[]) sbep.toArray(new Multiplexable[sbep.size()]);
+    	for (int i = 0; i < mults.length; i++) {
+            List primers1=getAllPrimers(mults[i]);
+			for (int j =i+1; j < mults.length; j++) {
+			    List primers2=getAllPrimers(mults[j]);
+                if(!passtMitKompatiblenCD(primers1, primers2))
 					continue;//passt eh aus anderen gruenden nicht miteinander
-				Set sekstruks=SekStrukturFactory.getCrossdimer(primer[i],primer[j],cfg);
-				sekstruks.addAll(SekStrukturFactory.getCrossdimer(primer[j],primer[i],cfg));
+				Collection sekstruks=getCrossdimersOf(primers1, primers2,SekStrukturFactory.getCrossDimerAnalysisInstance(cfg));
+				
 				Set kompchars=new HashSet();
 				for (Iterator it = sekstruks.iterator(); it.hasNext();) {
 					SBESekStruktur cd = (SBESekStruktur) it.next();
@@ -107,7 +100,7 @@ public abstract class Multiplexer {
 						Character c = (Character) it.next();
 						bautein+=c.charValue();
 					}
-					result.add(new SBEPrimerProxy(primer[i], primer[j],bautein));
+					result.add(new SBEPrimerProxy(primers1, primers2,bautein));
 				}
 			}
 		}
@@ -115,41 +108,95 @@ public abstract class Multiplexer {
     	
     	return result;
     }
+    
+    public static List getAllPrimers(Multiplexable m) {
+        List result=new LinkedList();
+        LinkedList queue=new LinkedList();
+        queue.add(m);
+        while(!queue.isEmpty()) {
+            Multiplexable mult = (Multiplexable) queue.removeFirst();
+            if(mult instanceof SBEPrimer)
+                result.add(mult);
+            else
+                queue.addAll(mult.getIncludedElements());
+        }
+        return result;
+    }
+    private static List getCrossdimersOf(List p1, List p2, CrossDimerAnalysis cda) {
+        List crossdimers=new ArrayList();
+        
+        for(int i=0; i < p1.size(); i++) {
+            SBEPrimer p=(SBEPrimer)p1.get(i);
+            for(int j=0; j < p2.size(); j++) {
+                SBEPrimer q=(SBEPrimer)p2.get(j);
+                crossdimers.addAll(SekStrukturFactory.getCrossdimer(p,q,cda));
+                crossdimers.addAll(SekStrukturFactory.getCrossdimer(q,p,cda));
+            }
+        }
+        return crossdimers;
+    }
+    private static boolean passtMitKompatiblenCD(List p1, List p2) {
+        for(int i=0; i < p1.size(); i++) {
+            SBEPrimer p=(SBEPrimer)p1.get(i);
+            for(int j=0; j < p2.size(); j++) {
+                SBEPrimer q=(SBEPrimer)p2.get(j);
+                if(!p.passtMitKompCD(q))
+                    return false;
+            }
+        }
+        return true;
+    }
 
     protected static class SBEPrimerProxy implements Multiplexable{
 
-    	private SBEPrimer p1;
-    	private SBEPrimer p2;
+    	private List p1;
+    	private List p2;
 		private String edgeReason="";
 		private String einbau="";
 		
-		public SBEPrimerProxy(SBEPrimer p1, SBEPrimer p2, String einbau){
+		public SBEPrimerProxy(List p1, List p2, String einbau){
     		this.p1=p1;
     		this.p2=p2;
     		this.einbau=einbau;
     	}
-		public void setPlexID(String s) {
-			p1.setPlexID(s);
-			p2.setPlexID(s);
-		}
-		public String getName() {
-			return p1.getName()+"_"+p2.getName();
-		}
-		public boolean passtMit(Multiplexable other) {
-            if(other instanceof SBEPrimer) {
-                SBEPrimer o = (SBEPrimer)other;                
-                return passenWirMit(o);
-            }else if(other instanceof SBEPrimerProxy) {
-                SBEPrimerProxy otherproxy = (SBEPrimerProxy)other;
-                if(otherproxy.passenEinbautenMit(p1)==false || otherproxy.passenEinbautenMit(p2)==false) {
-                    edgeReason=otherproxy.getEdgeReason();
-                    return false;
-                }else
-                    return passenWirMit(otherproxy.p1) && passenWirMit(otherproxy.p2);
-            }else {
-                throw new IllegalArgumentException("Error: Can't compare SBEPrimerProxy with instance of "+other.getClass().getName()+"!");
+
+        public void setPlexID(String s) {
+            for (Iterator it = p1.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                m.setPlexID(s);
+            }
+            for (Iterator it = p2.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                m.setPlexID(s);
             }
 		}
+		public String getName() {
+            StringBuffer sb = new StringBuffer();
+            for (Iterator it = p1.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                sb.append(m.getName()).append('+');
+            }
+            sb.deleteCharAt(sb.length()-1);
+            sb.append('_');
+            for (Iterator it = p2.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                sb.append(m.getName()).append('+');
+            }
+            sb.deleteCharAt(sb.length()-1);
+            return new String(sb);
+		}
+        public int realSize() {
+            return 2;
+        }
+        public boolean passtMit(Multiplexable other) {
+            List othermultis=getAllPrimers(other);
+            for (Iterator it = othermultis.iterator(); it.hasNext();) {
+                SBEPrimer primer = (SBEPrimer) it.next();
+                if(!passenWirMit(primer))
+                    return false;
+            }
+            return true;
+        }
         /**
          * @param other
          * @param other
@@ -158,21 +205,28 @@ public abstract class Multiplexer {
         private boolean passenWirMit(SBEPrimer other) {
             if(passenEinbautenMit(other)==false)
                 return false;
-            if(!p1.passtMit(other)){
-                edgeReason=p1.getEdgeReason();
-                return false;
-            }else{
-                boolean result=p2.passtMit(other);
-                edgeReason=p2.getEdgeReason();
-                return result;
+            for (Iterator it = p1.iterator(); it.hasNext();) {
+                SBEPrimer p = (SBEPrimer) it.next();
+                if(!p.passtMit(other)){
+                    edgeReason=p.getEdgeReason();
+                    return false;
+                }
             }
+            for (Iterator it = p2.iterator(); it.hasNext();) {
+                SBEPrimer p = (SBEPrimer) it.next();
+                if(!p.passtMit(other)){
+                    edgeReason=p.getEdgeReason();
+                    return false;
+                }
+            }
+            return true;
         }
         /**
          * @param other
          * @return
          */
-        private boolean passenEinbautenMit(SBEPrimer other) {
-            String snp=other.getSNP();
+        private boolean passenEinbautenMit(SBEPrimer p) {
+            String snp=p.getSNP();
             for (int i = 0; i < einbau.length(); i++) {
                 if(snp.indexOf(einbau.charAt(i))!=-1){//inkompatibel mit diesem Primer
                     edgeReason="imcomp._CD_nucleotide";
@@ -181,11 +235,17 @@ public abstract class Multiplexer {
             }
             return true;
         }
-		public int maxPlexSize() {
-			return Math.min(p1.maxPlexSize(), p2.maxPlexSize()) - 1;
-		}
+
 		public String getEdgeReason() {
 			return edgeReason;
 		}
+
+        public List getIncludedElements() {
+            List result = new ArrayList(p1.size()+p2.size());
+            result.addAll(p1);
+            result.addAll(p2);
+            return result;
+        }
+
     }
 }

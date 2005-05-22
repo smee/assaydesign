@@ -73,7 +73,7 @@ public class SBEPrimerReader {
         if(null == sbec) {
             sbec=new ArrayList();
             for(int i=0;i<getCount();i++) {
-                MultiplexableFactory sbec=useRow(i);
+                SBECandidate sbec=useRow(i);
                 this.sbec.add(sbec);
             }
         }
@@ -109,7 +109,7 @@ public class SBEPrimerReader {
                 if(1 == knoten.size())
                     l.add(sbec.get(startpos));
                 else
-                    l.add(new MultiKnoten(knoten,id,cfg));
+                    l.add(new MultiKnoten(knoten,id));
                 startpos=i+1;
             }
         }

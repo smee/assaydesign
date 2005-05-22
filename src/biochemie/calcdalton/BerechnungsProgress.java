@@ -393,12 +393,18 @@ public class BerechnungsProgress extends JFrame{
         
         }
 
-        public int maxPlexSize() {
-            return Integer.MAX_VALUE;
-        }
 
         public String getEdgeReason() {
             return "cd";
+        }
+
+        public int realSize() {
+            return 1;
+        }
+
+        public List getIncludedElements() {
+            // TODO Auto-generated method stub
+            return null;
         }
 
     }

@@ -55,11 +55,6 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
      */
     abstract public boolean passtMit(Multiplexable other);
 
-    /* (non-Javadoc)
-     * @see biochemie.sbe.calculators.Multiplexable#maxPlexSize()
-     */
-    abstract public int maxPlexSize();
-
     /**
      * @return
      */
@@ -153,6 +148,12 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         }),new ArrayList());
     }
 
-
-
+    public int realSize() {
+        return 1;
+    }
+    public List getIncludedElements() {
+        List result = new ArrayList(1);
+        result.add(this);
+        return result;
+    }
 }

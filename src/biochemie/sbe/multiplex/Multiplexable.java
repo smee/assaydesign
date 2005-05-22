@@ -4,8 +4,10 @@
  */
 package biochemie.sbe.multiplex;
 
+import java.util.List;
+
 /**
- * Objekt, das bestimmten Clustern zugeordnet werden soll.
+ * Objekt, das bestimmten Clustern zugeordnet werden soll. Kann aus anderen Multiplexables bestehen.
  * @author Steffen Dienst
  * 24.10.2004
  */
@@ -27,13 +29,20 @@ public interface Multiplexable {
      */
     public boolean passtMit(Multiplexable other);
     /**
-     * MAximale Groesse der Gruppe, in die diese Instanz darf
+     * Anzahl der Elemente in diesem Knoten enthalten sind.
      * @return
      */
-    public int maxPlexSize();
+    public int realSize();
+
     /**
      * Fuer debugzwecke. XXX
      * @return
      */
     public String getEdgeReason();
+
+    /**
+     * Alle Multiplexables, die in diesem enthalten sind. Wenn keines enthalten ist, dann this.
+     * @return
+     */
+    public List getIncludedElements();
 }

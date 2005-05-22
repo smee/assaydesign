@@ -25,6 +25,7 @@ import org._3pq.jgrapht.traverse.BreadthFirstIterator;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryProcedure;
 
+import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.GraphWriter;
 
 /**
@@ -152,7 +153,7 @@ public class MaximumCliqueFinder implements Interruptible{
         for (Iterator it = graphes.iterator(); it.hasNext();) {
             UndirectedSubgraph sg = (UndirectedSubgraph) it.next();
             if(sg.edgeSet().size()<maxclique.size()) continue;   //kann keine groessere Clique enthalten
-            Set s=findMaxClique(sg,new HashSet(),maxclique,ub);
+            Set s=findMaxClique(sg,new HashSet(),maxclique,ub, 0);
             if(s.size()>maxclique.size()) {
                 maxclique=s;
             }
@@ -174,7 +175,7 @@ public class MaximumCliqueFinder implements Interruptible{
      * @param ub obere Grenze für noch mögliche Cliquen
      * @return
      */
-    private Set findMaxClique(final UndirectedGraph g, Set c, Set best, int ub) {
+    private Set findMaxClique(final UndirectedGraph g, Set c, Set best, int ub, int plexsize) {
         if(calcThread.isInterrupted()) {//muss leider aufhören :(
             if(best.size()>0)
                 return best;
@@ -182,7 +183,7 @@ public class MaximumCliqueFinder implements Interruptible{
         }
         if(0 == g.vertexSet().size())
             return c;
-        if(best.size()>=maxplex)
+        if(plexsize>=maxplex)
             return best;
         /* 
          * Finde Näherungslösung für die Färbung um obere Grenze zu haben für die mögliche Größe
@@ -232,7 +233,12 @@ public class MaximumCliqueFinder implements Interruptible{
         assert g1.vertexSet().size()==vertices.size();//sicherstellen, dass nur die Nachbarn von v im Graphen enthalten sind
         Set newc=new HashSet(c);
         newc.add(v);
-        best=findMaxClique(g1,newc,best,ub);
+        int newplexsize=plexsize;
+        if(v instanceof Multiplexable)
+            newplexsize+=((Multiplexable)v).realSize();
+        else
+            newplexsize++;
+        best=findMaxClique(g1,newc,best,ub, newplexsize);
         if(debug)            
             if(best.size()>oldbest) {
                 System.out.println(v+" is in clique of size "+best.size());
@@ -249,7 +255,7 @@ public class MaximumCliqueFinder implements Interruptible{
         vertices.remove(v);
         g1=new UndirectedSubgraph(g,vertices,null);
         assert g.edgeSet().size() > g1.edgeSet().size();
-        return findMaxClique(g1,c,best,ub);
+        return findMaxClique(g1,c,best,ub, plexsize);
     }
     
     private class RuleB implements UnaryProcedure{
