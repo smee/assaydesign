@@ -22,13 +22,6 @@ public class PLSelectorPanel extends MyPanel {
 
 	private JComboBox comboPL = null;
 	private String title="Photolinker at";
-	/* (non-Javadoc)
-	 * @see java.awt.Component#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-		getComboPL().setEnabled(enabled);
-	}
 	Object[] values;
 
 	/**
@@ -124,7 +117,7 @@ public int getMaxSelectablePl() {
 	 *
 	 * @return javax.swing.JComboBox
 	 */
-	protected JComboBox getComboPL() {
+	public JComboBox getComboPL() {
 		if (comboPL == null) {
 			comboPL = new JComboBox(new DefaultComboBoxModel());
 		}

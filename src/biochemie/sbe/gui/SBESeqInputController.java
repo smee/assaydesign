@@ -235,7 +235,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Wird immer dann aufgerufen, wenn ein PL gesetzt wurde. Entweder vom user oder von uns selbst.
      */
     public void itemStateChanged(ItemEvent e) {
-        System.out.println(e);
         if(e.getStateChange() == ItemEvent.SELECTED)
             handlePLPanelChange();
     }
