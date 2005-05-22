@@ -40,17 +40,16 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     /**
      * Die Sequenz, die durch die beiden GUI-Elemente repraesentiert werden soll.
      */
-    private String _seq;
     private final int minlen;
     /**
      * Ich setze gerade den PL, nicht der user
      */
     private JCheckBox fixedcb;
-    private boolean settingNewText;
+    private boolean IamModifying = false ;
     private StringEntryPanel midtf=null;
     
-    public SBESeqInputController(SBECandidatePanel panel, int minlen, boolean left) {        
-        this(left?panel.getSeq5tf():panel.getSeq3tf(),left?panel.getPlpanel5():panel.getPlpanel3(), panel.getFixedPrimerCB(), minlen);
+    public SBESeqInputController(SBECandidatePanel panel, int minlen, boolean isLeft) {        
+        this(isLeft?panel.getSeq5tf():panel.getSeq3tf(),isLeft?panel.getPlpanel5():panel.getPlpanel3(), panel.getFixedPrimerCB(), minlen);
         this.midtf = panel.getMultiplexidPanel();
         if(midtf !=null) {
             midtf.setEnabled(false);
@@ -59,9 +58,10 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     boolean sel=fixedcb.isSelected();
                     SBESequenceTextField tf = SBESeqInputController.this.left;
                     midtf.setEnabled(sel);
-                    if( sel && Helper.getPosOfPl(_seq)<0 )//wenn das hier keine fixe seq. ist
+                    if( sel && Helper.getPosOfPl(left.getText())<0 )//wenn das hier keine fixe seq. ist
                         sel=false;
-                    plpanel.setEnabled(!sel);
+                    if(sel == true)//nur dann!
+                        plpanel.setEnabled(false);
                     tf.setEnabled(!sel);
                 }
             });
@@ -82,8 +82,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         
         errorBorder=BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.red,2),okayBorder);
         okayBorder = left.getBorder();
-        
-        _seq=left.getText();
     }
     
     public void setOtherController(SBESeqInputController o) {
@@ -93,66 +91,101 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Etwas wurde eingegeben.
      * @param e
      */
-    private void handleChange(DocumentEvent e){
-        //System.out.println("text: "+left.getText()+", "+_seq+", repl: "+replacedNukl);
-        if(settingNewText && left.getText().length()==0)
-            return;//setze grad pl neu
-//        if(_seq.equals(left.getText()))
-//            return;//nix hat sich geaendert
-
-        _seq=left.getText();
-
-        plpanel.setEnabled(true);
-        
-        //sind die eingegebenen seq. lang genug?
-        int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);
-        final String TOOSHORT="Sequence is too short, please enter at least "+maxpl+" characters!";
-        
-        if(_seq.length() < maxpl && _seq.length() != 0) {
-            plpanel.setEnabled(false);
-            setToolTipAndBorder(left,TOOSHORT,true);
-            return;
-        }
-        //wurde ein L eingegeben?
-        int pos=_seq.indexOf('L');
-        
-        if(pos == -1 )  {      //kein L in der Eingabe
-            replacedNukl=0;
-            String ltool=_seq.length()==0?INSERT_TT:_seq;
-            setToolTipAndBorder(left,_seq,false);
-            plpanel.setEnabled(true);
-            plpanel.setSelectedPL(-1);//auto
-            left.setEnabled(true);
-            fixedcb.setSelected(false);
-            fixedcb.setEnabled(false);
-            other.setEnabled(true);
-            return;
-        }
-        //also gibt es ein L.
-        
-        int br=Helper.getPosOfPl(_seq);
-        if(plpanel.hasPL(br)){//es gibt diesen PL
-            plpanel.setEnabled(replacedNukl!=0);
-            plpanel.setRekTooltip("Photolinker was defined by primer sequence input");
-            
-            String tooltip = _seq.substring(0,pos)+"[L]"+_seq.substring(pos+1);
-            setToolTipAndBorder(left,tooltip,false);
-            fixedcb.setEnabled(true);
-            plpanel.setSelectedPL(br);
-            return;
-        }else {//L an der falschen Position!
-            plpanel.setEnabled(false);
-            plpanel.setSelectedPL(-1);
-            setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
-            fixedcb.setSelected(false);
-            fixedcb.setEnabled(false);
+    private void handleSeqChange(){
+        try {
+            IamModifying=true;
+            String seq = left.getText();
+//          sind die eingegebenen seq. lang genug?
+            int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);        
+            if(seq.length() < maxpl && seq.length() != 0) {
+                String TOOSHORT="Sequence is too short, please enter at least "+maxpl+" characters!";
+                plpanel.setEnabled(false);
+                setToolTipAndBorder(left,TOOSHORT,true);
+                return;
+            }
+            int pos=seq.indexOf('L');
+            if(pos == -1 )  {      //kein L in der Eingabe
+                replacedNukl = 0;
+                String ltool=seq.length()==0?INSERT_TT:seq;
+                setToolTipAndBorder(left,ltool,false);
+                plpanel.setEnabled(true);
+                plpanel.setSelectedPL(-1);//auto
+                left.setEnabled(true);
+                fixedcb.setSelected(false);
+                fixedcb.setEnabled(false);
+                other.setEnabled(true);
+                return;
+            }else {
+                int br=Helper.getPosOfPl(seq);
+                if(plpanel.hasPL(br)){//es gibt diesen PL
+                    plpanel.setEnabled(replacedNukl!=0);
+                    plpanel.setRekTooltip("Photolinker was defined by primer sequence input");
+                    
+                    String tooltip = seq.substring(0,pos)+"[L]"+seq.substring(pos+1);
+                    setToolTipAndBorder(left,tooltip,false);
+                    fixedcb.setEnabled(true);
+                    plpanel.setSelectedPL(br);
+                    return;
+                }else {//L an der falschen Position!
+                    plpanel.setEnabled(false);
+                    //plpanel.setSelectedPL(-1);
+                    setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
+                    fixedcb.setSelected(false);
+                    fixedcb.setEnabled(false);
+                }
+            }
+        }finally {
+            IamModifying=false;
         }
     }
-    private void clear() {
-        this._seq="";
-        left.setText(_seq);
+    private void handlePLPanelChange() {
+        if(IamModifying==true)
+            return;
+        Object item=plpanel.getComboPL().getSelectedItem();
+        if(item == null)
+            return;
+        String seq = left.getText();
+        String newseq=seq;
+        
+        try {
+            if(replacedNukl == 0) {//bisher kein pl
+                if(item instanceof Integer) {//user hat nen pl gewaehlt
+                    int pl = ((Integer)item).intValue();
+                    if(seq.length() < pl) {
+                        return;
+                    }
+                    char torepl = seq.charAt(seq.length() - pl);
+                    if(torepl!='L') {
+                        replacedNukl=torepl;
+                        newseq=biochemie.util.Helper.replacePL(seq,pl);
+                    }
+                }
+            }else {//schon vorher was gewaehlt
+                int pos = Helper.getPosOfPl(seq);
+                if(pos == -1)
+                    throw new IllegalStateException("There should be a PL in "+seq+"!");
+                
+                if(item instanceof String) {//auto
+                    newseq=Helper.replaceNukl(seq,pos,replacedNukl);
+                    replacedNukl = 0;
+                }else {//pl veraendert
+                    int newpl = ((Integer)item).intValue();
+                    if(seq.length()< newpl) {
+                        return;
+                    }
+                    char newrepl = seq.charAt(seq.length() - newpl);
+                    if(newrepl == 'L')
+                        return;
+                    newseq = Helper.replaceNukl(seq, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
+                    newseq = Helper.replacePL(newseq, newpl);
+                    replacedNukl = newrepl;
+                }
+            }
+        }finally {
+            left.setText(newseq);
+        }
+        
     }
-    
     private void setEnabled(boolean b) {
         left.setEnabled(b);
         plpanel.setEnabled(b);
@@ -168,28 +201,29 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     }
     
     public void insertUpdate(DocumentEvent e) {
-        handleChange(e);
+        handleSeqChange();
     }
     public void removeUpdate(DocumentEvent e) {
-        handleChange(e);
+        handleSeqChange();
         
     }
     public void changedUpdate(DocumentEvent e) {
-        handleChange(e);
+        handleSeqChange();
     }
     
     
     public void contentsChanged(ListDataEvent e) {
-        //handleChange(null);
-        //ignorieren wir mal, weil, wird aufgerufen, wenn ein pl gesetzt wird, macht also nich wirklich sinn
+        if(e.getIndex0() == -1 && e.getIndex1() == -1)//nur selected, wird schon bearbeitet
+            return;
+        handlePLPanelChange();
     }
     
     public void intervalAdded(ListDataEvent e) {
-        handleChange(null);
+        handlePLPanelChange();
     }
     
     public void intervalRemoved(ListDataEvent e) {
-        handleChange(null);
+        handlePLPanelChange();
     }
     /**
      * @return Returns the isOkay.
@@ -201,54 +235,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
      * Wird immer dann aufgerufen, wenn ein PL gesetzt wurde. Entweder vom user oder von uns selbst.
      */
     public void itemStateChanged(ItemEvent e) {
-        if(e.getStateChange() == ItemEvent.DESELECTED || settingNewText)//geht uns nix an
-            return;
-        //System.out.println("pl: "+e.getItem()+", "+_seq+", repl: "+replacedNukl);
-        String newseq=_seq;
-        try {
-            Object item=e.getItem();
-            if(replacedNukl == 0) {//bisher kein pl
-                if(item instanceof Integer) {//user hat nen pl gewaehlt
-                    int pl = ((Integer)item).intValue();
-                    if(_seq.length() < pl) {
-                        return;
-                    }
-                    char torepl = _seq.charAt(_seq.length() - pl);
-                    if(torepl!='L') {
-                        replacedNukl=torepl;
-                        newseq=biochemie.util.Helper.replacePL(_seq,pl);
-                    }
-                }
-            }else {//schon vorher was gewaehlt
-                int pos = Helper.getPosOfPl(_seq);
-                if(pos == -1)
-                    throw new IllegalStateException("There should be a PL in "+_seq+"!");
-                
-                if(item instanceof String) {//auto
-                    newseq=Helper.replaceNukl(_seq,pos,replacedNukl);
-                    replacedNukl = 0;
-                }else {//pl veraendert
-                    int newpl = ((Integer)item).intValue();
-                    if(_seq.length()< newpl) {
-                        plpanel.setAuto();
-                        return;
-                    }
-                    char newrepl = _seq.charAt(_seq.length() - newpl);
-                    if(newpl == 'L')
-                        return;
-                    newseq = Helper.replaceNukl(_seq, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
-                    newseq = Helper.replacePL(newseq, newpl);
-                    replacedNukl = newrepl;
-                }
-            }
-        }finally {
-            if(!_seq.equals(newseq)) {
-                _seq=newseq;
-                settingNewText=true;
-                left.setText(newseq);
-                settingNewText=false;
-            }
-                
-        }
+        System.out.println(e);
+        if(e.getStateChange() == ItemEvent.SELECTED)
+            handlePLPanelChange();
     }
 }
