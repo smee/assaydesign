@@ -144,7 +144,7 @@
   </target>
       <!--**********************************************************-->
 	  <target name="pcrmatcher"
-		  	  depends="compile"
+		  	  depends="clean, compile"
 		      description="create new PCRMatcher executable">
 		<!--erstelle jar-File mit allen relevanten Klassen-->
 		<classfileset id="matcherclasses" dir="${build}">
