@@ -39,16 +39,18 @@ public class InterruptableGraphColorer implements IGraphColorer, Interruptible{
 	 * Liest Matrix.
 	 * @param admatrix
 	 */
-	public InterruptableGraphColorer(boolean[][] admatrix,int[] plexgr, int maxclique,boolean debug){
+	public InterruptableGraphColorer(boolean[][] admatrix,int[] plexgr, int maxclique,int maxplex,boolean debug){
 		this.admatrix=admatrix;
 		this.debug=debug;
 		this.numnodes=admatrix.length;
+        this.maxplexgroesse=maxplex;
 		init(plexgr, maxclique);
 	}
-	public InterruptableGraphColorer(UndirectedGraph g,int[] plexgr, int maxclique,boolean debug){
+	public InterruptableGraphColorer(UndirectedGraph g,int[] plexgr, int maxclique,int maxplex, boolean debug){
 			this.admatrix=createAdmatrixFromGraph(g);
 			this.debug=debug;
 			this.numnodes=admatrix.length;
+            this.maxplexgroesse=maxplex;
 			init(plexgr, maxclique);
 	}
 /**
@@ -62,7 +64,6 @@ public class InterruptableGraphColorer implements IGraphColorer, Interruptible{
 		this.coloring=new int[numnodes];
 		usedColorCount=new int[numnodes];
 		this.plexGroesse=plexgr;
-		this.maxplexgroesse=biochemie.util.Helper.findMaxIn(plexgr);
 		this.maxcliquesize=maxclique;
 		isInterrupted=false;
 		expExSize=numnodes;

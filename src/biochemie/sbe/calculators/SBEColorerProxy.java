@@ -36,7 +36,7 @@ public class SBEColorerProxy implements Interruptible {
     public SBEColorerProxy(UndirectedGraph g,Set maxclique, int maxplexsize, boolean debug) {
         this.maxclique=maxclique;
         boolean[][] admatrix=createAdmatrixFrom(g,maxclique);
-        col=new InterruptableGraphColorer(admatrix,maxplexnr,maxclique.size(),debug);
+        col=new InterruptableGraphColorer(admatrix,maxplexnr,maxclique.size(),maxplexsize,debug);
         this.graph=g;
     }
 
