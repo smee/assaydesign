@@ -39,15 +39,15 @@ public class TestSekAnalysis extends TestCase {
         sek=new HairpinAnalysis(cfg,false);
         hom = new HomoDimerAnalysis(cfg,false);
 		pps=new PrimerPair[9];		
-		pps[0]=new PrimerPair("","A",0,0,0,0);
-		pps[1]=new PrimerPair("AA","AAA",0,0,0,0);
-		pps[2]=new PrimerPair("AAAA","AAAAAA",0,0,0,0);
-		pps[3]=new PrimerPair("AAAAAAA","AAAAAAAA",0,0,0,0);
-		pps[4]=new PrimerPair("AGGT","AAAAATT",0,0,0,0);
-		pps[5]=new PrimerPair("AAAAAAATTTT","AAATGATCCCATCAT",0,0,0,0);
-		pps[6]=new PrimerPair("AAAACCTTTT","AAAAACCTTTT",0,0,0,0);
-		pps[7]=new PrimerPair("AGTTCCTGATGGAAGGTTCC","AGTTCCTGATGGAACGAACGTTCC",0,0,0,0);
-		pps[8]=new PrimerPair("ATTAGGAACATCAT","AATTAGGAACATCAT",0,0,0,0);
+		pps[0]=new PrimerPair("","A",0,0,0,0,0);
+		pps[1]=new PrimerPair("AA","AAA",0,0,0,0,0);
+		pps[2]=new PrimerPair("AAAA","AAAAAA",0,0,0,0,0);
+		pps[3]=new PrimerPair("AAAAAAA","AAAAAAAA",0,0,0,0,0);
+		pps[4]=new PrimerPair("AGGT","AAAAATT",0,0,0,0,0);
+		pps[5]=new PrimerPair("AAAAAAATTTT","AAATGATCCCATCAT",0,0,0,0,0);
+		pps[6]=new PrimerPair("AAAACCTTTT","AAAAACCTTTT",0,0,0,0,0);
+		pps[7]=new PrimerPair("AGTTCCTGATGGAAGGTTCC","AGTTCCTGATGGAACGAACGTTCC",0,0,0,0,0);
+		pps[8]=new PrimerPair("ATTAGGAACATCAT","AATTAGGAACATCAT",0,0,0,0,0);
 	}
 
 	public void testDefaultHairpins() {
@@ -89,8 +89,8 @@ public class TestSekAnalysis extends TestCase {
 	public void testBigGapsHairpins() {
 		//testet, ob auch größere Knicke als 2 Basen erkannt werden
 		pps=new PrimerPair[2];		
-		pps[0]=new PrimerPair("ATGGAAGGGTTCC","ATGGAAGGGGGGTTCC",0,0,0,0);
-		pps[1]=new PrimerPair("ATGGAAGGGGGCTTCC","ATGGAAGGGGCCTTCC",0,0,0,0);
+		pps[0]=new PrimerPair("ATGGAAGGGTTCC","ATGGAAGGGGGGTTCC",0,0,0,0,0);
+		pps[1]=new PrimerPair("ATGGAAGGGGGCTTCC","ATGGAAGGGGCCTTCC",0,0,0,0,0);
 		int[] erg={134,183};
 		
 		sek.calcScores(pps);
@@ -100,12 +100,12 @@ public class TestSekAnalysis extends TestCase {
 	}
     public void testDimer() {
         pps=new PrimerPair[6];
-        pps[0]=new PrimerPair("AAATT","AATT",0,0,0,0);
-        pps[1]=new PrimerPair("AAACCGGTT","AAAAAAA",0,0,0,0);
-        pps[2]=new PrimerPair("ACGTACGTACGT","",0,0,0,0);
-        pps[3]=new PrimerPair("ACGTACGTACGT","ACGTACGTACGT",0,0,0,0);
-        pps[4]=new PrimerPair("GGGTGTTTTTGAAAAGA","",0,0,0,0);
-        pps[5]=new PrimerPair("","",0,0,0,0);
+        pps[0]=new PrimerPair("AAATT","AATT",0,0,0,0,0);
+        pps[1]=new PrimerPair("AAACCGGTT","AAAAAAA",0,0,0,0,0);
+        pps[2]=new PrimerPair("ACGTACGTACGT","",0,0,0,0,0);
+        pps[3]=new PrimerPair("ACGTACGTACGT","ACGTACGTACGT",0,0,0,0,0);
+        pps[4]=new PrimerPair("GGGTGTTTTTGAAAAGA","",0,0,0,0,0);
+        pps[5]=new PrimerPair("","",0,0,0,0,0);
         int[] exp= {67,100,100,200,83,0};
         hom.calcScores(pps);
         for (int i= 0; i < pps.length; i++) {

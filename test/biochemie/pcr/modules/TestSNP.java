@@ -29,13 +29,13 @@ public class TestSNP extends TestCase {
 		snp=new SNP(cfg,false);
 		int[] exp= {0,0,0,0,100,100,50};
 		PrimerPair[] pps=new PrimerPair[7];
-		pps[0]=new PrimerPair("aaaaaaaaaa","",0,0,0,0);
-		pps[1]=new PrimerPair("aaaaaaaaaa","",54,0,0,0);
-		pps[2]=new PrimerPair("aaaaa","",49,0,0,0);
-		pps[3]=new PrimerPair("aaaaaa","",49,0,0,0);
-		pps[4]=new PrimerPair("aaaaaaa","",49,0,0,0);
-		pps[5]=new PrimerPair("aaaaaaaa","",49,0,0,0);
-		pps[6]=new PrimerPair("aaaaaaaaaa","",49,0,0,0);
+		pps[0]=new PrimerPair("aaaaaaaaaa","",0,0,0,0,0);
+		pps[1]=new PrimerPair("aaaaaaaaaa","",54,0,0,0,0);
+		pps[2]=new PrimerPair("aaaaa","",49,0,0,0,0);
+		pps[3]=new PrimerPair("aaaaaa","",49,0,0,0,0);
+		pps[4]=new PrimerPair("aaaaaaa","",49,0,0,0,0);
+		pps[5]=new PrimerPair("aaaaaaaa","",49,0,0,0,0);
+		pps[6]=new PrimerPair("aaaaaaaaaa","",49,0,0,0,0);
 
 		snp.calcScores(pps);
 		for (int i= 0; i < pps.length; i++) {
@@ -51,13 +51,13 @@ public class TestSNP extends TestCase {
         snp=new SNP(cfg,false);
         int[] exp= {0,0,0,100,100,100,50};
         PrimerPair[] pps=new PrimerPair[7];
-        pps[0]=new PrimerPair("","aaaaaaaaaa",0,25,0,0);
-        pps[1]=new PrimerPair("","aaaaaaaaaa",0,16,0,0);
-        pps[2]=new PrimerPair("","aaaaa",0,9,0,0);
-        pps[3]=new PrimerPair("","aaaaaaa",0,20,0,0);
-        pps[4]=new PrimerPair("","aaaaaaa",0,21,0,0);
-        pps[5]=new PrimerPair("","aaaaaaa",0,19,0,0);
-        pps[6]=new PrimerPair("","aaaaaaaaa",0,20,0,0);
+        pps[0]=new PrimerPair("","aaaaaaaaaa",0,25,0,0,0);
+        pps[1]=new PrimerPair("","aaaaaaaaaa",0,16,0,0,0);
+        pps[2]=new PrimerPair("","aaaaa",0,9,0,0,0);
+        pps[3]=new PrimerPair("","aaaaaaa",0,20,0,0,0);
+        pps[4]=new PrimerPair("","aaaaaaa",0,21,0,0,0);
+        pps[5]=new PrimerPair("","aaaaaaa",0,19,0,0,0);
+        pps[6]=new PrimerPair("","aaaaaaaaa",0,20,0,0,0);
 
         snp.calcScores(pps);
         for (int i= 0; i < pps.length; i++) {

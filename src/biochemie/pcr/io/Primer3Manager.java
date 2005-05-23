@@ -312,7 +312,7 @@ public class Primer3Manager {
                         temp=block[10].substring(block[10].indexOf('=')+1);
                         gc2=Float.parseFloat(temp);
                         gc=Math.abs(gc1-gc2);
-                        pps[0]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1);
+                        pps[0]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1, feste5seq.length());
                         i++;
                         aktPos++;
                         break;
@@ -339,7 +339,7 @@ public class Primer3Manager {
                 temp=block[10].substring(block[10].indexOf('=')+1);
                 gc2=Float.parseFloat(temp);
                 gc=Math.abs(gc1-gc2);
-                pps[i]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1);
+                pps[i]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1, feste5seq.length());
                 i++;
                 aktPos++;
                 if(i==maxNum)

@@ -23,20 +23,21 @@ public class PrimerPair {
                                              ,"Hairpin-Analyse","Homodimer-Analyse"
                                              ,"Crossdimer-Analyse"};
 
-    public String leftp;
-    public String rightp;
-    public int leftpos;
-    public int leftlen;
-    public int rightpos;
-    public int rightlen;
-    public int productlen;
-    public float gcdiff;
+    public final String leftp;
+    public final String rightp;
+    public final int leftpos;
+    public final int leftlen;
+    public final int rightpos;
+    public final int rightlen;
+    public final int productlen;
+    public final float gcdiff;
     /**
      * Enthält die Punkte an den jeweiligen Positionen.
      */
-    public int[] scores=new int[scorenames.length];
-    private boolean[] flags=new boolean[scorenames.length];
-	private int posinfile;
+    public final int[] scores=new int[scorenames.length];
+    private final boolean[] flags=new boolean[scorenames.length];
+	private final int posinfile;
+    private final int anhangsize;
     
     /**
      * Erstellt ein neues Primerpair. 
@@ -46,7 +47,7 @@ public class PrimerPair {
      * @param rightpos
      * @param gcdiff
      */
-    public PrimerPair(String l, String r, int leftpos, int rightpos,float gcdiff, int posinfile)  {
+    public PrimerPair(String l, String r, int leftpos, int rightpos,float gcdiff, int posinfile, int anhangsize)  {
         this.leftp=l.toUpperCase();
         this.rightp=r.toUpperCase();
         this.leftpos=leftpos;
@@ -56,6 +57,7 @@ public class PrimerPair {
         this.productlen=this.rightpos-this.leftpos+1;
         this.gcdiff=gcdiff;
         this.posinfile = posinfile;
+        this.anhangsize=anhangsize;
     }
     public int getOverallScore() {
         int sum=0;
@@ -83,6 +85,7 @@ public class PrimerPair {
          sb.append("Produktlaenge : "+productlen+'\n');
          sb.append("Pos in primer3: "+posinfile+'\n');
          sb.append("GC-Differenz  : "+gcdiff+'\n');
+         sb.append("Anhangsize    : "+anhangsize+'\n');
          sb.append("Scores :\n--------\n");
          if(flags[BLAT]) {
              setScoreString(sb,BLAT);
@@ -136,6 +139,8 @@ public class PrimerPair {
         this.rightlen=rightlen;
         this.productlen=this.rightpos-this.leftpos+1;
         this.gcdiff=0;
+        this.anhangsize=0;
+        this.posinfile=0;
     }
     
     public void addBlatScore(int n) {
@@ -192,6 +197,8 @@ public class PrimerPair {
 		sb.append(';');
         sb.append(productlen);
         sb.append(';');
+        sb.append(productlen+2*anhangsize);
+        sb.append(';');
         sb.append(gcdiff);
         sb.append(';');
         int sum=0;
@@ -214,6 +221,7 @@ public class PrimerPair {
 		sb.append("Right primer;");
 		sb.append("Start;length;");
 		sb.append("Productlength;");
+		sb.append("Productlength incl. Tags;");
 		sb.append("GC difference;");
         for(int i=0;7 >= i;i++){
         	sb.append(scorenames[i]);
@@ -224,6 +232,6 @@ public class PrimerPair {
         return sb.toString();
 	}
 	public boolean okay(){
-		return getOverallScore()>=PCR.maxscore;
+		return getOverallScore()<=PCR.maxscore;
 	}
 }
