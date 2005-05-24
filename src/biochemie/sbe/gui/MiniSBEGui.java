@@ -325,11 +325,20 @@ public class MiniSBEGui extends JFrame {
         public void actionPerformed(ActionEvent e) {
         	SBEConfigDialog dia=getConfigDialog();
         	dia.setVisible(true);
-            System.out.println("Am I still showing preferences... ? Shouldn't...");
-            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
-                SBECandidatePanel panel = (SBECandidatePanel) it.next();
-                panel.refreshData(dia.getSBEOptionsFromGui());
+            File f = null;
+            try {
+                f = File.createTempFile("__set",".csv");
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
+        	getSavePrimerAction().saveToFile(f);
+//            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+//                SBECandidatePanel panel = (SBECandidatePanel) it.next();
+//                panel.refreshData(dia.getSBEOptionsFromGui());
+//            }
+            getLoadPrimerAction().loadFromFile(f);
+            if(f != null)
+                f.delete();
         }
     }
     private class AddPanelAction extends MyAction {
@@ -364,67 +373,72 @@ public class MiniSBEGui extends JFrame {
             getSbepanelsPanel().repaint();
         }
     }
-    private class LoadPrimerAction extends MyAction {
-        public LoadPrimerAction() {
-            super("Load primers"
-                    ,"load SBE primers from file",
-                    LoadPrimerAction.class.getClassLoader().getResource("images/open.gif")
-                    ,KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        }
-        public void actionPerformed(java.awt.event.ActionEvent e) {
-            //getNewAction().actionPerformed(e);//loesche alle bestehenden primer in der gui
-            int answer = askUserForSaveIfNeeded();
-            if (answer == JOptionPane.CANCEL_OPTION)
-                return;
-
-            
-            FileFilter filter = new FileFilter(){
-                public boolean accept(File f) {
-                    if(f.isDirectory())
-                        return true;
-                    if(f.isFile() && (f.getName().endsWith(".csv") || f.getName().endsWith(".CSV")))
-                        return true;
-                    return false;
-                }
-                public String getDescription() {
-                    return "MiniSBE-primerfiles (.csv)";
-                }
-            };
-            File file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Load sbeprimers...",filter,FileSelector.OPEN_DIALOG);
+	private class LoadPrimerAction extends MyAction {
+	    public LoadPrimerAction() {
+	        super("Load primers"
+	                ,"load SBE primers from file",
+	                LoadPrimerAction.class.getClassLoader().getResource("images/open.gif")
+	                ,KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+	    }
+	    public void actionPerformed(java.awt.event.ActionEvent e) {
+	        //getNewAction().actionPerformed(e);//loesche alle bestehenden primer in der gui
+	        int answer = askUserForSaveIfNeeded();
+	        if (answer == JOptionPane.CANCEL_OPTION)
+	            return;
+	        
+	        
+	        FileFilter filter = new FileFilter(){
+	            public boolean accept(File f) {
+	                if(f.isDirectory())
+	                    return true;
+	                if(f.isFile() && (f.getName().endsWith(".csv") || f.getName().endsWith(".CSV")))
+	                    return true;
+	                return false;
+	            }
+	            public String getDescription() {
+	                return "MiniSBE-primerfiles (.csv)";
+	            }
+	        };
+	        File file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Load sbeprimers...",filter,FileSelector.OPEN_DIALOG);
+	        loadFromFile(file);
+	        
+	    }
+        /**
+         * @param file
+         */
+        public void loadFromFile(File file) {
             if(file !=null){
-                getSbepanelsPanel().removeAll();//XXX eigentlich die Aufgabe von newaction
-                sbepanels.clear();
-                List primerlines = new LinkedList();
-                try {
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-                    String line=br.readLine();//skip header
-                    while((line=br.readLine())!=null) {
-                        primerlines.add(Helper.clearEmptyCSVEntries(line));
-                    }
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(MiniSBEGui.this,"Error loading file "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                for (int i = 0; i < primerlines.size(); i++) {
-                    addSBECandidatePanel(i);
-                }
-                int i=0;
-                for (Iterator it = primerlines.iterator(); it.hasNext();i++) {
-                    try {
-                        SBECandidatePanel p=((SBECandidatePanel)sbepanels.get(i));
-                        p.setValuesFromCSVLine((String)it.next());
-                        p.setUnchanged();
-                    } catch (RuntimeException e2) {
-                        e2.printStackTrace();
-                        JOptionPane.showMessageDialog(MiniSBEGui.this,"Encountered error while parsing input file: "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-            getSbepanelsPanel().revalidate();
-            getSbepanelsPanel().repaint();
+	            getSbepanelsPanel().removeAll();//XXX eigentlich die Aufgabe von newaction
+	            sbepanels.clear();
+	            List primerlines = new LinkedList();
+	            try {
+	                BufferedReader br = new BufferedReader(new FileReader(file));
+	                String line=br.readLine();//skip header
+	                while((line=br.readLine())!=null) {
+	                    primerlines.add(Helper.clearEmptyCSVEntries(line));
+	                }
+	                
+	                for (int i = 0; i < primerlines.size(); i++) {
+	                    addSBECandidatePanel(i);
+	                }
+	                int i=0;
+	                for (Iterator it = primerlines.iterator(); it.hasNext();i++) {
+	                    SBECandidatePanel p=((SBECandidatePanel)sbepanels.get(i));
+	                    p.setValuesFromCSVLine((String)it.next());
+	                    p.setUnchanged();
+	                }
+	            } catch (IOException e1) {
+	                e1.printStackTrace();
+	                JOptionPane.showMessageDialog(MiniSBEGui.this,"Error loading file "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
+	            } catch (RuntimeException e2) {
+	                e2.printStackTrace();
+	                JOptionPane.showMessageDialog(MiniSBEGui.this,"Encountered error while parsing input file: "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
+	            }
+                getSbepanelsPanel().revalidate();
+                getSbepanelsPanel().repaint();
+	        }
         }
-    }
+	}
     private class SavePrimerAction extends MyAction {
         public SavePrimerAction() {
             super("Save primers to...","save SBE primers to file"
@@ -446,6 +460,12 @@ public class MiniSBEGui extends JFrame {
                 }
             };
             file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Save sbeprimers...",filter,FileSelector.SAVE_DIALOG);
+            saveToFile(file);
+        }
+        /**
+         * @param file
+         */
+        public void saveToFile(File file) {
             if(file != null){
                 String path=file.getAbsolutePath();
                 if(!path.endsWith(".csv") && !path.endsWith(".CSV"))
@@ -557,8 +577,8 @@ public class MiniSBEGui extends JFrame {
 
     private Action newAction;
     private Action panelAction;
-    private Action loadPrimerAction;
-    private Action savePrimerAction;
+    private LoadPrimerAction loadPrimerAction;
+    private SavePrimerAction savePrimerAction;
 
     private JMenuItem newDesignMenuItem;
     protected boolean expertmode;
@@ -735,7 +755,7 @@ public class MiniSBEGui extends JFrame {
 	/**
      * @return
      */
-    private Action getLoadPrimerAction() {
+    private LoadPrimerAction getLoadPrimerAction() {
         if(loadPrimerAction == null) {
             loadPrimerAction = new LoadPrimerAction();
         }
@@ -756,7 +776,7 @@ public class MiniSBEGui extends JFrame {
 	/**
      * @return
      */
-    private Action getSavePrimerAction() {
+    private SavePrimerAction getSavePrimerAction() {
         if(savePrimerAction == null) {
             savePrimerAction = new SavePrimerAction();
         }
