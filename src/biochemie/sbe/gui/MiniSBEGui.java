@@ -875,18 +875,7 @@ public class MiniSBEGui extends JFrame {
 		}
 		return panelAction;
 	}
-	/**
-	 * This method initializes jButton2
-	 *
-	 * @return javax.swing.JButton
-	 */
-	private JButton getJButton2() {
-		if (jButton2 == null) {
-			jButton2 = new JButton();
-			jButton2.setText("Laden");
-		}
-		return jButton2;
-	}
+
 	/**
 	 * This method initializes jPanel
 	 *
@@ -907,6 +896,7 @@ public class MiniSBEGui extends JFrame {
      */
     private void addSBECandidatePanel(int index) {
         SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1), getConfigDialog().getSBEOptionsFromGui().getMinCandidateLen());
+        p.refreshData(getConfigDialog().getSBEOptionsFromGui());
         p.setUnchanged();
         p.setExpertMode(expertmode);
         if(index%2 == 1)
