@@ -74,8 +74,6 @@ public class SBEConfigDialog extends JDialog {
 	private JSpinner candlenSpinner = null;
 	private JCheckBox evilCrossdimerCheckBox = null;
 
-    private SBEConfig sbeconfig;
-
 	private JCheckBox drawGraphesCheckbox = null;
 	private JCheckBox debugCheckBox = null;
 
@@ -170,7 +168,7 @@ public class SBEConfigDialog extends JDialog {
 	 *
 	 */
 	public SBEOptions getSBEOptionsFromGui() {
-	    sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
+        SBEOptions sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
 	    sbeconfig.setCalcTime(Integer.parseInt(getColortimeTf().getText()));
 	    sbeconfig.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
 	    sbeconfig.setCrossimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getFrom()),' '));

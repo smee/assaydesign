@@ -67,6 +67,7 @@ import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
 
 import biochemie.calcdalton.JTableEx;
+import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
@@ -87,6 +88,102 @@ import biochemie.util.TableSorter;
  *
  */
 public class MiniSBEGui extends JFrame {
+
+    public class OptimizePLAction extends MyAction {
+        private List sbec;
+
+        public OptimizePLAction(List sbec) {
+            super("Optimize",
+                    "Optimize Photolinkerpositions",
+                    null,
+                    null);
+            this.sbec=sbec;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            final SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
+            File tempfile = null;
+            try {
+                tempfile = File.createTempFile("__minisbe",".csv");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            getSavePrimerAction().saveToFile(tempfile);
+            final File toLoad = tempfile;
+            
+            for(int i=0; i < sbec.size(); i++) {
+                SBECandidate cand = ((SBECandidate)sbec.get(i));
+                SBECandidatePanel panel = (SBECandidatePanel)sbepanels.get(i);
+                boolean setPL = false;
+                if(cand.hasValidPrimer())
+                    setPL=hatVerhinderteSekStruc(cand);
+                enterInGUI(cand, panel, setPL);
+            }
+            cfg.setHairpinMinbinds("");
+            cfg.setHairpinWindowsizes("");
+            cfg.setHomodimerMinbinds("");
+            cfg.setHomodimerWindowsizes("");
+            cfg.setCrossdimerMinbinds("");
+            cfg.setCrossimerWindowsizes("");
+            //run without secstrucs
+            SwingWorker sw=new SwingWorker() {
+                public Object construct() {
+                    List sbec2=(List) getCalculationAction().runCalculation("",getCalculationAction().getCompactedSBECandidates(cfg),cfg,false).get();
+                    return sbec2;
+                }
+                public void finished() {
+                    List sbec=(List) get();
+                    final SBEOptions cfg=getConfigDialog().getSBEOptionsFromGui();
+                    for(int i=0; i < sbec.size(); i++) {
+                        SBECandidate cand = ((SBECandidate)sbec.get(i));
+                        SBECandidatePanel panel = (SBECandidatePanel)sbepanels.get(i);
+                        enterInGUI(cand, panel, true);
+                    }
+                    SwingWorker sw2= new SwingWorker() {
+                        public Object construct() {
+                            return getCalculationAction().runCalculation("PL-optimized results",getCalculationAction().getCompactedSBECandidates(cfg),cfg,true).get();
+                        }
+                        public void finished() {
+                            getLoadPrimerAction().loadFromFile(toLoad);
+                            if(toLoad != null)
+                                toLoad.delete();
+                        }
+                    };
+                    sw2.start();
+                }
+            };
+            sw.start();
+        }
+
+        /**
+         * @param cand
+         * @param panel
+         * @param setPL
+         */
+        private void enterInGUI(SBECandidate cand, SBECandidatePanel panel, boolean setPL) {
+            if(cand.hasValidPrimer() == false)
+                return;
+            if(cand.getType().equals(SBEPrimer._5_)) {
+                panel.getSeq3tf().setText("");
+                if(setPL)
+                    panel.getPlpanel5().setSelectedPL(cand.getBruchstelle());
+            }else {
+                panel.getSeq5tf().setText("");
+                if(setPL)
+                    panel.getPlpanel3().setSelectedPL(cand.getBruchstelle());
+            }
+        }
+
+        private boolean hatVerhinderteSekStruc(SBECandidate cand) {
+            Set sec=cand.getSekStrucs();
+            for (Iterator it = sec.iterator(); it.hasNext();) {
+                SBESekStruktur struc = (SBESekStruktur) it.next();
+                if(struc.isVerhindert())
+                    return true;
+            }
+            return false;
+        }
+    }
     public class ExplainPrimerAction extends MyAction {
         private JTable table;
         
@@ -134,6 +231,7 @@ public class MiniSBEGui extends JFrame {
             
         }
     }
+  
     public class CalculateAction extends MyAction {
         public CalculateAction() {
             super("Calculate","Start calculation",
@@ -141,18 +239,26 @@ public class MiniSBEGui extends JFrame {
                     (KeyStroke)null);
         }
         public void actionPerformed(ActionEvent e) {
-        	final List sbec= new ArrayList(sbepanels.size());
+            SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
+            List sbeccoll = getCompactedSBECandidates(cfg);
+        	runCalculation("Results",sbeccoll, cfg,true);
+        }
+        public List getCompactedSBECandidates(SBEOptions cfg) {
+            List sbec= new ArrayList(sbepanels.size());
+            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+                SBECandidatePanel p = (SBECandidatePanel) it.next();
+                sbec.add(p.getSBECandidate(cfg, false));
+            }
+            Algorithms.remove(sbec.iterator(),IsNull.instance());
+            return SBEPrimerReader.collapseMultiplexes(sbec,cfg);
+        }
+        /**
+         * @param sbec
+         * @param cfg
+         */
+        private SwingWorker runCalculation(final String title, final List sbec, final SBEOptions cfg, final boolean showResult) {
 
-
-        	final SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
-        	for (Iterator it = sbepanels.iterator(); it.hasNext();) {
-        		SBECandidatePanel p = (SBECandidatePanel) it.next();
-        		sbec.add(p.getSBECandidate(cfg, false));
-        	}
-        	Algorithms.remove(sbec.iterator(),IsNull.instance());
-        	final List sbeccoll=SBEPrimerReader.collapseMultiplexes(sbec,cfg);
         	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
             //dialog um den user zu informieren
             final JDialog dialog = new JDialog(MiniSBEGui.this,"Calculationprogress",true);
             dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -169,22 +275,24 @@ public class MiniSBEGui extends JFrame {
         		public Object construct() {
                     MiniSBE m = null;
                     try {
-						m = new MiniSBE(sbeccoll,cfg);
+						m = new MiniSBE(sbec,cfg);
 						normalizeSekStruks(sbec);
 					} catch (RuntimeException e) {
 						e.printStackTrace();
 					}
-                    return m;
+                    return sbec;
         		}
         		public void finished() {
                     dialog.dispose();
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        			showResultFrame(sbec,cfg);
+                    if(showResult)
+                        showResultFrame(title,sbec,cfg);
         		}
         	};
         	sw.start();
             dialog.pack();
             dialog.setVisible(true);
+            return sw;
         }
 
         protected void normalizeSekStruks(List sbec) {
@@ -198,8 +306,8 @@ public class MiniSBEGui extends JFrame {
         /**
          * @param sbec
          */
-        private void showResultFrame(final List sbec, SBEOptions cfg) {
-            JFrame frame = new JFrame("Results");
+        private void showResultFrame(String title, List sbec, SBEOptions cfg) {
+            JFrame frame = new JFrame(title);
             //JDialog frame = new JDialog(MiniSBEGui.this,true);
             frame.getContentPane().setLayout(new BorderLayout());
 
@@ -214,11 +322,13 @@ public class MiniSBEGui extends JFrame {
 
             JButton showdiffs = new JButton(new ShowDiffAction(sbec,cfg,this));
             toolbar.add(showdiffs);
-            frame.pack();
             JButton showexplanation=new JButton(new ExplainPrimerAction(table));
             toolbar.add(showexplanation);
+            JButton optimize=new JButton(new OptimizePLAction(sbec));
+            toolbar.add(optimize);
             
             ToolTipManager.sharedInstance().setDismissDelay(100000);
+            frame.pack();
             frame.setVisible(true);
         }
 
@@ -579,6 +689,7 @@ public class MiniSBEGui extends JFrame {
     private Action panelAction;
     private LoadPrimerAction loadPrimerAction;
     private SavePrimerAction savePrimerAction;
+    private CalculateAction calcAction;
 
     private JMenuItem newDesignMenuItem;
     protected boolean expertmode;
@@ -638,7 +749,7 @@ public class MiniSBEGui extends JFrame {
 		this.setJMenuBar(getJJMenuBar());
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
-        setTitle("MiniSBE (freeze 1) $20-May-2005, 08:54$");//wird von ant durch aktuelles Datum ersetzt.
+        setTitle("MiniSBE (freeze 1) $$$DATE$$$");//wird von ant durch aktuelles Datum ersetzt.
 	}
 	/**
 	 * This method initializes jContentPane
@@ -924,12 +1035,17 @@ public class MiniSBEGui extends JFrame {
 	private JButton getCalcButton() {
 		if (calcButton == null) {
 			calcButton = new JButton();
-			calcButton.setAction(new CalculateAction());
+			calcButton.setAction(getCalculationAction());
 
 		}
 		return calcButton;
 	}
-	/**
+	private CalculateAction getCalculationAction() {
+	    if(calcAction == null)
+            calcAction=new CalculateAction();
+        return calcAction;
+    }
+    /**
 	 * This method initializes jPanel1
 	 *
 	 * @return javax.swing.JPanel
