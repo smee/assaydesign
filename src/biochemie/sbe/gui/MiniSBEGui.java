@@ -95,7 +95,7 @@ public class MiniSBEGui extends JFrame {
         public OptimizePLAction(List sbec) {
             super("Optimize",
                     "Optimize Photolinkerpositions",
-                    null,
+                    OptimizePLAction.class.getClassLoader().getResource("images/wizard.gif"),
                     null);
             this.sbec=sbec;
         }
