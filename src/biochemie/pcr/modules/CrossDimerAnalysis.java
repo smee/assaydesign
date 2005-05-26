@@ -91,6 +91,8 @@ public class CrossDimerAnalysis extends SekAnalysis{
         return (maxbind< minbinds[idx]) ? 0 : maxbind;
     }
 	public int analyzeAllCrossDimer(String primer, String primer2){
+        if(null == liste)
+            liste=new ArrayList();
 		int sum=0;
 		for(int j=0;j<windowsize.length;j++) {
 			sum+=analyzeCrossDimer(primer,primer2,j);
