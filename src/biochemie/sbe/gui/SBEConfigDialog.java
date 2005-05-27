@@ -8,7 +8,9 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,6 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileFilter;
 
@@ -41,6 +44,7 @@ import biochemie.gui.IntegerValueIntervallPanel;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.util.FileSelector;
+import biochemie.util.MyAction;
 /**
  * @author Steffen Dienst
  *
@@ -275,7 +279,7 @@ public class SBEConfigDialog extends JDialog {
 			gridBagConstraints10.insets = new java.awt.Insets(20,20,20,20);
 			savePanel.add(getLoadButton(), gridBagConstraints8);
 			savePanel.add(getSaveButton(), gridBagConstraints9);
-			//savePanel.add(getResetButton(), gridBagConstraints10);
+			savePanel.add(getResetButton(), gridBagConstraints10);
 		}
 		return savePanel;
 	}
@@ -555,33 +559,24 @@ public class SBEConfigDialog extends JDialog {
     }
 
 
-    protected class ResetAction extends AbstractAction {
-        Icon icon;
+    protected class ResetAction extends MyAction {
         ResetAction() {
-            putValue(NAME, "Reset");
-            putValue(SHORT_DESCRIPTION, "Reset to standard settings.");
-            java.net.URL url=this.getClass().getClassLoader().getResource("images/reset.gif");
-            if(null != url){
-                icon=new ImageIcon(url);
-                putValue(Action.SMALL_ICON,icon);
-            }
+            super("Reset", 
+                  "Reset to standard settings.",
+                  ResetAction.class.getClassLoader().getResource("images/reset.gif"),
+                  null);
         }
         public void actionPerformed(ActionEvent e) {
             SBEOptions c = new SBEConfig();
             setPropertiesFrom(c);
         }
     }
-    protected class LoadAction extends AbstractAction {
-        Icon icon;
-
+    protected class LoadAction extends MyAction {
         LoadAction() {
-            putValue(NAME, "Load");
-            putValue(SHORT_DESCRIPTION, "Load previously saved settings from disk.");
-            java.net.URL url=this.getClass().getClassLoader().getResource("images/open.gif");
-            if(null != url){
-                icon=new ImageIcon(url);
-                putValue(Action.SMALL_ICON,icon);
-            }
+            super("Load",
+                    "Load previously saved settings from disk.",
+                    LoadAction.class.getClassLoader().getResource("images/open.gif"),
+                    KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(ActionEvent e) {
             FileFilter filter=new FileFilter(){
@@ -614,16 +609,12 @@ public class SBEConfigDialog extends JDialog {
 			}
 		}
     }
-    protected class SaveAction extends AbstractAction {
-        Icon icon;
+    protected class SaveAction extends MyAction {
         SaveAction() {
-            putValue(NAME, "Save");
-            putValue(SHORT_DESCRIPTION, "Save settings to disk.");
-            java.net.URL url=this.getClass().getClassLoader().getResource("images/save.gif");
-            if(null != url){
-                icon=new ImageIcon(url);
-                putValue(Action.SMALL_ICON,icon);
-            }
+            super("Save",
+                  "Save settings to disk.",
+                  SaveAction.class.getClassLoader().getResource("images/save.gif"),
+                  KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         }
         public void actionPerformed(ActionEvent e) {
             FileFilter filter=new FileFilter(){

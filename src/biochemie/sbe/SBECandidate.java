@@ -131,7 +131,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             String snp, int productlen, String bautEin5, String bautEin3, 
             String givenMultiplexid, String unwanted, boolean userGiven, boolean rememberOutput) {
         leftstring=l;
-        rightstring= Helper.revcomplPrimer(r);
+        rightstring= r;
         this.id=id;
         this.productlen=productlen;
         this.snp=snp;
@@ -357,14 +357,13 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     private String getFavSeqMitPhotolinker() {
         assertPrimerChosen();
 
-        int bruchstelle= chosen.getBruchstelle();
-        if (-1 == bruchstelle)
+        if (-1 == getBruchstelle())
             return "";
         String seq= chosen.getSeq();
         StringBuffer sb= new StringBuffer();
         int j= 0;
         for (int i= seq.length() - 1; 0 <= i; i--, j++) {
-            if ((seq.length() - i) == bruchstelle) {
+            if (seq.charAt(i)=='L') {
                 sb.append(")L(");
             } else {
                 sb.append(seq.charAt(i));

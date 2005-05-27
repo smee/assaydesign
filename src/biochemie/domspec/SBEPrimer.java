@@ -58,7 +58,7 @@ public class SBEPrimer extends Primer{
      * @param usergiven tru: don't probe for secstructures.
      */
     public SBEPrimer(SBEOptions cfg,String id,String seq, String snp, String type, String bautein, int prodlen,boolean usergiven) {
-        super(id,seq);
+        super(id,type.equals(_3_)?Helper.revcomplPrimer(seq):seq);
         this.cfg = cfg;
         this.pl=Helper.getPosOfPl(seq);
         if(pl == -1)

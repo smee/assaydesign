@@ -182,7 +182,9 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 }
             }
         }finally {
+            IamModifying = true;
             left.setText(newseq);
+            IamModifying=false;
         }
         
     }
@@ -204,6 +206,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         handleSeqChange();
     }
     public void removeUpdate(DocumentEvent e) {
+        if(IamModifying)
+            return;
         handleSeqChange();
         
     }

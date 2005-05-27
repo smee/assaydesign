@@ -128,12 +128,14 @@ public class MiniSBEGui extends JFrame {
             //run without secstrucs
             SwingWorker sw=new SwingWorker() {
                 public Object construct() {
+                    System.out.println("Running step 1 of the pl optimizer....");
                     List sbec2=(List) getCalculationAction().runCalculation("",getCalculationAction().getCompactedSBECandidates(cfg),cfg,false).get();
                     return sbec2;
                 }
                 public void finished() {
                     List sbec=(List) get();
                     final SBEOptions cfg=getConfigDialog().getSBEOptionsFromGui();
+                    getLoadPrimerAction().loadFromFile(toLoad);
                     for(int i=0; i < sbec.size(); i++) {
                         SBECandidate cand = ((SBECandidate)sbec.get(i));
                         SBECandidatePanel panel = (SBECandidatePanel)sbepanels.get(i);
@@ -141,6 +143,7 @@ public class MiniSBEGui extends JFrame {
                     }
                     SwingWorker sw2= new SwingWorker() {
                         public Object construct() {
+                            System.out.println("Running step 2 of the pl optimizer....");
                             return getCalculationAction().runCalculation("PL-optimized results",getCalculationAction().getCompactedSBECandidates(cfg),cfg,true).get();
                         }
                         public void finished() {
