@@ -22,6 +22,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -103,6 +104,7 @@ public class SBEConfigDialog extends JDialog {
 		this.setTitle("Preferences");
 		this.setSize(454, 638);
 		this.setContentPane(getJContentPane());
+        
 	}
 	/**
 	 * This method initializes jContentPane
@@ -115,6 +117,8 @@ public class SBEConfigDialog extends JDialog {
 			jContentPane.setLayout(new java.awt.BorderLayout());
 			jContentPane.add(getJTabbedPane(), java.awt.BorderLayout.CENTER);
 			jContentPane.add(getJPanel(), java.awt.BorderLayout.SOUTH);
+            jContentPane.registerKeyboardAction(getLoadAction(), (KeyStroke) getLoadAction().getValue(Action.ACCELERATOR_KEY),JComponent.WHEN_IN_FOCUSED_WINDOW);
+            jContentPane.registerKeyboardAction(getSaveAction(), (KeyStroke) getSaveAction().getValue(Action.ACCELERATOR_KEY),JComponent.WHEN_IN_FOCUSED_WINDOW);
 		}
 		return jContentPane;
 	}
@@ -147,7 +151,7 @@ public class SBEConfigDialog extends JDialog {
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			jPanel = new JPanel();
-			jPanel.add(getJButton(), null);
+			jPanel.add(getOkayButton(), null);
 		}
 		return jPanel;
 	}
@@ -156,7 +160,7 @@ public class SBEConfigDialog extends JDialog {
 	 *
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton() {
+	private JButton getOkayButton() {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setText("Okay");
@@ -164,7 +168,7 @@ public class SBEConfigDialog extends JDialog {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					SBEConfigDialog.this.setVisible(false);
 				}
-			});
+			});            
 		}
 		return jButton;
 	}
