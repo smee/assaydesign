@@ -47,9 +47,10 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private JCheckBox fixedcb;
     private boolean IamModifying = false ;
     private StringEntryPanel midtf=null;
+    private boolean isRight;
     
     public SBESeqInputController(SBECandidatePanel panel, int minlen, boolean isLeft) {        
-        this(isLeft?panel.getSeq5tf():panel.getSeq3tf(),isLeft?panel.getPlpanel5():panel.getPlpanel3(), panel.getFixedPrimerCB(), minlen);
+        this(isLeft?panel.getSeq5tf():panel.getSeq3tf(),isLeft?panel.getPlpanel5():panel.getPlpanel3(), panel.getFixedPrimerCB(), minlen, isLeft);
         this.midtf = panel.getMultiplexidPanel();
         if(midtf !=null) {
             midtf.setEnabled(false);
@@ -67,11 +68,11 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             });
         }
     }
-    public SBESeqInputController(SBESequenceTextField tf, PLSelectorPanel panel, JCheckBox fix, int minlength) {
+    public SBESeqInputController(SBESequenceTextField tf, PLSelectorPanel panel, JCheckBox fix, int minlength, boolean isLeft) {
         this.left=tf;
         this.minlen=minlength;
         this.plpanel=panel;
-        
+        this.isRight=!isLeft;
         this.fixedcb=fix==null?new JCheckBox():fix;
         fixedcb.setSelected(false);
         fixedcb.setEnabled(false);
@@ -94,7 +95,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private void handleSeqChange(){
         try {
             IamModifying=true;
-            String seq = left.getText();
+            String seq = isRight?Helper.revPrimer(left.getText()):left.getText();
 //          sind die eingegebenen seq. lang genug?
             int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);        
             if(seq.length() < maxpl && seq.length() != 0) {
@@ -144,8 +145,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         Object item=plpanel.getComboPL().getSelectedItem();
         if(item == null)
             return;
-        String seq = left.getText();
-        String newseq=seq;
+        String seq = isRight?Helper.revPrimer(left.getText()):left.getText();
+        String newseq = seq;
         
         try {
             if(replacedNukl == 0) {//bisher kein pl
@@ -155,6 +156,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         return;
                     }
                     char torepl = seq.charAt(seq.length() - pl);
+                    if(isRight)
+                        torepl = seq.charAt(pl - 1);//von links betrachten
                     if(torepl!='L') {
                         replacedNukl=torepl;
                         newseq=biochemie.util.Helper.replacePL(seq,pl);
@@ -164,7 +167,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 int pos = Helper.getPosOfPl(seq);
                 if(pos == -1)
                     throw new IllegalStateException("There should be a PL in "+seq+"!");
-                
                 if(item instanceof String) {//auto
                     newseq=Helper.replaceNukl(seq,pos,replacedNukl);
                     replacedNukl = 0;
@@ -183,7 +185,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             }
         }finally {
             IamModifying = true;
-            left.setText(newseq);
+            left.setText(isRight?Helper.revPrimer(newseq):newseq);
             IamModifying=false;
         }
         
