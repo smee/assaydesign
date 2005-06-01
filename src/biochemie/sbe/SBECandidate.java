@@ -262,6 +262,8 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
  * @return
  */
     private List getFilteredPTTStructList(String primer, String type,String bautein) {
+        if(type.equals(SBEPrimer._3_))
+            primer=Helper.revcomplPrimer(primer);
         ArrayList liste= new ArrayList();
 		boolean hh=!bautein.equalsIgnoreCase("none") && 0 == bautein.length(); //in diesen beiden Fällen werden die H-Filter nicht verwendet
         /*
