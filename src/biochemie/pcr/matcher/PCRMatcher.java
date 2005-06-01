@@ -63,7 +63,7 @@ public class PCRMatcher {
         String line=br.readLine();//skip header
         int pos=0;
         while((line=br.readLine()) != null) {
-            primers.addAll(parsePrimerLine(line, filename,++pos));
+            primers.addAll(parsePrimerLine(line.trim(), filename,++pos));
         }
         return primers;
     }
@@ -74,7 +74,16 @@ public class PCRMatcher {
      */
     private Collection parsePrimerLine(String line, String filename,int pos) {
         List primers=new LinkedList();
-        if(line.trim().length() == 0)
+        if(line.length() == 0)
+            return primers;
+        boolean hasPrimer=false;
+        for(int i=0;i<line.length();i++) {
+            if(line.charAt(i)!=';') {
+                hasPrimer=true;
+                break;
+            }
+        }
+        if(!hasPrimer)
             return primers;
         try {
             String left;
