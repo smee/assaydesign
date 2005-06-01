@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import biochemie.pcr.modules.CrossDimerAnalysis;
@@ -73,19 +74,26 @@ public class PCRMatcher {
      */
     private Collection parsePrimerLine(String line, String filename,int pos) {
         List primers=new LinkedList();
-        String left;
-        String right;
-        StringTokenizer st=new StringTokenizer(line,"\";");
+        if(line.trim().length() == 0)
+            return primers;
+        try {
+            String left;
+            String right;
+            StringTokenizer st=new StringTokenizer(line,"\";");
 
-        st.nextToken().trim();//ignore pos
-        st.nextToken();//ignore org.pos
-        left=st.nextToken().trim().toUpperCase();
-        st.nextToken();//start
-        st.nextToken();//length
-        right=st.nextToken().trim().toUpperCase();
-        PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,cda);
-        PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,cda);
-        primers.add(new PCRPair(p1,p2,maxplex));
+            st.nextToken().trim();//ignore pos
+            st.nextToken();//ignore org.pos
+            left=st.nextToken().trim().toUpperCase();
+            st.nextToken();//start
+            st.nextToken();//length
+            right=st.nextToken().trim().toUpperCase();
+            PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,cda);
+            PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,cda);
+            primers.add(new PCRPair(p1,p2,maxplex));
+        } catch (NoSuchElementException e) {
+            System.err.println("Fehler beim Lesen der Zeile :\""+line+"\" in Datei \""+filename+"\"!");
+            System.exit(1);
+        }
         return primers;
     }
 
