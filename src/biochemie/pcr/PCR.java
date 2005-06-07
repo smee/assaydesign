@@ -166,7 +166,10 @@ public class PCR {
 			if(PCR.debug)
 				System.out.println("Using primer3file: "+file+"\n" +
 								   "------------------------------");
-            
+            /*
+             * TODO PrimerPaare filtern, die gleich sind, also gleiche Seq.+gleiche Pos.
+             * TODO TreeSet, alles ausgeben, sobald genug gefunden sind
+             */
 			int solutions=runAnalysis(file,outfilename,cyclescount++);
 			counter+=solutions;
 			if(counter >= primernum) {

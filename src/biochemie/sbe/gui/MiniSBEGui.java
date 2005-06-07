@@ -57,6 +57,7 @@ import javax.swing.KeyStroke;
 import javax.swing.Scrollable;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
@@ -65,6 +66,8 @@ import javax.swing.table.TableModel;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
+
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 
 import biochemie.calcdalton.JTableEx;
 import biochemie.domspec.SBEPrimer;
@@ -1111,6 +1114,10 @@ public class MiniSBEGui extends JFrame {
     }
 
  	public static void main(String[] args) {
+ 		try {
+			UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+		} catch (UnsupportedLookAndFeelException e) {
+		}
  	    if(args.length == 0) {
             MiniSBE.initLogfile(".");
             final MiniSBEGui frame=new MiniSBEGui();

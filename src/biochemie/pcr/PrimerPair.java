@@ -59,6 +59,21 @@ public class PrimerPair {
         this.posinfile = posinfile;
         this.anhangsize=anhangsize;
     }
+    
+	public boolean equals(Object obj) {
+		PrimerPair other =(PrimerPair)obj;
+		boolean eq = leftp.equals(other.leftp) && rightp.equals(other.rightp);
+		if(eq){
+			if(leftlen==other.leftlen && rightlen==other.rightlen && leftpos==other.leftpos && rightpos==other.rightpos){
+				System.err.println("Aehm.....");
+				System.err.println("Du... entschuldigung, aber....");
+				System.err.println("Bei DER Eingabesequenz hast du dich MAECHTIG in die Nesseln gesetzt!!! :) (hoch repetetiv)");
+				System.err.println("Exiting...");
+				System.exit(1);
+			}
+		}
+		return eq;
+	}
     public int getOverallScore() {
         int sum=0;
         for (int i= 0; i < this.scores.length; i++) {
@@ -233,5 +248,16 @@ public class PrimerPair {
 	}
 	public boolean okay(){
 		return getOverallScore()<=PCR.maxscore;
+	}
+	/**
+	 * Override hashCode.
+	 *
+	 * @return the Objects hashcode.
+	 */
+	public int hashCode() {
+		int hashCode = 1;
+		hashCode = 31 * hashCode + (leftp == null ? 0 : leftp.hashCode());
+		hashCode = 31 * hashCode + (rightp == null ? 0 : rightp.hashCode());
+		return hashCode;
 	}
 }
