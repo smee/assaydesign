@@ -3,9 +3,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import biochemie.pcr.io.PCRConfig;
 import biochemie.pcr.io.Primer3Manager;
@@ -149,119 +154,119 @@ public class PCR {
 	}
 
 	public void startAnalysis() throws IOException{
-        if(PCR.debug) {
-            System.out.println("Verwende folgende Parameter: "+this);
-        }
-        
-		StringTokenizer st = new StringTokenizer(config.getProperty("INFILES"));
-		final int primernum=config.getInteger("NUM_OF_SUCCESSFUL_PAIRS",30);
-		int counter=0;
-		String outfilename=config.getProperty("OUTFILE");
-        if(null == outfilename || 0 == outfilename.length()) {
-            outfilename=biochemie.util.Helper.dateFunc()+".txt";
-        }
-        int cyclescount=0;
-		while (st.hasMoreTokens()) {
-			String file = st.nextToken();
-			if(PCR.debug)
-				System.out.println("Using primer3file: "+file+"\n" +
-								   "------------------------------");
-            /*
-             * TODO PrimerPaare filtern, die gleich sind, also gleiche Seq.+gleiche Pos.
-             * TODO TreeSet, alles ausgeben, sobald genug gefunden sind
-             */
-			int solutions=runAnalysis(file,outfilename,cyclescount++);
-			counter+=solutions;
-			if(counter >= primernum) {
-				System.out.println("Got "+counter+" solutions, stopping calculations.");
-                break;   //genug loesungen gefunden, also ferdsch :)
-            }
-		}
-	}
-	/**
-	 * Starte die eigentliche Arbeit. Liefert die Anzahl gefundener Loesungen.
-	 */
-	private int runAnalysis(String filename, String outfilename, int cyclescount) throws IOException {
-	    boolean append=cyclescount>0;
-	    //Init files
-	    boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);	    
-	    if(outputcsv && outfilename.endsWith(".csv")==false)
-	        outfilename += ".csv";
-	    FileWriter notokayout=new FileWriter("not_ok_"+outfilename,append);
-	    FileWriter combined=new FileWriter("combined_"+outfilename,append);
-	    FileWriter out=new FileWriter(outfilename,append);
+	    if(PCR.debug) {
+	        System.out.println("Verwende folgende Parameter: "+this);
+	    }
 	    
-	    try {
-	        if(outputcsv && cyclescount == 0){
-	            notokayout.write(PrimerPair.getCSVHeaderLine());
-	            combined.write(PrimerPair.getCSVHeaderLine());
-	            out.write(PrimerPair.getCSVHeaderLine());
-	            out.write("\n");
-	            notokayout.write("\n");
-	            combined.write("\n");
-	        }
-	        
-	        //run primer3
-	        Primer3Manager primer3=new Primer3Manager(config, PCR.debug);
-	        primer3.runPrimer3(filename);
-	        if(0 == primer3.getNumberOfResults()){
-	            return 0;
-	        }
-	        //setze nachtraeglich Parameter fuer BLAT-Modul
-	        if(blatOn) {
-	            blatObj.setSequence(config.getProperty("SEQUENCE"));
-	        }
-	        
-	        //Starte Module
-	        PrimerPair[] pps=doTheFilterBoogie(primer3);
-	        int solutioncount=0;
-	        int count=1;
-	        String line=null;
-	        for(int i=0;i<pps.length;i++) {
-	            if(pps[i].okay()) {
-	                if(!outputcsv)
-	                    line=(count++)+". Paar mit erfüllten Kriterien :\n"+pps[i].toString()+'\n';
-	                else
-	                    line=pps[i].toCSVString(i+1,cyclescount+1);
-	                solutioncount++;
-	                out.write(line);
-	                out.write("\n");
-	                combined.write(line);
-	                combined.write("\n");
-	            }else{//zu viele strafpunkte
-	                if(!outputcsv)
-	                    line="\nNr. "+(-1)+'\n'+pps[i].toString();
-	                else
-	                    line=pps[i].toCSVString(i+1,cyclescount+1);
-	                notokayout.write(line);
-	                notokayout.write("\n");
-	                combined.write(line);
-	                combined.write("\n");
+	    StringTokenizer st = new StringTokenizer(config.getProperty("INFILES"));
+	    final int primernum=config.getInteger("NUM_OF_SUCCESSFUL_PAIRS",30);
+	    String outfilename=config.getProperty("OUTFILE");
+	    if(null == outfilename || 0 == outfilename.length()) {
+	        outfilename=biochemie.util.Helper.dateFunc()+".txt";
+	    }
+	    int cyclescount=0, solutionsFound=0;
+	    Set ppset = new HashSet();
+	    List pps = new ArrayList();
+	    while (st.hasMoreTokens()) {
+	        String file = st.nextToken();
+	        if(PCR.debug)
+	            System.out.println("Using primer3file: "+file+"\n" +
+	            "------------------------------");
+	        Collection c=runAnalysis(file,++cyclescount);
+            int oldcount=solutionsFound;
+	        for (Iterator it = c.iterator(); it.hasNext();) {
+	            PrimerPair p = (PrimerPair) it.next();
+	            if(!ppset.contains(p)) {
+	                if(p.okay())
+	                    solutionsFound++;
+	                ppset.add(p);
+	                pps.add(p);
 	            }
 	        }
-	        out.close();
-	        notokayout.close();
-	        combined.close();
-	        if(PCR.verbose) {
-	            System.out.println("Fertig mit "+filename);
+	        if(PCR.debug)
+                System.out.println("New solutions found with inputfile \""+file+"\": "+(solutionsFound-oldcount));
+	        if(solutionsFound >= primernum) {
+	            System.out.println("Got "+solutionsFound+" valid solutions while considering "+pps.size()+" possible primerpairs, stopping calculations.");                
+	            break;   //genug loesungen gefunden, also ferdsch :)
 	        }
-	        return solutioncount;
-	    }finally {
-	        if(notokayout!=null)
-	            notokayout.close();
-	        if(out!=null)
-	            out.close();
-	        if(combined!=null)
-	            combined.close();
 	    }
+	    writeFiles(outfilename, pps);
 	}
+    private void writeFiles(String outfilename, List pps) throws IOException {
+        //Init files
+        boolean outputcsv=config.getBoolean("OUTPUT_CSV",true);     
+        if(outputcsv && outfilename.endsWith(".csv")==false)
+            outfilename += ".csv";
+        FileWriter notokayout=new FileWriter("not_ok_"+outfilename);
+        FileWriter combined=new FileWriter("combined_"+outfilename);
+        FileWriter out=new FileWriter(outfilename);
+        if(outputcsv){
+            notokayout.write(PrimerPair.getCSVHeaderLine());
+            combined.write(PrimerPair.getCSVHeaderLine());
+            out.write(PrimerPair.getCSVHeaderLine());
+            out.write("\n");
+            notokayout.write("\n");
+            combined.write("\n");
+        }
+        int i=1,count=1;
+        String line=null;
+        for (Iterator it = pps.iterator(); it.hasNext();i++) {
+            PrimerPair pair = (PrimerPair) it.next();
+            if(!outputcsv)
+                line=(count++)+". Paar mit erfüllten Kriterien :\n"+pair.toString()+'\n';
+            else
+                line=pair.toCSVString(i);
+            if(pair.okay()) {
+                out.write(line);
+                out.write("\n");
+                combined.write(line);
+                combined.write("\n");
+            }else{//zu viele strafpunkte
+                notokayout.write(line);
+                notokayout.write("\n");
+                combined.write(line);
+                combined.write("\n");
+            }
+        }
+        out.close();
+        notokayout.close();
+        combined.close();
+    }
+	/**
+	 * Starte die eigentliche Arbeit. Liefert die Anzahl gefundener Loesungen.
+	 * @param i 
+	 */
+    private Collection runAnalysis(String filename, int cyclescount) throws IOException {
+        //run primer3
+        Primer3Manager primer3=new Primer3Manager(config, PCR.debug);
+        primer3.runPrimer3(filename);
+        if(0 == primer3.getNumberOfResults()){
+            return new LinkedList();
+        }
+        //setze nachtraeglich Parameter fuer BLAT-Modul
+        if(blatOn) {
+            blatObj.setSequence(config.getProperty("SEQUENCE"));
+        }
+        
+        //Starte Module
+        List pps=doTheFilterBoogie(primer3);
+        for (Iterator it = pps.iterator(); it.hasNext();) {
+            PrimerPair p = (PrimerPair) it.next();
+            p.setCycleNum(cyclescount);
+        }
+        if(PCR.verbose) {
+            System.out.println("Fertig mit "+filename);
+            System.out.println("");
+        }
+        return pps;
+    }
 
 	/**
      * Liest nacheinander Paare aus dem Ergebnisfile von primer3 ein und schickt sie durch die Filter.
 	 * @param primer3
 	 * @return
 	 */
-        private PrimerPair[] doTheFilterBoogie(Primer3Manager primer3) {
+        private List doTheFilterBoogie(Primer3Manager primer3) {
             PrimerPair[] pps=null;
             java.util.List allPairs= new ArrayList();
    
@@ -327,7 +332,7 @@ public class PCR {
                     blatOn= false;
                 }
             }
-            return (PrimerPair[]) allPairs.toArray(new PrimerPair[allPairs.size()]);
+            return allPairs;
         }
 
         private int countSuccessfulPairs(List pps) {

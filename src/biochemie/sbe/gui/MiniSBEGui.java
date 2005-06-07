@@ -67,7 +67,6 @@ import javax.swing.table.TableModel;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
 
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 
 import biochemie.calcdalton.JTableEx;
 import biochemie.domspec.SBEPrimer;
@@ -1115,7 +1114,7 @@ public class MiniSBEGui extends JFrame {
 
  	public static void main(String[] args) {
  		try {
-			UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+			UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 		}
  	    if(args.length == 0) {

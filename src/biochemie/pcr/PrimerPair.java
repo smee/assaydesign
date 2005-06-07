@@ -38,6 +38,7 @@ public class PrimerPair {
     private final boolean[] flags=new boolean[scorenames.length];
 	private final int posinfile;
     private final int anhangsize;
+    private int cyclenum;
     
     /**
      * Erstellt ein neues Primerpair. 
@@ -61,17 +62,20 @@ public class PrimerPair {
     }
     
 	public boolean equals(Object obj) {
-		PrimerPair other =(PrimerPair)obj;
+		if(this == obj)
+            return true;
+        PrimerPair other =(PrimerPair)obj;
+        
 		boolean eq = leftp.equals(other.leftp) && rightp.equals(other.rightp);
-		if(eq){
-			if(leftlen==other.leftlen && rightlen==other.rightlen && leftpos==other.leftpos && rightpos==other.rightpos){
-				System.err.println("Aehm.....");
-				System.err.println("Du... entschuldigung, aber....");
-				System.err.println("Bei DER Eingabesequenz hast du dich MAECHTIG in die Nesseln gesetzt!!! :) (hoch repetetiv)");
-				System.err.println("Exiting...");
-				System.exit(1);
-			}
-		}
+//		if(eq){
+//			if(leftlen==other.leftlen && rightlen==other.rightlen && leftpos==other.leftpos && rightpos==other.rightpos){
+//				System.err.println("Aehm.....");
+//				System.err.println("Du... entschuldigung, aber....");
+//				System.err.println("Bei DER Eingabesequenz hast du dich MAECHTIG in die Nesseln gesetzt!!! :) (hoch repetetiv)");
+//				System.err.println("Exiting...");
+//				System.exit(1);
+//			}
+//		}
 		return eq;
 	}
     public int getOverallScore() {
@@ -190,10 +194,13 @@ public class PrimerPair {
     	flags[CROSS]=true;
     	scores[CROSS]+=n;
     }
-	/**
+    public void setCycleNum(int c) {
+        this.cyclenum=c;
+    }
+    /**
 	 * @return
 	 */
-	public String toCSVString(int num,int cyclenum) {
+	public String toCSVString(int num) {
         StringBuffer sb=new StringBuffer(Integer.toString(num));
         sb.append(';');
         sb.append(posinfile);
