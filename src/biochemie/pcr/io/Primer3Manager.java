@@ -324,7 +324,7 @@ public class Primer3Manager {
                 e.printStackTrace();
             }
         try {
-            while(true){
+            while(i<maxNum){
                 block=Primer3Manager.readLines(input,blocksize);
                 //Helper.outputObjectArray(block);
                 //System.out.println("-------------------");
@@ -342,8 +342,6 @@ public class Primer3Manager {
                 pps[i]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1, feste5seq.length());
                 i++;
                 aktPos++;
-                if(i>=maxNum)
-                    break;
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
