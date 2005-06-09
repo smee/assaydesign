@@ -342,7 +342,7 @@ public class Primer3Manager {
                 pps[i]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1, feste5seq.length());
                 i++;
                 aktPos++;
-                if(i==maxNum)
+                if(i>=maxNum)
                     break;
             }
         } catch (NumberFormatException e) {

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import biochemie.pcr.PrimerPair;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.WrongValueException;
 import biochemie.util.Helper;
@@ -189,6 +190,7 @@ public class PCRMatcher {
 
     private static void outputFile(Collection pairsToUse, String outname) throws IOException {
         BufferedWriter bw=new BufferedWriter(new FileWriter(outname));
+        bw.write(PrimerPair.getCSVHeaderLine());
         for (Iterator iter = pairsToUse.iterator(); iter.hasNext();) {
             PCRPair pair = (PCRPair) iter.next();
             bw.write(pair.getCSVLine());
