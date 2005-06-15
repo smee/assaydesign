@@ -51,6 +51,8 @@ public class BestellMultiplexer extends Multiplexer {
         boolean drawGraph=cfg.isDrawGraphes();
         System.out.println("Creating graph with "+mult.size()+" vertices...");
 	    UndirectedGraph g=GraphHelper.createIncompGraph(mult,drawGraph,0);
+        if(Thread.currentThread().isInterrupted())
+            return;
 	    UndirectedGraph grev=GraphHelper.getKomplementaerGraph(g);
         System.out.println("RevGraph consists of "+grev.vertexSet().size()+" vertices, "+grev.edgeSet().size()+" edges.");
 	    

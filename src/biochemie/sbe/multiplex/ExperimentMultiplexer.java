@@ -43,7 +43,8 @@ public class ExperimentMultiplexer extends Multiplexer {
         boolean drawGraph=cfg.isDrawGraphes();
 
         UndirectedGraph g=GraphHelper.createIncompGraph(multip,drawGraph, 0);
-
+        if(Thread.currentThread().isInterrupted())
+            return;
         SBEColorerProxy itrp=new SBEColorerProxy(g,new HashSet(), cfg.getMaxPlex(),debug);
         rt.setInterruptableJob(itrp);
         List colors=(List) rt.getResult();

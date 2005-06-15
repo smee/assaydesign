@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.swing.Timer;
 
+import biochemie.sbe.multiplex.Multiplexer;
+
 
 
 public  class ReusableThread extends Thread implements ActionListener{
@@ -98,6 +100,8 @@ public  class ReusableThread extends Thread implements ActionListener{
     public synchronized Object getResult() {
         try {
             while(!resultAvailable) {
+                if(Multiplexer.isStopped())
+                    return null;
                 //System.out.println("Mainthread: wait()...");
                 wait();
                 //System.out.println("Mainthread: was notified!");

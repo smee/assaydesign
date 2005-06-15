@@ -29,6 +29,7 @@ import biochemie.sbe.SBEOptions;
  */
 public abstract class Multiplexer {
 	private static int plexnr=1;
+    private static boolean stopped;
     protected final boolean debug;
     protected SBEOptions cfg;
 
@@ -247,5 +248,11 @@ public abstract class Multiplexer {
             return result;
         }
 
+    }
+    public static void stop(boolean s) {
+        stopped=s;
+    }
+    public static boolean isStopped() {
+        return stopped;
     }
 }

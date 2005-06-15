@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -77,6 +78,7 @@ import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.actions.SaveResultsAction;
 import biochemie.sbe.gui.actions.ShowDiffAction;
 import biochemie.sbe.io.SBEPrimerReader;
+import biochemie.sbe.multiplex.Multiplexer;
 import biochemie.util.ConsoleWindow;
 import biochemie.util.FileSelector;
 import biochemie.util.GUIHelper;
@@ -262,7 +264,7 @@ public class MiniSBEGui extends JFrame {
          * @param cfg
          */
         private SwingWorker runCalculation(final String title, final List sbec, final SBEOptions cfg, final boolean showResult) {
-
+            Multiplexer.stop(false);
         	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             //dialog um den user zu informieren
             final JDialog dialog = new JDialog(MiniSBEGui.this,"Calculationprogress",true);
@@ -273,14 +275,15 @@ public class MiniSBEGui extends JFrame {
             bar.setIndeterminate(true);
             pane.add(bar);
             pane.add(new JLabel("Please have some patience, this operation might need some time."));
-
             GUIHelper.center(dialog, MiniSBEGui.this);
 
-            SwingWorker sw = new SwingWorker(){
+            final SwingWorker sw = new SwingWorker(){
         		public Object construct() {
                     MiniSBE m = null;
                     try {
 						m = new MiniSBE(sbec,cfg);
+                        if(Thread.currentThread().isInterrupted())
+                            return null;
 						normalizeSekStruks(sbec);
 					} catch (RuntimeException e) {
 						e.printStackTrace();
@@ -288,12 +291,24 @@ public class MiniSBEGui extends JFrame {
                     return sbec;
         		}
         		public void finished() {
+                    if(!isDone())
+                        return;
                     dialog.dispose();
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     if(showResult)
                         showResultFrame(title,sbec,cfg);
         		}
         	};
+        	JButton stopbutton = new JButton("Cancel");
+        	stopbutton.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent e) {
+                    Multiplexer.stop(true);
+        	        sw.interrupt();
+                    dialog.dispose();
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        	    }
+        	});
+            pane.add(stopbutton);
         	sw.start();
             dialog.pack();
             dialog.setVisible(true);

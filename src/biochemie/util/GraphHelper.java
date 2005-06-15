@@ -60,6 +60,8 @@ public class GraphHelper {
         g.addAllVertices(multiplexables);
         for (int i = 0; i < multiplexables.size(); i++) {
             Multiplexable s1=(Multiplexable) multiplexables.get(i);
+            if(Thread.currentThread().isInterrupted())
+                return null;
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
                 if(!s1.passtMit(s2)) {

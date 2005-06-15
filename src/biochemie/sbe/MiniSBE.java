@@ -75,7 +75,8 @@ public class MiniSBE {
             }
             if(0 == structs.size()) break; //s gibbet nix zu multiplexen
 
-            
+            if(Thread.currentThread().isInterrupted())
+                return;
             if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
                 m1.findMultiplexes(structs);
             }else{
