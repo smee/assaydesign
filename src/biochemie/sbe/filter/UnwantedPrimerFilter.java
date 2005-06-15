@@ -64,6 +64,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
                     count++;
                     sb.append(p.getSeq()+", PL="+p.getBruchstelle());
                     sb.append("\n");
+                    break;
                 }
             }
         }
