@@ -39,6 +39,7 @@ public class PrimerPair {
 	private final int posinfile;
     private final int anhangsize;
     private int cyclenum;
+    private boolean blatError;
     
     /**
      * Erstellt ein neues Primerpair. 
@@ -226,7 +227,14 @@ public class PrimerPair {
         int sum=0;
         for(int i=0;7 >= i;i++){
             sum+=scores[i];
-        	sb.append(scores[i]);
+            if(i==BLAT) {
+                if(blatError)
+                    sb.append("deactivated");
+                else
+                    sb.append(scores[i]);
+            }else
+                sb.append(scores[i]);
+                
         	sb.append(';');
         }
         sb.append(sum);
@@ -267,4 +275,9 @@ public class PrimerPair {
 		hashCode = 31 * hashCode + (rightp == null ? 0 : rightp.hashCode());
 		return hashCode;
 	}
+
+    public void setBlatError(boolean blatError) {
+        this.blatError=blatError;
+        
+    }
 }
