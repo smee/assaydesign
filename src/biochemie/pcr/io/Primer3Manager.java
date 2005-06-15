@@ -39,6 +39,7 @@ public class Primer3Manager {
 	private String feste5seq;
     private final boolean debug;
     private final int offset;
+    private int blocksize;
 
     public Primer3Manager(PCRConfig config, boolean debug){
         this.config=config;
@@ -184,8 +185,8 @@ public class Primer3Manager {
             UI.errorDisplay("Datei "+primer3output+" wurde geloescht, kann Ergebnisse nicht lesen.");
         }
         if(null != input){
-            boolean found1,found2,found3,found4;
-            found1=found2=found3=found4=false;
+            boolean found1,found2,found3,found4,found5;
+            found1=found2=found3=found4=found5=false;
             int numreturn=-1, pairexplain=-1;
             String line;
             /* Es muessen drei Werte gefunden werden:
@@ -195,7 +196,7 @@ public class Primer3Manager {
              * Effektiv vorhanden sind Math.min(pair_explain,num_return)
              */
              try {
-                while(null != (line = input.readLine()) && (!found1 || !found2 || !found3 || !found4)){
+                while(null != (line = input.readLine()) && (!found1 || !found2 || !found3 || !found4|| !found5)){
                     //System.out.println(line);
                      if(line.startsWith("PRIMER_NUM_RETURN")){
                          String temp=line.substring(line.indexOf('=')+1).trim();
@@ -212,6 +213,11 @@ public class Primer3Manager {
                      }else if(line.startsWith("SEQUENCE")){
                          String temp=line.substring(line.indexOf('=')+1);
                          found4=true;
+                     }else if(line.startsWith("PRIMER_MISPRIMING_LIBRARY=")){
+                         if(line.substring(line.indexOf('=')+1).trim().length()>0) {//wenn eine mispriming library ex., gibts jeweils 23 zeilen
+                             blocksize=23;
+                             found5=true;
+                         }
                      }
                  }
                  input.close();
@@ -244,7 +250,7 @@ public class Primer3Manager {
                 }
             }
             if(aktPos+maxNum>=numberOfResults)
-                maxNum=numberOfResults-aktPos;
+                maxNum=numberOfResults-aktPos-1;
             if( maxNum <= 0 ){
                 try {
                     input.close();
@@ -288,15 +294,9 @@ public class Primer3Manager {
             String l,r,temp;
             String[] block;
             int i=0;
-            int blocksize = 20;
             if(0 == aktPos)//sonderfall fuers erste Paar
             try {
                 while(null != (line = input.readLine())){
-                    if(line.startsWith("PRIMER_MISPRIMING_LIBRARY=")){
-                        if(line.substring(line.indexOf('=')+1).trim().length()>0)//wenn eine mispriming library ex., gibts jeweils 23 zeilen
-                            blocksize=23;
-                    }
-                    
                     if(line.startsWith("PRIMER_PAIR_EXPLAIN=")){
                         block=Primer3Manager.readLines(input,blocksize);
                         //Helper.outputObjectArray(block);
@@ -326,8 +326,8 @@ public class Primer3Manager {
         try {
             while(i<maxNum){
                 block=Primer3Manager.readLines(input,blocksize);
-                //Helper.outputObjectArray(block);
-                //System.out.println("-------------------");
+//                System.out.println(Helper.toString(block));
+//                System.out.println("-------------------");
                 l=feste5seq + block[3].substring(block[3].indexOf('=')+1);
                 r=feste5seq + block[4].substring(block[4].indexOf('=')+1);
                 temp=block[5].substring(block[5].indexOf('=')+1);
