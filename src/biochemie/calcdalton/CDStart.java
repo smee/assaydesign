@@ -6,6 +6,9 @@ package biochemie.calcdalton;
 
 import java.util.Date;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import biochemie.calcdalton.gui.SBEGui;
 import biochemie.util.LogStdStreams;
 
@@ -36,6 +39,10 @@ public class CDStart {
         }
         if(!Boolean.getBoolean("DEBUG"))
             LogStdStreams.initializeErrorLogging("calcdalton.log", "---------Program started: " + new Date()+" -----------", true, true);
+        try {
+            UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+        }
         SBEGui gui= SBEGui.getInstance();
     }
 }

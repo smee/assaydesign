@@ -692,9 +692,6 @@ public class MiniSBEGui extends JFrame {
 	private JMenuItem aboutMenuItem = null;
 	private JMenuItem jMenuItem = null;
 	private JToolBar jToolBar = null;
-	private JButton prefButton = null;
-	private JButton addPanelButton = null;
-	private JButton jButton2 = null;
 	private JPanel sbepanelsPanel = null;
 	private JScrollPane jScrollPane = null;
 	private JButton calcButton = null;
@@ -710,6 +707,7 @@ public class MiniSBEGui extends JFrame {
     private LoadPrimerAction loadPrimerAction;
     private SavePrimerAction savePrimerAction;
     private CalculateAction calcAction;
+    private Action prefAction;
 
     private JMenuItem newDesignMenuItem;
     protected boolean expertmode;
@@ -810,6 +808,7 @@ public class MiniSBEGui extends JFrame {
 			fileMenu.setText("File");
 			fileMenu.add(getNewDesignMenuItem());
 			fileMenu.add(getAddPanelMenuItem());
+			fileMenu.addSeparator();
 			fileMenu.add(getOpenMenuItem());
 			fileMenu.add(getSaveMenuItem());
 			fileMenu.add(getPreferencesMenuItem());
@@ -959,7 +958,9 @@ public class MiniSBEGui extends JFrame {
 			jToolBar = new JToolBar();
 			jToolBar.add(getNewAction());
 			jToolBar.add(getAddPanelAction());
-			jToolBar.add(getPrefButton());
+			jToolBar.add(getLoadPrimerAction());
+			jToolBar.add(getSavePrimerAction());
+			jToolBar.add(getPrefAction());
 			jToolBar.add(getExpertToggleButton());
 			jToolBar.add(getConsoleToggleButton());
 		}
@@ -980,12 +981,11 @@ public class MiniSBEGui extends JFrame {
 	 *
 	 * @return javax.swing.JButton
 	 */
-	private JButton getPrefButton() {
-		if (prefButton == null) {
-			prefButton = new JButton();
-			prefButton.setAction(new PreferencesAction());
+	private Action getPrefAction() {
+		if (prefAction == null) {
+            prefAction = new PreferencesAction();
 		}
-		return prefButton;
+		return prefAction;
 	}
 	private SBEConfigDialog getConfigDialog(){
 		if(dialog == null){
@@ -1026,7 +1026,7 @@ public class MiniSBEGui extends JFrame {
      * @param index
      */
     private void addSBECandidatePanel(int index) {
-        SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1), getConfigDialog().getSBEOptionsFromGui().getMinCandidateLen());
+        SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1), getConfigDialog().getSBEOptionsFromGui().getMinCandidateLen(),(index+1));
         p.refreshData(getConfigDialog().getSBEOptionsFromGui());
         p.setUnchanged();
         p.setExpertMode(expertmode);
@@ -1086,7 +1086,7 @@ public class MiniSBEGui extends JFrame {
 		if (expertToggleButton == null) {
 			expertToggleButton = new JToggleButton();
 			expertToggleButton.setText("Expertmode");
-            expertToggleButton.setIcon(new ImageIcon(CalculateAction.class.getClassLoader().getResource("images/doktorhut.gif")));
+            expertToggleButton.setIcon(new ImageIcon(CalculateAction.class.getClassLoader().getResource("images/doktorhut32.gif")));
 			expertToggleButton.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					expertmode = e.getStateChange() == ItemEvent.SELECTED;

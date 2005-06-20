@@ -70,18 +70,19 @@ public class SBECandidatePanel extends MyPanel {
 	 * This is the default constructor
 	 * @param
 	 */
-	public SBECandidatePanel(String id, int maxlen) {
+	public SBECandidatePanel(String id, int maxlen, int num) {
 		super();
-		initialize(maxlen);
+		initialize(maxlen, num);
         getTfId().setText(id);
 	}
 
 	/**
 	 * This method initializes this
+	 * @param num 
 	 *
 	 * @return void
 	 */
-	private  void initialize(int minlen) {
+	private  void initialize(int minlen, int num) {
 		GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
@@ -104,7 +105,7 @@ public class SBECandidatePanel extends MyPanel {
 		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
 		this.setSize(864, 198);
-		this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "SBE-Primer", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+		this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "SBE-Primer "+num, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 		jLabel.setText("ID");
 		gridBagConstraints1.gridx = 0;
 		gridBagConstraints1.gridy = 0;

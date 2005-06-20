@@ -46,10 +46,23 @@ import biochemie.calcdalton.BerechnungsProgress;
 import biochemie.calcdalton.tf_seqDocListener;
 import biochemie.util.FileSelector;
 import biochemie.util.Helper;
+import biochemie.util.MyAction;
 import biochemie.util.SwingWorker;
 
 public class SBEGui extends JFrame{
     JPanel panel;
+    private class ExitAppAction extends MyAction{
+
+        public ExitAppAction() {
+            super("Exit","exits the application",ExitAppAction.class.getClassLoader().getResource("images/exit.gif"),
+                    KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_DOWN_MASK));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            exitApp();
+        }
+
+    }
 	private static final class CalculateAction extends AbstractAction {
         Icon icon;
         public CalculateAction(){
@@ -82,8 +95,8 @@ public class SBEGui extends JFrame{
             }else{
                 putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
             }
-            putValue(NAME,"Preferences");
-            putValue(SHORT_DESCRIPTION,"Preferences");
+            putValue(NAME,"Settings");
+            putValue(SHORT_DESCRIPTION,"Settings");
             java.net.URL url=this.getClass().getClassLoader().getResource("images/properti.gif");
             if(null != url){
                 icon=new ImageIcon(url);
@@ -137,8 +150,8 @@ public class SBEGui extends JFrame{
             }else{
                 putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
             }
-            putValue(NAME,"Add panel");
-            putValue(SHORT_DESCRIPTION,"add new SBE panel");
+            putValue(NAME,"Add primer");
+            putValue(SHORT_DESCRIPTION,"add new SBE primer");
             java.net.URL url=this.getClass().getClassLoader().getResource("images/add.gif");
             if(null != url){
                 icon=new ImageIcon(url);
@@ -150,10 +163,23 @@ public class SBEGui extends JFrame{
             newPanel.tfSequence.getDocument().addDocumentListener(dl_seq);
             newPanel.refreshData();
             sbePanelList.add(newPanel);
-            panel.add(newPanel,panel.getComponentCount()-1);
+            panel.add(newPanel);
             panel.revalidate();
             panel.repaint();
         }
+    }
+    private final class NewAction extends MyAction {
+        public NewAction() {
+            super("New", "New Assay Design"
+                    ,NewAction.class.getClassLoader().getResource("images/new.gif")
+                    ,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+        }
+            public void actionPerformed(ActionEvent e) {
+                sbePanelList.clear();
+                panel.removeAll();
+                panel.revalidate();
+                panel.repaint();
+            }
     }
     private static final class HelpAction extends AbstractAction{
         Icon icon;
@@ -523,11 +549,6 @@ public class SBEGui extends JFrame{
        	singleton=this;
         ToolTipManager.sharedInstance().setInitialDelay(100);
        	/////////////////////////////////////////
-      try
-      {
-         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      }
-      catch ( Exception e ) {}
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -539,42 +560,55 @@ public class SBEGui extends JFrame{
         if(null != url){
             setIconImage(new ImageIcon(url).getImage());
         }
+        Action newaction=new NewAction();
 		Action loadaction=new LoadPrimerAction();
 		Action saveaction=new SavePrimerAction();
 		Action addpanelaction=new AddPanelAction();
 		Action helpaction=new HelpAction();
 		Action calcaction=new CalculateAction();
 		Action optionsaction=new OptionsAction();
+		Action exitaction=new ExitAppAction();
 
 		getContentPane().setLayout(new BorderLayout());
 
 		JToolBar toolbar = new JToolBar();
+		toolbar.add(newaction);
 		toolbar.add(addpanelaction);
+        toolbar.addSeparator();
 		toolbar.add(loadaction);
 		toolbar.add(saveaction);
+		toolbar.addSeparator();
 		toolbar.add(optionsaction);
-
+		toolbar.addSeparator();
+		toolbar.add(exitaction);
+		
 
 		getContentPane().add(toolbar, BorderLayout.NORTH);
 		menu= new JMenuBar();
 		help= new JMenu("?");
-		zeugs=new JMenu("Settings");
-        zeugs.setMnemonic(KeyEvent.VK_S);
+		zeugs=new JMenu("File");
+        zeugs.setMnemonic(KeyEvent.VK_F);
 		menu.add(zeugs);
 		menu.add(help);
 		setJMenuBar(menu);
+        JMenuItem newitem=new JMenuItem(newaction);
+        newitem.setHorizontalAlignment(SwingConstants.LEFT);
+        zeugs.add(newitem);
 		prefs =new JMenuItem(optionsaction);
         prefs.setHorizontalAlignment(SwingConstants.LEFT);
 		about= new JMenuItem(new AboutAction());
-
+		JMenuItem addPanel=new JMenuItem(addpanelaction);
+		zeugs.add(addPanel);
+		zeugs.addSeparator();
 		JMenuItem loadPrimer=new JMenuItem(loadaction);
 		zeugs.add(loadPrimer);
 		JMenuItem savePrimer=new JMenuItem(saveaction);
 		zeugs.add(savePrimer);
-
-        JMenuItem addPanel=new JMenuItem(addpanelaction);
 		zeugs.add(prefs);
-        zeugs.add(addPanel);
+		zeugs.addSeparator();
+		JMenuItem exitem=new JMenuItem(exitaction);
+        zeugs.add(exitem);
+        
         JMenuItem helpItem=new JMenuItem(helpaction);
         helpItem.setHorizontalAlignment(SwingConstants.LEFT);
         help.add(helpItem);

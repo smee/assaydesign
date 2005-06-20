@@ -49,7 +49,6 @@ public class SBEPanel extends JPanel
         double f = TableLayout.FILL;
         double p = TableLayout.PREFERRED;
 
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),"Single Base Extension " + num + ':'));
         double[][] size=
             {{border,f,hg,p,hg,p,border},
              {border,p,border}};
