@@ -6,10 +6,13 @@ package biochemie.util;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+
+import biochemie.sbe.gui.MiniSBEGui;
 
 /**
  * Singleton, Facade. Liefert vom user ausgewaehlte Datei zurueck. Es wird immer das zuletzt aktuelle Verzeichnis wieder besucht.
@@ -17,7 +20,8 @@ import javax.swing.filechooser.FileFilter;
  *
  */
 public class FileSelector {
-    private static File _lastdir=new File(".");
+    private static Preferences prefs=Preferences.userNodeForPackage(FileSelector.class);
+    private static File _lastdir=new File(prefs.get("LASTDIR","."));
     /**
      * Type value indicating that the <code>JFileChooser</code> supports an 
      * "Open" file operation.
@@ -47,6 +51,7 @@ public class FileSelector {
             _lastdir=f;
         else
             _lastdir=f.getParentFile();
+        prefs.put("LASTDIR",f.getAbsolutePath());
     }
 
     public static File getUserSelectedFile(Component parent, String title, FileFilter filter, int dialogtype) {

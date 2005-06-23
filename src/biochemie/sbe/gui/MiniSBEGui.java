@@ -958,8 +958,10 @@ public class MiniSBEGui extends JFrame {
 			jToolBar = new JToolBar();
 			jToolBar.add(getNewAction());
 			jToolBar.add(getAddPanelAction());
+            jToolBar.addSeparator();
 			jToolBar.add(getLoadPrimerAction());
 			jToolBar.add(getSavePrimerAction());
+			jToolBar.addSeparator();
 			jToolBar.add(getPrefAction());
 			jToolBar.add(getExpertToggleButton());
 			jToolBar.add(getConsoleToggleButton());
@@ -1152,7 +1154,9 @@ public class MiniSBEGui extends JFrame {
          * @param key
          */
         public ConsoleViewAction() {
-            super("show logfile","shows the logfile contents", null, KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
+            super("show logfile","shows the logfile contents", 
+                    ConsoleViewAction.class.getClassLoader().getResource("images/gray.gif"),
+                    KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
         }
 
         public void actionPerformed(ActionEvent e) {
