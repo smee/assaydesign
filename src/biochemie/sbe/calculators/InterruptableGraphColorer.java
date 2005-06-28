@@ -112,7 +112,7 @@ private boolean[][] createAdmatrixFromGraph(UndirectedGraph g){
 	        int color,v;
 	        for (color=0; color <= usedcolors; color++)
 	            if (0 == blocked[u][color]) {
-	                if(usedColorCount[color]+plexGroesse[u] <= maxplexgroesse) {//hab diese Farbe noch nicht zu oft benutzt
+	                if(usedColorCount[color]==0 || usedColorCount[color]+plexGroesse[u] <= maxplexgroesse) {//hab diese Farbe noch nicht zu oft benutzt
 	                    usedColorCount[color]+=plexGroesse[u];
 	                    for (v=u+1; v < numnodes; v++)
 	                        if (admatrix[u][v])

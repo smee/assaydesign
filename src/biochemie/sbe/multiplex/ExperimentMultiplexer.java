@@ -41,8 +41,10 @@ public class ExperimentMultiplexer extends Multiplexer {
         System.out.println("Using graph coloring to find multiplexes for given primers...");
 
         boolean drawGraph=cfg.isDrawGraphes();
-
+        System.out.println("Creating graph with "+multip.size()+" vertices...");
         UndirectedGraph g=GraphHelper.createIncompGraph(multip,drawGraph, 0);
+        System.out.println("RevGraph consists of "+g.vertexSet().size()+" vertices, "+g.edgeSet().size()+" edges.");
+        
         if(Thread.currentThread().isInterrupted())
             return;
         SBEColorerProxy itrp=new SBEColorerProxy(g,new HashSet(), cfg.getMaxPlex(),debug);

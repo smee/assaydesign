@@ -5,8 +5,10 @@ package biochemie.sbe.io;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
+import biochemie.sbe.SBECandidate;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
 /**
@@ -101,5 +103,17 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public List getIncludedElements() {
             return new ArrayList(multiplexables);
         }
-
+        public List getSBECandidates() {
+            List ret = new LinkedList();
+            for (Iterator it = factories.iterator(); it.hasNext();) {
+                MultiplexableFactory mf = (MultiplexableFactory) it.next();
+                if(mf instanceof SBECandidate)
+                    ret.add(mf);
+                else if(mf instanceof MultiKnoten)
+                    ret.addAll(((MultiKnoten)mf).getSBECandidates());
+                else
+                    throw new IllegalArgumentException("FEHLER im Programm: Liste darf nur SBECandidates oder MultiKnoten enthalten!");
+            }
+            return ret;
+        }
     }

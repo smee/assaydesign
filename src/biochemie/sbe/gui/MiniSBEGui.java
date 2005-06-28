@@ -77,6 +77,7 @@ import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.actions.SaveResultsAction;
 import biochemie.sbe.gui.actions.ShowDiffAction;
+import biochemie.sbe.io.MultiKnoten;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.sbe.multiplex.Multiplexer;
 import biochemie.util.ConsoleWindow;
@@ -260,10 +261,10 @@ public class MiniSBEGui extends JFrame {
             return SBEPrimerReader.collapseMultiplexes(sbec,cfg);
         }
         /**
-         * @param sbec
+         * @param compactsbec
          * @param cfg
          */
-        private SwingWorker runCalculation(final String title, final List sbec, final SBEOptions cfg, final boolean showResult) {
+        private SwingWorker runCalculation(final String title, final List compactsbec, final SBEOptions cfg, final boolean showResult) {
             Multiplexer.stop(false);
         	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             //dialog um den user zu informieren
@@ -281,14 +282,14 @@ public class MiniSBEGui extends JFrame {
         		public Object construct() {
                     MiniSBE m = null;
                     try {
-						m = new MiniSBE(sbec,cfg);
+						m = new MiniSBE(compactsbec,cfg);
                         if(Thread.currentThread().isInterrupted())
                             return null;
-						normalizeSekStruks(sbec);
+						normalizeSekStruks(getSBECandidatesFromMultiKnotenList(compactsbec));
 					} catch (RuntimeException e) {
 						e.printStackTrace();
 					}
-                    return sbec;
+                    return compactsbec;
         		}
         		public void finished() {
                     if(!isDone())
@@ -296,7 +297,7 @@ public class MiniSBEGui extends JFrame {
                     dialog.dispose();
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     if(showResult)
-                        showResultFrame(title,sbec,cfg);
+                        showResultFrame(title,getSBECandidatesFromMultiKnotenList(compactsbec),cfg);
         		}
         	};
         	JButton stopbutton = new JButton("Cancel");
@@ -314,7 +315,29 @@ public class MiniSBEGui extends JFrame {
             dialog.setVisible(true);
             return sw;
         }
-
+        /**
+         * Liefert List mit SBEcandidates, compactsbec kann SBECs, Multiknoten enthalten.
+         * @param compactsbec
+         * @return
+         */
+        protected List getSBECandidatesFromMultiKnotenList(List compactsbec) {
+            List ret=new ArrayList();
+            for (Iterator it = compactsbec.iterator(); it.hasNext();) {
+                Object o = it.next();
+                if(o instanceof SBECandidate) {
+                    ret.add(o);
+                    continue;
+                }else if(o instanceof MultiKnoten) {
+                    ret.addAll(((MultiKnoten)o).getSBECandidates());
+                }else
+                    throw new IllegalArgumentException("FEHLER im Programm: Liste darf nur SBECandidates oder MultiKnoten enthalten!");
+            }
+            return ret;
+        }
+        /**
+         * Liste darf nur 
+         * @param sbec
+         */
         protected void normalizeSekStruks(List sbec) {
             for (Iterator iter = sbec.iterator(); iter.hasNext();) {
                 SBECandidate sc = (SBECandidate) iter.next();
