@@ -4,6 +4,8 @@
  */
 package biochemie.pcr;
 
+import biochemie.util.Helper;
+
 /**
  *
  * @author Steffen
@@ -40,6 +42,8 @@ public class PrimerPair {
     private final int anhangsize;
     private int cyclenum;
     private boolean blatError;
+	private final float gcleft;
+	private final float gcright;
     
     /**
      * Erstellt ein neues Primerpair. 
@@ -49,7 +53,7 @@ public class PrimerPair {
      * @param rightpos
      * @param gcdiff
      */
-    public PrimerPair(String l, String r, int leftpos, int rightpos,float gcdiff, int posinfile, int anhangsize)  {
+    public PrimerPair(String l, String r, int leftpos, int rightpos,float gcleft, float gcright, int posinfile, int anhangsize)  {
         this.leftp=l.toUpperCase();
         this.rightp=r.toUpperCase();
         this.leftpos=leftpos;
@@ -57,7 +61,9 @@ public class PrimerPair {
         this.leftlen=l.length();
         this.rightlen=r.length();
         this.productlen=this.rightpos-this.leftpos+1;
-        this.gcdiff=gcdiff;
+        this.gcdiff=Math.abs(gcleft-gcright);
+        this.gcleft=gcleft;
+        this.gcright=gcright;
         this.posinfile = posinfile;
         this.anhangsize=anhangsize;
     }
@@ -159,6 +165,7 @@ public class PrimerPair {
         this.rightlen=rightlen;
         this.productlen=this.rightpos-this.leftpos+1;
         this.gcdiff=0;
+        this.gcleft=gcright=0;
         this.anhangsize=0;
         this.posinfile=0;
     }
@@ -212,11 +219,19 @@ public class PrimerPair {
 		sb.append(';');
         sb.append(leftlen);
         sb.append(';');
+        sb.append(gcleft);
+        sb.append(';');
+        sb.append(Helper.getXGehalt(leftp,"GgCc"));
+        sb.append(';');
         sb.append(rightp);
         sb.append(';');
         sb.append(rightpos+1);
         sb.append(';');
 		sb.append(rightlen);
+		sb.append(';');
+		sb.append(gcright);
+		sb.append(';');
+		sb.append(Helper.getXGehalt(rightp,"GgCc"));
 		sb.append(';');
         sb.append(productlen);
         sb.append(';');
@@ -248,8 +263,10 @@ public class PrimerPair {
         sb.append("Original position in primer3 list;");
         sb.append("Left primer;");
         sb.append("Start;length;");
+        sb.append("GC% w/O TAG;GC% with TAG;");
 		sb.append("Right primer;");
 		sb.append("Start;length;");
+		sb.append("GC% w/O TAG;GC% with TAG;");
 		sb.append("Productlength;");
 		sb.append("Productlength incl. Tags;");
 		sb.append("GC difference;");

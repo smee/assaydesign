@@ -290,7 +290,7 @@ public class Primer3Manager {
                In dieser Reihenfolge wird also gelesen.
              */
             String line=null;
-            float gc1=0,gc2=0,gc=0;
+            float gc1=0,gc2=0;
             String l,r,temp;
             String[] block;
             int i=0;
@@ -311,8 +311,7 @@ public class Primer3Manager {
                         gc1=Float.parseFloat(temp);
                         temp=block[10].substring(block[10].indexOf('=')+1);
                         gc2=Float.parseFloat(temp);
-                        gc=Math.abs(gc1-gc2);
-                        pps[0]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1, feste5seq.length());
+                        pps[0]=new PrimerPair(l,r,leftpos,rightpos,gc1,gc2,aktPos+1, feste5seq.length());
                         i++;
                         aktPos++;
                         break;
@@ -338,8 +337,7 @@ public class Primer3Manager {
                 gc1=Float.parseFloat(temp);
                 temp=block[10].substring(block[10].indexOf('=')+1);
                 gc2=Float.parseFloat(temp);
-                gc=Math.abs(gc1-gc2);
-                pps[i]=new PrimerPair(l,r,leftpos,rightpos,gc,aktPos+1, feste5seq.length());
+                pps[i]=new PrimerPair(l,r,leftpos,rightpos,gc1,gc2,aktPos+1, feste5seq.length());
                 i++;
                 aktPos++;
             }

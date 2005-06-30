@@ -96,6 +96,8 @@ public class PCRMatcher {
             left=st.nextToken().trim().toUpperCase();
             st.nextToken();//start
             st.nextToken();//length
+            st.nextToken();//gc%1
+            st.nextToken();//gc%2
             right=st.nextToken().trim().toUpperCase();
             PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,cda);
             PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,cda);
