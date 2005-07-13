@@ -114,7 +114,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 left.setEnabled(true);
                 fixedcb.setSelected(false);
                 fixedcb.setEnabled(false);
-                other.setEnabled(true);
+                if(other!=null)
+                    other.setEnabled(true);
                 return;
             }else {
                 int br=Helper.getPosOfPl(seq);

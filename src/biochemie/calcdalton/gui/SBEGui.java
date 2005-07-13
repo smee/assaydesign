@@ -255,8 +255,10 @@ public class SBEGui extends JFrame{
                         int len=lines.size()-sbePanelList.size();
                         if(lines.size()>0) {
                             String s=(String) lines.get(0);
-                            if(s.contains("SBE-ID"))//header
+                            if(s.indexOf("SBE-ID")>-1) {//header
+                                lines.remove(0);
                                 len--;
+                            }
                         }
                         for (int i = 0; i < len ; i++) {
                             SBEPanel newPanel=new SBEPanel(sbePanelList.size()+1);
@@ -274,8 +276,6 @@ public class SBEGui extends JFrame{
                             panel.tfSequence.setText(p);
                             panel.tfName.setText("");
                         }else {//minisbe-ein/ausgabefile
-                            if(i == 0)
-                                continue;//header
                             if(p.indexOf("bio")!=-1)
                                 loadFromOutputline(Helper.clearEmptyCSVEntries(p),panel);
                             else
