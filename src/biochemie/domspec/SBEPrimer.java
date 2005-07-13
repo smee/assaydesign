@@ -266,7 +266,7 @@ public class SBEPrimer extends Primer{
         return true;
     }
 
-    protected static String[][] createCDParameters(SBEPrimer p1, SBEPrimer p2, CalcDaltonOptions cfg) {
+    public static String[][] createCDParameters(SBEPrimer p1, SBEPrimer p2, CalcDaltonOptions cfg) {
         if(cfg.getCalcDaltonAllExtensions())
             return new String[][]{
                 {p1.getSeq(),"A","C","G","T"}
@@ -276,7 +276,7 @@ public class SBEPrimer extends Primer{
             
     }
     
-    protected static String[] getCDParamLine(SBEPrimer p) {
+    public static String[] getCDParamLine(SBEPrimer p) {
         Set chars=new TreeSet();
         String snp=p.getSNP();
         for(int i=0;i<snp.length();i++)

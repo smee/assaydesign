@@ -253,6 +253,11 @@ public class SBEGui extends JFrame{
                         lines.add(line);
                     if(sbePanelList.size()<lines.size()) {
                         int len=lines.size()-sbePanelList.size();
+                        if(lines.size()>0) {
+                            String s=(String) lines.get(0);
+                            if(s.contains("SBE-ID"))//header
+                                len--;
+                        }
                         for (int i = 0; i < len ; i++) {
                             SBEPanel newPanel=new SBEPanel(sbePanelList.size()+1);
                             newPanel.tfSequence.getDocument().addDocumentListener(dl_seq);

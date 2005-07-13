@@ -21,6 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
 
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
+import biochemie.sbe.filter.ForbiddenCDMassFilter;
 import biochemie.sbe.filter.GCFilter;
 import biochemie.sbe.filter.KandidatenFilter;
 import biochemie.sbe.filter.LaengenFilter;
@@ -298,6 +299,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
 		kf.add(new PolyXFilter(cfg));
 		kf.add(new GCFilter(cfg));
 		kf.add(new UnwantedPrimerFilter(cfg, unwanted));
+		kf.add(new ForbiddenCDMassFilter(cfg));
 		if(hh){
 			kf.add(new SekStructureFilter(cfg));
 		}

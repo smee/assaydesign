@@ -167,7 +167,7 @@ public class CalcDalton implements Interruptible{
 		return ergebnis;
 	}
 
-	private boolean invalidMassesIn(double[] massen){
+	public boolean invalidMassesIn(double[] massen){
 		for (int i = 0; i < verbMasseFrom.length; i++) {
 			for (int j = 0; j < massen.length; j++) {
 				if(massen[j]>=verbMasseFrom[i] && massen[j]<=verbMasseTo[i])
