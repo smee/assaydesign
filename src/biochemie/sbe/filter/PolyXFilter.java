@@ -42,8 +42,10 @@ public class PolyXFilter extends AbstractKandidatenFilter {
                 }else{
                     if(c==seq.charAt(i))
                         counter++;
-                    else
+                    else{
                         tracingrun=false;
+                        i--;
+                    }
                     if(counter>polyX){
                         it.remove();
                         count++;                        	
