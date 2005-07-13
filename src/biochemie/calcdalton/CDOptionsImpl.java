@@ -28,6 +28,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.verbto","2000"}
            ,{"calcdalton.allowoverlap","false"}
            ,{"calcdalton.peaks","4"}
+           ,{"calcdalton.extension","true"}
            ,{"misc.debug","false"}
            };
     }
@@ -104,6 +105,14 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
 
     public void setDebug(boolean b) {
         setProperty("misc.debug",Boolean.toString(b));
+    }
+
+    public boolean getCalcDaltonAllExtensions() {
+        return getBoolean("calcdalton.extension",true);
+    }
+
+    public void setCalcDaltonAllExtensions(boolean val) {
+        setProperty("calcdalton.extension",Boolean.toString(val));
     }
 
 }

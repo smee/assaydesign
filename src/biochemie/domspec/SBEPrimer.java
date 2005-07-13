@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
@@ -20,6 +21,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.calcdalton.CalcDalton;
+import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.multiplex.Multiplexable;
@@ -253,8 +255,7 @@ public class SBEPrimer extends Primer{
      */
     public boolean passtMitCalcDalton(SBEPrimer other) {
         CalcDalton cd=Helper.getCalcDalton(cfg);
-        String[][] sbedata= {{this.getSeq(),"A","C","G","T"}
-        					,{other.getSeq(),"A","C","G","T"}};
+        String[][] sbedata= createCDParameters(this, other, cfg);
         int[] br = cfg.getPhotolinkerPositions();
 		int[] fest=new int[] {ArrayUtils.indexOf(br,this.getBruchstelle())
                 			 ,ArrayUtils.indexOf(br,other.getBruchstelle())};
@@ -265,6 +266,36 @@ public class SBEPrimer extends Primer{
         return true;
     }
 
+    protected static String[][] createCDParameters(SBEPrimer p1, SBEPrimer p2, CalcDaltonOptions cfg) {
+        if(cfg.getCalcDaltonAllExtensions())
+            return new String[][]{
+                {p1.getSeq(),"A","C","G","T"}
+               ,{p2.getSeq(),"A","C","G","T"}};
+        else
+            return new String[][] {getCDParamLine(p1), getCDParamLine(p2)};
+            
+    }
+    
+    protected static String[] getCDParamLine(SBEPrimer p1) {
+        Set chars=new TreeSet();
+        String snp1=p1.getSNP();
+        for(int i=0;i<snp1.length();i++)
+            chars.add(new Character(snp1.charAt(i)));
+        Set sekstrucs1=p1.getSecStrucs();
+        for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
+            SBESekStruktur s = (SBESekStruktur) it.next();
+            if(s.getType()==SBESekStruktur.HAIRPIN || s.getType()==SBESekStruktur.HOMODIMER)
+                chars.add(new Character(s.bautEin()));
+        }
+        String[] arr=new String[chars.size()+1];
+        arr[0]=p1.getSeq();
+        int i=1;
+        for (Iterator it = chars.iterator(); it.hasNext();i++) {
+            Character c = (Character) it.next();
+            arr[i]=c.toString();
+        }
+        return arr;
+    }
     public String getName() {
         return getId()+'_'+getBruchstelle()+'_'+getType();
     }

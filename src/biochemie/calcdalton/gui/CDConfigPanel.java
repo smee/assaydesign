@@ -282,6 +282,7 @@ public class CDConfigPanel extends JPanel{
 	DoubleValueIntervallPanel verbMassePanel;
 
 	final Vector bruchstelleVector;
+    private JCheckBox cbCalcdaltonAnhaenge;
 
     public CDConfigPanel(){
         bruchstelleVector = new Vector();
@@ -307,6 +308,7 @@ public class CDConfigPanel extends JPanel{
         c.setCalcDaltonAllowOverlap(cbAllowOverlap.isSelected());
         c.setCalcDaltonVerbFrom(verbMassePanel.getFrom());
         c.setCalcDaltonVerbTo(verbMassePanel.getTo());
+        c.setCalcDaltonAllExtensions(cbCalcdaltonAnhaenge.isSelected());
         return c;
     }
 
@@ -321,6 +323,7 @@ public class CDConfigPanel extends JPanel{
 			abstandPanel.reset(cfg.getCalcDaltonFrom(),cfg.getCalcDaltonTo());
         if(null != verbMassePanel)
             verbMassePanel.reset(cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
+        cbCalcdaltonAnhaenge.setSelected(cfg.getCalcDaltonAllExtensions());
     }
 
 
@@ -344,7 +347,7 @@ public class CDConfigPanel extends JPanel{
         double p=TableLayoutConstants.PREFERRED;
         double f=TableLayoutConstants.FILL;
         double b=5;
-        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p}};
+        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p}};
 
         setLayout(new TableLayout(settingsSize));
         JPanel bruchStellenPanel=new JPanel();
@@ -397,6 +400,11 @@ public class CDConfigPanel extends JPanel{
         cbAllowOverlap=new JCheckBox("allow unextended Primer overlap",false);
         cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>complexes as specified in \"Excluded peak distances\"</html>");
         add(cbAllowOverlap,"1,9");
+        cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);
+        cbCalcdaltonAnhaenge.setToolTipText("<html>If checked, the program reserves the appropriate mass range for all<br>" +
+                " possible extension products A, C, G and T of every primer.<br>" +
+                "Otherwise the mass range is reserved for the expected products only.</html>");
+        add(cbCalcdaltonAnhaenge,"1,11");
     }
 
 }

@@ -56,4 +56,13 @@ public interface CalcDaltonOptions extends GeneralOptions{
      */
     public boolean getCalcDaltonAllowOverlap();
     public void setCalcDaltonAllowOverlap(boolean val);
+    
+    /**
+     * If checked, the program reserves the appropriate mass range for all possible extension products A, C, G and T of every primer.
+     * Otherwise the mass range is reserved for the expected products only
+     * 
+     * @return
+     */
+    public boolean getCalcDaltonAllExtensions();
+    public void setCalcDaltonAllExtensions(boolean val);
 }

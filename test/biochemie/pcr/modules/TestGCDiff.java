@@ -26,11 +26,11 @@ public class TestGCDiff extends TestCase {
 		PCRConfig p=new PCRConfig();
 		gcd=new GCDiff(p,false);
 		pps=new PrimerPair[5];
-		pps[0]=new PrimerPair("","",0,1000,1,0,0);
-		pps[1]=new PrimerPair("","",0,1000,10,0,0);
-		pps[2]=new PrimerPair("","",0,1000,-10,0,0);
-		pps[3]=new PrimerPair("","",0,1000,5,0,0);
-		pps[4]=new PrimerPair("","",0,500,7,0,0);
+		pps[0]=new PrimerPair("","",0,1000,1,2,0,0);
+		pps[1]=new PrimerPair("","",0,1000,10,20,0,0);
+		pps[2]=new PrimerPair("","",0,1000,20,10,0,0);
+		pps[3]=new PrimerPair("","",0,1000,10,5,0,0);
+		pps[4]=new PrimerPair("","",0,500,3,10,0,0);
 	}
 	
 	public void testGCDiff() {

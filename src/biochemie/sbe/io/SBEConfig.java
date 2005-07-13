@@ -268,6 +268,13 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
     public void setDebug(boolean b) {
         cdopt.setDebug(b);
     }
+    public boolean getCalcDaltonAllExtensions() {
+        return cdopt.getCalcDaltonAllExtensions();
+    }
+    
+    public void setCalcDaltonAllExtensions(boolean val) {
+        cdopt.setCalcDaltonAllExtensions(val);
+    }
     //proxy end -----------------------------------------------------------------------------------------
 
     public void readConfigFile(String f) throws IOException {
@@ -287,6 +294,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).updateConfigFile(filename);
     }
+
 
 
 
