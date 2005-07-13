@@ -276,19 +276,19 @@ public class SBEPrimer extends Primer{
             
     }
     
-    protected static String[] getCDParamLine(SBEPrimer p1) {
+    protected static String[] getCDParamLine(SBEPrimer p) {
         Set chars=new TreeSet();
-        String snp1=p1.getSNP();
-        for(int i=0;i<snp1.length();i++)
-            chars.add(new Character(snp1.charAt(i)));
-        Set sekstrucs1=p1.getSecStrucs();
+        String snp=p.getSNP();
+        for(int i=0;i<snp.length();i++)
+            chars.add(new Character(snp.charAt(i)));
+        Set sekstrucs1=p.getSecStrucs();
         for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.getType()==SBESekStruktur.HAIRPIN || s.getType()==SBESekStruktur.HOMODIMER)
                 chars.add(new Character(s.bautEin()));
         }
         String[] arr=new String[chars.size()+1];
-        arr[0]=p1.getSeq();
+        arr[0]=p.getSeq();
         int i=1;
         for (Iterator it = chars.iterator(); it.hasNext();i++) {
             Character c = (Character) it.next();

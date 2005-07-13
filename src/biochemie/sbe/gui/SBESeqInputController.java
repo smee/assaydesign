@@ -107,7 +107,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
             int pos=seq.indexOf('L');
             if(pos == -1 )  {      //kein L in der Eingabe
                 replacedNukl = 0;
-                String ltool=seq.length()==0?INSERT_TT:seq;
+                String ltool=seq.length()==0?INSERT_TT:left.getText();
                 setToolTipAndBorder(left,ltool,false);
                 plpanel.setEnabled(true);
                 plpanel.setSelectedPL(-1);//auto
@@ -121,7 +121,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 if(plpanel.hasPL(br)){//es gibt diesen PL
                     plpanel.setEnabled(replacedNukl!=0);
                     plpanel.setRekTooltip("Photolinker was defined by primer sequence input");
-                    
+                    seq=left.getText();//koennte ja schon umgedreht sein
+                    pos=seq.indexOf('L');
                     String tooltip = seq.substring(0,pos)+"[L]"+seq.substring(pos+1);
                     setToolTipAndBorder(left,tooltip,false);
                     fixedcb.setEnabled(true);
