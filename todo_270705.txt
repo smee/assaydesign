@@ -1,0 +1,32 @@
+TODOS
+-----
+*- Suche nach heuristischen Färbungsverfahren
+
+CalcDalton:
+-----------
+
+*- Dialog nicht im Vordergrund, muss per Alt-Tab hinwechseln (angeblich nur, wenn es nicht aufwendig ist,
+aber in wirklichkeit reisst er dir den kopf ab, wenn du das nicht schnellstmöglichst hinbekommst!)
+- entferne Funktionalität: "Berechne primermassen, wenn nur ein Primer angegeben"
+- verbotene Massebereiche: entferne solche primer gleich bzw. gib adäquate fehlermaeldung aus
+- "allow for all extension products" soll folgende funktion haben:
+        - aus: keine aenderung
+        - an: berechne mit alle angehaengten nukleotiden, tabelle enthaelt auch alle werte (aber in berechnung nichtverwendete ausklammern),
+	          previewgraph malt aber nur angeklicktes
+- ausgewaehlte pls speichern+dntps
+*- x zum fenster schliessen: bekommt man das bei nem jdialog wech?
+- Hinweis: proggy steht unter GPL (eintraege in alle Quellcodefiles!+hinweis beim start)
+- wenn keine Lösung gefunden: Frage den Nutzer(coloring vs. maxclique): "Find a solution with a maximum amount of primers in one of the reactions" "Maximal subset" "Find a solution with a more evenly distributed number of primers" "Evenly distributed primers"
+  -> ergebnisframe anpassen: vgl. mit minisbe
+*- recchte Mousetaste: popup mit copy, paste, cut
+- logfile rausnehmen (parameter in gui, wenn gewuenscht)
+- bei beendern fragen, ob man speichern moechte
+
+
+
+MiniSBE:
+--------
+- Status ausgeben: was macht ich gerade? "Graph erstellen,...."
+- skalierende Eingabe (nicht die Breite begrenzen!)
+- in ergebnistabelle in der calcdaltonberechnung nicht verwendete massen ausklammern (wie bei calcdalton)
+- speichere: pl per plcombobox veraendert (also speichere ersetztes nukleotid)
