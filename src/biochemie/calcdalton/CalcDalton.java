@@ -333,10 +333,10 @@ public class CalcDalton implements Interruptible{
         /*-------------------------- hier gehts los------------------------------*/
         maxreacheddepth=0;
         initializeMassen(sbeData);
-		if(1 == sbeData.length) {
-			erglist.add(new int[]{fest[0]});
-		}
-		else {
+//		if(1 == sbeData.length) {
+//			erglist.add(new int[]{fest[0]});
+//		}
+//		else {
             laufvar=new int[anzahl_sbe];//enthaelt k,l,m,...
             double[][] sbe_masse=new double[anzahl_sbe][];
             int ptr=0;//Laufvariable
@@ -395,7 +395,7 @@ public class CalcDalton implements Interruptible{
                     laufvar[ptr]++;
                 }
             }while(laufvar[0]!=brlen);//wenn die erste Laufvariable auf brlen steht, simmer ferdsch
-	}
+	//}
 	int[][] erg=new int[erglist.size()][];
     for (int i= 0; i < erglist.size(); i++) {
         Object obj=erglist.get(i);

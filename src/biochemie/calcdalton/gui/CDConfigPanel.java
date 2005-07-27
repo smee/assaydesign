@@ -33,9 +33,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
+import org.jfree.ui.FilesystemFilter;
+
 import biochemie.calcdalton.CDOptionsImpl;
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.gui.DoubleValueIntervallPanel;
+import biochemie.util.FileSelector;
 import biochemie.util.config.GeneralConfig;
 
 /**
@@ -188,10 +191,7 @@ public class CDConfigPanel extends JPanel{
             }
         }
         public void actionPerformed(ActionEvent e) {
-            File file=new File(".");
-            JFileChooser jfc=new JFileChooser(file);
-            jfc.setDialogTitle("Load config...");
-            jfc.setFileFilter(new FileFilter(){
+            File file=FileSelector.getUserSelectedFile(null,"Load config...",new FileFilter(){
                 public boolean accept(File f) {
                     if(f.isDirectory())
                         return true;
@@ -202,10 +202,8 @@ public class CDConfigPanel extends JPanel{
                 public String getDescription() {
                     return "CalcDalton-configfiles";
                 }
-            });
-            int result=jfc.showOpenDialog(null);
-            if(JFileChooser.APPROVE_OPTION == result){
-                file=jfc.getSelectedFile();
+            },FileSelector.OPEN_DIALOG);
+            if(file!=null){
                 CDOptionsImpl cfg = new CDOptionsImpl();
                 try {
                     cfg.readConfigFile(file.getCanonicalPath());
@@ -231,10 +229,7 @@ public class CDConfigPanel extends JPanel{
             }
         }
         public void actionPerformed(ActionEvent e) {
-            File file=new File(".");
-            JFileChooser jfc=new JFileChooser(file);
-            jfc.setDialogTitle("Load config...");
-            jfc.setFileFilter(new FileFilter(){
+            File file=FileSelector.getUserSelectedFile(null,"Save config...",new FileFilter(){
                 public boolean accept(File f) {
                     if(f.isDirectory())
                         return true;
@@ -245,10 +240,8 @@ public class CDConfigPanel extends JPanel{
                 public String getDescription() {
                     return "CalcDalton-configfiles";
                 }
-            });
-            int result=jfc.showSaveDialog(null);
-            if(JFileChooser.APPROVE_OPTION == result){
-                file=jfc.getSelectedFile();
+            },FileSelector.SAVE_DIALOG);
+            if(file!=null){
                 String path=file.getAbsolutePath();
                 if(!path.endsWith(".cfg") && !path.endsWith(".CFG"))
                     path += ".cfg";

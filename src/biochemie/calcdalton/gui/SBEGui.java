@@ -420,7 +420,7 @@ public class SBEGui extends JFrame{
                 public String getDescription() {
                     return "textfiles containing primer";
                 }
-            },JFileChooser.OPEN_DIALOG);
+            },JFileChooser.SAVE_DIALOG);
             if(file != null) {
                     if(!file.getAbsolutePath().toLowerCase().endsWith(".primer") && !file.getAbsolutePath().toLowerCase().endsWith(".csv"))
                         file=new File(file.getAbsolutePath()+".csv");
