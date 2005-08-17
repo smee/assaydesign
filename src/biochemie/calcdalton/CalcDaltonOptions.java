@@ -4,6 +4,8 @@
  */
 package biochemie.calcdalton;
 
+import java.util.Map;
+
 import biochemie.util.config.GeneralOptions;
 
 
@@ -65,4 +67,12 @@ public interface CalcDaltonOptions extends GeneralOptions{
      */
     public boolean getCalcDaltonAllExtensions();
     public void setCalcDaltonAllExtensions(boolean val);
+    
+    public Map getCalcDaltonPrimerMassesMap();
+    public void setCalcDaltonPrimerMassesMap(Map m);
+    
+    public Map getCalcDaltonAddonMassesMap();
+    public void setCalcDaltonAddonMassesMap(Map m);
+    public double getCalcDaltonPLMass();
+    public void setCalcDaltonPLMass(double val);
 }

@@ -5,6 +5,7 @@
 package biochemie.sbe.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -40,6 +41,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.calcdalton.gui.CDConfigPanel;
+import biochemie.calcdalton.gui.CDMassesConfigPanel;
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.gui.IntegerValueIntervallPanel;
 import biochemie.sbe.SBEOptions;
@@ -84,6 +86,8 @@ public class SBEConfigDialog extends JDialog {
 
     private Action saveaction;
     private Action loadaction;
+
+    private CDMassesConfigPanel cdmasspanel;
     /**
 	 * @param gui
 	 */
@@ -136,6 +140,7 @@ public class SBEConfigDialog extends JDialog {
 	        	cdicon = new ImageIcon(url);
 	        }
 			jTabbedPane.addTab("CalcDalton settings", cdicon, getCdScrollPane(), null);
+			jTabbedPane.addTab("CalcDalton masses", null, getCdMassPanel(), null);
 			jTabbedPane.addTab("MiniSBE settings", null, getSbePanel(), null);
 			jTabbedPane.addTab("Expert settings", null, getAdvPanel(), null);
 			jTabbedPane.addTab("Misc settings", null, getRestPanel(), null);
@@ -143,7 +148,13 @@ public class SBEConfigDialog extends JDialog {
 		}
 		return jTabbedPane;
 	}
-	/**
+	private CDMassesConfigPanel getCdMassPanel() {
+	    if(cdmasspanel==null) {
+            cdmasspanel=new CDMassesConfigPanel();
+        }
+        return cdmasspanel;
+    }
+    /**
 	 * This method initializes jPanel
 	 *
 	 * @return javax.swing.JPanel

@@ -179,89 +179,6 @@ public class CDConfigPanel extends JPanel{
             setValuesFrom(new CDOptionsImpl());
         }
     }
-    public class LoadAction extends AbstractAction {
-        Icon icon;
-        LoadAction() {
-            putValue(NAME, "Load");
-            putValue(SHORT_DESCRIPTION, "Load previously saved settings from disk.");
-            java.net.URL url=this.getClass().getClassLoader().getResource("images/open.gif");
-            if(null != url){
-                icon=new ImageIcon(url);
-                putValue(Action.SMALL_ICON,icon);
-            }
-        }
-        public void actionPerformed(ActionEvent e) {
-            File file=FileSelector.getUserSelectedFile(null,"Load config...",new FileFilter(){
-                public boolean accept(File f) {
-                    if(f.isDirectory())
-                        return true;
-                    if(f.isFile() && (f.getName().endsWith(".cfg") || f.getName().endsWith(".CFG")))
-                        return true;
-                    return false;
-                }
-                public String getDescription() {
-                    return "CalcDalton-configfiles";
-                }
-            },FileSelector.OPEN_DIALOG);
-            if(file!=null){
-                CDOptionsImpl cfg = new CDOptionsImpl();
-                try {
-                    cfg.readConfigFile(file.getCanonicalPath());
-                    setValuesFrom(cfg);
-            } catch (IOException e1) {
-                JOptionPane.showMessageDialog(null,"Sorry  your personal settings couldn't be"
-                                                +"loaded. An error occured.","", JOptionPane.WARNING_MESSAGE);
-            }
-            }
-            delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
-
-        }
-    }
-    public class SaveAction extends AbstractAction {
-        Icon icon;
-        SaveAction() {
-            putValue(NAME, "Save");
-            putValue(SHORT_DESCRIPTION, "Save settings to disk.");
-            java.net.URL url=this.getClass().getClassLoader().getResource("images/save.gif");
-            if(null != url){
-                icon=new ImageIcon(url);
-                putValue(Action.SMALL_ICON,icon);
-            }
-        }
-        public void actionPerformed(ActionEvent e) {
-            File file=FileSelector.getUserSelectedFile(null,"Save config...",new FileFilter(){
-                public boolean accept(File f) {
-                    if(f.isDirectory())
-                        return true;
-                    if(f.isFile() && (f.getName().endsWith(".cfg") || f.getName().endsWith(".CFG")))
-                        return true;
-                    return false;
-                }
-                public String getDescription() {
-                    return "CalcDalton-configfiles";
-                }
-            },FileSelector.SAVE_DIALOG);
-            if(file!=null){
-                String path=file.getAbsolutePath();
-                if(!path.endsWith(".cfg") && !path.endsWith(".CFG"))
-                    path += ".cfg";
-                file=new File(path);
-                try {
-                    file.createNewFile();
-                    GeneralConfig cfg=(GeneralConfig) getCalcDaltonOptionsProvider();
-                    cfg.updateConfigFile(file.getCanonicalPath());
-                } catch (FileNotFoundException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry – your personal settings couldn't be"
-                                                    +"saved. An error occured.","", JOptionPane.WARNING_MESSAGE);
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry – your personal settings couldn't be"
-                                                    +"saved. An error occured.","", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-
-        }
-    }
-
     //private vars
 	private SpaltStelleDownAction spaltDownAction;
     private SpaltStelleUpAction spaltUpAction;
@@ -317,6 +234,8 @@ public class CDConfigPanel extends JPanel{
         if(null != verbMassePanel)
             verbMassePanel.reset(cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
         cbCalcdaltonAnhaenge.setSelected(cfg.getCalcDaltonAllExtensions());
+        
+        delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
     }
 
 
@@ -398,6 +317,10 @@ public class CDConfigPanel extends JPanel{
                 " possible extension products A, C, G and T of every primer.<br>" +
                 "Otherwise the mass range is reserved for the expected products only.</html>");
         add(cbCalcdaltonAnhaenge,"1,11");
+    }
+
+    public void saveToConfig(GeneralConfig cfg) {
+        
     }
 
 }

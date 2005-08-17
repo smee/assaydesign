@@ -5,6 +5,7 @@
 package biochemie.sbe.io;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import biochemie.calcdalton.CDOptionsImpl;
@@ -260,20 +261,26 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonAllowOverlap();
     }    public void setCalcDaltonAllowOverlap(boolean arg0) {
         cdopt.setCalcDaltonAllowOverlap(arg0);
-    }
-    public boolean isDebug() {
+    }    public Map getCalcDaltonPrimerMassesMap() {
+        return cdopt.getCalcDaltonPrimerMassesMap();
+    }    public void setCalcDaltonPrimerMassesMap(Map m) {
+        cdopt.setCalcDaltonPrimerMassesMap(m);
+    }    public Map getCalcDaltonAddonMassesMap() {
+        return cdopt.getCalcDaltonAddonMassesMap();
+    }    public void setCalcDaltonAddonMassesMap(Map m) {
+        cdopt.setCalcDaltonAddonMassesMap(m);
+    }    public boolean isDebug() {
         return cdopt.isDebug();
-    }
-
-    public void setDebug(boolean b) {
+    }    public void setDebug(boolean b) {
         cdopt.setDebug(b);
-    }
-    public boolean getCalcDaltonAllExtensions() {
+    }    public boolean getCalcDaltonAllExtensions() {
         return cdopt.getCalcDaltonAllExtensions();
-    }
-    
-    public void setCalcDaltonAllExtensions(boolean val) {
+    }    public void setCalcDaltonAllExtensions(boolean val) {
         cdopt.setCalcDaltonAllExtensions(val);
+    }    public double getCalcDaltonPLMass() {
+        return cdopt.getCalcDaltonPLMass();
+    }    public void setCalcDaltonPLMass(double val) {
+        cdopt.setCalcDaltonPLMass(val);
     }
     //proxy end -----------------------------------------------------------------------------------------
 
@@ -294,9 +301,4 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).updateConfigFile(filename);
     }
-
-
-
-
-
  }

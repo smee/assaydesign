@@ -4,8 +4,13 @@
  */
 package biochemie.calcdalton;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
+import com.Ostermiller.util.StringTokenizer;
 
 import biochemie.util.Helper;
 import biochemie.util.config.GeneralConfig;
@@ -29,6 +34,9 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.allowoverlap","false"}
            ,{"calcdalton.peaks","4"}
            ,{"calcdalton.extension","true"}
+           ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
+           ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
+           ,{"calcdalton.plmass","18.02"}
            ,{"misc.debug","false"}
            };
     }
@@ -113,6 +121,48 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
 
     public void setCalcDaltonAllExtensions(boolean val) {
         setProperty("calcdalton.extension",Boolean.toString(val));
+    }
+
+    public Map getCalcDaltonPrimerMassesMap() {
+        String s=getProperty("calcdalton.primermasses");
+        Map m=new HashMap();
+        StringTokenizer st=new StringTokenizer(s,"{,} ");
+        while(st.hasMoreTokens()) {
+            String tok=st.nextToken();
+            Character key=Character.valueOf(tok.charAt(0));
+            Double val=Double.valueOf(tok.substring(tok.indexOf('=')+1));
+            m.put(key,val);
+        }
+        return m;
+    }
+
+    public void setCalcDaltonPrimerMassesMap(Map m) {
+        setProperty("calcdalton.primermasses",m.toString());
+    }
+
+    public Map getCalcDaltonAddonMassesMap() {
+        String s=getProperty("calcdalton.addonmasses");
+        Map m=new HashMap();
+        StringTokenizer st=new StringTokenizer(s,"{,}");
+        while(st.hasMoreTokens()) {
+            String tok=st.nextToken();
+            Character key=Character.valueOf(tok.charAt(0));
+            Double val=Double.valueOf(tok.substring(tok.indexOf('=')+1));
+            m.put(key,val);
+        }
+        return m;
+    }
+
+    public void setCalcDaltonAddonMassesMap(Map m) {
+        setProperty("calcdalton.addonmasses",m.toString());
+    }
+
+    public double getCalcDaltonPLMass() {
+        return getDouble("calcdalton.plmass",18.02);
+    }
+
+    public void setCalcDaltonPLMass(double val) {
+        setProperty("calcdalton.plmass",Double.toString(val));
     }
 
 }

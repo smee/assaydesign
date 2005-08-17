@@ -27,14 +27,15 @@ public class CDConfig implements Serializable{
     //GUI-vars
     private JDialog dialog;
 	private CDConfigPanel cdcpanel;
+    private CDMassesConfigPanel massPanel;
 
 
  
     private CDConfig() {
 		singleton=this;
 		cdcpanel=new CDConfigPanel();
+        massPanel=new CDMassesConfigPanel(CDMassesConfigPanel.getDefaultPrimermassMap(),CDMassesConfigPanel.getDefaultAddonMassMap(),18.02);
 	}
-
     private JDialog initDialog(JFrame parent){
 
         final JDialog dialog=new JDialog(parent,true);
@@ -47,7 +48,8 @@ public class CDConfig implements Serializable{
         
         JTabbedPane tabPane=new JTabbedPane();
         tabPane.add("Settings",cdcpanel);
-        tabPane.add("Load/Save settings",new CDConfigPersistPanel(cdcpanel));
+        tabPane.add("Masses",massPanel);
+        tabPane.add("Load/Save settings",new CDConfigPersistPanel(cdcpanel, massPanel));
         dialog.getContentPane().add(tabPane, BorderLayout.CENTER);
         JButton btOkay=new JButton(this.cdcpanel.new OkayAction(){
         	public void actionPerformed(ActionEvent e){
