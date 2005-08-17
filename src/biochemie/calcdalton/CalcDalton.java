@@ -21,6 +21,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import biochemie.sbe.calculators.Interruptible;
 import biochemie.util.Helper;
@@ -45,21 +46,21 @@ public class CalcDalton implements Interruptible{
     int anzahl_sbe=0;
     
     Thread calcThread;
-    private Object result;    
-    /**
-     * @param br
-     * @param abstaendeFrom
-     * @param abstaendeTo
-     * @param peaks
-     * @param b
-     */
-    public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo, double peaks, boolean overlap) {
-		this(br,abstaendeFrom,abstaendeTo,peaks,new double[0],new double[0],overlap);
-    }
+    private Object result;
+    final private Map primerMasses;
+    final private Map addonMasses;
+    final private double plMass;    
+
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
 					, double peaks
 					, double[] verbMasseFrom, double[] verbMasseTo
-					, boolean overlap){
+					, boolean overlap
+                    , Map primerMasses
+                    , Map addonMasses
+                    , double plMass){
+        this.primerMasses=primerMasses;
+        this.addonMasses=addonMasses;
+        this.plMass=plMass;
 		this.br=Helper.clone(br);
 		this.brlen=br.length;
 		this.from=Helper.clone(abstaendeFrom);
@@ -87,7 +88,16 @@ public class CalcDalton implements Interruptible{
      * @param cfg
      */
     public CalcDalton(CalcDaltonOptions c) {
-        this(c.getPhotolinkerPositions(),c.getCalcDaltonFrom(),c.getCalcDaltonTo(),c.getCalcDaltonPeaks(),c.getCalcDaltonVerbFrom(),c.getCalcDaltonVerbTo(),c.getCalcDaltonAllowOverlap());
+        this(c.getPhotolinkerPositions()
+                ,c.getCalcDaltonFrom()
+                ,c.getCalcDaltonTo()
+                ,c.getCalcDaltonPeaks()
+                ,c.getCalcDaltonVerbFrom()
+                ,c.getCalcDaltonVerbTo()
+                ,c.getCalcDaltonAllowOverlap()
+                ,c.getCalcDaltonPrimerMassesMap()
+                ,c.getCalcDaltonAddonMassesMap()
+                ,c.getCalcDaltonPLMass());
     }
     public void outputState(){
        System.out.println("CalcDalton-State:\n-----------------");
@@ -104,31 +114,17 @@ public class CalcDalton implements Interruptible{
 	 * @param seq
 	 * @return
 	 */
-	private static double calcPrimerMasse(String seq) {
-		double summe= 0.0D;
-		if (null == seq)
-			return 0.0D;
-		for (int i= 0; i < seq.length(); i++)
-			switch (seq.charAt(i)) {
-				case 'A' : 
-                case 'a' :
-					summe += 313.2071;
-					break;
-				case 'G' :
-                case 'g' :  
-					summe += 329.2066;
-					break;
-				case 'T' :
-                case 't' :  
-					summe += 304.1937;
-					break;
-				case 'C' :
-                case 'c' :  
-					summe += 289.1823;
-					break;
-			}
-		return summe + 18.02D;//masse des pl
-	}
+    private double calcPrimerMasse(String seq) {
+        double summe= 0.0D;
+        if (null == seq)
+            return 0.0D;
+        for (int i= 0; i < seq.length(); i++) {
+            Character c=Character.valueOf(seq.charAt(i));
+            if(primerMasses.keySet().contains(c))
+                summe+=((Double)primerMasses.get(c)).doubleValue();
+        }
+        return summe + plMass;//masse des pl
+    }
     
 	/**
 	 * Berechnung der Masse einer Sequenz mit angehängtem Nukleotid.
@@ -136,29 +132,15 @@ public class CalcDalton implements Interruptible{
 	 * @param addon
 	 * @return
 	 */
-	private static  double calcPrimerAddonMasse(String seq, String addon) {
+	private  double calcPrimerAddonMasse(String seq, String addon) {
 		if (null == seq || null == addon)
 			return 0.0D;
         double summe= calcPrimerMasse(seq);
-		for (int i= 0; i < addon.length(); i++)
-			switch (addon.charAt(i)) {
-				case 'A' :
-                case 'a' : 
-					summe += 297.2072;
-					break;
-				case 'G' :
-                case 'g' : 
-					summe += 313.2066;
-					break;
-				case 'T' :
-                case 't' : 
-					summe += 288.1937;
-					break;
-				case 'C' : 
-                case 'c' :
-					summe += 273.1824;
-					break;
-			}
+		for (int i= 0; i < addon.length(); i++) {
+            Character c=Character.valueOf(addon.charAt(i));
+			if(addonMasses.keySet().contains(c))
+                summe+=((Double)addonMasses.get(c)).doubleValue();
+		}
 		return summe;//die 18.02 sind schon drauf von calcPrimerMass!
 	}
 
@@ -169,7 +151,7 @@ public class CalcDalton implements Interruptible{
 	 * @param bruch
 	 * @return
 	 */
-	public static double[] calcSBEMass(String[] p1, int bruch) {
+	public double[] calcSBEMass(String[] p1, int bruch) {
         if(1 > p1.length)
             return new double[0];
 		String temp= p1[0];//sonst wird wieder nur die Referenz übergeben

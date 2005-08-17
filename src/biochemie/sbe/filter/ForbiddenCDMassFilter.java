@@ -20,7 +20,7 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
         for (Iterator it = cand.iterator(); it.hasNext();) {
             SBEPrimer primer = (SBEPrimer) it.next();
             String[] params=SBEPrimer.getCDParamLine(primer);
-            double[] masses=CalcDalton.calcSBEMass(params,primer.getBruchstelle());
+            double[] masses=cd.calcSBEMass(params,primer.getBruchstelle());
             if(cd.invalidMassesIn(masses)) {
                 it.remove();
                 count++;

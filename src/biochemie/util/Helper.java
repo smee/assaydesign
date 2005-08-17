@@ -728,12 +728,6 @@ public class Helper {
      * @return
      */
     public static CalcDalton getCalcDalton(CalcDaltonOptions cfg) {
-    	return new CalcDalton(cfg.getPhotolinkerPositions()
-    			             ,cfg.getCalcDaltonFrom()
-    						 ,cfg.getCalcDaltonTo()
-    						 ,cfg.getCalcDaltonPeaks()
-    			             ,cfg.getCalcDaltonVerbFrom()
-    						 ,cfg.getCalcDaltonVerbTo()
-    						 ,cfg.getCalcDaltonAllowOverlap());
+    	return new CalcDalton(cfg);
     }
 }

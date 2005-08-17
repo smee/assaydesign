@@ -214,8 +214,8 @@ public class BerechnungsProgress extends JFrame{
         JButton showPreview = new JButton("Show MALDI preview");
         showPreview.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                CDConfig cfg=CDConfig.getInstance();
-                JFrame preview= new SpektrometerPreviewFrame(sbetable,"Spektrometervorschau",frame.getTitle(),cfg.getVerbMassenFrom(),cfg.getVerbMassenTo());
+                CalcDaltonOptions cfg=CDConfig.getInstance().getConfiguration();
+                JFrame preview= new SpektrometerPreviewFrame(sbetable,"Spektrometervorschau",frame.getTitle(),cfg);
                 preview.pack();
                 preview.setVisible(true);
             }
@@ -285,11 +285,7 @@ public class BerechnungsProgress extends JFrame{
 		}
 		if(CalcDalton.progress)
 			System.out.println("Zu berechnende Varianten : "+max);
-        cd=new CalcDalton(br
-        				 ,config.getFrom(),config.getTo()
-        				 ,config.getPeaks()
-        				 ,config.getVerbMassenFrom(), config.getVerbMassenTo()
-        				 ,config.allowOverlap());
+        cd=new CalcDalton(config.getConfiguration());
         pack();
         setVisible(true);
         long starttime=0;

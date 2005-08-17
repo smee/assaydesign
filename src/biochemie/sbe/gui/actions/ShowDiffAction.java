@@ -141,10 +141,11 @@ public class ShowDiffAction extends MyAction {
         double[][] weights = new double[mysbec.size()][];
         String[] sbenames = new String[mysbec.size()];
         int i=0;
+        CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator iter = mysbec.iterator(); iter.hasNext();i++) {
             SBECandidate  s = (SBECandidate ) iter.next();
             sbenames[i]=s.getId();
-            weights[i]=CalcDalton.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
+            weights[i]=cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
         }
         return  new DiffTableModel(sbenames,weights);
     }
@@ -219,7 +220,7 @@ public class ShowDiffAction extends MyAction {
                 List l = sbecfilt;
                 if(index != 0 )
                     l = getFilteredList(mid[index],sbecfilt);
-                JFrame f = new SpektrometerPreviewFrame(l,"Spektrometervorschau",mid[index],cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
+                JFrame f = new SpektrometerPreviewFrame(l,"Spektrometervorschau",mid[index],cfg);
                 f.pack();
                 f.setVisible(true);
             }

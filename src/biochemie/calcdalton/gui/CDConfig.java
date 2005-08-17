@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.calcdalton.gui.CDConfigPanel.OkayAction;
 
 
@@ -119,6 +120,11 @@ public class CDConfig implements Serializable{
      */
     public boolean allowOverlap() {
         return cdcpanel.getCalcDaltonOptionsProvider().getCalcDaltonAllowOverlap();
+    }
+    public CalcDaltonOptions getConfiguration() {
+        CalcDaltonOptions c=cdcpanel.getCalcDaltonOptionsProvider();
+        massPanel.saveToConfig(c);
+        return c;
     }
 
 }

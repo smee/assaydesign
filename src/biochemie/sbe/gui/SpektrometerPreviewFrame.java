@@ -31,8 +31,10 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
 
 import biochemie.calcdalton.CalcDalton;
+import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.calcdalton.SBETable;
 import biochemie.sbe.SBECandidate;
+import biochemie.util.Helper;
 
 /*
  * Created on 21.12.2004
@@ -46,18 +48,18 @@ import biochemie.sbe.SBECandidate;
 public class SpektrometerPreviewFrame extends JFrame{
     final CustomXYToolTipGenerator ttgen;
     
-    public SpektrometerPreviewFrame(List sbec,String title, String subtitle,double[] forbFrom, double[] forbTo)
+    public SpektrometerPreviewFrame(List sbec,String title, String subtitle,CalcDaltonOptions cfg)
     {
         super(title);
         ttgen = new CustomXYToolTipGenerator();
-        IntervalXYDataset massen = createDataset(sbec);
-        initialize(subtitle, massen,forbFrom,forbTo);
+        IntervalXYDataset massen = createDataset(sbec,cfg);
+        initialize(subtitle, massen,cfg);
     }
-    public SpektrometerPreviewFrame(SBETable table, String title, String subtitle,double[] forbFrom, double[] forbTo) {
+    public SpektrometerPreviewFrame(SBETable table, String title, String subtitle,CalcDaltonOptions cfg) {
         super(title);
         ttgen = new CustomXYToolTipGenerator();
         IntervalXYDataset massen = createDataset(table);
-        initialize(subtitle, massen,forbFrom,forbTo);
+        initialize(subtitle, massen,cfg);
     }
     /**
      * @param subtitle
@@ -65,8 +67,8 @@ public class SpektrometerPreviewFrame extends JFrame{
      * @param forbTo 
      * @param forbFrom 
      */
-    private void initialize(String subtitle, IntervalXYDataset massen, double[] forbFrom, double[] forbTo) {
-        JFreeChart jfreechart = createChart(massen,subtitle,ttgen,forbFrom,forbTo);
+    private void initialize(String subtitle, IntervalXYDataset massen, CalcDaltonOptions cfg) {
+        JFreeChart jfreechart = createChart(massen,subtitle,ttgen,cfg);
 
         ChartPanel chartpanel = new ChartPanel(jfreechart);
         chartpanel.setPreferredSize(new Dimension(500, 300));
@@ -83,7 +85,7 @@ public class SpektrometerPreviewFrame extends JFrame{
      * @return
      */
 
-    private JFreeChart createChart(IntervalXYDataset intervalxydataset,String subtitle,XYToolTipGenerator ttgen, double[] forbFrom, double[] forbTo)
+    private JFreeChart createChart(IntervalXYDataset intervalxydataset,String subtitle,XYToolTipGenerator ttgen, CalcDaltonOptions cfg)
     {
         JFreeChart jfreechart = ChartFactory.createXYBarChart("MALDI Preview", "Calcdaltonmasses", false, "rel. units", intervalxydataset, PlotOrientation.VERTICAL, true, true, false);
         jfreechart.addSubtitle(new TextTitle(subtitle));
@@ -92,6 +94,8 @@ public class SpektrometerPreviewFrame extends JFrame{
         XYItemRenderer xyitemrenderer = xyplot.getRenderer();
         xyplot.setBackgroundPaint(Color.lightGray);
         GradientPaint gradientpaint = new GradientPaint(0.0F, 0.0F, Color.LIGHT_GRAY, 1.0F, 1.0F, Color.DARK_GRAY,true);
+        double[] forbFrom=cfg.getCalcDaltonVerbFrom();
+        double[] forbTo=cfg.getCalcDaltonVerbTo();
         for (int i = 0; i < forbFrom.length; i++) {
             IntervalMarker im=new IntervalMarker(forbFrom[i],forbTo[i],gradientpaint,new BasicStroke(2.0F), null, null, 1.0F);
             im.setLabel("Forbidden mass range");
@@ -121,14 +125,15 @@ public class SpektrometerPreviewFrame extends JFrame{
         }
         return collection;
     }
-    private IntervalXYDataset createDataset(List sbec)
+    private IntervalXYDataset createDataset(List sbec, CalcDaltonOptions cfg)
     {
         XYSeriesCollection collection = new XYSeriesCollection();
+        CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate s = (SBECandidate) it.next();
             XYSeries masse = new XYSeries(s.getId(),false,true);
             List l = new ArrayList(3*5);
-            double[] m = CalcDalton.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
+            double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
             String id = s.getId();
             String snp = s.getSNP();            
             addDataset(m,id,snp,collection);
