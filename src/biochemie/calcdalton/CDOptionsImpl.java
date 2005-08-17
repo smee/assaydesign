@@ -6,11 +6,11 @@ package biochemie.calcdalton;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.Ostermiller.util.StringTokenizer;
 
 import biochemie.util.Helper;
 import biochemie.util.config.GeneralConfig;
@@ -130,7 +130,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         while(st.hasMoreTokens()) {
             String tok=st.nextToken();
             Character key=new Character(tok.charAt(0));
-            Double val=Double.valueOf(tok.substring(tok.indexOf('=')+1));
+            Double val=new Double(tok.substring(tok.indexOf('=')+1));
             m.put(key,val);
         }
         return m;
@@ -147,7 +147,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         while(st.hasMoreTokens()) {
             String tok=st.nextToken();
             Character key=new Character(tok.charAt(0));
-            Double val=Double.valueOf(tok.substring(tok.indexOf('=')+1));
+            Double val=new Double(tok.substring(tok.indexOf('=')+1));
             m.put(key,val);
         }
         return m;
