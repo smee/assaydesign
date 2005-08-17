@@ -91,7 +91,7 @@ public class SpektrometerPreviewFrame extends JFrame{
         XYPlot xyplot = jfreechart.getXYPlot();
         XYItemRenderer xyitemrenderer = xyplot.getRenderer();
         xyplot.setBackgroundPaint(Color.lightGray);
-        GradientPaint gradientpaint = new GradientPaint(0.0F, 0.0F, Color.red.brighter(), 1.0F, 1.0F, Color.orange,true);
+        GradientPaint gradientpaint = new GradientPaint(0.0F, 0.0F, Color.LIGHT_GRAY, 1.0F, 1.0F, Color.DARK_GRAY,true);
         for (int i = 0; i < forbFrom.length; i++) {
             IntervalMarker im=new IntervalMarker(forbFrom[i],forbTo[i],gradientpaint,new BasicStroke(2.0F), null, null, 1.0F);
             im.setLabel("Forbidden mass range");

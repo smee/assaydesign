@@ -52,7 +52,7 @@ public class PBSequenceField extends JTextField
         }
     }
 
-    public static final String NUMBERS="0123456789";
+    public static final String NUMBERS="0123456789.";
     public static final String CHARACTERS="abcdefghijklmnopqrstuvwxyz" +
     									  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private boolean cutfront=true;

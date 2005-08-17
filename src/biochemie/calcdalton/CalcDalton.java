@@ -1,4 +1,19 @@
+/*
 
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 package biochemie.calcdalton;
 import java.text.DecimalFormat;
@@ -333,10 +348,10 @@ public class CalcDalton implements Interruptible{
         /*-------------------------- hier gehts los------------------------------*/
         maxreacheddepth=0;
         initializeMassen(sbeData);
-//		if(1 == sbeData.length) {
-//			erglist.add(new int[]{fest[0]});
-//		}
-//		else {
+		if(1 == sbeData.length) {
+			erglist.add(new int[]{fest[0]});
+		}
+		else {
             laufvar=new int[anzahl_sbe];//enthaelt k,l,m,...
             double[][] sbe_masse=new double[anzahl_sbe][];
             int ptr=0;//Laufvariable
@@ -395,7 +410,7 @@ public class CalcDalton implements Interruptible{
                     laufvar[ptr]++;
                 }
             }while(laufvar[0]!=brlen);//wenn die erste Laufvariable auf brlen steht, simmer ferdsch
-	//}
+	}
 	int[][] erg=new int[erglist.size()][];
     for (int i= 0; i < erglist.size(); i++) {
         Object obj=erglist.get(i);
@@ -476,7 +491,7 @@ public class CalcDalton implements Interruptible{
     public int getMaxReachedDepth() {
         return maxreacheddepth;
     }
-    //--------------- Interrubtible ---------------------------------------
+    //--------------- Interruptible ---------------------------------------
     private String[][] sbeData;
     private SBETable sbeTable;
     private int[] fest;
