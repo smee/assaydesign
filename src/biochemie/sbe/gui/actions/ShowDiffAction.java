@@ -219,7 +219,7 @@ public class ShowDiffAction extends MyAction {
                 List l = sbecfilt;
                 if(index != 0 )
                     l = getFilteredList(mid[index],sbecfilt);
-                JFrame f = new SpektrometerPreviewFrame(l,"Spektrometervorschau",mid[index]);
+                JFrame f = new SpektrometerPreviewFrame(l,"Spektrometervorschau",mid[index],cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
                 f.pack();
                 f.setVisible(true);
             }

@@ -198,7 +198,8 @@ public class BerechnungsProgress extends JFrame{
         JButton showPreview = new JButton("Show MALDI preview");
         showPreview.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFrame preview= new SpektrometerPreviewFrame(sbetable,"Spektrometervorschau",frame.getTitle());
+                CDConfig cfg=CDConfig.getInstance();
+                JFrame preview= new SpektrometerPreviewFrame(sbetable,"Spektrometervorschau",frame.getTitle(),cfg.getVerbMassenFrom(),cfg.getVerbMassenTo());
                 preview.pack();
                 preview.setVisible(true);
             }
