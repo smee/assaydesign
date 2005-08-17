@@ -131,8 +131,6 @@ public class SpektrometerPreviewFrame extends JFrame{
         CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate s = (SBECandidate) it.next();
-            XYSeries masse = new XYSeries(s.getId(),false,true);
-            List l = new ArrayList(3*5);
             double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
             String id = s.getId();
             String snp = s.getSNP();            
