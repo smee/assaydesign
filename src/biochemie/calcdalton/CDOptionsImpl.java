@@ -130,7 +130,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         while(st.hasMoreTokens()) {
             String tok=st.nextToken();
             Character key=new Character(tok.charAt(0));
-            Double val=new Double(tok.substring(tok.indexOf('=')+1));
+            Double val=Double.valueOf(tok.substring(tok.indexOf('=')+1));
             m.put(key,val);
         }
         return m;
@@ -147,7 +147,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         while(st.hasMoreTokens()) {
             String tok=st.nextToken();
             Character key=new Character(tok.charAt(0));
-            Double val=new Double(tok.substring(tok.indexOf('=')+1));
+            Double val=Double.valueOf(tok.substring(tok.indexOf('=')+1));
             m.put(key,val);
         }
         return m;
