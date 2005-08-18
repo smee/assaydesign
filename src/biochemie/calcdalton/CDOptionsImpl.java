@@ -143,7 +143,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public Map getCalcDaltonAddonMassesMap() {
         String s=getProperty("calcdalton.addonmasses");
         Map m=new HashMap();
-        StringTokenizer st=new StringTokenizer(s,"{,}");
+        StringTokenizer st=new StringTokenizer(s,"{,} ");
         while(st.hasMoreTokens()) {
             String tok=st.nextToken();
             Character key=new Character(tok.charAt(0));

@@ -119,7 +119,7 @@ public class CalcDalton implements Interruptible{
         if (null == seq)
             return 0.0D;
         for (int i= 0; i < seq.length(); i++) {
-            Character c=new Character(seq.charAt(i));
+            Character c=new Character(Character.toUpperCase(seq.charAt(i)));
             if(primerMasses.keySet().contains(c))
                 summe+=((Double)primerMasses.get(c)).doubleValue();
         }
@@ -137,7 +137,7 @@ public class CalcDalton implements Interruptible{
 			return 0.0D;
         double summe= calcPrimerMasse(seq);
 		for (int i= 0; i < addon.length(); i++) {
-            Character c=new Character(addon.charAt(i));
+            Character c=new Character(Character.toUpperCase(addon.charAt(i)));
 			if(addonMasses.keySet().contains(c))
                 summe+=((Double)addonMasses.get(c)).doubleValue();
 		}

@@ -68,10 +68,12 @@ public class MapTablePanel extends JPanel {
             return true;
         }
         public void setValueAt(Object aValue, int row, int column) {
+            //TODO schrott
             Object orgKey=keys.get(row);
             if(column==0) {//new key
                 map.put(aValue,map.get(orgKey));
                 map.remove(orgKey);
+                keys.add(row,aValue);
             }else {//new value
                 map.put(orgKey,aValue);
             }  
@@ -205,7 +207,7 @@ public class MapTablePanel extends JPanel {
 	 */    
 	private JTextField getKeyTf() {
 		if (keyTf == null) {
-			keyTf = new JTextField();
+			keyTf = new PBSequenceField(3,true,PBSequenceField.CHARACTERS);
             keyTf.setColumns(3);
 		}
 		return keyTf;
@@ -258,8 +260,11 @@ public class MapTablePanel extends JPanel {
 			addButton.setText("Add");
             addButton.setIcon(icon);
 			addButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
-				    ((CDMassesTableModel)getMapTable().getModel()).map.put(getKeyTf().getText(),getValueTf().getText());
+				public void actionPerformed(java.awt.event.ActionEvent e) {   
+                    Character key=new Character(getKeyTf().getText().charAt(0));
+                    Double val=new Double(getValueTf().getText());
+				    ((CDMassesTableModel)getMapTable().getModel()).map.put(key,val);
+                    ((CDMassesTableModel)getMapTable().getModel()).keys.add(key);
                     ((CDMassesTableModel)getMapTable().getModel()).fireTableRowsInserted(-1,-1);
                 }
 			});
