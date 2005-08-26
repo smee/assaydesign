@@ -32,6 +32,7 @@ import biochemie.util.GraphWriter;
  * Findet zu einem gegebenen Graphen die größtmögliche maximale Clique.
  * @author Steffen
  * 10.08.2004
+ * TODO beruecksichtigt keine pseudoprimer! (geweichtete knoten oder sowas)
  */
 public class MaximumCliqueFinder implements Interruptible{
     List graphes;

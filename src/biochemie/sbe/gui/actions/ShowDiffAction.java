@@ -220,7 +220,7 @@ public class ShowDiffAction extends MyAction {
                 List l = sbecfilt;
                 if(index != 0 )
                     l = getFilteredList(mid[index],sbecfilt);
-                JFrame f = new SpektrometerPreviewFrame(l,"Spektrometervorschau",mid[index],cfg);
+                JFrame f = new SpektrometerPreviewFrame(l,"MALDI-MS-preview",mid[index],cfg);
                 f.pack();
                 f.setVisible(true);
             }

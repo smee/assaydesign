@@ -39,6 +39,8 @@ public class CDStart {
         }
         if(!Boolean.getBoolean("DEBUG"))
             LogStdStreams.initializeErrorLogging("calcdalton.log", "---------Program started: " + new Date()+" -----------", true, true);
+        else
+            System.out.println("using output to console...");
         try {
             UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {

@@ -360,6 +360,10 @@ public class BerechnungsProgress extends JFrame{
             }
             public void finished() {
                 SBETable table=(SBETable)getValue();
+                if(table.getNumberOfSolutions()==0){
+                    JOptionPane.showMessageDialog(null,"Sorry, all primers have forbidden masses.","No solution possible",JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
                 showCDResultTable(table);
             }
         });

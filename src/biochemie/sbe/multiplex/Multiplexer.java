@@ -160,7 +160,9 @@ public abstract class Multiplexer {
     		this.p2=p2;
     		this.einbau=einbau;
     	}
-
+		public String toString() {
+      return "SBEPrimerproxy: "+p1+" and "+p2;      
+        }
         public void setPlexID(String s) {
             for (Iterator it = p1.iterator(); it.hasNext();) {
                 Multiplexable m = (Multiplexable) it.next();

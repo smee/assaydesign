@@ -146,9 +146,9 @@ public class SBEGui extends JFrame{
         Icon icon;
         public AddPanelAction(){
             if(!Helper.isJava14()){
-                putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+                putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_MASK));
             }else{
-                putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+                putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK));
             }
             putValue(NAME,"Add primer");
             putValue(SHORT_DESCRIPTION,"add new SBE primer");
