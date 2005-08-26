@@ -80,7 +80,7 @@ public class BerechnungsProgress extends JFrame{
     static BigInteger max;//nicht schoen, aber ging nicht anders!
 
 	public BerechnungsProgress() {
-		super("Berechnung läuft...");
+		super("Calculation is running...");
         calcthread=Thread.currentThread();
         calcthread.setName("CalcDaltonThread");
 		//this.sbe=SBEGui.getInstance();
@@ -215,7 +215,7 @@ public class BerechnungsProgress extends JFrame{
         showPreview.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CalcDaltonOptions cfg=CDConfig.getInstance().getConfiguration();
-                JFrame preview= new SpektrometerPreviewFrame(sbetable,"Spektrometervorschau",frame.getTitle(),cfg);
+                JFrame preview= new SpektrometerPreviewFrame(sbetable,"MALDI-MS-preview",frame.getTitle(),cfg);
                 preview.pack();
                 preview.setVisible(true);
             }
