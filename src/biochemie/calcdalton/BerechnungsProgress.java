@@ -335,6 +335,7 @@ public class BerechnungsProgress extends JFrame{
             public Object construct() {
                 int[] plexsizes=new int[graph.vertexSet().size()];
                 Arrays.fill(plexsizes,1);
+                //TODO mit threaddingens machen, zeitbeschraenkt
                 SBEColorerProxy proxy=new SBEColorerProxy(graph,new HashSet(),primer.size(),CalcDalton.debug);
                 proxy.start();
                 return proxy.getResult();
@@ -469,7 +470,7 @@ public class BerechnungsProgress extends JFrame{
         }
         
         public String toString() {
-            return name+":"+Arrays.toString(datarow)+"; "+fest;
+            return name+":"+Helper.toString(datarow)+"; "+fest;
         }
         public void setPlexID(String s) {
             if(plexid !=null)
