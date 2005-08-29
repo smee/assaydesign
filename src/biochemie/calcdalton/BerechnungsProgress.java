@@ -30,6 +30,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +60,9 @@ import biochemie.calcdalton.gui.CDConfig;
 import biochemie.calcdalton.gui.SBEGui;
 import biochemie.calcdalton.gui.SBEPanel;
 import biochemie.gui.TaskRunnerDialog;
+import biochemie.sbe.calculators.InterruptableGraphColorer;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
+import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.GraphHelper;
@@ -305,57 +310,61 @@ public class BerechnungsProgress extends JFrame{
 		    System.out.println("Dauer: "+(endtime-starttime)+"ms");
         }
 		if(0 == sbetable.getNumberOfSolutions()){
-			int result=JOptionPane.showConfirmDialog(null, "Sorry, just the first "+(cd.getMaxReachedDepth()+1)+" ones worked together." +
-                    "Would you like to find the maximal subset of fitting primers?", "Enhanced calculation",JOptionPane.YES_NO_OPTION);
-			if(result == JOptionPane.NO_OPTION) {
+            Object[] choices=new Object[]{"Cancel","MaxClique","Coloring"};
+			String result=(String) JOptionPane.showInputDialog(null, "Sorry, just the first "+(cd.getMaxReachedDepth()+1)+" ones worked together." +
+                    "Would you like to find the maximal subset of fitting primers?", "Enhanced calculation",JOptionPane.PLAIN_MESSAGE,
+                    null,choices,choices[0]);
+			if(result.equals(choices[0])) {
                 return;
-            }else
+            }else if(result.equals(choices[1]))
                 findMaxClique(cd,SBENames,paneldata, fest,br);
+            else
+                doColoring(cd, SBENames, paneldata,fest,br);
             
 		}else {
 		    showCDResultTable(sbetable);      
         }
 
 	}
+    private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, int[] fest, final int[] br) {
+        final List primer = createPrimerList(cd, names, paneldata, fest, br);
+        final UndirectedGraph graph = GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF);
+        final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for coloring",null,new SwingWorker() {
+            public Object construct() {
+                int[] plexsizes=new int[graph.vertexSet().size()];
+                Arrays.fill(plexsizes,1);
+                SBEColorerProxy proxy=new SBEColorerProxy(graph,new HashSet(),primer.size(),CalcDalton.debug);
+                proxy.start();
+                return proxy.getResult();
+            }
+            public void finished() {
+                List colors=(List) getValue();
+                //TODO alles in ein fenster
+                //TODO beruecksichtige, das ein primer mehrfach vorkommt, wenn der pl nicht fest ist!
+                System.out.println("Got list: "+colors);
+                for (Iterator it = colors.iterator(); it.hasNext();) {
+                    Set mult = (Set) it.next();
+                    SBETable table=calculateSBETable(cd,br,mult);
+                    showCDResultTable(table);
+                }
+            }
+        });
+        dialog.show();
+    }
     /**
      * @param paneldata
      * @param fest
      */
     private void findMaxClique(final CalcDalton cd,String[] names,final String[][] paneldata, int[] fest, final int[] br) {
         System.out.println("Using fest="+Helper.toString(fest));
-        List primer = new ArrayList(paneldata.length * br.length);
-        
-        for (int i = 0; i < paneldata.length; i++) {
-            if(fest[i]== -1)
-                for (int j = 0; j < br.length; j++) {
-                    primer.add(new SimplePrimer(cd,names[i],paneldata[i],j));//jeden index einmal als fest verwenden
-                }
-            else
-                primer.add(new SimplePrimer(cd,names[i],paneldata[i],fest[i]));
-        }
-        final UndirectedGraph graph=GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF));
+        List primer = createPrimerList(cd, names, paneldata, fest, br);
+        final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF));
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for max. clique",null,new SwingWorker() {
             public Object construct() {
                 MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
                 Set max= mcf.maxClique();
                 
-                String[] cliquenames=(String[]) Algorithms.collect(Algorithms.apply(max.iterator(), new UnaryFunction() {
-                    public Object evaluate(Object obj) {
-                        return ((SimplePrimer)obj).name;
-                    }
-                }), new ArrayList(max.size())).toArray(new String[max.size()]);
-                
-                SBETable sbet= new SBETable(cliquenames, br);
-                String[][] sbedata = new String[max.size()][];
-                int[] fest = new int[max.size()];
-                int i=0;
-                for (Iterator iter = max.iterator(); iter.hasNext();i++) {
-                    SimplePrimer primer = (SimplePrimer) iter.next();
-                    sbedata[i]=primer.datarow;
-                    fest[i]=primer.fest;
-                }
-                
-                cd.calc(sbedata,sbet,fest);
+                SBETable sbet = calculateSBETable(cd, br, max);
                 return sbet;
             }
             public void finished() {
@@ -369,6 +378,61 @@ public class BerechnungsProgress extends JFrame{
         });
         dialog.show();
 
+    }
+    /**
+     * @param cd
+     * @param names
+     * @param paneldata
+     * @param fest
+     * @param br
+     * @return
+     */
+    private List createPrimerList(final CalcDalton cd, String[] names, final String[][] paneldata, int[] fest, final int[] br) {
+        List primer = new ArrayList(paneldata.length * br.length);
+        
+        for (int i = 0; i < paneldata.length; i++) {
+            if(fest[i]== -1)
+                for (int j = 0; j < br.length; j++) {
+                    primer.add(new SimplePrimer(cd,names[i],paneldata[i],j));//jeden index einmal als fest verwenden
+                }
+            else
+                primer.add(new SimplePrimer(cd,names[i],paneldata[i],fest[i]));
+        }
+        return primer;
+    }
+    /**
+     * @param max
+     * @return
+     */
+    private String[] getPrimerNames(Collection max) {
+        String[] cliquenames=(String[]) Algorithms.collect(Algorithms.apply(max.iterator(), new UnaryFunction() {
+            public Object evaluate(Object obj) {
+                return ((SimplePrimer)obj).name;
+            }
+        }), new ArrayList(max.size())).toArray(new String[max.size()]);
+        return cliquenames;
+    }
+    /**
+     * @param cd
+     * @param br
+     * @param max
+     * @return
+     */
+    private SBETable calculateSBETable(final CalcDalton cd, final int[] br, Set max) {
+        String[] cliquenames = getPrimerNames(max);
+        
+        SBETable sbet= new SBETable(cliquenames, br);
+        String[][] sbedata = new String[max.size()][];
+        int[] fest = new int[max.size()];
+        int i=0;
+        for (Iterator iter = max.iterator(); iter.hasNext();i++) {
+            SimplePrimer primer = (SimplePrimer) iter.next();
+            sbedata[i]=primer.datarow;
+            fest[i]=primer.fest;
+        }
+        
+        cd.calc(sbedata,sbet,fest);
+        return sbet;
     }
     private class SimplePrimer implements Multiplexable{
         private CalcDalton cd;
@@ -385,7 +449,7 @@ public class BerechnungsProgress extends JFrame{
         }
 
         public String toString() {
-            return name+":"+datarow+"; "+fest;
+            return name+":"+Arrays.toString(datarow)+"; "+fest;
         }
         public void setPlexID(String s) {
             if(plexid !=null)
