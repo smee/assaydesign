@@ -32,6 +32,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -339,11 +341,21 @@ public class BerechnungsProgress extends JFrame{
             }
             public void finished() {
                 List colors=(List) getValue();
+                Collections.sort(colors,new Comparator() {//sortieren nach Groesse
+                    public int compare(Object arg0, Object arg1) {
+                        return ((Collection)arg1).size()-((Collection)arg0).size();
+                    }
+                });
                 //TODO alles in ein fenster
-                //TODO beruecksichtige, das ein primer mehrfach vorkommt, wenn der pl nicht fest ist!
                 System.out.println("Got list: "+colors);
+                Set gotThem=new HashSet();
                 for (Iterator it = colors.iterator(); it.hasNext();) {
                     Set mult = (Set) it.next();
+                    mult.removeAll(gotThem);
+                    if(mult.size()==0)
+                        continue;
+                    else
+                        gotThem.addAll(mult);
                     SBETable table=calculateSBETable(cd,br,mult);
                     showCDResultTable(table);
                 }
@@ -447,7 +459,11 @@ public class BerechnungsProgress extends JFrame{
             this.datarow=row;
             this.fest=f;
         }
-
+        public boolean equals(Object o) {
+            if(!(o instanceof SimplePrimer))
+                return false;
+            return ((SimplePrimer)o).name.equals(name);
+        }
         public String toString() {
             return name+":"+Arrays.toString(datarow)+"; "+fest;
         }
@@ -458,7 +474,7 @@ public class BerechnungsProgress extends JFrame{
         }
 
         public String getName() {
-            return datarow[0];
+            return name;
         }
 
         public boolean passtMit(Multiplexable other) {
@@ -487,7 +503,6 @@ public class BerechnungsProgress extends JFrame{
             // TODO Auto-generated method stub
             return null;
         }
-
     }
 
 }
