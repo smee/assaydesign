@@ -37,6 +37,7 @@ public class SBEPanel extends JPanel
     protected JLabel lbSeqTf;
     protected JTextField tfName;
     public SBESequenceTextField tfSequence;
+    private SBESeqInputController controller;
     /**
      * Konstruktor erwartet individuelle Nummerierung.
      * @param num
@@ -105,9 +106,11 @@ public class SBEPanel extends JPanel
 
         add(plpanel,"5,1,C,C");
         
-        new SBESeqInputController(tfSequence,plpanel,null,0,true);
+        controller=new SBESeqInputController(tfSequence,plpanel,null,0,true);
     }
-
+    public String getSequenceWOL() {
+        return controller.getSequenceWOL();
+    }
 
     /**
      * Gibt String[] zurück mit: Sequenz,Anhang1...
@@ -115,6 +118,9 @@ public class SBEPanel extends JPanel
      */
     public String[] getPrimer()
     {
+        if(CDConfig.getInstance().getConfiguration().getCalcDaltonAllExtensions()) {
+            return new String[] {tfSequence.getSequence(),"A","C","G","T"};
+        }
         int i = 1;
         if(cb_A.isSelected())
             i++;
@@ -126,7 +132,7 @@ public class SBEPanel extends JPanel
             i++;
         String[] ergebnis = new String[i];
         i = 1;
-        ergebnis[0] = Helper.getNuklFromString(tfSequence.getText());
+        ergebnis[0] = Helper.getNuklFromString(tfSequence.getSequence());
         if(cb_A.isSelected())
         {
             ergebnis[i] = "A";

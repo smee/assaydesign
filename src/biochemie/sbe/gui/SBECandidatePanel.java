@@ -368,8 +368,8 @@ public class SBECandidatePanel extends MyPanel {
 
     public String getCSVLine() {
         String id=getTfId().getText();
-        String l=getSeq5tf().getText();
-        String r=getSeq3tf().getText();
+        String l=inputcontrollerL.getSequenceWOL();
+        String r=inputcontrollerR.getSequenceWOL();
         String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
         String multiplexid = getMultiplexidPanel().getText();

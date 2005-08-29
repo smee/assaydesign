@@ -129,10 +129,10 @@ public class SaveAction extends AbstractAction {
             file=new File(path);
             try {
                 file.createNewFile();
-                GeneralConfig cfg=(GeneralConfig) p.getCalcDaltonOptionsProvider();
+                CalcDaltonOptions cfg= p.getCalcDaltonOptionsProvider();
                 p.saveToConfig(cfg);
                 m.saveToConfig((CalcDaltonOptions)cfg);
-                cfg.updateConfigFile(file.getCanonicalPath());
+                ((GeneralConfig) cfg).updateConfigFile(file.getCanonicalPath());
             } catch (FileNotFoundException e1) {
                 JOptionPane.showMessageDialog(null,"Sorry – your personal settings couldn't be"
                                                 +"saved. An error occured.","", JOptionPane.WARNING_MESSAGE);

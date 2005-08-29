@@ -309,9 +309,9 @@ public class SBEGui extends JFrame{
             } catch (NumberFormatException e) {
                 pl = -1;
             }
-            panel.setSelectedPL(pl);
             panel.tfName.setText(id);
             panel.tfSequence.setText(l);
+            panel.setSelectedPL(pl);
         }
         /**
          * @param panel
@@ -418,7 +418,7 @@ public class SBEGui extends JFrame{
                     return false;
                 }
                 public String getDescription() {
-                    return "textfiles containing primer";
+                    return "textfiles containing primer (*.primer, *.csv)";
                 }
             },JFileChooser.SAVE_DIALOG);
             if(file != null) {
@@ -458,7 +458,7 @@ public class SBEGui extends JFrame{
                     SBEPanel panel=(SBEPanel)sbePanelList.get(i);
                     bw.write(panel.tfName.getText());
                     bw.write(';');
-                    bw.write(panel.tfSequence.getText());
+                    bw.write(panel.getSequenceWOL());
                     bw.write(';');
                     //hairpin 5
                     bw.write(';');

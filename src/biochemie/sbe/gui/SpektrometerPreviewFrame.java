@@ -58,7 +58,7 @@ public class SpektrometerPreviewFrame extends JFrame{
     public SpektrometerPreviewFrame(SBETable table, String title, String subtitle,CalcDaltonOptions cfg) {
         super(title);
         ttgen = new CustomXYToolTipGenerator();
-        IntervalXYDataset massen = createDataset(table);
+        IntervalXYDataset massen = createDataset(table,cfg);
         initialize(subtitle, massen,cfg);
     }
     /**
@@ -110,15 +110,13 @@ public class SpektrometerPreviewFrame extends JFrame{
 //        xyplot.setDomainAxis(axis);
         return jfreechart;
     }
-    private IntervalXYDataset createDataset(SBETable table) {
+    private IntervalXYDataset createDataset(SBETable table, CalcDaltonOptions cfg) {
         XYSeriesCollection collection = new XYSeriesCollection();
         int numofprimers=table.getColumnCount();
         for(int i=1; i<numofprimers;i++) {
             String id=table.getColumnName(i);
             if(id == null || id.length() == 0)
                 id=Integer.toString(i);
-            XYSeries masse = new XYSeries(id,false,true);
-            List l = new ArrayList(3*5);
             double[] m = table.getMassenOfColumn(i);
             String snp = table.getAnbauOfColumn(i);
             addDataset(m,id,snp,collection);

@@ -192,6 +192,17 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
         }
         
     }
+    /**
+     * Liefert sequenz ohne das L, wenn vorhanden
+     * @return
+     */
+    public String getSequenceWOL() {
+        if(replacedNukl!=0) {
+            String seq=left.getText();
+            return Helper.replaceNukl(seq,Helper.getPosOfPl(seq),replacedNukl);
+        }
+        return left.getText();
+    }
     private void setEnabled(boolean b) {
         left.setEnabled(b);
         plpanel.setEnabled(b);

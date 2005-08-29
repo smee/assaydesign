@@ -237,7 +237,20 @@ public class CDConfigPanel extends JPanel{
         
         delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
     }
-
+    public void saveToConfig(CalcDaltonOptions cfg) {
+        cfg.setCalcDaltonPeaks(Double.parseDouble(tfPeaks.getText()));
+        int[] br=new int[bruchstelleVector.size()];
+        for (int i = 0; i < br.length; i++) {
+            br[i]=((Integer)bruchstelleVector.get(i)).intValue();
+        }
+        cfg.setPhotolinkerPositions(br);
+        cfg.setCalcDaltonAllowOverlap(cbAllowOverlap.isSelected());
+        cfg.setCalcDaltonAllExtensions(cbCalcdaltonAnhaenge.isSelected());
+        cfg.setCalcDaltonFrom(abstandPanel.getFrom());
+        cfg.setCalcDaltonTo(abstandPanel.getTo());
+        cfg.setCalcDaltonVerbFrom(verbMassePanel.getFrom());
+        cfg.setCalcDaltonVerbTo(verbMassePanel.getTo());
+    }
 
     public int getMaxBruchstelle(){
         int max=0;
@@ -319,8 +332,6 @@ public class CDConfigPanel extends JPanel{
         add(cbCalcdaltonAnhaenge,"1,11");
     }
 
-    public void saveToConfig(GeneralConfig cfg) {
-        
-    }
+
 
 }
