@@ -351,14 +351,22 @@ public class BerechnungsProgress extends JFrame{
                 Set gotThem=new HashSet();
                 for (Iterator it = colors.iterator(); it.hasNext();) {
                     Set mult = (Set) it.next();
-                    mult.removeAll(gotThem);
+                    mult.removeAll(getNamesFromSimpleprimerList(mult));
                     if(mult.size()==0)
                         continue;
                     else
-                        gotThem.addAll(mult);
+                        gotThem.addAll(getNamesFromSimpleprimerList(mult));
                     SBETable table=calculateSBETable(cd,br,mult);
                     showCDResultTable(table);
                 }
+            }
+            private Collection getNamesFromSimpleprimerList(Set mult) {
+                Set s=new HashSet(mult.size());
+                for (Iterator it = mult.iterator(); it.hasNext();) {
+                    SimplePrimer p = (SimplePrimer) it.next();
+                    s.add(p.getName());
+                }
+                return s;
             }
         });
         dialog.show();
@@ -459,11 +467,7 @@ public class BerechnungsProgress extends JFrame{
             this.datarow=row;
             this.fest=f;
         }
-        public boolean equals(Object o) {
-            if(!(o instanceof SimplePrimer))
-                return false;
-            return ((SimplePrimer)o).name.equals(name);
-        }
+        
         public String toString() {
             return name+":"+Arrays.toString(datarow)+"; "+fest;
         }

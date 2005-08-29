@@ -625,7 +625,13 @@ public class SBEGui extends JFrame{
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		while(1 > sbe_anzahl) {
 			try{
-                String input=JOptionPane.showInputDialog(null,"Please enter maximum multiplex level (1-?):","1");
+                String input=(String) JOptionPane.showInputDialog(null,
+                        "Please enter maximum multiplex level (1-?):",
+                        "Multiplex level",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        null,
+                        "1");
                 if(null == input)
                     System.exit(0);
 				sbe_anzahl = Integer.parseInt(input);
