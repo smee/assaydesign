@@ -262,21 +262,35 @@ public class CalcDalton implements Interruptible{
 		Tabellendaten[1]= df.format(sbe_massen[0]);
 		Tabellendaten[2]= (new Integer(bruch)).toString();
         Tabellendaten[3]="";
-		for (int c= 1; c < sbe.length; c++)
+		for (int c= 1; c < sbe.length; c++) {
+            boolean useKlammern=sbe[c].charAt(0)=='>';
 			switch (sbe[c].charAt(sbe[c].length() - 1)) {
-				case 'A' :  
-					Tabellendaten[4]= df.format(sbe_massen[c]);
+				case 'A' :
+                case 'a' :  
+					Tabellendaten[4]= df.format(sbe_massen[c]);                  
+                    if(useKlammern)
+                        Tabellendaten[4]= "["+Tabellendaten[4]+"]";                  
 					break;
 				case 'C' : 
+				case 'c' : 
 					Tabellendaten[5]= df.format(sbe_massen[c]);
+					if(useKlammern)
+					    Tabellendaten[5]= "["+Tabellendaten[5]+"]";                  
 					break;
 				case 'G' : 
+				case 'g' : 
 					Tabellendaten[6]= df.format(sbe_massen[c]);
+					if(useKlammern)
+					    Tabellendaten[6]= "["+Tabellendaten[6]+"]";                  
 					break;
 				case 'T' : 
+				case 't' : 
 					Tabellendaten[7]= df.format(sbe_massen[c]);
+					if(useKlammern)
+					    Tabellendaten[7]= "["+Tabellendaten[7]+"]";                  
 					break;
 			}
+        }
 		return Tabellendaten;
 	}
 

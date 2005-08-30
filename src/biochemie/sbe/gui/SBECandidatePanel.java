@@ -48,7 +48,7 @@ public class SBECandidatePanel extends MyPanel {
     private boolean isExpertMode;
 	private StringEntryPanel filtersPanel = null;
 	private JCheckBox fixedPrimerCB = null;
-    private class MyChangeListener implements DocumentListener, ChangeListener{
+    public class MyChangeListener implements DocumentListener, ChangeListener{
         public void changedUpdate(DocumentEvent e) {
             dirty();
         }

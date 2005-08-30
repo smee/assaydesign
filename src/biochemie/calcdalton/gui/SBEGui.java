@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -44,6 +45,7 @@ import javax.swing.filechooser.FileFilter;
 
 import biochemie.calcdalton.BerechnungsProgress;
 import biochemie.calcdalton.tf_seqDocListener;
+import biochemie.sbe.gui.SBECandidatePanel;
 import biochemie.util.FileSelector;
 import biochemie.util.Helper;
 import biochemie.util.MyAction;
@@ -288,6 +290,10 @@ public class SBEGui extends JFrame{
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+            }
+            for (Iterator it = sbePanelList.iterator(); it.hasNext();) {
+                SBEPanel p = (SBEPanel) it.next();
+                p.setUnchanged();
             }
             panel.revalidate();
             panel.repaint();
@@ -659,12 +665,24 @@ public class SBEGui extends JFrame{
     startbuttonpanel.add(start);
     getContentPane().add(startbuttonpanel, BorderLayout.SOUTH);
     pack();
-	show();
+	setVisible(true);
     }
 	/**
      * 
      */
     public void exitApp() {
+        boolean dirty=false;
+        for (Iterator iter = this.sbePanelList.iterator(); iter.hasNext();) {
+            SBEPanel panel = (SBEPanel) iter.next();
+            dirty = dirty || panel.hasChanged();
+        }
+        if(dirty) {
+            int answer=JOptionPane.showConfirmDialog(null,"Would you like to save?","New assay design",JOptionPane.YES_NO_CANCEL_OPTION);
+            if(answer == JOptionPane.YES_OPTION)
+                new SavePrimerAction().actionPerformed(new ActionEvent(this,0,"save"));
+            else if(answer==JOptionPane.CANCEL_OPTION)
+                return;
+        }
         System.exit(0);
     }
 

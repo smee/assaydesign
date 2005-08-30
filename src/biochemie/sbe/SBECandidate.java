@@ -734,4 +734,9 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     public String getOutput() {
         return writtenoutput==null?"":writtenoutput;
     }
+
+    public SBEPrimer getFavPrimer() {
+        assertPrimerChosen();
+        return chosen;
+    }
 }

@@ -62,7 +62,6 @@ import biochemie.calcdalton.gui.CDConfig;
 import biochemie.calcdalton.gui.SBEGui;
 import biochemie.calcdalton.gui.SBEPanel;
 import biochemie.gui.TaskRunnerDialog;
-import biochemie.sbe.calculators.InterruptableGraphColorer;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
 import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;

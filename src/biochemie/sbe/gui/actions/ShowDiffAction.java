@@ -36,6 +36,7 @@ import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
+import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
@@ -103,6 +104,7 @@ public class ShowDiffAction extends MyAction {
 
     /**
      * @param id
+     * @param cfg 
      * @param sbecfilt2
      * @return
      */
@@ -120,7 +122,7 @@ public class ShowDiffAction extends MyAction {
         for (Iterator it = mysbec.iterator(); it.hasNext();i++) {
             SBECandidate s = (SBECandidate) it.next();
             names[i]=s.getId();
-            paneldata[i]=new String[]{s.getFavSeq(),"A","C","G","T"};
+            paneldata[i]=createAnhangsData(s);
             fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),s.getBruchstelle());
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
@@ -128,6 +130,14 @@ public class ShowDiffAction extends MyAction {
         CalcDalton cd = Helper.getCalcDalton(cfg);
         cd.calc(paneldata,sbetable,fest);
         return sbetable;
+    }
+
+    private String[] createAnhangsData(SBECandidate s) {
+        if(cfg.getCalcDaltonAllExtensions()) {
+            String[] arr=SBEPrimer.getCDParamLine(s.getFavPrimer());
+            return arr;
+        }else
+            return new String[]{s.getFavSeq(),"A","C","G","T"};
     }
 
     /**

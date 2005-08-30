@@ -239,7 +239,6 @@ public class MiniSBEGui extends JFrame {
             
         }
     }
-  
     public class CalculateAction extends MyAction {
         public CalculateAction() {
             super("Calculate","Start calculation",
