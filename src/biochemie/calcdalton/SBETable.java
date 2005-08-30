@@ -153,7 +153,7 @@ private void initTableBruchstellen() {
 			return ersteSpalte[rowIndex];
         if(0 == rowIndex)
             return columnNames[columnIndex];
-		return getTabelle(aktuelleTabelle)[columnIndex-1][rowIndex-1];
+		return getTabelle(aktuelleTabelle)[columnIndex-1][rowIndex-1].trim();
 	}
 	
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
@@ -221,22 +221,35 @@ private void initTableBruchstellen() {
      */
     public double[] getMassenOfColumn(int i) {
         double[] m = new double[5];
-        String val=(String) getValueAt(2,i);
+        String val = extractDouble((String) getValueAt(2,i));
         if(val !=null)
             m[0]=Double.parseDouble(val);
-        val=(String) getValueAt(5,i);
+        val=extractDouble((String) getValueAt(5,i));
         if(val !=null)
             m[1]=Double.parseDouble(val);
-        val=(String) getValueAt(6,i);
+        val=extractDouble((String) getValueAt(6,i));
         if(val !=null)
             m[2]=Double.parseDouble(val);
-        val=(String) getValueAt(7,i);
+        val=extractDouble((String) getValueAt(7,i));
         if(val !=null)
             m[3]=Double.parseDouble(val);
-        val=(String) getValueAt(8,i);
+        val=extractDouble((String) getValueAt(8,i));
         if(val !=null)
             m[4]=Double.parseDouble(val);
         return m;
+    }
+
+
+    /**
+     * @param val
+     * @return
+     */
+    private String extractDouble(String val) {
+        if(val == null)
+            return null;
+        if(val.charAt(0)=='[' && val.charAt(val.length()-1)==']')
+            val=val.substring(1,val.length()-1);
+        return val;
     }
 
 

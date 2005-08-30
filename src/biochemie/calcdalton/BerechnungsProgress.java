@@ -58,6 +58,7 @@ import javax.swing.table.TableColumn;
 import org._3pq.jgrapht.UndirectedGraph;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
 
 import biochemie.calcdalton.gui.CDConfig;
 import biochemie.calcdalton.gui.SBEGui;
@@ -355,15 +356,22 @@ public class BerechnungsProgress extends JFrame{
                 });
                 //TODO alles in ein fenster
                 System.out.println("Got list: "+colors);
-                Set gotThem=new HashSet();
+                final Set gotThem=new HashSet();
                 int count=0;
                 for (Iterator it = colors.iterator(); it.hasNext();) {
                     Set mult = (Set) it.next();
-                    mult.removeAll(getNamesFromSimpleprimerList(mult));
+                    Algorithms.remove(mult.iterator(),new UnaryPredicate() {
+                        public boolean test(Object obj) {
+                            return gotThem.contains(((SimplePrimer)obj).getName());
+                        }
+                    });
                     if(mult.size()==0)
                         continue;
                     else
-                        gotThem.addAll(getNamesFromSimpleprimerList(mult));
+                        for (Iterator it2 = mult.iterator(); it2.hasNext();) {
+                            SimplePrimer p = (SimplePrimer) it2.next();
+                            gotThem.add(p.getName());
+                        }
                     SBETable table=calculateSBETable(cd,br,mult);
                     count++;
                     JFrame f=showCDResultTable(table,"Result No. "+count+" ("+mult.size()+"/"+fest.length+" primers)");
@@ -372,14 +380,7 @@ public class BerechnungsProgress extends JFrame{
                     f.setBounds(rect);
                 }
             }
-            private Collection getNamesFromSimpleprimerList(Set mult) {
-                Set s=new HashSet(mult.size());
-                for (Iterator it = mult.iterator(); it.hasNext();) {
-                    SimplePrimer p = (SimplePrimer) it.next();
-                    s.add(p.getName());
-                }
-                return s;
-            }
+
         });
         dialog.show();
     }
@@ -397,7 +398,15 @@ public class BerechnungsProgress extends JFrame{
                     final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF));
                     MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
                     Set max= mcf.maxClique();
-                    primersToGo.removeAll(max);
+                    System.out.println("Found clique of size "+max.size()+": "+max);
+                    for (Iterator it = max.iterator(); it.hasNext();) {
+                        final SimplePrimer p = (SimplePrimer) it.next();
+                        Algorithms.remove(primersToGo.iterator(),new UnaryPredicate() {
+                            public boolean test(Object obj) {
+                                return p.getName().equals(((SimplePrimer)obj).getName());
+                            }
+                        });
+                    }
                     result.add(calculateSBETable(cd, br, max));
                 }
                 return result;

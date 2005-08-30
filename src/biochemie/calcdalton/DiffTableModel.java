@@ -137,11 +137,14 @@ private void initTable(String[] names, double[][] weights) {
 		}
 		for (int j = 0; j < cc; j++) {
 			for (int i = 1; i < erg[j].length; i++) {
-				Object entry=sbetable.getValueAt(i+4,j+1);
+				String entry=(String)sbetable.getValueAt(i+4,j+1);
 				if(null == entry)
 					erg[j][i]=0;
-				else
-					erg[j][i]=Double.parseDouble(entry.toString());
+				else {
+                    if(entry.charAt(0)=='[' && entry.charAt(entry.length()-1)==']')
+                        entry=entry.substring(1,entry.length()-1);
+					erg[j][i]=Double.parseDouble(entry);
+                }
 			}
 		}
 		return erg;
