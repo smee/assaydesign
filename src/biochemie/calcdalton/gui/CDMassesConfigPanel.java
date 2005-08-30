@@ -91,18 +91,18 @@ public class CDMassesConfigPanel extends JPanel {
 
 	private MapTablePanel getAddonMassesMapTable() {
 	    if(addonTable==null) {
-	        addonTable=new MapTablePanel("Nucleotide","Mass of addon in dalton","Nucleotide:","Mass:");
+	        addonTable=new MapTablePanel("Nucleotide (ddNTP)","Mass of dNTP in Dalton","Nucleotide:","Mass:");
             addonTable.setMap(anhangMap);
-            addonTable.setTitle("Masses of addon nucleotides");
+            addonTable.setTitle("Masses of extension nucleotides (ddNTPs)");
         }
         return addonTable;
     }
 
     private MapTablePanel getPrimerMassesMapTable() {
         if(primerTable==null) {
-            primerTable=new MapTablePanel("Nucleotide","Mass of nucl. in dalton","Nucleotide:","Mass:");
+            primerTable=new MapTablePanel("Nucleotide (dNTP)","Mass of ddNTP in Dalton","Nucleotide:","Mass:");
             primerTable.setMap(primerMap);
-            primerTable.setTitle("Masses of primer nucleotides");
+            primerTable.setTitle("Masses of primer nucleotides (dNTPs)");
         }
         return primerTable;
     }

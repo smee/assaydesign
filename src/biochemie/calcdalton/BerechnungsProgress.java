@@ -386,24 +386,36 @@ public class BerechnungsProgress extends JFrame{
      * @param paneldata
      * @param fest
      */
-    private void findMaxClique(final CalcDalton cd,String[] names,final String[][] paneldata, final int[] fest, final int[] br) {
+    private void findMaxClique(final CalcDalton cd,final String[] names,final String[][] paneldata, final int[] fest, final int[] br) {
         System.out.println("Using fest="+Helper.toString(fest));
-        List primer = createPrimerList(cd, names, paneldata, fest, br);
-        final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF));
+        final Set primersToGo=new HashSet(createPrimerList(cd, names, paneldata, fest, br));
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for max. clique",null,new SwingWorker() {
             public Object construct() {
-                MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
-                Set max= mcf.maxClique();
-                SBETable sbet = calculateSBETable(cd, br, max);
-                return sbet;
+                Set result=new HashSet();
+                while(primersToGo.size()>0) {
+                    final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF));
+                    MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
+                    Set max= mcf.maxClique();
+                    primersToGo.removeAll(max);
+                    result.add(calculateSBETable(cd, br, max));
+                }
+                return result;
             }
             public void finished() {
-                SBETable table=(SBETable)getValue();
-                if(table.getNumberOfSolutions()==0){
-                    JOptionPane.showMessageDialog(null,"Sorry, all primers have forbidden masses.","No solution possible",JOptionPane.INFORMATION_MESSAGE);
-                    return;
+                Set tables=(Set)getValue();
+//                if(table.getNumberOfSolutions()==0){
+//                    JOptionPane.showMessageDialog(null,"Sorry, all primers have forbidden masses.","No solution possible",JOptionPane.INFORMATION_MESSAGE);
+//                    return;
+//                }
+                int count=0;
+                for (Iterator it = tables.iterator(); it.hasNext();) {
+                    SBETable table = (SBETable) it.next();
+                    JFrame f=showCDResultTable(table, "Result of biggest possible multiplex ("+(table.getColumnCount()-1)+"/"+fest.length+")");
+                    Rectangle rect=f.getBounds();
+                    count++;
+                    rect.x=rect.x+count*50;
+                    f.setBounds(rect);
                 }
-                showCDResultTable(table, "Result of biggest possible multiplex ("+(table.getColumnCount()-1)+"/"+fest.length+")");
             }
         });
         dialog.show();

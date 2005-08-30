@@ -26,14 +26,14 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
 
     protected String[][] getInitializedProperties() {
         return new String[][]{
-            {"calcdalton.pl","9 8 10 11 12 13 14 15"}
-           ,{"calcdalton.from","20.0 36.0"}
-           ,{"calcdalton.to","24.0 40.0"}
-           ,{"calcdalton.verbfrom","1000"}
-           ,{"calcdalton.verbto","2000"}
-           ,{"calcdalton.allowoverlap","false"}
-           ,{"calcdalton.peaks","4"}
-           ,{"calcdalton.extension","true"}
+            {"calcdalton.pl","9 8 10 11 12 13 14 15 16"}
+           ,{"calcdalton.from","-152.0 -136.0 -112.0 0.0"}
+           ,{"calcdalton.to","-150.0 -134.0 -110.0 50.0"}
+           ,{"calcdalton.verbfrom","2070.0 2162.0 2248.0 2385.0 2425.0 5000.0"}
+           ,{"calcdalton.verbto","2080.0 2172.0 2258.0 2395.0 2435.0 9.99999999E8"}
+           ,{"calcdalton.allowoverlap","true"}
+           ,{"calcdalton.peaks","10.0"}
+           ,{"calcdalton.extension","false"}
            ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
            ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
            ,{"calcdalton.plmass","18.02"}
