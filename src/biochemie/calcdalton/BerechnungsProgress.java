@@ -24,6 +24,7 @@ import info.clearthought.layout.TableLayoutConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -127,14 +128,16 @@ public class BerechnungsProgress extends JFrame{
        });
        start();
     }
-	private void showCDResultTable(final SBETable sbetable) {
+	private JFrame showCDResultTable(final SBETable sbetable, String title) {
         JTableEx tabelle;
         JScrollPane scrollPane;
         final JFrame frame;
         JButton jb_next;
         JButton jb_prev;
         JButton showDiffs;
-        frame = new JFrame("Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions()+"("+(sbetable.getColumnCount()-1)+" primers)");
+        if(title==null)
+            title="Result "+(sbetable.getIndex()+1)+" of "+sbetable.getNumberOfSolutions()+"("+(sbetable.getColumnCount()-1)+" primers)";
+        frame = new JFrame(title);
         double p=TableLayoutConstants.PREFERRED;
         double f=TableLayoutConstants.FILL;
         double b=5;
@@ -228,6 +231,8 @@ public class BerechnungsProgress extends JFrame{
         });
         buttonpanel.add(jb_prev);
         buttonpanel.add(jb_next);
+        jb_prev.setEnabled(sbetable.getNumberOfSolutions()>1);
+        jb_next.setEnabled(sbetable.getNumberOfSolutions()>1);
         buttonpanel.add(Box.createGlue());
         buttonpanel.add(showDiffs);
         buttonpanel.add(showPreview);
@@ -237,6 +242,7 @@ public class BerechnungsProgress extends JFrame{
         frame.setVisible(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         sbe.start.setEnabled(true);
+        return frame;
     }
 	public void start() {
 
@@ -323,11 +329,11 @@ public class BerechnungsProgress extends JFrame{
                 doColoring(cd, SBENames, paneldata,fest,br);
             
 		}else {
-		    showCDResultTable(sbetable);      
+		    showCDResultTable(sbetable,null);      
         }
 
 	}
-    private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, int[] fest, final int[] br) {
+    private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, final int[] fest, final int[] br) {
         final List primer = createPrimerList(cd, names, paneldata, fest, br);
         final UndirectedGraph graph = GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF);
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for coloring",null,new SwingWorker() {
@@ -349,6 +355,7 @@ public class BerechnungsProgress extends JFrame{
                 //TODO alles in ein fenster
                 System.out.println("Got list: "+colors);
                 Set gotThem=new HashSet();
+                int count=0;
                 for (Iterator it = colors.iterator(); it.hasNext();) {
                     Set mult = (Set) it.next();
                     mult.removeAll(getNamesFromSimpleprimerList(mult));
@@ -357,7 +364,11 @@ public class BerechnungsProgress extends JFrame{
                     else
                         gotThem.addAll(getNamesFromSimpleprimerList(mult));
                     SBETable table=calculateSBETable(cd,br,mult);
-                    showCDResultTable(table);
+                    count++;
+                    JFrame f=showCDResultTable(table,"Result No. "+count+" ("+mult.size()+"/"+fest.length+" primers)");
+                    Rectangle rect=f.getBounds();
+                    rect.x=rect.x+count*50;
+                    f.setBounds(rect);
                 }
             }
             private Collection getNamesFromSimpleprimerList(Set mult) {
@@ -375,7 +386,7 @@ public class BerechnungsProgress extends JFrame{
      * @param paneldata
      * @param fest
      */
-    private void findMaxClique(final CalcDalton cd,String[] names,final String[][] paneldata, int[] fest, final int[] br) {
+    private void findMaxClique(final CalcDalton cd,String[] names,final String[][] paneldata, final int[] fest, final int[] br) {
         System.out.println("Using fest="+Helper.toString(fest));
         List primer = createPrimerList(cd, names, paneldata, fest, br);
         final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF));
@@ -393,7 +404,7 @@ public class BerechnungsProgress extends JFrame{
                     JOptionPane.showMessageDialog(null,"Sorry, all primers have forbidden masses.","No solution possible",JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
-                showCDResultTable(table);
+                showCDResultTable(table, "Result of biggest possible multiplex ("+(table.getColumnCount()-1)+"/"+fest.length+")");
             }
         });
         dialog.show();

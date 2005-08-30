@@ -631,8 +631,12 @@ public class SBEGui extends JFrame{
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		while(1 > sbe_anzahl) {
 			try{
+                String text="<html>This program is free software.<br>" +
+                        "You can redistribute it and/or modify it under the terms<br>" +
+                        "of the GNU General Public License as published by the Free Software Foundation.<br><br>" +
+                        "Please enter maximum multiplex level (1-?):</html>";
                 String input=(String) JOptionPane.showInputDialog(null,
-                        "Please enter maximum multiplex level (1-?):",
+                        text,
                         "Multiplex level",
                         JOptionPane.QUESTION_MESSAGE,
                         null,
