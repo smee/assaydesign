@@ -13,12 +13,15 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractListModel;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -227,6 +230,7 @@ public class CDConfigPanel extends JPanel{
         int[] br=cfg.getPhotolinkerPositions();
         for(int i=0;i<br.length;i++)
         	bruchstelleVector.add(Integer.toString(br[i]));
+        bruchList.setModel(new MyListModel(bruchstelleVector));
         tfPeaks.setText(""+cfg.getCalcDaltonPeaks());
         cbAllowOverlap.setSelected(cfg.getCalcDaltonAllowOverlap());
         if(null != abstandPanel)
@@ -241,7 +245,7 @@ public class CDConfigPanel extends JPanel{
         cfg.setCalcDaltonPeaks(Double.parseDouble(tfPeaks.getText()));
         int[] br=new int[bruchstelleVector.size()];
         for (int i = 0; i < br.length; i++) {
-            br[i]=((Integer)bruchstelleVector.get(i)).intValue();
+            br[i]=Integer.parseInt((String) bruchstelleVector.get(i));
         }
         cfg.setPhotolinkerPositions(br);
         cfg.setCalcDaltonAllowOverlap(cbAllowOverlap.isSelected());
@@ -332,6 +336,13 @@ public class CDConfigPanel extends JPanel{
         add(cbCalcdaltonAnhaenge,"1,11");
     }
 
-
+    private class MyListModel extends AbstractListModel{
+        private Vector listData;
+        public MyListModel(Vector coll) {
+            this.listData=coll;
+        }
+            public int getSize() { return listData.size(); }
+            public Object getElementAt(int i) { return listData.elementAt(i); }
+    }
 
 }
