@@ -317,9 +317,10 @@ public class BerechnungsProgress extends JFrame{
 		    System.out.println("Dauer: "+(endtime-starttime)+"ms");
         }
 		if(0 == sbetable.getNumberOfSolutions()){
-            Object[] choices=new Object[]{"MaxClique","Coloring"};
-			String result=(String) JOptionPane.showInputDialog(null, "Sorry, just the first "+(cd.getMaxReachedDepth()+1)+" ones worked together." +
-                    "Would you like to find the maximal subset of fitting primers?", "Enhanced calculation",JOptionPane.PLAIN_MESSAGE,
+            Object[] choices=new Object[]{"Maxclique - Maximize the number of primers in one multiplex",
+                    "Coloring - Minimize the number of multiplexes"};
+			String result=(String) JOptionPane.showInputDialog(null, "<html>Sorry, not all primers can be included in one single multiplex according to your settings.<br>" 
+                    +"Please choose an algorithm how to proceed:</html>", "Enhanced calculation",JOptionPane.PLAIN_MESSAGE,
                     null,choices,choices[0]);
             if(result==null)
                 return;
