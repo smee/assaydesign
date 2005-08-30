@@ -57,7 +57,7 @@ public class CDConfigPanel extends JPanel{
         Icon icon;
         public DeleteSpaltStelleAction(){
             putValue(NAME,"Delete");
-            putValue(SHORT_DESCRIPTION,"Delete selected photolinkerposition.");
+            putValue(SHORT_DESCRIPTION,"Delete selected cleavable linker.");
             java.net.URL url=this.getClass().getClassLoader().getResource("images/delete.gif");
             if(null != url){
                 icon=new ImageIcon(url);
@@ -81,7 +81,7 @@ public class CDConfigPanel extends JPanel{
         Icon icon;
         public AddSpaltStelleAction(){
             putValue(NAME,"Add");
-            putValue(SHORT_DESCRIPTION,"Add photolinkerposition.");
+            putValue(SHORT_DESCRIPTION,"Add cleavable linker.");
             java.net.URL url=this.getClass().getClassLoader().getResource("images/add.gif");
             if(null != url){
                 icon=new ImageIcon(url);
@@ -124,7 +124,7 @@ public class CDConfigPanel extends JPanel{
         Icon icon;
         SpaltStelleUpAction() {
             putValue(NAME, "Up");
-            putValue(SHORT_DESCRIPTION, "Moves photolinkerposition up.");
+            putValue(SHORT_DESCRIPTION, "Moves cleavable linker up.");
             java.net.URL url=this.getClass().getClassLoader().getResource("images/up.gif");
             if(null != url){
                 icon=new ImageIcon(url);
@@ -147,7 +147,7 @@ public class CDConfigPanel extends JPanel{
         Icon icon;
         SpaltStelleDownAction() {
             putValue(NAME, "Down");
-            putValue(SHORT_DESCRIPTION, "Moves photolinkerposition down.");
+            putValue(SHORT_DESCRIPTION, "Moves cleavable linker down.");
             java.net.URL url=this.getClass().getClassLoader().getResource("images/down.gif");
             if(null != url){
                 icon=new ImageIcon(url);
@@ -284,11 +284,11 @@ public class CDConfigPanel extends JPanel{
 		double text=28;
         double[][] bruchSizes={{b,80,60,p,b},{b,text,b,text,b,text,2*b,text,b}};
         bruchStellenPanel.setLayout(new TableLayout(bruchSizes));
-        bruchStellenPanel.setBorder( BorderFactory.createTitledBorder( "Preferred usage order of photolinkers" ) );
-        bruchStellenPanel.setToolTipText("Preferred usage order of photolinkers (from 3´)");
+        bruchStellenPanel.setBorder( BorderFactory.createTitledBorder( "Preferred usage order of cleavable linkers" ) );
+        bruchStellenPanel.setToolTipText("Preferred usage order of cleavable linkers (from 3´)");
         bruchList = new JList( bruchstelleVector );
         bruchList.setVisibleRowCount(5);
-        bruchList.setToolTipText("Photolinker positions.");
+        bruchList.setToolTipText("Cleavable linker.");
         bruchList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollBruchList = new JScrollPane( bruchList );
         delSpaltAction= new DeleteSpaltStelleAction();

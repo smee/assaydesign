@@ -116,7 +116,7 @@ public class SBEGui extends JFrame{
         }
         public void actionPerformed(ActionEvent e) {
         	JFrame jf_about=
-        		new JFrame("Photolinker-positions in single base extension primers for multiplexing");
+        		new JFrame("Cleavable linker in single base extension primers for multiplexing");
         	jf_about.setDefaultCloseOperation(2);
         	jf_about.getContentPane().add(
         		new JScrollPane(
@@ -555,7 +555,7 @@ public class SBEGui extends JFrame{
 	}
 
     private SBEGui()throws SingletonException{
-		super("Photolinker-positions in single base extension primers for multiplexing");
+		super("Cleavable linker in single base extension primers for multiplexing");
        	if(null != singleton)
        		throw new SingletonException();
        	singleton=this;

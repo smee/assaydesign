@@ -47,7 +47,7 @@ public SBETable(String[] sbeNames,int[] br) {
     ersteSpalte[0]="ID:";
 	ersteSpalte[1]="SBE-Primer:";
 	ersteSpalte[2]="Molecular weight (unextended ):";
-	ersteSpalte[3]="Photolinker position (3’):";
+	ersteSpalte[3]="Cleavable linker (3'):";
 	ersteSpalte[4]="";
 	ersteSpalte[5]="SBE+A:";
 	ersteSpalte[6]="SBE+C:";

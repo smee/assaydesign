@@ -128,7 +128,7 @@ public class SBEPanel extends MyPanel
         double[][] spaltSize={{p,30},{p}};
         plpanel=new PLSelectorPanel();
         plpanel.setPLPositions(CDConfig.getInstance().getBruchStellenArray());
-        plpanel.setRekTooltip("Specify position of the Photolinker, auto means the value should be choosen by the program.");
+        plpanel.setRekTooltip("Specify position of the cleavable linkers, auto means the value should be choosen by the program.");
 
         add(plpanel,"5,1,C,C");
         

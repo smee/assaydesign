@@ -80,7 +80,7 @@ public class SBEPrimerReader {
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate s = (SBECandidate) it.next();
             if(0 != s.getGivenMultiplexID().length() && !s.hasPL()) {
-                throw new IllegalArgumentException("Primer ID="+s.getId()+" has no given photolinker, so it can't be in the given multiplex "+s.getGivenMultiplexID()+'!');
+                throw new IllegalArgumentException("Primer ID="+s.getId()+" has no given cleavable linker, so it can't be in the given multiplex "+s.getGivenMultiplexID()+'!');
             }
         }
         return collapseMultiplexes(sbec,cfg);

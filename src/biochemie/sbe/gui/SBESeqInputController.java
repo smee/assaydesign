@@ -28,7 +28,7 @@ import biochemie.util.Helper;
  *
  */
 public class SBESeqInputController implements DocumentListener, ListDataListener, ItemListener{
-    private static final String INSERT_TT = "Insert 5' Sequence of the SNP (A,C,G,T, L) (L=Photolinker)";
+    private static final String INSERT_TT = "Insert 5' Sequence of the SNP (A,C,G,T, L) (L=cleavable linker)";
     Border errorBorder;
     Border okayBorder;
     
@@ -121,7 +121,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 int br=Helper.getPosOfPl(seq);
                 if(plpanel.hasPL(br)){//es gibt diesen PL
                     plpanel.setEnabled(replacedNukl!=0);
-                    plpanel.setRekTooltip("Photolinker was defined by primer sequence input");
+                    plpanel.setRekTooltip("Cleavable linker was defined by primer sequence input");
                     seq=left.getText();//koennte ja schon umgedreht sein
                     pos=seq.indexOf('L');
                     String tooltip = seq.substring(0,pos)+"[L]"+seq.substring(pos+1);
@@ -132,7 +132,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                 }else {//L an der falschen Position!
                     plpanel.setEnabled(false);
                     //plpanel.setSelectedPL(-1);
-                    setToolTipAndBorder(left,"Photolinkerposition out of bounds!",true);
+                    setToolTipAndBorder(left,"Cleavable linker out of bounds!",true);
                     fixedcb.setSelected(false);
                     fixedcb.setEnabled(false);
                 }

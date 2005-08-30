@@ -188,8 +188,8 @@ public class BerechnungsProgress extends JFrame{
         }
         frame.getContentPane().add(scrollPane,"1,1");
         JLabel label=new JLabel("<html>All molecular weights refer to the " +
-                                "3'residue after cleavage.<br>They include " +
-                                "the residual photolinker weight.</html>");
+                                "3'residue after cleavage.<br>" +
+                                "The weight of the cleavable linker after cleavage is included.</html>");
         frame.getContentPane().add(label,"1,3");
         JPanel buttonpanel=new JPanel();
         buttonpanel.setLayout(new BoxLayout(buttonpanel,BoxLayout.X_AXIS));

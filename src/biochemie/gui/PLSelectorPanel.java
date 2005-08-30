@@ -21,7 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
 public class PLSelectorPanel extends MyPanel {
 
 	private JComboBox comboPL = null;
-	private String title="Photolinker at";
+	private String title="Cleavable linker at";
 	Object[] values;
 
 	/**
@@ -138,7 +138,7 @@ public int getMaxSelectablePl() {
 	 */
 	public void setRekTooltip(String t) {
         if(t == null)
-            t="Please select Photolinker position (auto=best Photolinker is selected by the program)";
+            t="Please select cleavable linker (auto=best cleavable linker is selected by the program)";
         super.setRekTooltip(t);
 	}
     public void addPhotolinkerListListener(ListDataListener l) {
