@@ -4,6 +4,7 @@
  */
 package biochemie.gui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemListener;
@@ -11,6 +12,7 @@ import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.MutableComboBoxModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -102,7 +104,6 @@ public int getMaxSelectablePl() {
 		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
 		this.setSize(300,200);
-		this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, title, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 		gridBagConstraints6.insets = new java.awt.Insets(0,10,5,10);
 		gridBagConstraints6.gridx = 0;
 		gridBagConstraints6.gridy = 0;
@@ -111,7 +112,20 @@ public int getMaxSelectablePl() {
 		this.add(getComboPL(), gridBagConstraints6);
 		setRekTooltip(null);
         setUnchanged();
+        setBorder();
 	}
+
+    /**
+     * 
+     */
+    private void setBorder() {
+        TitledBorder b=javax.swing.BorderFactory.createTitledBorder(null, title, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null);
+        this.setBorder(b);
+        Dimension minsize=b.getMinimumSize(this);
+        Dimension crntSize=getPreferredSize();
+        crntSize.setSize(Math.max(minsize.getWidth(),crntSize.getWidth()),crntSize.getHeight());
+        this.setPreferredSize(crntSize);
+    }
 	/**
 	 * This method initializes jComboBox
 	 *
@@ -154,6 +168,6 @@ public int getMaxSelectablePl() {
     }
     public void setTitle(String title) {
         this.title=title;
-        this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, title, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+        setBorder();
     }
  }
