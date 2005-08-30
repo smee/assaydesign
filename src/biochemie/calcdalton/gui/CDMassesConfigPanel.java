@@ -63,7 +63,7 @@ public class CDMassesConfigPanel extends JPanel {
     	gridBagConstraints2.gridx = 0;
     	gridBagConstraints2.gridy = 0;
     	gridBagConstraints2.insets = new java.awt.Insets(10,10,10,10);
-    	jLabel.setText("Mass of the photolinker");
+    	jLabel.setText("Mass of cleavable linker after cleavage");
     	gridBagConstraints3.gridx = 1;
     	gridBagConstraints3.gridy = 0;
     	gridBagConstraints3.weightx = 1.0;
@@ -124,15 +124,15 @@ public class CDMassesConfigPanel extends JPanel {
     public static void main(String[] args) {
         JFrame f=new JFrame();
         Map primerMap=new HashMap();
-        primerMap.put(new Character('A'),Double.valueOf(313.2071));
-        primerMap.put(new Character('G'),Double.valueOf(329.2066));
-        primerMap.put(new Character('C'),Double.valueOf(289.1823));
-        primerMap.put(new Character('T'),Double.valueOf(304.1937));
+        primerMap.put(new Character('A'),new Double(313.2071));
+        primerMap.put(new Character('G'),new Double(329.2066));
+        primerMap.put(new Character('C'),new Double(289.1823));
+        primerMap.put(new Character('T'),new Double(304.1937));
         Map anhangMap=new HashMap();
-        anhangMap.put(new Character('A'),Double.valueOf(297.2072));
-        anhangMap.put(new Character('G'),Double.valueOf(313.2066));
-        anhangMap.put(new Character('C'),Double.valueOf(273.1824));
-        anhangMap.put(new Character('T'),Double.valueOf(288.1937));
+        anhangMap.put(new Character('A'),new Double(297.2072));
+        anhangMap.put(new Character('G'),new Double(313.2066));
+        anhangMap.put(new Character('C'),new Double(273.1824));
+        anhangMap.put(new Character('T'),new Double(288.1937));
         System.out.println(primerMap);
         System.out.println(anhangMap);
         f.getContentPane().add(new CDMassesConfigPanel(primerMap, anhangMap,18.02));
@@ -152,18 +152,18 @@ public class CDMassesConfigPanel extends JPanel {
     }
     public static Map getDefaultPrimermassMap() {
         Map primerMap=new HashMap();
-        primerMap.put(new Character('A'),Double.valueOf(313.2071));
-        primerMap.put(new Character('G'),Double.valueOf(329.2066));
-        primerMap.put(new Character('C'),Double.valueOf(289.1823));
-        primerMap.put(new Character('T'),Double.valueOf(304.1937));
+        primerMap.put(new Character('A'),new Double(313.2071));
+        primerMap.put(new Character('G'),new Double(329.2066));
+        primerMap.put(new Character('C'),new Double(289.1823));
+        primerMap.put(new Character('T'),new Double(304.1937));
         return primerMap;
     }
     public static Map getDefaultAddonMassMap() {
         Map anhangMap=new HashMap();
-        anhangMap.put(new Character('A'),Double.valueOf(297.2072));
-        anhangMap.put(new Character('G'),Double.valueOf(313.2066));
-        anhangMap.put(new Character('C'),Double.valueOf(273.1824));
-        anhangMap.put(new Character('T'),Double.valueOf(288.1937));
+        anhangMap.put(new Character('A'),new Double(297.2072));
+        anhangMap.put(new Character('G'),new Double(313.2066));
+        anhangMap.put(new Character('C'),new Double(273.1824));
+        anhangMap.put(new Character('T'),new Double(288.1937));
         return anhangMap;
     }
     public static double getDefaultPLMass() {

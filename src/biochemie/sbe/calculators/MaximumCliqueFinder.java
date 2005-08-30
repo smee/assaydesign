@@ -136,8 +136,8 @@ public class MaximumCliqueFinder implements Interruptible{
     public Set maxClique() {
         if(null == maxclique) {
             startSearch();
-            if(1 == maxclique.size())
-                maxclique.clear();
+/*            if(1 == maxclique.size())
+                maxclique.clear();*/
         }
         return maxclique;        
     }

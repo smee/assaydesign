@@ -120,26 +120,21 @@ public class SBEGui extends JFrame{
         	jf_about.setDefaultCloseOperation(2);
         	jf_about.getContentPane().add(
         		new JScrollPane(
-        			new JLabel("<html>Documentation can be found in the subdirectory help/.<br><br>DISCLAIMER<br>" +
-        				"THIS SOFTWARE IS PROVIDED BY THE AUTOURS ``AS IS`` AND ANY EXPRESS OR<br>" +
-        				"IMPLIED WARANTIES, INCLUDING, BUT NOT LIMITED TO, THE  IMPLIED <br>" +
-        				"WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE  ARE <br>" +
-        				"DISCLAIMED. IN NO EVENT SHALL THE AUTHORS ARE LIABLE  FOR ANY DIRECT, <br>" +
-        				"INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES <br>" +
-        				"(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS  OR <br>" +
-        				"SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)<br>" +
-        				"HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, <br>" +
-        				"STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN <br>" +
-        				"ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE <br>" +
-        				"POSSIBILITY OF SUCH DAMAGE. <br><br>" +
-        				"THE COPYRIGHT FOR ANY MATERIAL CREATED BY THE AUTHOR IS RESERVED. ANY <br>" +
-        				"DUPLICATION OR USE OF OBJECTS IN OTHER ELECTRONIC OR PRINTED <br>" +
-        				"PUBLICATIONS IS NOT PERMITTED WITHOUT THE AUTHOR'S AGREEMENT. <br><br>" +
-        				"IF SECTIONS OR INDIVIDUAL TERMS OF THIS STATEMENT ARE NOT LEGAL OR <br>" +
-        				"CORRECT, THE CONTENT OR VALIDITY OF THE OTHER PARTS REMAIN UNINFLUENCED <br>" +
-        				"BY THIS FACT.<br><br> " +
-        				"A tool created by Steffen Dienst and Holger Kirsten.<br>" +
-        				"Contact: hkirsten@medizin.uni-leipzig.de</html>")));
+        			new JLabel("<html>    This program is free software; you can redistribute it and/or modify<br>"+
+        			            "it under the terms of the GNU General Public License as published by<br>"+
+        			                "the Free Software Foundation; either version 2 of the License, or<br>"+
+        			                "(at your option) any later version.<br>"+
+
+        			                "This program is distributed in the hope that it will be useful,<br>"+
+        			                "but WITHOUT ANY WARRANTY; without even the implied warranty of<br>"+
+        			                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>"+
+        			                "GNU General Public License for more details.<br><br>"+
+        			                "You should have received a copy of the GNU General Public License<br>"+
+        			                "along with this program; if not, write to the Free Software<br>"+
+        			                "Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA<br><br>" +
+                                    "Link: http://www.gnu.org/licenses/gpl.txt<br><br>" +
+        			                "A tool created by <b>Steffen Dienst</b> and <b>Holger Kirsten</b>.<br>" +
+        				    "Contact: hkirsten@medizin.uni-leipzig.de</html>")));
         	jf_about.setSize(600, 300);
         	jf_about.setVisible(true);
         }
@@ -324,6 +319,10 @@ public class SBEGui extends JFrame{
          * @param snp
          */
         private void loadSNPInto(SBEPanel panel, String snp) {
+            panel.cb_A.setSelected(false);
+            panel.cb_C.setSelected(false);
+            panel.cb_G.setSelected(false);
+            panel.cb_T.setSelected(false);
             for(int j=0;j<snp.length();j++) {
                 switch (snp.charAt(j)) {
                 case 'A':
@@ -471,6 +470,8 @@ public class SBEGui extends JFrame{
                     //SNP
                     String[] temp=panel.getPrimer();
                     for (int j = 1; j < temp.length; j++) {
+                        if(temp[j].charAt(0)=='>')
+                            continue;
                         bw.write(temp[j]);
                     }
                     bw.write(';');
@@ -633,7 +634,8 @@ public class SBEGui extends JFrame{
 			try{
                 String text="<html>This program is free software.<br>" +
                         "You can redistribute it and/or modify it under the terms<br>" +
-                        "of the GNU General Public License as published by the Free Software Foundation.<br><br>" +
+                        "of the GNU General Public License (http://www.gnu.org/copyleft/gpl.html)<br>" +
+                        "as published by the Free Software Foundation.<br><br>" +
                         "Please enter maximum multiplex level (1-?):</html>";
                 String input=(String) JOptionPane.showInputDialog(null,
                         text,

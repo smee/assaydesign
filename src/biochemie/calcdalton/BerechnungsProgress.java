@@ -317,13 +317,13 @@ public class BerechnungsProgress extends JFrame{
 		    System.out.println("Dauer: "+(endtime-starttime)+"ms");
         }
 		if(0 == sbetable.getNumberOfSolutions()){
-            Object[] choices=new Object[]{"Cancel","MaxClique","Coloring"};
+            Object[] choices=new Object[]{"MaxClique","Coloring"};
 			String result=(String) JOptionPane.showInputDialog(null, "Sorry, just the first "+(cd.getMaxReachedDepth()+1)+" ones worked together." +
                     "Would you like to find the maximal subset of fitting primers?", "Enhanced calculation",JOptionPane.PLAIN_MESSAGE,
                     null,choices,choices[0]);
-			if(result.equals(choices[0])) {
+            if(result==null)
                 return;
-            }else if(result.equals(choices[1]))
+			if(result.equals(choices[0]))
                 findMaxClique(cd,SBENames,paneldata, fest,br);
             else
                 doColoring(cd, SBENames, paneldata,fest,br);
@@ -394,7 +394,6 @@ public class BerechnungsProgress extends JFrame{
             public Object construct() {
                 MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
                 Set max= mcf.maxClique();
-                
                 SBETable sbet = calculateSBETable(cd, br, max);
                 return sbet;
             }
