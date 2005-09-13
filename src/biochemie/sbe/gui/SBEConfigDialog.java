@@ -43,6 +43,7 @@ import org.apache.commons.lang.StringUtils;
 import biochemie.calcdalton.gui.CDConfigPanel;
 import biochemie.calcdalton.gui.CDMassesConfigPanel;
 import biochemie.calcdalton.gui.PBSequenceField;
+import biochemie.gui.CalcTimePanel;
 import biochemie.gui.IntegerValueIntervallPanel;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
@@ -62,7 +63,7 @@ public class SBEConfigDialog extends JDialog {
 	private CDConfigPanel cdPanel = null;
 	private MiniSBEConfigPanel sbePanel = null;
 	private JPanel advPanel = null;
-	private JPanel restPanel = null;
+	private CalcTimePanel restPanel = null;
 	private JPanel savePanel = null;
 	private JScrollPane cdScrollPane = null;
 	private JLabel jLabel = null;
@@ -188,8 +189,8 @@ public class SBEConfigDialog extends JDialog {
 	 */
 	public SBEOptions getSBEOptionsFromGui() {
         SBEOptions sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
-	    sbeconfig.setCalcTime(Integer.parseInt(getColortimeTf().getText()));
-	    sbeconfig.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
+        getRestPanel().saveTo(sbeconfig);
+        sbeconfig.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
 	    sbeconfig.setCrossimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getFrom()),' '));
 	    sbeconfig.setHairpinMinbinds(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getTo()),' '));
 	    sbeconfig.setHairpinWindowsizes(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getFrom()),' '));
@@ -250,24 +251,9 @@ public class SBEConfigDialog extends JDialog {
 	 *
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getRestPanel() {
+	private CalcTimePanel getRestPanel() {
 		if (restPanel == null) {
-			jLabel = new JLabel();
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			restPanel = new JPanel();
-			restPanel.setLayout(new GridBagLayout());
-			jLabel.setText("Calculationtime in s ");
-			gridBagConstraints3.gridx = 0;
-			gridBagConstraints3.gridy = 0;
-			gridBagConstraints3.insets = new java.awt.Insets(10,10,10,10);
-			gridBagConstraints4.gridx = 0;
-			gridBagConstraints4.gridy = 1;
-			gridBagConstraints4.weightx = 1.0;
-			gridBagConstraints4.fill = java.awt.GridBagConstraints.NONE;
-			gridBagConstraints4.insets = new java.awt.Insets(0,20,10,20);
-			restPanel.add(jLabel, gridBagConstraints3);
-			restPanel.add(getColortimeTf(), gridBagConstraints4);
+			restPanel=new CalcTimePanel();
 		}
 		return restPanel;
 	}
@@ -310,20 +296,7 @@ public class SBEConfigDialog extends JDialog {
 		}
 		return cdScrollPane;
 	}
-	/**
-	 * This method initializes PBSequenceField
-	 *
-	 * @return biochemie.calcdalton.gui.PBSequenceField
-	 */
-	private PBSequenceField getColortimeTf() {
-		if (colortimeTf == null) {
-			colortimeTf = new PBSequenceField();
-			colortimeTf.setColumns(5);
-			colortimeTf.setValidChars("0123456789");
-			colortimeTf.setText("10");
-		}
-		return colortimeTf;
-	}
+
 	/**
 	 * This method initializes jButton1
 	 *
@@ -548,7 +521,7 @@ public class SBEConfigDialog extends JDialog {
         cdp.setValuesFrom(c);
 
         getCandlenSpinner().setValue(new Integer(c.getMinCandidateLen()));
-        getColortimeTf().setText(c.getCalcTime() +"");
+        getRestPanel().setPropertiesFrom(c);
 
 
         //setze minisbeoptionen

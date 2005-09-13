@@ -133,6 +133,7 @@ public class SBEGui extends JFrame{
         			                "along with this program; if not, write to the Free Software<br>"+
         			                "Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA<br><br>" +
                                     "Link: http://www.gnu.org/licenses/gpl.txt<br><br>" +
+                                    "If you use Calcdalton in any published work, please cite?<br>"+
         			                "A tool created by <b>Steffen Dienst</b> and <b>Holger Kirsten</b>.<br>" +
         				    "Contact: hkirsten@medizin.uni-leipzig.de</html>")));
         	jf_about.setSize(600, 300);
@@ -635,7 +636,8 @@ public class SBEGui extends JFrame{
                 String text="<html>This program is free software.<br>" +
                         "You can redistribute it and/or modify it under the terms<br>" +
                         "of the GNU General Public License (http://www.gnu.org/copyleft/gpl.html)<br>" +
-                        "as published by the Free Software Foundation.<br><br>" +
+                        "as published by the Free Software Foundation.<br>" +
+                        "If you use Calcdalton in any published work, please cite?<br><br>" +
                         "Please enter maximum multiplex level (1-?):</html>";
                 String input=(String) JOptionPane.showInputDialog(null,
                         text,

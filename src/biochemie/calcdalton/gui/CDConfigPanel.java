@@ -200,7 +200,7 @@ public class CDConfigPanel extends JPanel{
     public CDConfigPanel(){
         bruchstelleVector = new Vector();
         abstandPanel = new DoubleValueIntervallPanel("Excluded peak distances (D)","No primer or product will have a mass distance of this range.",new double[]{20.0,36.0},new double[]{24.0, 39.9});
-		verbMassePanel=new DoubleValueIntervallPanel("Excluded mass ranges","No Primer or product will have a size of this mass range.",new double[0],new double[0]);
+		verbMassePanel=new DoubleValueIntervallPanel("Excluded mass ranges (D)","No Primer or product will have a size of this mass range.",new double[0],new double[0]);
 		initialize();
         setValuesFrom(new CDOptionsImpl());
     }
@@ -322,11 +322,11 @@ public class CDConfigPanel extends JPanel{
         peakPanel.setLayout(new TableLayout(peakSizes));
         peakPanel.setBorder( BorderFactory.createTitledBorder( "Minimum peak distance (D):" ) );
         peakPanel.setToolTipText("Minimum peak distance (D)");
-        tfPeaks=new PBSequenceField(5,false,"0123456789.");
+        tfPeaks=new PBSequenceField(5,false,PBSequenceField.NUMBERS);
         tfPeaks.setToolTipText("Minimum peak distance (D)");
         peakPanel.add(tfPeaks,"1,1");
         add(peakPanel,"1,7");
-        cbAllowOverlap=new JCheckBox("allow unextended Primer overlap",false);
+        cbAllowOverlap=new JCheckBox("Allow unextended Primer overlap",false);
         cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>complexes as specified in \"Excluded peak distances\"</html>");
         add(cbAllowOverlap,"1,9");
         cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);

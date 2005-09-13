@@ -115,7 +115,7 @@ public class CDMassesConfigPanel extends JPanel {
 	private PBSequenceField getPlMassTf() {
 		if (plMassTf == null) {
 			plMassTf = new PBSequenceField(10,false,PBSequenceField.NUMBERS);
-            plMassTf.setUniqueChars(".");
+            plMassTf.setUniqueChars(".-");
             plMassTf.setText(Double.toString(plMass));
 		}
 		return plMassTf;
