@@ -11,6 +11,7 @@ import javax.swing.JTabbedPane;
 
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.calcdalton.gui.CDConfigPanel.OkayAction;
+import biochemie.gui.CalcTimePanel;
 
 
 
@@ -30,12 +31,15 @@ public class CDConfig implements Serializable{
 	private CDConfigPanel cdcpanel;
     private CDMassesConfigPanel massPanel;
 
+    private CalcTimePanel calcTimePanel;
+
 
  
     private CDConfig() {
 		singleton=this;
 		cdcpanel=new CDConfigPanel();
         massPanel=new CDMassesConfigPanel(CDMassesConfigPanel.getDefaultPrimermassMap(),CDMassesConfigPanel.getDefaultAddonMassMap(),18.02);
+        calcTimePanel=new CalcTimePanel();
 	}
     private JDialog initDialog(JFrame parent){
 
@@ -50,7 +54,8 @@ public class CDConfig implements Serializable{
         JTabbedPane tabPane=new JTabbedPane();
         tabPane.add("Settings",cdcpanel);
         tabPane.add("Masses",massPanel);
-        tabPane.add("Load/Save settings",new CDConfigPersistPanel(cdcpanel, massPanel));
+        tabPane.add("Calculation time",calcTimePanel);
+        tabPane.add("Load/Save settings",new CDConfigPersistPanel(cdcpanel, massPanel,calcTimePanel));
         dialog.getContentPane().add(tabPane, BorderLayout.CENTER);
         JButton btOkay=new JButton(this.cdcpanel.new OkayAction(){
         	public void actionPerformed(ActionEvent e){
@@ -124,6 +129,7 @@ public class CDConfig implements Serializable{
     public CalcDaltonOptions getConfiguration() {
         CalcDaltonOptions c=cdcpanel.getCalcDaltonOptionsProvider();
         massPanel.saveToConfig(c);
+        calcTimePanel.saveTo(c);
         return c;
     }
 

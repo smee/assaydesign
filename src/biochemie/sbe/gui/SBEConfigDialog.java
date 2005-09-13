@@ -521,7 +521,7 @@ public class SBEConfigDialog extends JDialog {
         cdp.setValuesFrom(c);
 
         getCandlenSpinner().setValue(new Integer(c.getMinCandidateLen()));
-        getRestPanel().setPropertiesFrom(c);
+        getRestPanel().setValuesFrom(c);
 
 
         //setze minisbeoptionen

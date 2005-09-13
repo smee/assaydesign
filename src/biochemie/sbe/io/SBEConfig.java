@@ -54,8 +54,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ,{"sbe.crossdimer.windowsizes","6 4"}
             ,{"sbe.crossdimer.minbinds","4 4"}
             ,{"sbe.crossdimer.areallevil","false"}
-            ,{"misc.drawgraph","false"}
-            ,{"misc.maxcalctime","10"}};
+            ,{"misc.drawgraph","false"}};
     }
 
 
@@ -120,14 +119,6 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
 
 	public void setMaxPlex(int val) {
 		setProperty("sbe.maxplex",Integer.toString(val));
-	}
-
-	public int getCalcTime() {
-		return getInteger("misc.maxcalctime",20);
-	}
-
-	public void setCalcTime(int val) {
-		setProperty("misc.maxcalctime",Integer.toString(val));
 	}
 
 	public String getHairpinWindowsizes() {
@@ -281,6 +272,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonPLMass();
     }    public void setCalcDaltonPLMass(double val) {
         cdopt.setCalcDaltonPLMass(val);
+    }    public int getCalcTime() {
+        return cdopt.getCalcTime();
+    }    public void setCalcTime(int val) {
+        cdopt.setCalcTime(val);
     }
     //proxy end -----------------------------------------------------------------------------------------
 
@@ -301,4 +296,6 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).updateConfigFile(filename);
     }
+
+
  }

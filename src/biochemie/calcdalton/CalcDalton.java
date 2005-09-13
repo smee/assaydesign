@@ -251,7 +251,7 @@ public class CalcDalton implements Interruptible{
 	 * @return Tabellenspalte
 	 */
     protected String[] makeColumn(String[] sbe, int ptr,int i,int bruch) {
-		String[] Tabellendaten= new String[8];
+		String[] Tabellendaten= new String[] {"","","","","","","",""};
 		DecimalFormat df= new DecimalFormat("0.00",new DecimalFormatSymbols(Locale.US));
         double[] sbe_massen;
         sbe_massen = getMassenArray(ptr,i);

@@ -58,12 +58,6 @@ public interface SBEOptions extends CalcDaltonOptions {
 	public int getMaxPlex();
 	public void setMaxPlex(int val);
 	/**
-	 * Get maximum time for long calculation in seconds. 0 means no limit.
-	 * @return
-	 */
-	public int getCalcTime();
-	public void setCalcTime(int val);
-	/**
 	 * Min. length of valid sbeprimers
 	 * @return
 	 */

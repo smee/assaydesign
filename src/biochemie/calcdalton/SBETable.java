@@ -153,7 +153,9 @@ private void initTableBruchstellen() {
 			return ersteSpalte[rowIndex];
         if(0 == rowIndex)
             return columnNames[columnIndex];
-		return getTabelle(aktuelleTabelle)[columnIndex-1][rowIndex-1].trim();
+		String res= getTabelle(aktuelleTabelle)[columnIndex-1][rowIndex-1].trim();
+//		System.out.println("accessing ["+rowIndex+","+columnIndex+"] of table ["+getColumnCount()+","+getRowCount()+"]. Value: "+res);
+        return res;
 	}
 	
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
@@ -245,7 +247,7 @@ private void initTableBruchstellen() {
      * @return
      */
     private String extractDouble(String val) {
-        if(val == null)
+        if(val == null || val.length()==0)
             return null;
         if(val.charAt(0)=='[' && val.charAt(val.length()-1)==']')
             val=val.substring(1,val.length()-1);

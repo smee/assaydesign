@@ -65,6 +65,7 @@ import biochemie.calcdalton.gui.SBEGui;
 import biochemie.calcdalton.gui.SBEPanel;
 import biochemie.gui.TaskRunnerDialog;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
+import biochemie.sbe.calculators.ReusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
 import biochemie.sbe.multiplex.Multiplexable;
@@ -325,27 +326,27 @@ public class BerechnungsProgress extends JFrame{
                     null,choices,choices[0]);
             if(result==null)
                 return;
+            ReusableThread rt=new ReusableThread(config.getConfiguration().getCalcTime()*1000);
 			if(result.equals(choices[0]))
-                findMaxClique(cd,SBENames,paneldata, fest,br);
+                findMaxClique(cd,SBENames,paneldata, fest,br,rt);
             else
-                doColoring(cd, SBENames, paneldata,fest,br);
+                doColoring(cd, SBENames, paneldata,fest,br,rt);
             
 		}else {
 		    showCDResultTable(sbetable,null);      
         }
 
 	}
-    private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, final int[] fest, final int[] br) {
+    private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, final int[] fest, final int[] br, final ReusableThread rt) {
         final List primer = createPrimerList(cd, names, paneldata, fest, br);
         final UndirectedGraph graph = GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF);
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for coloring",null,new SwingWorker() {
             public Object construct() {
                 int[] plexsizes=new int[graph.vertexSet().size()];
                 Arrays.fill(plexsizes,1);
-                //TODO mit threaddingens machen, zeitbeschraenkt
                 SBEColorerProxy proxy=new SBEColorerProxy(graph,new HashSet(),primer.size(),CalcDalton.debug);
-                proxy.start();
-                return proxy.getResult();
+                rt.setInterruptableJob(proxy);
+                return rt.getResult();
             }
             public void finished() {
                 List colors=(List) getValue();
@@ -387,8 +388,9 @@ public class BerechnungsProgress extends JFrame{
     /**
      * @param paneldata
      * @param fest
+     * @param rt 
      */
-    private void findMaxClique(final CalcDalton cd,final String[] names,final String[][] paneldata, final int[] fest, final int[] br) {
+    private void findMaxClique(final CalcDalton cd,final String[] names,final String[][] paneldata, final int[] fest, final int[] br, final ReusableThread rt) {
         System.out.println("Using fest="+Helper.toString(fest));
         final Set primersToGo=new HashSet(createPrimerList(cd, names, paneldata, fest, br));
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for max. clique",null,new SwingWorker() {
@@ -397,7 +399,8 @@ public class BerechnungsProgress extends JFrame{
                 while(primersToGo.size()>0) {
                     final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF));
                     MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
-                    Set max= mcf.maxClique();
+                    rt.setInterruptableJob(mcf);
+                    Set max= (Set) rt.getResult();
                     System.out.println("Found clique of size "+max.size()+": "+max);
                     for (Iterator it = max.iterator(); it.hasNext();) {
                         final SimplePrimer p = (SimplePrimer) it.next();

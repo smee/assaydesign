@@ -71,6 +71,13 @@ public interface CalcDaltonOptions extends GeneralOptions{
     public Map getCalcDaltonPrimerMassesMap();
     public void setCalcDaltonPrimerMassesMap(Map m);
     
+    /**
+     * Get maximum time for long calculation in seconds. 0 means no limit.
+     * @return
+     */
+    public int getCalcTime();
+    public void setCalcTime(int val);
+    
     public Map getCalcDaltonAddonMassesMap();
     public void setCalcDaltonAddonMassesMap(Map m);
     public double getCalcDaltonPLMass();

@@ -167,21 +167,6 @@ public class CDConfigPanel extends JPanel{
 
         }
     }
-    public class ResetAction extends AbstractAction {
-        Icon icon;
-        ResetAction() {
-            putValue(NAME, "Reset");
-            putValue(SHORT_DESCRIPTION, "Reset to standard settings.");
-            java.net.URL url=this.getClass().getClassLoader().getResource("images/reset.gif");
-            if(null != url){
-                icon=new ImageIcon(url);
-                putValue(Action.SMALL_ICON,icon);
-            }
-        }
-        public void actionPerformed(ActionEvent e) {
-            setValuesFrom(new CDOptionsImpl());
-        }
-    }
     //private vars
 	private SpaltStelleDownAction spaltDownAction;
     private SpaltStelleUpAction spaltUpAction;

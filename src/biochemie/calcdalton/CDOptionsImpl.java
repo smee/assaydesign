@@ -37,6 +37,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
            ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
            ,{"calcdalton.plmass","18.02"}
+           ,{"misc.maxcalctime","10"}
            ,{"misc.debug","false"}
            };
     }
@@ -122,7 +123,13 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public void setCalcDaltonAllExtensions(boolean val) {
         setProperty("calcdalton.extension",Boolean.toString(val));
     }
+    public int getCalcTime() {
+        return getInteger("misc.maxcalctime",20);
+    }
 
+    public void setCalcTime(int val) {
+        setProperty("misc.maxcalctime",Integer.toString(val));
+    }
     public Map getCalcDaltonPrimerMassesMap() {
         String s=getProperty("calcdalton.primermasses");
         Map m=new HashMap();

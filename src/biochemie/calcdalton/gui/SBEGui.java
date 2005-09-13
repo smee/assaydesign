@@ -295,7 +295,6 @@ public class SBEGui extends JFrame{
             panel.repaint();
         }
         private void loadFromInputline(String line, SBEPanel panel) {
-            System.out.println("Loading from INputfile: "+line);
             StringTokenizer stok = new StringTokenizer(line,";\"");
             String id = stok.nextToken();
             String l = stok.nextToken();
@@ -345,7 +344,6 @@ public class SBEGui extends JFrame{
             }
         }
         private void loadFromOutputline(String p, SBEPanel panel) {
-            System.out.println("Loading from OUTputfile: "+p);
             /*
             "Multiplex ID"
             ,"SBE-ID"
