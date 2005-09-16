@@ -251,10 +251,10 @@ public abstract class Multiplexer {
         }
 
     }
-    public static void stop(boolean s) {
+    public synchronized static void stop(boolean s) {
         stopped=s;
     }
-    public static boolean isStopped() {
+    public synchronized static boolean isStopped() {
         return stopped;
     }
 }

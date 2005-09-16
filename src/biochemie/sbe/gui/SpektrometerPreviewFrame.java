@@ -164,6 +164,9 @@ public class SpektrometerPreviewFrame extends JFrame{
                 System.err.println("invalid nucleotide in snp!");
                 continue;
             }
+            if(m[pos+1]==0) {
+                continue;
+            }
             String name = id+"+"+snp.charAt(i); 
             masse.add(m[pos+1],LEN*5/4);
             l.add(name+": "+df.format(m[pos+1])+"D");

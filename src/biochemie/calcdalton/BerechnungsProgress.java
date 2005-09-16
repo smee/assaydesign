@@ -340,6 +340,8 @@ public class BerechnungsProgress extends JFrame{
     private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, final int[] fest, final int[] br, final ReusableThread rt) {
         final List primer = createPrimerList(cd, names, paneldata, fest, br);
         final UndirectedGraph graph = GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF);
+        if(graph==null)
+            return;
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for coloring",null,new SwingWorker() {
             public Object construct() {
                 int[] plexsizes=new int[graph.vertexSet().size()];
@@ -350,6 +352,8 @@ public class BerechnungsProgress extends JFrame{
             }
             public void finished() {
                 List colors=(List) getValue();
+                if(colors==null)
+                    return;//interrupted
                 Collections.sort(colors,new Comparator() {//sortieren nach Groesse
                     public int compare(Object arg0, Object arg1) {
                         return ((Collection)arg1).size()-((Collection)arg0).size();
@@ -398,9 +402,13 @@ public class BerechnungsProgress extends JFrame{
                 Set result=new HashSet();
                 while(primersToGo.size()>0) {
                     final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF));
+                    if(graph == null)
+                        return null;
                     MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
                     rt.setInterruptableJob(mcf);
                     Set max= (Set) rt.getResult();
+                    if(max==null)
+                        return null;//interrupted
                     System.out.println("Found clique of size "+max.size()+": "+max);
                     for (Iterator it = max.iterator(); it.hasNext();) {
                         final SimplePrimer p = (SimplePrimer) it.next();
@@ -420,6 +428,8 @@ public class BerechnungsProgress extends JFrame{
 //                    JOptionPane.showMessageDialog(null,"Sorry, all primers have forbidden masses.","No solution possible",JOptionPane.INFORMATION_MESSAGE);
 //                    return;
 //                }
+                if(tables==null)
+                    return;//interrupted
                 int count=0;
                 for (Iterator it = tables.iterator(); it.hasNext();) {
                     SBETable table = (SBETable) it.next();

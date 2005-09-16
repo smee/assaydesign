@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ProgressMonitor;
 import javax.swing.Timer;
 
+import biochemie.sbe.multiplex.Multiplexer;
 import biochemie.util.SwingWorker;
 
 /**
@@ -54,6 +55,7 @@ public class TaskRunnerDialog implements ActionListener {
         if(monitor.isCanceled() || task.isDone()) {
             timer.stop();
             task.interrupt();
+            Multiplexer.stop(true);//XXX weg damit, soll nur per interrupt gehen, aber irgendwo haengts. DRINGEND!!!
             monitor.close();
             Toolkit.getDefaultToolkit().beep();
             if(parent != null)

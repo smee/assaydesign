@@ -25,6 +25,8 @@ public class GraphHelper {
      * @return
      */
     public static UndirectedGraph getKomplementaerGraph(UndirectedGraph g) {
+        if(g == null)
+            return null;
         UndirectedGraph result=new SimpleGraph();
         List vert=new ArrayList(g.vertexSet());
         result.addAllVertices(vert);

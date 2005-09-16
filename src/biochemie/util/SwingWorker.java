@@ -64,6 +64,7 @@ public abstract class SwingWorker {
     public void interrupt() {
         Thread t = threadVar.get();
         if (null != t) {
+            System.out.println("about to interrupt Thread "+t.getName());
             t.interrupt();
         }
         threadVar.clear();
@@ -115,7 +116,7 @@ public abstract class SwingWorker {
             }
         };
 
-        Thread t = new Thread(doConstruct);
+        Thread t = new Thread(doConstruct,"Swingworker");
         threadVar = new ThreadVar(t);
     }
 

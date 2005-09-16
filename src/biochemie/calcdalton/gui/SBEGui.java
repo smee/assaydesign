@@ -192,20 +192,21 @@ public class SBEGui extends JFrame{
         }
         public void actionPerformed(ActionEvent e) {
             URL url=this.getClass().getClassLoader().getResource("help/calcdaltonhelp.htm");
-            try {
-                JEditorPane editorPane=new JEditorPane(url);
-                editorPane.setEditable(false);
-                JScrollPane editorScrollPane = new JScrollPane(editorPane);
-                editorScrollPane.setVerticalScrollBarPolicy(
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-                editorPane.setPreferredSize(new Dimension(600, 300));
+//            try {
+//                JEditorPane editorPane=new JEditorPane(url);
+//                editorPane.setEditable(false);
+//                JScrollPane editorScrollPane = new JScrollPane(editorPane);
+//                editorScrollPane.setVerticalScrollBarPolicy(
+//                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//                editorPane.setPreferredSize(new Dimension(600, 300));
                 JFrame f=new JFrame("Help");
-                f.getContentPane().add(editorScrollPane);
+//                f.getContentPane().add(editorScrollPane);
+                f.getContentPane().add(new JLabel("The help can be found at http://www.uni-leipzig.de/~ahnert/cdhelp.pdf."));
                 f.pack();
                 f.setVisible(true);
-            } catch (IOException e1) {
-                JOptionPane.showMessageDialog(null,"Sorry, couldn't load the help-file.","Error on loading help.",JOptionPane.ERROR_MESSAGE);
-            }
+//            } catch (IOException e1) {
+//                JOptionPane.showMessageDialog(null,"Sorry, couldn't load the help-file.","Error on loading help.",JOptionPane.ERROR_MESSAGE);
+//            }
         }
     }
     private class LoadPrimerAction extends AbstractAction{
