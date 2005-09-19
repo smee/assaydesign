@@ -49,12 +49,14 @@ public class CalcDalton implements Interruptible{
     private Object result;
     final private Map primerMasses;
     final private Map addonMasses;
-    final private double plMass;    
+    final private double plMass;
+    final private boolean allExtension;    
 
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
 					, double peaks
 					, double[] verbMasseFrom, double[] verbMasseTo
 					, boolean overlap
+                    , boolean allExtensions
                     , Map primerMasses
                     , Map addonMasses
                     , double plMass){
@@ -80,6 +82,7 @@ public class CalcDalton implements Interruptible{
 		this.verbMasseTo=Helper.clone(verbMasseTo);		
 		this.peaks=peaks;
 		this.overlap=overlap;
+        this.allExtension=allExtensions;
 		solutionSize=Integer.MAX_VALUE;
 		assert verbMasseFrom.length==verbMasseTo.length;
 		assert abstaendeFrom.length==abstaendeTo.length;		
@@ -95,6 +98,7 @@ public class CalcDalton implements Interruptible{
                 ,c.getCalcDaltonVerbFrom()
                 ,c.getCalcDaltonVerbTo()
                 ,c.getCalcDaltonAllowOverlap()
+                ,c.getCalcDaltonAllExtensions()
                 ,c.getCalcDaltonPrimerMassesMap()
                 ,c.getCalcDaltonAddonMassesMap()
                 ,c.getCalcDaltonPLMass());
@@ -151,17 +155,20 @@ public class CalcDalton implements Interruptible{
 	 * @param bruch
 	 * @return
 	 */
-	public double[] calcSBEMass(String[] p1, int bruch) {
+	public double[] calcSBEMass(String[] p1, int bruch,boolean allExtension) {
         if(1 > p1.length)
             return new double[0];
-		String temp= p1[0];//sonst wird wieder nur die Referenz übergeben
-		p1[0]= temp.substring((p1[0].length() - bruch) + 1);
-        double[] ergebnis= new double[p1.length];
-        ergebnis[0]= calcPrimerMasse(p1[0]);
+        List masses=new ArrayList();
+		String temp=p1[0].substring((p1[0].length() - bruch) + 1);
+        masses.add( new Double(calcPrimerMasse(temp)));
         for (int i= 1; i < p1.length; i++)
-            ergebnis[i]= calcPrimerAddonMasse(p1[0], p1[i]);
-		p1[0]= temp;
-		return ergebnis;
+            if(allExtension || p1[i].charAt(0)!='>')
+                 masses.add(new Double(calcPrimerAddonMasse(temp, p1[i])));
+        double[] ergebnis=new double[masses.size()];
+        for (int i = 0; i < ergebnis.length; i++) {
+            ergebnis[i]=((Double)masses.get(i)).doubleValue();
+        }
+        return ergebnis;
 	}
 
 	public boolean invalidMassesIn(double[] massen){
@@ -253,8 +260,7 @@ public class CalcDalton implements Interruptible{
     protected String[] makeColumn(String[] sbe, int ptr,int i,int bruch) {
 		String[] Tabellendaten= new String[] {"","","","","","","",""};
 		DecimalFormat df= new DecimalFormat("0.00",new DecimalFormatSymbols(Locale.US));
-        double[] sbe_massen;
-        sbe_massen = getMassenArray(ptr,i);
+        double[] sbe_massen=calcSBEMass(sbe,bruch,true);
 		Tabellendaten[0]=
 			sbe[0].substring(0, sbe[0].length() - bruch)
 				+ "[L]"
@@ -444,7 +450,7 @@ public class CalcDalton implements Interruptible{
         for(int i=0;i<sbedata.length;i++){
             for(int j=0;j<br.length;j++){
                 double[] massenArray=null;
-                massenArray=calcSBEMass(sbedata[i],br[j]);
+                massenArray=calcSBEMass(sbedata[i],br[j],this.allExtension);
                 if(invalidMassesIn(massenArray))
                     massenArray=null;
                 massenList[i][j]=massenArray;

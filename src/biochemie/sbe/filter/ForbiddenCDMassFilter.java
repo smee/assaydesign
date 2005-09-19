@@ -20,7 +20,7 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
         for (Iterator it = cand.iterator(); it.hasNext();) {
             SBEPrimer primer = (SBEPrimer) it.next();
             String[] params=SBEPrimer.getCDParamLine(primer);
-            double[] masses=cd.calcSBEMass(params,primer.getBruchstelle());
+            double[] masses=cd.calcSBEMass(params,primer.getBruchstelle(),true);
             if(cd.invalidMassesIn(masses)) {
                 it.remove();
                 count++;

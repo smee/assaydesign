@@ -155,7 +155,7 @@ public class ShowDiffAction extends MyAction {
         for (Iterator iter = mysbec.iterator(); iter.hasNext();i++) {
             SBECandidate  s = (SBECandidate ) iter.next();
             sbenames[i]=s.getId();
-            weights[i]=cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
+            weights[i]=cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),false);
         }
         return  new DiffTableModel(sbenames,weights);
     }

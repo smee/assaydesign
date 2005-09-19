@@ -26,16 +26,17 @@ public class DiffTableModel implements TableModel{
 	ArrayList firstcolumn;
 	HashMap hm;
 	
-public DiffTableModel(SBETable sbetable) {
-		this(sbetable.getNames(),getWeightsFromTable(sbetable));//! SpaltenxZeilen!
+public DiffTableModel(SBETable sbetable,boolean allExtensions) {
+		this(sbetable.getNames(),getWeightsFromTable(sbetable,allExtensions));//! SpaltenxZeilen!
 }
 /**
  * 
  * @param names
  * @param weights
+ * @param allExtensions 
  */
 public DiffTableModel(String[] names, double[][] weights) {    
-		initTable(names, weights);		
+		initTable(names, weights);	
 }
 
 	/**
@@ -125,7 +126,7 @@ private void initTable(String[] names, double[][] weights) {
 	 * @param sbetable
 	 * @return
 	 */
-	public static double[][] getWeightsFromTable(SBETable sbetable) {
+	private static double[][] getWeightsFromTable(SBETable sbetable, boolean allExtension) {
 		int cc=sbetable.getColumnCount()-1;//die erste Zeile enthält keine Werte
 		double[][] erg=new double[cc][5];
 		for (int j = 0; j < cc; j++) {
@@ -138,11 +139,14 @@ private void initTable(String[] names, double[][] weights) {
 		for (int j = 0; j < cc; j++) {
 			for (int i = 1; i < erg[j].length; i++) {
 				String entry=(String)sbetable.getValueAt(i+4,j+1);
-				if(null == entry)
+				if(null == entry || entry.length()==0)
 					erg[j][i]=0;
 				else {
-                    if(entry.charAt(0)=='[' && entry.charAt(entry.length()-1)==']')
-                        entry=entry.substring(1,entry.length()-1);
+				    if(entry.charAt(0)=='[' && entry.charAt(entry.length()-1)==']') {
+				        if(allExtension) {
+				            entry=entry.substring(1,entry.length()-1);
+				        }else continue;
+				    }
 					erg[j][i]=Double.parseDouble(entry);
                 }
 			}

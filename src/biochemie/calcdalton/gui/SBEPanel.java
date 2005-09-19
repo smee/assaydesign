@@ -145,7 +145,7 @@ public class SBEPanel extends MyPanel
      */
     public String[] getPrimer()
     {
-        if(CDConfig.getInstance().getConfiguration().getCalcDaltonAllExtensions()) {
+//        if(CDConfig.getInstance().getConfiguration().getCalcDaltonAllExtensions()) {
             String[] arr= new String[5];
             arr[0]=tfSequence.getSequence();
             arr[1]=cb_A.isSelected()==false?">A":"A";
@@ -153,40 +153,40 @@ public class SBEPanel extends MyPanel
             arr[3]=cb_G.isSelected()==false?">G":"G";
             arr[4]=cb_T.isSelected()==false?">T":"T";
             return arr;
-        }
-        int i = 1;
-        if(cb_A.isSelected())
-            i++;
-        if(cb_C.isSelected())
-            i++;
-        if(cb_G.isSelected())
-            i++;
-        if(cb_T.isSelected())
-            i++;
-        String[] ergebnis = new String[i];
-        i = 1;
-        ergebnis[0] = Helper.getNuklFromString(tfSequence.getSequence());
-        if(cb_A.isSelected())
-        {
-            ergebnis[i] = "A";
-            i++;
-        }
-        if(cb_C.isSelected())
-        {
-            ergebnis[i] = "C";
-            i++;
-        }
-        if(cb_G.isSelected())
-        {
-            ergebnis[i] = "G";
-            i++;
-        }
-        if(cb_T.isSelected())
-        {
-            ergebnis[i] = "T";
-            i++;
-        }
-        return ergebnis;
+//        }
+//        int i = 1;
+//        if(cb_A.isSelected())
+//            i++;
+//        if(cb_C.isSelected())
+//            i++;
+//        if(cb_G.isSelected())
+//            i++;
+//        if(cb_T.isSelected())
+//            i++;
+//        String[] ergebnis = new String[i];
+//        i = 1;
+//        ergebnis[0] = Helper.getNuklFromString(tfSequence.getSequence());
+//        if(cb_A.isSelected())
+//        {
+//            ergebnis[i] = "A";
+//            i++;
+//        }
+//        if(cb_C.isSelected())
+//        {
+//            ergebnis[i] = "C";
+//            i++;
+//        }
+//        if(cb_G.isSelected())
+//        {
+//            ergebnis[i] = "G";
+//            i++;
+//        }
+//        if(cb_T.isSelected())
+//        {
+//            ergebnis[i] = "T";
+//            i++;
+//        }
+//        return ergebnis;
     }
 
 

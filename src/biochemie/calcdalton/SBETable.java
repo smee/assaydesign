@@ -250,7 +250,8 @@ private void initTableBruchstellen() {
         if(val == null || val.length()==0)
             return null;
         if(val.charAt(0)=='[' && val.charAt(val.length()-1)==']')
-            val=val.substring(1,val.length()-1);
+            //val=val.substring(1,val.length()-1);
+            return null;//soll nicht mit in die grafik rein
         return val;
     }
 

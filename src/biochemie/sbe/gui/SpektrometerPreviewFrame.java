@@ -129,7 +129,7 @@ public class SpektrometerPreviewFrame extends JFrame{
         CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             SBECandidate s = (SBECandidate) it.next();
-            double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle());
+            double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),true);
             String id = s.getId();
             String snp = s.getSNP();            
             addDataset(m,id,snp,collection);

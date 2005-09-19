@@ -214,7 +214,7 @@ public class BerechnungsProgress extends JFrame{
         showDiffs.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 JFrame f=new JFrame("Diffs for result "+(sbetable.getIndex()+1));
-                DiffTableModel dtm=new DiffTableModel(sbetable);
+                DiffTableModel dtm=new DiffTableModel(sbetable,CDConfig.getInstance().getConfiguration().getCalcDaltonAllExtensions());
                 JTable t=new JTable(dtm);
                 JScrollPane sp=new JScrollPane(t);
                 f.getContentPane().add(sp);
