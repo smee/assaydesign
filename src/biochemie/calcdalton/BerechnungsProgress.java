@@ -63,6 +63,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import biochemie.calcdalton.gui.CDConfig;
 import biochemie.calcdalton.gui.SBEGui;
 import biochemie.calcdalton.gui.SBEPanel;
+import biochemie.gui.ColumnResizer;
 import biochemie.gui.TaskRunnerDialog;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
 import biochemie.sbe.calculators.ReusableThread;
@@ -248,7 +249,7 @@ public class BerechnungsProgress extends JFrame{
     }
 	public void start() {
 
-		
+		SBEGui.getInstance().getProgressPanel().start();
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		/**
 		 * alle eingegebenen Daten
@@ -311,6 +312,7 @@ public class BerechnungsProgress extends JFrame{
         int[] tempfest = new int[fest.length];
         System.arraycopy(fest,0,tempfest,0,fest.length);
         cd.calc(paneldata,sbetable,tempfest);
+        SBEGui.getInstance().getProgressPanel().stop();
         if(calcthread.isInterrupted())
             return;
 		timer.stop();
@@ -326,6 +328,7 @@ public class BerechnungsProgress extends JFrame{
                     null,choices,choices[0]);
             if(result==null)
                 return;
+            SBEGui.getInstance().getProgressPanel().start();
             ReusableThread rt=new ReusableThread(config.getConfiguration().getCalcTime()*1000);
 			if(result.equals(choices[0]))
                 findMaxClique(cd,SBENames,paneldata, fest,br,rt);
@@ -351,6 +354,7 @@ public class BerechnungsProgress extends JFrame{
                 return rt.getResult();
             }
             public void finished() {
+                SBEGui.getInstance().getProgressPanel().stop();
                 List colors=(List) getValue();
                 if(colors==null)
                     return;//interrupted
@@ -423,6 +427,7 @@ public class BerechnungsProgress extends JFrame{
                 return result;
             }
             public void finished() {
+                SBEGui.getInstance().getProgressPanel().stop();
                 Set tables=(Set)getValue();
 //                if(table.getNumberOfSolutions()==0){
 //                    JOptionPane.showMessageDialog(null,"Sorry, all primers have forbidden masses.","No solution possible",JOptionPane.INFORMATION_MESSAGE);

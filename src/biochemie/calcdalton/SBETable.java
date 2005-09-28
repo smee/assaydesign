@@ -153,8 +153,9 @@ private void initTableBruchstellen() {
 			return ersteSpalte[rowIndex];
         if(0 == rowIndex)
             return columnNames[columnIndex];
+       // System.out.println("accessing ["+rowIndex+","+columnIndex+"] of table ["+getColumnCount()+","+getRowCount()+"]. Value: ");
 		String res= getTabelle(aktuelleTabelle)[columnIndex-1][rowIndex-1].trim();
-//		System.out.println("accessing ["+rowIndex+","+columnIndex+"] of table ["+getColumnCount()+","+getRowCount()+"]. Value: "+res);
+       // System.out.println(res);
         return res;
 	}
 	

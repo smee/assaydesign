@@ -45,6 +45,7 @@ import javax.swing.filechooser.FileFilter;
 
 import biochemie.calcdalton.BerechnungsProgress;
 import biochemie.calcdalton.tf_seqDocListener;
+import biochemie.gui.InfiniteProgressPanel;
 import biochemie.sbe.gui.SBECandidatePanel;
 import biochemie.util.FileSelector;
 import biochemie.util.Helper;
@@ -536,6 +537,7 @@ public class SBEGui extends JFrame{
 	BerechnungsProgress bp;
 
 	int sbe_anzahl=0;
+    private InfiniteProgressPanel infiniPP;
 
     /**
      * @return
@@ -594,6 +596,8 @@ public class SBEGui extends JFrame{
 		toolbar.addSeparator();
 		toolbar.add(exitaction);
 		
+        infiniPP=new InfiniteProgressPanel();
+        setGlassPane(infiniPP);
 
 		getContentPane().add(toolbar, BorderLayout.NORTH);
 		menu= new JMenuBar();
@@ -710,5 +714,7 @@ public class SBEGui extends JFrame{
     public SBEPanel getPanel(int t) {
         return (SBEPanel)sbePanelList.get(t);
     }
-
+    public InfiniteProgressPanel getProgressPanel() {
+        return infiniPP;
+    }
 }

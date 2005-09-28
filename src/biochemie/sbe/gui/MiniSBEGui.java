@@ -6,6 +6,7 @@ package biochemie.sbe.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -72,6 +73,8 @@ import org.apache.commons.functor.core.IsNull;
 import biochemie.calcdalton.JTableEx;
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
+import biochemie.gui.ColumnResizer;
+import biochemie.gui.InfiniteProgressPanel;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptions;
@@ -276,7 +279,7 @@ public class MiniSBEGui extends JFrame {
             pane.add(bar);
             pane.add(new JLabel("Please have some patience, this operation might need some time."));
             GUIHelper.center(dialog, MiniSBEGui.this);
-
+            getInfiniteProgressPanel().start();
             final SwingWorker sw = new SwingWorker(){
         		public Object construct() {
                     MiniSBE m = null;
@@ -297,6 +300,7 @@ public class MiniSBEGui extends JFrame {
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     if(showResult)
                         showResultFrame(title,getSBECandidatesFromMultiKnotenList(compactsbec),cfg);
+                    getInfiniteProgressPanel().stop();
         		}
         	};
         	JButton stopbutton = new JButton("Cancel");
@@ -305,6 +309,7 @@ public class MiniSBEGui extends JFrame {
                     Multiplexer.stop(true);
         	        sw.interrupt();
                     dialog.dispose();
+                    getInfiniteProgressPanel().stop();
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         	    }
         	});
@@ -442,6 +447,7 @@ public class MiniSBEGui extends JFrame {
             table.setPreferredScrollableViewportSize(new Dimension(400,table.getPreferredSize().height));
             sorter.setTableHeader(table.getTableHeader());
             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            //ColumnResizer.adjustColumnPreferredWidths(table);
             for(int j=0; j <table.getColumnCount();j++){
                 TableColumn column = table.getColumnModel().getColumn(j);
                 column.setPreferredWidth(100);
@@ -735,6 +741,7 @@ public class MiniSBEGui extends JFrame {
     protected boolean expertmode;
     private JMenuItem prefMenuItem;
     private JButton consoleButton;
+    private InfiniteProgressPanel infinitePP;
 
 
 	/**
@@ -789,9 +796,16 @@ public class MiniSBEGui extends JFrame {
 		this.setJMenuBar(getJJMenuBar());
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
+        this.setGlassPane(getInfiniteProgressPanel());
         setTitle("MiniSBE (freeze 1) $$$DATE$$$");//wird von ant durch aktuelles Datum ersetzt.
 	}
-	/**
+	private InfiniteProgressPanel getInfiniteProgressPanel() {
+	    if(infinitePP==null) {
+            infinitePP=new InfiniteProgressPanel();
+        }
+        return infinitePP;
+    }
+    /**
 	 * This method initializes jContentPane
 	 *
 	 * @return javax.swing.JPanel

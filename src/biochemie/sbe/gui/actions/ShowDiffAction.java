@@ -37,6 +37,7 @@ import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
 import biochemie.domspec.SBEPrimer;
+import biochemie.gui.ColumnResizer;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
@@ -183,7 +184,9 @@ public class ShowDiffAction extends MyAction {
         frame.getContentPane().setLayout(new BorderLayout());
         restable = restables[index];
         difftable = new JTableEx(diffmodels[index]);
+        ColumnResizer.adjustColumnPreferredWidths(difftable);
         cdtable = new JTableEx(cdmodels[index-1]);
+        ColumnResizer.adjustColumnPreferredWidths(cdtable);
         difftable.setPreferredScrollableViewportSize(TABLE_DIM);
         cdtable.setPreferredScrollableViewportSize(TABLE_DIM);
 
