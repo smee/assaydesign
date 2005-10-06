@@ -264,7 +264,7 @@ public class MiniSBEGui extends JFrame {
          * @return
          */
         private boolean verifyUserFilters() {
-            Pattern re=Pattern.compile("(\\d+|\\*)_(3|5|\\*)_(\\d+|\\*)");
+            Pattern re=Pattern.compile("(3|5|\\\\*)_(\\d+|\\*)_(\\d+|\\*)");
             boolean flag=true;
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();

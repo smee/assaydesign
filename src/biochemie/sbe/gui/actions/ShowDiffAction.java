@@ -139,10 +139,11 @@ public class ShowDiffAction extends MyAction {
 
     private String[] createAnhangsData(SBECandidate s) {
         if(cfg.getCalcDaltonAllExtensions()) {
+            return new String[]{s.getFavSeq(),"A","C","G","T"};
+        }else {
             String[] arr=SBEPrimer.getCDParamLine(s.getFavPrimer());
             return arr;
-        }else
-            return new String[]{s.getFavSeq(),"A","C","G","T"};
+        }
     }
 
     /**
