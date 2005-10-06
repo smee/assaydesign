@@ -23,6 +23,7 @@ import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.SBEOptions;
+import biochemie.util.Helper;
 /**
  * @author Steffen Dienst
  *
@@ -271,7 +272,7 @@ public class SBECandidatePanel extends MyPanel {
 		return tfId;
 	}
     public String getId() {
-        return getTfId().getText();
+        return getTfId().getText().trim();
     }
 	/**
 	 * This method initializes plpanel5
@@ -411,7 +412,7 @@ public class SBECandidatePanel extends MyPanel {
             return null;
 
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
-        String id=getTfId().getText();
+        String id=getId();
 
         int pl=0;
         try {

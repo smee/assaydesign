@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -81,6 +82,7 @@ public class ShowDiffAction extends MyAction {
                 mids.add(((SBECandidate)obj).getMultiplexId());
             }
         });
+        System.out.println(sbecfilt);
         diffmodels=new TableModel[mids.size()+1];
         cdmodels = new TableModel[mids.size()+1];
         restables = new JTable[mids.size()+1];
@@ -125,6 +127,8 @@ public class ShowDiffAction extends MyAction {
             names[i]=s.getId();
             paneldata[i]=createAnhangsData(s);
             fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),s.getBruchstelle());
+//            System.out.print(ArrayUtils.toString(paneldata[i]));
+//            System.out.println(" "+fest[i]);
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
 

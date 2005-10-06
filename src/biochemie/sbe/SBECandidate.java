@@ -167,7 +167,9 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
         else
             System.out.println(bos.toString());
      }
-
+    public String toString() {
+        return "Sbec. \""+id+"\" l="+leftstring+", r="+rightstring;
+    }
     /**
      * Erzeuge eine Liste von Sequenzen, die allen Kriterien gerecht werden und setzt alle entsprechenden
      * Instanzfelder.

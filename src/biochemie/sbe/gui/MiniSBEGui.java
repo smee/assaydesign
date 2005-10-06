@@ -36,8 +36,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -249,9 +251,39 @@ public class MiniSBEGui extends JFrame {
                     (KeyStroke)null);
         }
         public void actionPerformed(ActionEvent e) {
+            if(verifyUserFilters()==false) {
+                JOptionPane.showMessageDialog(MiniSBEGui.this,"Invalid primerfilters. Please review the marked fields!");
+                return;
+            }
             SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
             List sbeccoll = getCompactedSBECandidates(cfg);
         	runCalculation("Results",sbeccoll, cfg,true);
+        }
+        /**
+         * Tests, if the format of the filters entered by the user are correct.
+         * @return
+         */
+        private boolean verifyUserFilters() {
+            Pattern re=Pattern.compile("(\\d+|\\*)_(3|5|\\*)_(\\d+|\\*)");
+            boolean flag=true;
+            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+                SBECandidatePanel p = (SBECandidatePanel) it.next();
+                String filter=p.getFiltersPanel().getText();
+                StringTokenizer st=new StringTokenizer(filter);
+                while(flag && st.hasMoreTokens()) {
+                    String token=st.nextToken();
+                    if(!re.matcher(token).matches()) {
+                        p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.red,2));
+                        p.getFiltersPanel().getPBSequenceField().setToolTipText("Invalid format: "+token);
+                        getExpertToggleButton().setSelected(true);
+                        flag=false;
+                    }else {
+                        p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.black,1));
+                        p.getFiltersPanel().getPBSequenceField().setToolTipText(null);
+                    }
+                }
+            }
+            return flag;
         }
         public List getCompactedSBECandidates(SBEOptions cfg) {
             List sbec= new ArrayList(sbepanels.size());

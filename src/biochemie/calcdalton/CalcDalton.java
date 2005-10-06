@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import biochemie.sbe.calculators.Interruptible;
 import biochemie.util.Helper;
 public class CalcDalton implements Interruptible{
@@ -302,6 +304,12 @@ public class CalcDalton implements Interruptible{
 	}
 
     public SBETable calc(String[][] sbeData,SBETable sbeTable, int[] fest) {
+//        System.out.println("------------------");
+//        for (int i = 0; i < fest.length; i++) {
+//          System.out.print(ArrayUtils.toString(sbeData[i]));
+//          System.out.println(" "+fest[i]);
+//        }
+//        System.out.println("------------------");
         int[][] erg=calc(sbeData,fest);
         for(int i=0;i<erg.length;i++){
             int[] line=erg[i];
