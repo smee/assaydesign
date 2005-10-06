@@ -63,7 +63,6 @@ import org.apache.commons.functor.UnaryPredicate;
 import biochemie.calcdalton.gui.CDConfig;
 import biochemie.calcdalton.gui.SBEGui;
 import biochemie.calcdalton.gui.SBEPanel;
-import biochemie.gui.ColumnResizer;
 import biochemie.gui.TaskRunnerDialog;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
 import biochemie.sbe.calculators.ReusableThread;
@@ -249,7 +248,7 @@ public class BerechnungsProgress extends JFrame{
     }
 	public void start() {
 
-		SBEGui.getInstance().getProgressPanel().start();
+		//SBEGui.getInstance().getProgressPanel().start();
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		/**
 		 * alle eingegebenen Daten
@@ -312,7 +311,7 @@ public class BerechnungsProgress extends JFrame{
         int[] tempfest = new int[fest.length];
         System.arraycopy(fest,0,tempfest,0,fest.length);
         cd.calc(paneldata,sbetable,tempfest);
-        SBEGui.getInstance().getProgressPanel().stop();
+        //SBEGui.getInstance().getProgressPanel().stop();
         if(calcthread.isInterrupted())
             return;
 		timer.stop();
@@ -328,12 +327,13 @@ public class BerechnungsProgress extends JFrame{
                     null,choices,choices[0]);
             if(result==null)
                 return;
-            SBEGui.getInstance().getProgressPanel().start();
+            //SBEGui.getInstance().getProgressPanel().start();
             ReusableThread rt=new ReusableThread(config.getConfiguration().getCalcTime()*1000);
 			if(result.equals(choices[0]))
                 findMaxClique(cd,SBENames,paneldata, fest,br,rt);
             else
                 doColoring(cd, SBENames, paneldata,fest,br,rt);
+			//SBEGui.getInstance().getProgressPanel().stop();
             
 		}else {
 		    showCDResultTable(sbetable,null);      
