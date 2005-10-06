@@ -267,11 +267,11 @@ public class SBEPrimer extends Primer{
     }
 
     public static String[][] createCDParameters(SBEPrimer p1, SBEPrimer p2, CalcDaltonOptions cfg) {
-        if(cfg.getCalcDaltonAllExtensions())
-            return new String[][]{
-                {p1.getSeq(),"A","C","G","T"}
-               ,{p2.getSeq(),"A","C","G","T"}};
-        else
+//        if(cfg.getCalcDaltonAllExtensions())
+//            return new String[][]{
+//                {p1.getSeq(),"A","C","G","T"}
+//               ,{p2.getSeq(),"A","C","G","T"}};
+//        else
             return new String[][] {getCDParamLine(p1), getCDParamLine(p2)};
             
     }
@@ -285,14 +285,16 @@ public class SBEPrimer extends Primer{
         for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.getType()==SBESekStruktur.HAIRPIN || s.getType()==SBESekStruktur.HOMODIMER)
-                chars.add(new Character(s.bautEin()));
+                chars.add(new Character(Character.toUpperCase(s.bautEin())));
         }
-        String[] arr=new String[chars.size()+1];
+        char[] attachments=new char[] {'A','C','G','T'};
+        String[] arr=new String[attachments.length+1];
         arr[0]=p.getSeq();
-        int i=1;
-        for (Iterator it = chars.iterator(); it.hasNext();i++) {
-            Character c = (Character) it.next();
-            arr[i]=c.toString();
+        for (int i = 0; i < attachments.length; i++) {
+            arr[i+1]="";
+            if(!chars.contains(new Character(attachments[i])))
+                arr[i+1]=">";
+            arr[i+1]+=attachments[i];
         }
         return arr;
     }

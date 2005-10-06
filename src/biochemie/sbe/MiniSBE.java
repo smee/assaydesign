@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org._3pq.jgrapht.UndirectedGraph;
+
 
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SBEPrimerReader;
@@ -15,6 +17,7 @@ import biochemie.sbe.multiplex.BestellMultiplexer;
 import biochemie.sbe.multiplex.ExperimentMultiplexer;
 import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.sbe.multiplex.Multiplexer;
+import biochemie.util.GraphHelper;
 import biochemie.util.LogStdStreams;
 /*
  * Created on 18.11.2003
@@ -78,16 +81,22 @@ public class MiniSBE {
             if(Thread.currentThread().isInterrupted())
                 return;
             if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
-                m1.findMultiplexes(structs);
+                createGraphAndMultiplex(structs,cfg,m1);
             }else{
 	            if(cfg.getAllCrossdimersAreEvil() == false)
 	                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
-                m2.findMultiplexes(structs);
+	            createGraphAndMultiplex(structs,cfg,m2);
             }
         }
     }
 
 
+    private void createGraphAndMultiplex(List structs, SBEOptions cfg, Multiplexer m) {
+        boolean drawGraph=cfg.isDrawGraphes();
+        System.out.println("Creating graph with "+structs.size()+" vertices...");
+        UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0);      
+        m.findMultiplexes(g);
+    }
     public static void main(String[] args) {
         if ( args.length < 2) {
             System.out.println("Usage:\n------\n\n MiniSBE.exe optionsfile primerfile.csv");

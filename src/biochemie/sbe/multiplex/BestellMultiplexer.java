@@ -36,29 +36,16 @@ public class BestellMultiplexer extends Multiplexer {
     }
 
     
-	public void findMultiplexes(List mult) {
+	public void findMultiplexes(UndirectedGraph g) {
         System.out.println("Using BestellMultiplexer... (maximizes the size of multiplexes)");
-//        Collections.sort(mult, new Comparator() {
-//            public int compare(Object o1, Object o2) {
-//                return ((Multiplexable)o1).getName().compareTo(((Multiplexable)o2).getName());
-//            }            
-//        });
-//        for (Iterator it = mult.iterator(); it.hasNext();) {
-//            Multiplexable m = (Multiplexable) it.next();
-//            System.out.println(m.getName());
-//        }
-//        System.exit(0);
-        boolean drawGraph=cfg.isDrawGraphes();
-        System.out.println("Creating graph with "+mult.size()+" vertices...");
-	    UndirectedGraph g=GraphHelper.createIncompGraph(mult,drawGraph,0);
         if(Thread.currentThread().isInterrupted())
             return;
 	    UndirectedGraph grev=GraphHelper.getKomplementaerGraph(g);
         System.out.println("RevGraph consists of "+grev.vertexSet().size()+" vertices, "+grev.edgeSet().size()+" edges.");
 	    
 	    int maxplexnr= cfg.getMaxPlex();
-	    if(maxplexnr>mult.size())
-	        maxplexnr=mult.size();
+	    if(maxplexnr>g.vertexSet().size())
+	        maxplexnr=g.vertexSet().size();
 	    rt.setInterruptableJob(new MaximumCliqueFinder(grev,maxplexnr,debug));
 	    Set maxclique=(Set)rt.getResult();	    
 	    

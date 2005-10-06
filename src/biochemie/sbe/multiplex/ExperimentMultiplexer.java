@@ -37,12 +37,9 @@ public class ExperimentMultiplexer extends Multiplexer {
         rt=new ReusableThread(cfg.getCalcTime() * 1000);
     }
 
-    public void findMultiplexes(List multip) {
+    public void findMultiplexes(UndirectedGraph g) {
         System.out.println("Using graph coloring to find multiplexes for given primers...");
 
-        boolean drawGraph=cfg.isDrawGraphes();
-        System.out.println("Creating graph with "+multip.size()+" vertices...");
-        UndirectedGraph g=GraphHelper.createIncompGraph(multip,drawGraph, 0);
         System.out.println("RevGraph consists of "+g.vertexSet().size()+" vertices, "+g.edgeSet().size()+" edges.");
         
         if(Thread.currentThread().isInterrupted())

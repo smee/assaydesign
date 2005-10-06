@@ -14,6 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org._3pq.jgrapht.UndirectedGraph;
+
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.domspec.SekStrukturFactory;
@@ -39,10 +41,10 @@ public abstract class Multiplexer {
 	}
 	/**
      * Methode, die einer Menge von Multiplexables Multiplex-IDs zuweist.
-     * Erwartet eine Liste von @link SBECandidates
+     * Erwartet eine Liste von @link SBEPrimer
 	 * @param sbec
 	 */
-	public abstract void findMultiplexes(List sbec);
+	public abstract void findMultiplexes(UndirectedGraph graph);
 
     /**
      * Liefert einen String, der als ID eines einzelnen Multiplexes dient.
