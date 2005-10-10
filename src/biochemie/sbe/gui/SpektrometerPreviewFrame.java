@@ -119,7 +119,7 @@ public class SpektrometerPreviewFrame extends JFrame{
                 id=Integer.toString(i);
             double[] m = table.getMassenOfColumn(i);
             String snp = table.getAnbauOfColumn(i);
-            addDataset(m,id,snp,collection);
+            addDataset(m,id,snp,collection,cfg.getCalcDaltonShowIons());
         }
         return collection;
     }
@@ -132,7 +132,7 @@ public class SpektrometerPreviewFrame extends JFrame{
             double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),true);
             String id = s.getId();
             String snp = s.getSNP();            
-            addDataset(m,id,snp,collection);
+            addDataset(m,id,snp,collection,cfg.getCalcDaltonShowIons());
         }
         return collection;
     }
@@ -142,8 +142,9 @@ public class SpektrometerPreviewFrame extends JFrame{
      * @param id
      * @param snp
      * @param collection
+     * @param showions 
      */
-    private void addDataset(double[] m, String id, String snp, XYSeriesCollection collection) {
+    private void addDataset(double[] m, String id, String snp, XYSeriesCollection collection, boolean showions) {
         final double LEN = 4000.0;
         final DecimalFormat df = new DecimalFormat("00.00");
         
@@ -152,11 +153,12 @@ public class SpektrometerPreviewFrame extends JFrame{
         
         masse.add(m[0],LEN);
         l.add(id+": "+df.format(m[0])+"D");
-        masse.add(m[0]+22,LEN*1/7f);
-        l.add(id+", Na+ Peak: "+df.format(m[0]+22)+"D");
-        masse.add(m[0]+38,LEN*1/10f);
-        l.add(id+", K+ Peak: "+df.format(m[0]+38)+"D");
-        
+        if(showions){
+            masse.add(m[0]+22,LEN*1/7f);
+            l.add(id+", Na+ Peak: "+df.format(m[0]+22)+"D");
+            masse.add(m[0]+38,LEN*1/10f);
+            l.add(id+", K+ Peak: "+df.format(m[0]+38)+"D");
+        }
         final String foo="ACGT";
         for (int i = 0; i < snp.length(); i++) {
             int pos = foo.indexOf(snp.charAt(i));
@@ -170,10 +172,12 @@ public class SpektrometerPreviewFrame extends JFrame{
             String name = id+"+"+snp.charAt(i); 
             masse.add(m[pos+1],LEN*5/4);
             l.add(name+": "+df.format(m[pos+1])+"D");
-            masse.add(m[pos+1]+22,LEN*5/4f*1/7f);
-            l.add(name+", Na+ Peak: "+df.format(m[pos+1]+22)+"D");
-            masse.add(m[pos+1]+38,LEN*5/4f*1/10f);
-            l.add(name+", K+ Peak: "+df.format(m[pos+1]+38)+"D");
+            if(showions){
+                masse.add(m[pos+1]+22,LEN*5/4f*1/7f);
+                l.add(name+", Na+ Peak: "+df.format(m[pos+1]+22)+"D");
+                masse.add(m[pos+1]+38,LEN*5/4f*1/10f);
+                l.add(name+", K+ Peak: "+df.format(m[pos+1]+38)+"D");
+            }
         }
         collection.addSeries(masse);
         ttgen.addToolTipSeries(l);

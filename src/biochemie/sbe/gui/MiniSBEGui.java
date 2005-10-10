@@ -270,6 +270,8 @@ public class MiniSBEGui extends JFrame {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
                 String filter=p.getFiltersPanel().getText();
                 StringTokenizer st=new StringTokenizer(filter);
+                p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.black,1));
+                p.getFiltersPanel().getPBSequenceField().setToolTipText(null);
                 while(flag && st.hasMoreTokens()) {
                     String token=st.nextToken();
                     if(!re.matcher(token).matches()) {
@@ -277,9 +279,6 @@ public class MiniSBEGui extends JFrame {
                         p.getFiltersPanel().getPBSequenceField().setToolTipText("Invalid format: "+token);
                         getExpertToggleButton().setSelected(true);
                         flag=false;
-                    }else {
-                        p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.black,1));
-                        p.getFiltersPanel().getPBSequenceField().setToolTipText(null);
                     }
                 }
             }

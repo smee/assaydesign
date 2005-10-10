@@ -57,7 +57,6 @@ public class PCR {
 	boolean blatOn=true;
 	boolean repOn=true;
 	boolean exonOn=false;
-	private boolean blatError=false;
 
 	public static int maxscore = 100;
     private final int MAXNUM=1000;//anzahl der primerpaare, die jeweils eingelesen werden sollen
@@ -117,7 +116,6 @@ public class PCR {
 				System.err.println("Fehler bei Zugriff auf Blat. Das BLAT-Analysemodul wurde DEAKTIVIERT!");
 				System.err.println("Fehlermeldung: "+e.getMessage());
 				blatOn=false;
-                blatError=true;
 			}
 		}else
 			this.blatOn=false;
@@ -214,7 +212,6 @@ public class PCR {
         String line=null;
         for (Iterator it = pps.iterator(); it.hasNext();i++) {
             PrimerPair pair = (PrimerPair) it.next();
-            pair.setBlatError(blatError);
             if(!outputcsv)
                 line=(count++)+". Paar mit erfüllten Kriterien :\n"+pair.toString()+'\n';
             else

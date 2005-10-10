@@ -4,6 +4,9 @@
  */
 package biochemie.pcr;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import biochemie.util.Helper;
 
 /**
@@ -25,6 +28,7 @@ public class PrimerPair {
                                              ,"Hairpin-Analyse","Homodimer-Analyse"
                                              ,"Crossdimer-Analyse"};
 
+    private static final DecimalFormat df=new DecimalFormat("#.##");
     public final String leftp;
     public final String rightp;
     public final int leftpos;
@@ -219,7 +223,7 @@ public class PrimerPair {
 		sb.append(';');
         sb.append(leftlen);
         sb.append(';');
-        sb.append(gcleft);
+        sb.append(df.format(gcleft));
         sb.append(';');
         sb.append(Helper.getXGehalt(leftp,"GgCc"));
         sb.append(';');
@@ -229,21 +233,21 @@ public class PrimerPair {
         sb.append(';');
 		sb.append(rightlen);
 		sb.append(';');
-		sb.append(gcright);
+		sb.append(df.format(gcright));
 		sb.append(';');
-		sb.append(Helper.getXGehalt(rightp,"GgCc"));
+		sb.append(df.format(Helper.getXGehalt(rightp,"GgCc")));
 		sb.append(';');
         sb.append(productlen);
         sb.append(';');
         sb.append(productlen+2*anhangsize);
         sb.append(';');
-        sb.append(gcdiff);
+        sb.append(df.format(gcdiff));
         sb.append(';');
         int sum=0;
         for(int i=0;7 >= i;i++){
             sum+=scores[i];
             if(i==BLAT) {
-                if(blatError)
+                if(flags[i]==false)
                     sb.append("deactivated");
                 else
                     sb.append(scores[i]);
@@ -292,9 +296,4 @@ public class PrimerPair {
 		hashCode = 31 * hashCode + (rightp == null ? 0 : rightp.hashCode());
 		return hashCode;
 	}
-
-    public void setBlatError(boolean blatError) {
-        this.blatError=blatError;
-        
-    }
 }

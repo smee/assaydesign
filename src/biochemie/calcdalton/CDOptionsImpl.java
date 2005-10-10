@@ -37,6 +37,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
            ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
            ,{"calcdalton.plmass","18.02"}
+           ,{"calcdalton.showions","true"}
            ,{"misc.maxcalctime","10"}
            ,{"misc.debug","false"}
            };
@@ -170,6 +171,14 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
 
     public void setCalcDaltonPLMass(double val) {
         setProperty("calcdalton.plmass",Double.toString(val));
+    }
+
+    public boolean getCalcDaltonShowIons() {
+        return getBoolean("calcdalton.showions",true);
+    }
+
+    public void setCalcDaltonShowIons(boolean val) {
+        setProperty("calcdalton.showions",Boolean.toString(val));
     }
 
 }

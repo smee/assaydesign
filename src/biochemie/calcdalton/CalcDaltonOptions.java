@@ -82,4 +82,7 @@ public interface CalcDaltonOptions extends GeneralOptions{
     public void setCalcDaltonAddonMassesMap(Map m);
     public double getCalcDaltonPLMass();
     public void setCalcDaltonPLMass(double val);
+    
+    public boolean getCalcDaltonShowIons();
+    public void setCalcDaltonShowIons(boolean val);
 }

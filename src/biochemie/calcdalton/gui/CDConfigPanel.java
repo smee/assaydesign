@@ -181,6 +181,7 @@ public class CDConfigPanel extends JPanel{
 
 	final Vector bruchstelleVector;
     private JCheckBox cbCalcdaltonAnhaenge;
+    private JCheckBox cbShowIons;
 
     public CDConfigPanel(){
         bruchstelleVector = new Vector();
@@ -192,21 +193,7 @@ public class CDConfigPanel extends JPanel{
 
     public CalcDaltonOptions getCalcDaltonOptionsProvider() {
         CDOptionsImpl c=new CDOptionsImpl();
-
-        int[] br=new int[bruchstelleVector.size()];
-        int i=0;
-        for (Iterator it = bruchstelleVector.iterator(); it.hasNext();i++) {
-            String s = (String) it.next();
-            br[i]=Integer.parseInt(s);
-        }
-        c.setPhotolinkerPositions(br);
-        c.setCalcDaltonFrom(abstandPanel.getFrom());
-        c.setCalcDaltonTo(abstandPanel.getTo());
-        c.setCalcDaltonPeaks(Double.parseDouble('0'+tfPeaks.getText()));
-        c.setCalcDaltonAllowOverlap(cbAllowOverlap.isSelected());
-        c.setCalcDaltonVerbFrom(verbMassePanel.getFrom());
-        c.setCalcDaltonVerbTo(verbMassePanel.getTo());
-        c.setCalcDaltonAllExtensions(cbCalcdaltonAnhaenge.isSelected());
+        saveToConfig(c);
         return c;
     }
 
@@ -223,7 +210,7 @@ public class CDConfigPanel extends JPanel{
         if(null != verbMassePanel)
             verbMassePanel.reset(cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
         cbCalcdaltonAnhaenge.setSelected(cfg.getCalcDaltonAllExtensions());
-        
+        cbShowIons.setSelected(cfg.getCalcDaltonShowIons());
         delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
     }
     public void saveToConfig(CalcDaltonOptions cfg) {
@@ -239,6 +226,7 @@ public class CDConfigPanel extends JPanel{
         cfg.setCalcDaltonTo(abstandPanel.getTo());
         cfg.setCalcDaltonVerbFrom(verbMassePanel.getFrom());
         cfg.setCalcDaltonVerbTo(verbMassePanel.getTo());
+        cfg.setCalcDaltonShowIons(cbShowIons.isSelected());
     }
 
     public int getMaxBruchstelle(){
@@ -261,7 +249,7 @@ public class CDConfigPanel extends JPanel{
         double p=TableLayoutConstants.PREFERRED;
         double f=TableLayoutConstants.FILL;
         double b=5;
-        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p}};
+        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p}};
 
         setLayout(new TableLayout(settingsSize));
         JPanel bruchStellenPanel=new JPanel();
@@ -319,6 +307,9 @@ public class CDConfigPanel extends JPanel{
                 " possible extension products A, C, G and T of every primer.<br>" +
                 "Otherwise the mass range is reserved for the expected products only.</html>");
         add(cbCalcdaltonAnhaenge,"1,11");
+        cbShowIons=new JCheckBox("Draw peaks of cationic side products");
+        cbShowIons.setToolTipText("<html>Cationic side products of each primer and product <br>will be shown in the MALDI-Preview.</html>");
+        add(cbShowIons,"1,13");
     }
 
     private class MyListModel extends AbstractListModel{

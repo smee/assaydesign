@@ -276,6 +276,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcTime();
     }    public void setCalcTime(int val) {
         cdopt.setCalcTime(val);
+    }    public boolean getCalcDaltonShowIons() {
+        return cdopt.getCalcDaltonShowIons();
+    }    public void setCalcDaltonShowIons(boolean val) {
+        cdopt.setCalcDaltonShowIons(val);        
     }
     //proxy end -----------------------------------------------------------------------------------------
 
@@ -296,6 +300,5 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         if(cdopt instanceof GeneralConfig)
             ((GeneralConfig)cdopt).updateConfigFile(filename);
     }
-
 
  }
