@@ -46,7 +46,11 @@ public class PCRMatcher {
         primers=new ArrayList();
         for (Iterator it = files.iterator(); it.hasNext();) {
             String filename = (String) it.next();
-            primers.addAll(readPCRPrimersFrom(filename));
+            try {
+                primers.addAll(readPCRPrimersFrom(filename));
+            } catch (IOException e) {
+                System.out.println("Fehler beim Lesen von Datei \""+filename+"\", skipping...");
+            }
         }
         System.out.println("Found "+primers.size()+" primers in "+maxplex + " files");
     }

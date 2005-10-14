@@ -74,7 +74,8 @@ public class CDLikeStrategy implements MatcherStrategy {
                 ptr--;          //und eins hoch
                 while(-1 != ptr && laufvar[ptr] >= pairs[ptr].length-1)//ueber alle festen und fertigen
                     ptr--;
-
+                if(-1 == ptr) //abbruch, falls ganz oben
+                    break;
                 laufvar[ptr]++;
             }
         }while(laufvar[0] < pairs.length);
