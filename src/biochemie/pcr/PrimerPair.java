@@ -212,7 +212,7 @@ public class PrimerPair {
     /**
 	 * @return
 	 */
-	public String toCSVString(int num) {
+    public String toCSVString(int num) {
         StringBuffer sb=new StringBuffer(Integer.toString(num));
         sb.append(';');
         sb.append(posinfile);
@@ -220,23 +220,23 @@ public class PrimerPair {
         sb.append(leftp);
         sb.append(';');
         sb.append(leftpos+1);
-		sb.append(';');
+        sb.append(';');
         sb.append(leftlen);
         sb.append(';');
         sb.append(df.format(gcleft));
         sb.append(';');
-        sb.append(Helper.getXGehalt(leftp,"GgCc"));
+        sb.append(df.format(Helper.getXGehalt(leftp,"GgCc")));
         sb.append(';');
         sb.append(rightp);
         sb.append(';');
         sb.append(rightpos+1);
         sb.append(';');
-		sb.append(rightlen);
-		sb.append(';');
-		sb.append(df.format(gcright));
-		sb.append(';');
-		sb.append(df.format(Helper.getXGehalt(rightp,"GgCc")));
-		sb.append(';');
+        sb.append(rightlen);
+        sb.append(';');
+        sb.append(df.format(gcright));
+        sb.append(';');
+        sb.append(df.format(Helper.getXGehalt(rightp,"GgCc")));
+        sb.append(';');
         sb.append(productlen);
         sb.append(';');
         sb.append(productlen+2*anhangsize);
@@ -246,21 +246,17 @@ public class PrimerPair {
         int sum=0;
         for(int i=0;7 >= i;i++){
             sum+=scores[i];
-            if(i==BLAT) {
-                if(flags[i]==false)
-                    sb.append("deactivated");
-                else
-                    sb.append(scores[i]);
-            }else
+            if(flags[i]==false)
+                sb.append("deactivated");
+            else
                 sb.append(scores[i]);
-                
-        	sb.append(';');
+            sb.append(';');
         }
         sb.append(sum);
         sb.append(';');
         sb.append(cyclenum);
         return sb.toString() ;      
-	}
+    }
 	
 	public static String getCSVHeaderLine(){
         StringBuffer sb=new StringBuffer("Nr.;");
