@@ -280,6 +280,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonShowIons();
     }    public void setCalcDaltonShowIons(boolean val) {
         cdopt.setCalcDaltonShowIons(val);        
+    }    public int getCalcDaltonSelectedPLMass() {
+        return cdopt.getCalcDaltonSelectedPLMass();
+    }    public void setCalcDaltonSelectedPLMass(int val) {
+        cdopt.setCalcDaltonSelectedPLMass(val);
     }
     //proxy end -----------------------------------------------------------------------------------------
 

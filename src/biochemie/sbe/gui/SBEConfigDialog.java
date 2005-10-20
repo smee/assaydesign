@@ -517,9 +517,8 @@ public class SBEConfigDialog extends JDialog {
 	}
     protected void setPropertiesFrom(SBEOptions c) {
         //setze Calcdalton-Optionen
-        CDConfigPanel cdp=getCdPanel();
-        cdp.setValuesFrom(c);
-
+        getCdPanel().setValuesFrom(c);
+        getCdMassPanel().setValuesFrom(c);
         getCandlenSpinner().setValue(new Integer(c.getMinCandidateLen()));
         getRestPanel().setValuesFrom(c);
 
