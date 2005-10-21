@@ -244,7 +244,7 @@ public class CDMassesConfigPanel extends JPanel {
      */
     private JTextField getWenzelTf() {
         if (wenzelTf == null) {
-            wenzelTf = new JTextField("999");
+            wenzelTf = new JTextField("18.02");
             wenzelTf.setEditable(false);
         }
         return wenzelTf;
@@ -256,7 +256,7 @@ public class CDMassesConfigPanel extends JPanel {
      */
     private JTextField getLiTf() {
         if (liTf == null) {
-            liTf = new JTextField("999");
+            liTf = new JTextField("18.02");
             liTf.setEditable(false);
         }
         return liTf;
@@ -268,7 +268,7 @@ public class CDMassesConfigPanel extends JPanel {
      */
     private JTextField getShceTf() {
         if (shceTf == null) {
-            shceTf = new JTextField("999");
+            shceTf = new JTextField("-61.02");
             shceTf.setEditable(false);
         }
         return shceTf;
