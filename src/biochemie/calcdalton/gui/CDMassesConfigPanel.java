@@ -156,6 +156,21 @@ public class CDMassesConfigPanel extends JPanel {
     	this.add(getWenzelTf(), gridBagConstraints31);
     	this.add(getLiTf(), gridBagConstraints41);
     	this.add(getShceTf(), gridBagConstraints5);
+        String wenzelTip="<html>Wenzel T, Elssner T, Fahr K, Bimmler J, Richter S, Thomas I, Kostrzewa M,2003:Genosnip: SNP<br>" + 
+                "genotyping by MALDI-TOF MS using photocleavable oligonucleotides.<br>" + 
+                "Nucleosides Nucleotides Nucleic Acids. 2003 May-Aug;22(5-8):1579-81)<br></html";
+        getWenzelTf().setToolTipText(wenzelTip);
+        getJRadioButton().setToolTipText(wenzelTip);
+        String leTip="<html>Li J, Butler JM, Tan Y, Lin H, Royer S, Ohler L, Shaler TA, Hunter JM, Pollart DJ, Monforte JA, Becker<br>" + 
+                "CH, 1999: Single nucleotide polymorphism determination using primer extension and time-of-flight<br>" + 
+                "mass spectrometry.Electrophoresis. Jun;20(6):1258-65.)</html>";
+        getLiTf().setToolTipText(leTip);
+        getJRadioButton1().setToolTipText(leTip);
+        String sheTip="<html>Shchepinov MS, Denissenko MF, Smylie KJ, Worl RJ, Leppin AL, Cantor CR, Rodi CP.,2001:Matrix-<br>" + 
+                "induced fragmentation of P3\'-N5\' phosphoramidate-containing DNA: high-throughput MALDI-TOF<br>" + 
+                "analysis of genomic sequence polymorphisms.Nucleic Acids Res. Sep 15;29(18):3864-72.</html>";
+        getShceTf().setToolTipText(sheTip);
+        getJRadioButton2().setToolTipText(sheTip);
     }
 
 	private MapTablePanel getAddonMassesMapTable() {
