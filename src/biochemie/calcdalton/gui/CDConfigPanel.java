@@ -307,7 +307,7 @@ public class CDConfigPanel extends JPanel{
                 " possible extension products A, C, G and T of every primer.<br>" +
                 "Otherwise the mass range is reserved for the expected products only.</html>");
         add(cbCalcdaltonAnhaenge,"1,11");
-        cbShowIons=new JCheckBox("Draw peaks of cationic side products");
+        cbShowIons=new JCheckBox("Draw peaks of cationic adducts");
         cbShowIons.setToolTipText("<html>Cationic side products of each primer and product <br>will be shown in the MALDI-Preview.</html>");
         add(cbShowIons,"1,13");
     }
