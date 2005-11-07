@@ -251,6 +251,13 @@ public class SBEGui extends JFrame{
                     String line="";
                     while(null != (line = br.readLine()))
                         lines.add(line);
+                    if(sbePanelList.size()> lines.size()){
+                        int times=sbePanelList.size()-lines.size();
+                        while(times-- >0){
+                            sbePanelList.remove(sbePanelList.size()-1);
+                            panel.remove(panel.getComponentCount()-1);
+                        }
+                    }
                     if(sbePanelList.size()<lines.size()) {
                         int len=lines.size()-sbePanelList.size();
                         if(lines.size()>0) {

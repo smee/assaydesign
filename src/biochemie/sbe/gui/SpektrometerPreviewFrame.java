@@ -93,17 +93,17 @@ public class SpektrometerPreviewFrame extends JFrame{
         XYPlot xyplot = jfreechart.getXYPlot();
         XYItemRenderer xyitemrenderer = xyplot.getRenderer();
         xyplot.setBackgroundPaint(Color.lightGray);
-        GradientPaint gradientpaint = new GradientPaint(0.0F, 0.0F, Color.LIGHT_GRAY, 1.0F, 1.0F, Color.DARK_GRAY,true);
-        double[] forbFrom=cfg.getCalcDaltonVerbFrom();
-        double[] forbTo=cfg.getCalcDaltonVerbTo();
-        for (int i = 0; i < forbFrom.length; i++) {
-            IntervalMarker im=new IntervalMarker(forbFrom[i],forbTo[i],gradientpaint,new BasicStroke(2.0F), null, null, 1.0F);
-            im.setLabel("Forbidden mass range");
-            im.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
-            im.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
-            im.setLabelTextAnchor(TextAnchor.BASELINE_RIGHT);
-            xyplot.addDomainMarker(im,Layer.BACKGROUND);
-        }
+//        GradientPaint gradientpaint = new GradientPaint(0.0F, 0.0F, Color.LIGHT_GRAY, 1.0F, 1.0F, Color.DARK_GRAY,true);
+//        double[] forbFrom=cfg.getCalcDaltonVerbFrom();
+//        double[] forbTo=cfg.getCalcDaltonVerbTo();
+//        for (int i = 0; i < forbFrom.length; i++) {
+//            IntervalMarker im=new IntervalMarker(forbFrom[i],forbTo[i],gradientpaint,new BasicStroke(2.0F), null, null, 1.0F);
+//            im.setLabel("Forbidden mass range");
+//            im.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
+//            im.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
+//            im.setLabelTextAnchor(TextAnchor.BASELINE_RIGHT);
+//            xyplot.addDomainMarker(im,Layer.BACKGROUND);
+//        }
         xyplot.setRangeGridlinePaint(Color.white);
         xyitemrenderer.setToolTipGenerator(ttgen);
 //        NumberAxis axis = new NumberAxis();
