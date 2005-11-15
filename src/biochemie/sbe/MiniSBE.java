@@ -4,9 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org._3pq.jgrapht.UndirectedGraph;
 
@@ -18,6 +21,7 @@ import biochemie.sbe.multiplex.ExperimentMultiplexer;
 import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.sbe.multiplex.Multiplexer;
 import biochemie.util.GraphHelper;
+import biochemie.util.Helper;
 import biochemie.util.LogStdStreams;
 /*
  * Created on 18.11.2003
@@ -55,16 +59,17 @@ public class MiniSBE {
         	System.exit(1);
         }
 
-        doCalculation(sbec,cfg);
+        doCalculation(sbec,cfg,Collections.EMPTY_SET);
         primername=new File(primername).getName();
         String outname = "out_" + primername;
         sbpr.writeSBEResults(outname);
 
     }
-    public MiniSBE(List sbec, SBEOptions cfg){
-    	doCalculation(sbec, cfg);
+    public MiniSBE(List sbec, SBEOptions cfg,Set filter){
+    	doCalculation(sbec, cfg,filter);
     }
-    protected void doCalculation(List sbec, SBEOptions cfg){
+    protected void doCalculation(List sbec, SBEOptions cfg,Set filter){
+        Helper.createAndRememberCalcDaltonFrom(cfg);//XXX unsauber, muss anders gehen. 
         Multiplexer m1=new ExperimentMultiplexer(cfg);
         Multiplexer m2=new BestellMultiplexer(cfg);
         while(true) {
@@ -81,20 +86,20 @@ public class MiniSBE {
             if(Thread.currentThread().isInterrupted())
                 return;
             if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
-                createGraphAndMultiplex(structs,cfg,m1);
+                createGraphAndMultiplex(structs,cfg,m1,filter);
             }else{
 	            if(cfg.getAllCrossdimersAreEvil() == false)
 	                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
-	            createGraphAndMultiplex(structs,cfg,m2);
+	            createGraphAndMultiplex(structs,cfg,m2,filter);
             }
         }
     }
 
 
-    private void createGraphAndMultiplex(List structs, SBEOptions cfg, Multiplexer m) {
+    private void createGraphAndMultiplex(List structs, SBEOptions cfg, Multiplexer m,Set filter) {
         boolean drawGraph=cfg.isDrawGraphes();
         System.out.println("Creating graph with "+structs.size()+" vertices...");
-        UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0);      
+        UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);      
         m.findMultiplexes(g);
     }
     public static void main(String[] args) {

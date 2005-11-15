@@ -7,6 +7,7 @@ package biochemie.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org._3pq.jgrapht.UndirectedGraph;
 import org._3pq.jgrapht.graph.SimpleGraph;
@@ -46,9 +47,10 @@ public class GraphHelper {
      * @param multiplexables
      * @param writegraph true, graph wird in eine Datei geschrieben
      * @param outputtype kann sein: GraphWriter.TGF, GraphWriter.GML oder XWG, 0 default
+     * @param filteredEdges Kanten, die ignoriert werden sollen
      * @return Undirectedgraph
      */
-    public static UndirectedGraph createIncompGraph(List multiplexables, boolean writegraph, int outputtype) {
+    public static UndirectedGraph createIncompGraph(List multiplexables, boolean writegraph, int outputtype, Set filteredEdges) {
         List names=new ArrayList(multiplexables.size());
         for (Iterator it = multiplexables.iterator(); it.hasNext();) {
             Multiplexable p = (Multiplexable) it.next();
@@ -67,9 +69,11 @@ public class GraphHelper {
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
                 if(!s1.passtMit(s2)) {
-                    g.addEdge(s1,s2);
-                    if(writegraph)
-                        gw.addArc(i,j,s1.getEdgeReason());
+                    if(!filteredEdges.contains(s1.getLastEdge())) {
+                        g.addEdge(s1.getLastEdge());
+                        if(writegraph)
+                            gw.addArc(i,j,s1.getLastEdge().toString());
+                    }
                 }
             }
         }
@@ -77,5 +81,4 @@ public class GraphHelper {
             gw.close();
         return g;
     }
-
 }

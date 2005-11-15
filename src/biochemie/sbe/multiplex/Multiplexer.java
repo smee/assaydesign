@@ -14,7 +14,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org._3pq.jgrapht.Edge;
 import org._3pq.jgrapht.UndirectedGraph;
+import org._3pq.jgrapht.edge.UndirectedEdge;
 
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
@@ -154,7 +156,7 @@ public abstract class Multiplexer {
 
     	private List p1;
     	private List p2;
-		private String edgeReason="";
+		private Edge edge;
 		private String einbau="";
 		
 		public SBEPrimerProxy(List p1, List p2, String einbau){
@@ -197,8 +199,10 @@ public abstract class Multiplexer {
             List othermultis=getAllPrimers(other);
             for (Iterator it = othermultis.iterator(); it.hasNext();) {
                 SBEPrimer primer = (SBEPrimer) it.next();
-                if(!passenWirMit(primer))
+                if(!passenWirMit(primer)) {
+                    edge=new IncompCDEinbauEdge(this,other);
                     return false;
+                }
             }
             return true;
         }
@@ -213,14 +217,14 @@ public abstract class Multiplexer {
             for (Iterator it = p1.iterator(); it.hasNext();) {
                 SBEPrimer p = (SBEPrimer) it.next();
                 if(!p.passtMit(other)){
-                    edgeReason=p.getEdgeReason();
+                    edge=p.getLastEdge();
                     return false;
                 }
             }
             for (Iterator it = p2.iterator(); it.hasNext();) {
                 SBEPrimer p = (SBEPrimer) it.next();
                 if(!p.passtMit(other)){
-                    edgeReason=p.getEdgeReason();
+                    edge=p.getLastEdge();
                     return false;
                 }
             }
@@ -234,22 +238,20 @@ public abstract class Multiplexer {
             String snp=p.getSNP();
             for (int i = 0; i < einbau.length(); i++) {
                 if(snp.indexOf(einbau.charAt(i))!=-1){//inkompatibel mit diesem Primer
-                    edgeReason="imcomp._CD_nucleotide";
                     return false;
                 }
             }
             return true;
         }
 
-		public String getEdgeReason() {
-			return edgeReason;
-		}
-
         public List getIncludedElements() {
             List result = new ArrayList(p1.size()+p2.size());
             result.addAll(p1);
             result.addAll(p2);
             return result;
+        }
+        public Edge getLastEdge() {
+            return edge;
         }
 
     }
@@ -258,5 +260,14 @@ public abstract class Multiplexer {
     }
     public synchronized static boolean isStopped() {
         return stopped;
+    }
+    private static class IncompCDEinbauEdge extends UndirectedEdge{
+
+        public IncompCDEinbauEdge(Object sourceVertex, Object targetVertex) {
+            super(sourceVertex, targetVertex);
+        }
+        public String toString() {
+            return "incomp._CD_nucleotide";
+        }
     }
 }

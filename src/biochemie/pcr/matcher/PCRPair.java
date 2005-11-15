@@ -7,18 +7,20 @@ package biochemie.pcr.matcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import org._3pq.jgrapht.Edge;
+
 import biochemie.sbe.multiplex.Multiplexable;
 
 
 class PCRPair implements Multiplexable{
     PCRPrimer leftp, rightp;
     int maxplex;
-    private String edgereason;
+    private Edge edge;
     PCRPair(PCRPrimer leftp, PCRPrimer rightp, int maxplex){
         this.leftp=leftp;
         this.rightp=rightp;
         this.maxplex=maxplex;
-        edgereason="";
+        edge=null;
     }
     public void setPlexID(String s) {
         leftp.setPlexID(s);
@@ -33,12 +35,12 @@ class PCRPair implements Multiplexable{
         if(other instanceof PCRPrimer){
             boolean b=leftp.passtMit(other);
             if(!b){
-                edgereason=leftp.getEdgeReason();
+                edge=leftp.getLastEdge();
                 return false;
             }
             b=rightp.passtMit(other);
             if(!b){
-                edgereason=rightp.getEdgeReason();
+                edge=rightp.getLastEdge();
                 return false;
             }
 
@@ -47,13 +49,13 @@ class PCRPair implements Multiplexable{
         boolean b= leftp.passtMit(p.leftp)
         && leftp.passtMit(p.rightp);
         if(!b){
-            edgereason=leftp.getEdgeReason();
+            edge=leftp.getLastEdge();
             return false;
         }
         b= rightp.passtMit(p.leftp)
         && rightp.passtMit(p.rightp);
         if(!b){
-            edgereason=rightp.getEdgeReason();
+            edge=rightp.getLastEdge();
             return false;
         }
         return true;
@@ -62,12 +64,7 @@ class PCRPair implements Multiplexable{
     public String toString(){
         return getName();
     }
-    /**
-     * @return
-     */
-    public String getEdgeReason() {
-        return edgereason;
-    }
+
     public String getCSVLine() {
         return leftp.getInputLine();
     }
@@ -79,5 +76,8 @@ class PCRPair implements Multiplexable{
         result.add(leftp);
         result.add(rightp);
         return result;
+    }
+    public Edge getLastEdge() {
+        return edge;
     }
 }

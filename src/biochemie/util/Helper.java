@@ -730,4 +730,8 @@ public class Helper {
     public static CalcDalton getCalcDalton(CalcDaltonOptions cfg) {
     	return new CalcDalton(cfg);
     }
+    private static CalcDalton cd=null;
+    public static void createAndRememberCalcDaltonFrom(CalcDaltonOptions cfg) {
+        cd=new CalcDalton(cfg);
+    }
 }

@@ -8,9 +8,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import biochemie.domspec.Primer;
+import biochemie.domspec.SBESekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.multiplex.Multiplexable;
+import biochemie.util.edges.GCDiffEdge;
+import biochemie.util.edges.IdendityEdge;
+import biochemie.util.edges.SecStructureEdge;
+import biochemie.util.edges.TMDiffEdge;
 
 /**
  * @author Steffen Dienst
@@ -36,26 +41,23 @@ public class PCRPrimer extends Primer {
         this.inputline=inputline;
     }
     public boolean passtMit(Multiplexable o) {
-        if(!(o instanceof PCRPrimer)) {
-            edgereason="no PCRPrimer";
-            return false;
-        }
         PCRPrimer other=(PCRPrimer) o;
+        double tmp;
         if(id.equals(other.id)) {
-            edgereason = "same primerinputfile";
+            edge = new IdendityEdge(this,o);
             return false;
         }
-        if(Math.abs(temp-other.temp) > maxtm) {
-            edgereason="TMdiff too high";
+        if((tmp=Math.abs(temp-other.temp)) > maxtm) {
+            edge=new TMDiffEdge(this,other,tmp);
             return false;
         }
-        if(Math.abs(gcgehalt-other.gcgehalt) > maxgc) {
-            edgereason="GCdiff too high";
+        if((tmp=Math.abs(gcgehalt-other.gcgehalt)) > maxgc) {
+            edge=new GCDiffEdge(this,other,tmp);
             return false;
         }
         Set cd=SekStrukturFactory.getCrossdimer(this, other, cda);
         if(cd.size() != 0) {
-            edgereason="crossdimer";
+            edge=new SecStructureEdge(this,other,(SBESekStruktur) cd.iterator().next());
             return false;
         }
         return true;

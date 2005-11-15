@@ -36,7 +36,7 @@ public class ColorerStrategy implements MatcherStrategy {
 
     public Collection getBestPCRPrimerSet(List pcrpairs) {
         System.out.println("Creating graph... (Might take a while!)");
-        UndirectedGraph g=GraphHelper.createIncompGraph(pcrpairs,true,GraphWriter.TGF);
+        UndirectedGraph g=GraphHelper.createIncompGraph(pcrpairs,true,GraphWriter.TGF, Collections.EMPTY_SET);
 
         System.out.println("Graph has "+g.edgeSet().size()+" edges.");
 

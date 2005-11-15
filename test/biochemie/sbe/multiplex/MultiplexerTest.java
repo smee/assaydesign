@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org._3pq.jgrapht.UndirectedGraph;
+
 import junit.framework.TestCase;
 import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
@@ -44,7 +46,7 @@ public class MultiplexerTest extends TestCase {
 		primers.add(primerB);
 		primers.add(primerC);
 		m=new Multiplexer(cfg){
-			public void findMultiplexes(List sbec) {
+			public void findMultiplexes(UndirectedGraph g) {
 			}
 		};
 	}

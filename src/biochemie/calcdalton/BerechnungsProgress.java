@@ -55,6 +55,7 @@ import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.TableColumn;
 
+import org._3pq.jgrapht.Edge;
 import org._3pq.jgrapht.UndirectedGraph;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryFunction;
@@ -73,6 +74,8 @@ import biochemie.util.GraphHelper;
 import biochemie.util.GraphWriter;
 import biochemie.util.Helper;
 import biochemie.util.SwingWorker;
+import biochemie.util.edges.CalcDaltonEdge;
+import biochemie.util.edges.IdendityEdge;
 
 public class BerechnungsProgress extends JFrame{
 	JFrame frame;
@@ -342,7 +345,7 @@ public class BerechnungsProgress extends JFrame{
 	}
     private void doColoring(final CalcDalton cd, String[] names, String[][] paneldata, final int[] fest, final int[] br, final ReusableThread rt) {
         final List primer = createPrimerList(cd, names, paneldata, fest, br);
-        final UndirectedGraph graph = GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF);
+        final UndirectedGraph graph = GraphHelper.createIncompGraph(primer,true,GraphWriter.TGF,Collections.EMPTY_SET);
         if(graph==null)
             return;
         final TaskRunnerDialog dialog = new TaskRunnerDialog("Searching for coloring",null,new SwingWorker() {
@@ -405,7 +408,7 @@ public class BerechnungsProgress extends JFrame{
             public Object construct() {
                 Set result=new HashSet();
                 while(primersToGo.size()>0) {
-                    final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF));
+                    final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF,Collections.EMPTY_SET));
                     if(graph == null)
                         return null;
                     MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);
@@ -510,6 +513,7 @@ public class BerechnungsProgress extends JFrame{
         int fest;
         String plexid;
         private String name;
+        private Edge edge;
         
         public SimplePrimer(CalcDalton cd, String name,String[] row, int f) {
             this.cd=cd;
@@ -532,21 +536,19 @@ public class BerechnungsProgress extends JFrame{
         }
 
         public boolean passtMit(Multiplexable other) {
-            if(name.equals(((SimplePrimer)other).name))
+            if(name.equals(((SimplePrimer)other).name)) {
+                edge=new IdendityEdge(this,other);
                 return false;
+            }
             String[][] sbedata= {datarow
                                 ,((SimplePrimer)other).datarow};
             int[] fest=new int[] {this.fest, ((SimplePrimer)other).fest};
             if(cd.calc(sbedata, fest).length == 0) {//keine Loesung
+                edge=new CalcDaltonEdge(this,other);
                 return false;
             }
             return true;
         
-        }
-
-
-        public String getEdgeReason() {
-            return "cd";
         }
 
         public int realSize() {
@@ -554,8 +556,11 @@ public class BerechnungsProgress extends JFrame{
         }
 
         public List getIncludedElements() {
-            // TODO Auto-generated method stub
             return null;
+        }
+
+        public Edge getLastEdge() {
+            return edge;
         }
     }
 

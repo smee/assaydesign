@@ -178,7 +178,6 @@ public class PCRMatcher {
         	default:
         		break;
         	}
-        	//TODO zeilen in n csvfile augeben statt auf stdo
         	Collection pairsToUse=ms.getBestPCRPrimerSet(pm.primers);
         	System.out.println("Using:");
         	System.out.println(Helper.toStringln(pairsToUse));

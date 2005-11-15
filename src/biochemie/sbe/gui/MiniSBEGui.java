@@ -29,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -92,6 +93,7 @@ import biochemie.util.Helper;
 import biochemie.util.MyAction;
 import biochemie.util.SwingWorker;
 import biochemie.util.TableSorter;
+import biochemie.util.edges.SecStructureEdge;
 
 /**
  * @author Steffen Dienst
@@ -120,26 +122,25 @@ public class MiniSBEGui extends JFrame {
             }
             getSavePrimerAction().saveToFile(tempfile);
             final File toLoad = tempfile;
-            
+            final Set filter=new HashSet();//edges that should be omitted
             for(int i=0; i < sbec.size(); i++) {
                 SBECandidate cand = ((SBECandidate)sbec.get(i));
                 SBECandidatePanel panel = (SBECandidatePanel)sbepanels.get(i);
                 boolean setPL = false;
-                if(cand.hasValidPrimer())
-                    setPL=hatVerhinderteSekStruc(cand);
+                if(cand.hasValidPrimer()) {
+                    SBESekStruktur struc=hatVerhinderteSekStruc(cand);
+                    setPL=struc!=null;
+                    if(setPL) {
+                        //filter.add() //TODO am besten als reg. ausdruck, der die kante beschreibt, oder?
+                    }
+                }
                 enterInGUI(cand, panel, setPL);
             }
-            cfg.setHairpinMinbinds("");
-            cfg.setHairpinWindowsizes("");
-            cfg.setHomodimerMinbinds("");
-            cfg.setHomodimerWindowsizes("");
-            cfg.setCrossdimerMinbinds("");
-            cfg.setCrossimerWindowsizes("");
             //run without secstrucs
             SwingWorker sw=new SwingWorker() {
                 public Object construct() {
                     System.out.println("Running step 1 of the pl optimizer....");
-                    List sbec2=(List) getCalculationAction().runCalculation("",getCalculationAction().getCompactedSBECandidates(cfg),cfg,false).get();
+                    List sbec2=(List) getCalculationAction().runCalculation("",getCalculationAction().getCompactedSBECandidates(cfg),filter,cfg,false).get();
                     return sbec2;
                 }
                 public void finished() {
@@ -154,7 +155,7 @@ public class MiniSBEGui extends JFrame {
                     SwingWorker sw2= new SwingWorker() {
                         public Object construct() {
                             System.out.println("Running step 2 of the pl optimizer....");
-                            return getCalculationAction().runCalculation("PL-optimized results",getCalculationAction().getCompactedSBECandidates(cfg),cfg,true).get();
+                            return getCalculationAction().runCalculation("PL-optimized results",getCalculationAction().getCompactedSBECandidates(cfg),Collections.EMPTY_SET,cfg,true).get();
                         }
                         public void finished() {
                             getLoadPrimerAction().loadFromFile(toLoad);
@@ -187,14 +188,14 @@ public class MiniSBEGui extends JFrame {
             }
         }
 
-        private boolean hatVerhinderteSekStruc(SBECandidate cand) {
+        private SBESekStruktur hatVerhinderteSekStruc(SBECandidate cand) {
             Set sec=cand.getSekStrucs();
             for (Iterator it = sec.iterator(); it.hasNext();) {
                 SBESekStruktur struc = (SBESekStruktur) it.next();
                 if(struc.isVerhindert())
-                    return true;
+                    return struc;
             }
-            return false;
+            return null;
         }
     }
     public class ExplainPrimerAction extends MyAction {
@@ -257,7 +258,7 @@ public class MiniSBEGui extends JFrame {
             }
             SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
             List sbeccoll = getCompactedSBECandidates(cfg);
-        	runCalculation("Results",sbeccoll, cfg,true);
+        	runCalculation("Results",sbeccoll, Collections.EMPTY_SET,cfg,true);
         }
         /**
          * Tests, if the format of the filters entered by the user are correct.
@@ -297,7 +298,7 @@ public class MiniSBEGui extends JFrame {
          * @param compactsbec
          * @param cfg
          */
-        private SwingWorker runCalculation(final String title, final List compactsbec, final SBEOptions cfg, final boolean showResult) {
+        private SwingWorker runCalculation(final String title, final List compactsbec, final Set filter,final SBEOptions cfg, final boolean showResult) {
             Multiplexer.stop(false);
         	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             //dialog um den user zu informieren
@@ -315,7 +316,7 @@ public class MiniSBEGui extends JFrame {
         		public Object construct() {
                     MiniSBE m = null;
                     try {
-						m = new MiniSBE(compactsbec,cfg);
+						m = new MiniSBE(compactsbec,cfg,filter);
                         if(Thread.currentThread().isInterrupted())
                             return null;
 						normalizeSekStruks(getSBECandidatesFromMultiKnotenList(compactsbec));

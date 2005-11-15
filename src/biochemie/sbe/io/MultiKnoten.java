@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org._3pq.jgrapht.Edge;
+import org._3pq.jgrapht.edge.UndirectedEdge;
+
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
@@ -20,7 +23,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
 
         private final List factories;
         List multiplexables;
-		String edgeReason;
+		Edge edge;
         private final String givenId;
 
         public MultiKnoten(List sbec, String givenid) {
@@ -74,7 +77,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
             if(o instanceof MultiKnoten) {
                 boolean differentGivenMultiplexes = !givenId.equalsIgnoreCase(((MultiKnoten)o).givenId);
                 if(differentGivenMultiplexes) {
-                    edgeReason = "differentGivenMultiplexIDs";//kein Test, sollen nicht zusammenkommen
+                    edge = new DiffGivenMIDEdge(this,o);//kein Test, sollen nicht zusammenkommen
                     return false;
                 }
             }
@@ -85,7 +88,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
                 for (Iterator iter = other.iterator(); iter.hasNext();) {
                     Multiplexable m2 = (Multiplexable) iter.next();
                         if(!m.passtMit(m2)){
-                            edgeReason=m.getEdgeReason();
+                            edge=m.getLastEdge();
                             return false;
                         }
                 }
@@ -96,9 +99,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public int realSize() {
             return factories.size();
         }
-        public String getEdgeReason(){
-            return edgeReason;
-        }
+
 
         public List getIncludedElements() {
             return new ArrayList(multiplexables);
@@ -115,5 +116,18 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
                     throw new IllegalArgumentException("FEHLER im Programm: Liste darf nur SBECandidates oder MultiKnoten enthalten!");
             }
             return ret;
+        }
+
+        public Edge getLastEdge() {
+            return edge;
+        }
+        private static class DiffGivenMIDEdge extends UndirectedEdge{
+
+            public DiffGivenMIDEdge(Object sourceVertex, Object targetVertex) {
+                super(sourceVertex, targetVertex);
+            }
+            public String toString() {
+                return "differentGivenMultiplexIDs";
+            }
         }
     }

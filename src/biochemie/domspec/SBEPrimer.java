@@ -17,15 +17,17 @@ import java.util.TreeSet;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.sbe.SBEOptions;
-import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
+import biochemie.util.edges.CalcDaltonEdge;
+import biochemie.util.edges.IdendityEdge;
+import biochemie.util.edges.ProductLengthEdge;
+import biochemie.util.edges.SecStructureEdge;
 
 
 /**
@@ -163,7 +165,7 @@ public class SBEPrimer extends Primer{
                 && passtMitCalcDalton(other);
         }else {//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
             boolean ret= o.passtMit(this);
-            edgereason=o.getEdgeReason();
+            edge=o.getLastEdge();
             return ret;
         }
     }
@@ -181,7 +183,7 @@ public class SBEPrimer extends Primer{
     }
     public boolean passtMitID(SBEPrimer other) {
         if(other.getId().equals(this.getId())) {
-            edgereason="same";
+            edge=new IdendityEdge(this,other);
             return false;   //derselbe SBECandidate
         }
         return true;
@@ -190,7 +192,7 @@ public class SBEPrimer extends Primer{
         //Produktlänge
         int prdiff=productlen-other.productlen;
         if(Math.abs(prdiff)<cfg.getMinProductLenDiff()) {
-            edgereason="productlendiff="+prdiff;
+            edge=new ProductLengthEdge(this,other,prdiff);
             return false;    //Produktlängenunterschied zu gering
         }
         return true;
@@ -204,7 +206,7 @@ public class SBEPrimer extends Primer{
             if(s.isVerhindert())
                 continue;
             if(-1 != snp2.indexOf(s.bautEin())){
-                edgereason="incomp. Sekstructure";
+                edge=new SecStructureEdge(this,other, s);
                 return false;
             }
         }
@@ -213,7 +215,7 @@ public class SBEPrimer extends Primer{
             if(s.isVerhindert())
                 continue;
             if(snp1.indexOf(s.bautEin()) != -1){
-                edgereason="incomp. Sekstructure";
+                edge=new SecStructureEdge(other,this, s);
                 return false;
             }
         }
@@ -226,23 +228,22 @@ public class SBEPrimer extends Primer{
      * @return
      */
     public boolean passtMitCrossdimern(SBEPrimer other, boolean evilcd) {
-        //Crossdimer?
-        Set cross1=SekStrukturFactory.getCrossdimer(this,other,cfg);
-        //this.sekstruc.addAll(cross1);            				//soll bei jeweils dem Primer verzeichnet werden, der einbaut
-        Set cross2=SekStrukturFactory.getCrossdimer(other,this,cfg);
-        //other.sekstruc.addAll(cross2);
-        cross1.addAll(cross2);//reusing vars
-        for (Iterator it = cross1.iterator(); it.hasNext();) {
+        return passtMitCDRec(this,other,evilcd) && passtMitCDRec(other,this,evilcd);//damit der crossdimer auch dem richtigen primer zugeordnet werden kann
+    }
+    private boolean passtMitCDRec(SBEPrimer me,SBEPrimer other, boolean evilcd) {
+        boolean retval=true;
+        Set cross=SekStrukturFactory.getCrossdimer(me,other,cfg);
+        for (Iterator it = cross.iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.isVerhindert())
                 continue;
             if(!evilcd) {
                 if(s.isIncompatible()) {
-                    edgereason="incomp. Crossdimer";
+                    edge=new SecStructureEdge(me,other,s);
                     return false;
                 }
             }else {
-                edgereason="Crossdimer";
+                edge=new SecStructureEdge(me,other,s);
                 return false;
             }
         }
@@ -260,7 +261,7 @@ public class SBEPrimer extends Primer{
 		int[] fest=new int[] {ArrayUtils.indexOf(br,this.getBruchstelle())
                 			 ,ArrayUtils.indexOf(br,other.getBruchstelle())};
         if(0 == cd.calc(sbedata, fest).length) {
-            edgereason="CalcDalton";
+            edge=new CalcDaltonEdge(this,other);
             return false;
         }
         return true;

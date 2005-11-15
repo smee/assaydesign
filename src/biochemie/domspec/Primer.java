@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 
+import org._3pq.jgrapht.Edge;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
@@ -32,7 +33,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
     protected final double gcgehalt;
 
     protected Set sekstruc;
-    protected String edgereason;
+    protected Edge edge;
     /**
      * @param seq
      */
@@ -105,8 +106,8 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
      * Für Debugzwecke
      * @return
      */
-    public String getEdgeReason() {
-        return edgereason;
+    public Edge getLastEdge() {
+        return edge;
     }
 
     /**

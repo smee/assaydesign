@@ -139,16 +139,15 @@ public class CalcDalton implements Interruptible{
 	 * @param addon
 	 * @return
 	 */
-	private  double calcPrimerAddonMasse(String seq, String addon) {
-		if (null == seq || null == addon)
-			return 0.0D;
-        double summe= calcPrimerMasse(seq);
+	private  double calcPrimerAddonMasse(double mass, String addon) {
+		if (null == addon)
+			return mass;
 		for (int i= 0; i < addon.length(); i++) {
             Character c=new Character(Character.toUpperCase(addon.charAt(i)));
 			if(addonMasses.keySet().contains(c))
-                summe+=((Double)addonMasses.get(c)).doubleValue();
+                mass+=((Double)addonMasses.get(c)).doubleValue();
 		}
-		return summe;//die 18.02 sind schon drauf von calcPrimerMass!
+		return mass;//die 18.02 sind schon drauf von calcPrimerMass!
 	}
 
 	/**
@@ -163,10 +162,11 @@ public class CalcDalton implements Interruptible{
             return new double[0];
         List masses=new ArrayList();
 		String temp=p1[0].substring((p1[0].length() - bruch) + 1);
-        masses.add( new Double(calcPrimerMasse(temp)));
+        final double m=calcPrimerMasse(temp);
+        masses.add( new Double(m));
         for (int i= 1; i < p1.length; i++)
             if(allExtension || p1[i].charAt(0)!='>')
-                 masses.add(new Double(calcPrimerAddonMasse(temp, p1[i])));
+                 masses.add(new Double(calcPrimerAddonMasse(m, p1[i])));
         double[] ergebnis=new double[masses.size()];
         for (int i = 0; i < ergebnis.length; i++) {
             ergebnis[i]=((Double)masses.get(i)).doubleValue();
