@@ -6,7 +6,6 @@ package biochemie.sbe.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -72,11 +71,9 @@ import javax.swing.table.TableModel;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
 
-
 import biochemie.calcdalton.JTableEx;
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
-import biochemie.gui.ColumnResizer;
 import biochemie.gui.InfiniteProgressPanel;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBECandidate;
@@ -93,7 +90,6 @@ import biochemie.util.Helper;
 import biochemie.util.MyAction;
 import biochemie.util.SwingWorker;
 import biochemie.util.TableSorter;
-import biochemie.util.edges.SecStructureEdge;
 
 /**
  * @author Steffen Dienst

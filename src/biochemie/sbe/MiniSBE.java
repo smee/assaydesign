@@ -97,9 +97,11 @@ public class MiniSBE {
 
 
     private void createGraphAndMultiplex(List structs, SBEOptions cfg, Multiplexer m,Set filter) {
+        long t=System.currentTimeMillis();
         boolean drawGraph=cfg.isDrawGraphes();
         System.out.println("Creating graph with "+structs.size()+" vertices...");
-        UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);      
+        UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);
+        System.out.println("Graph creation took "+(System.currentTimeMillis()-t)+"ms");
         m.findMultiplexes(g);
     }
     public static void main(String[] args) {
