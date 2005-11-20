@@ -1,9 +1,7 @@
 package biochemie.util.edges;
 
-import org._3pq.jgrapht.Edge;
 import org._3pq.jgrapht.edge.UndirectedEdge;
 
-import biochemie.domspec.Primer;
 import biochemie.domspec.SBESekStruktur;
 
 public class SecStructureEdge extends UndirectedEdge {
@@ -21,11 +19,11 @@ public class SecStructureEdge extends UndirectedEdge {
         return (s.isIncompatible()?"incomp. ":"")+"Sekstructure: "+s.toString();
     }
     public boolean equals(Object other) {
-        if(other instanceof SecStructureEdge) {
-            SecStructureEdge o=(SecStructureEdge) other;
-            return ((Primer)o.getSource()).getId().equals(((Primer)getSource()).getId())
-                && o.s.equals(s);
-        }
-        return false;
+        if(!(other instanceof SecStructureEdge))
+            return false;
+        return s.equals(((SecStructureEdge)other).s);
+    }
+    public int hashCode() {
+        return s.hashCode();
     }
 }

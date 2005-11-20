@@ -90,6 +90,7 @@ import biochemie.util.Helper;
 import biochemie.util.MyAction;
 import biochemie.util.SwingWorker;
 import biochemie.util.TableSorter;
+import biochemie.util.edges.SecStructureEdge;
 
 /**
  * @author Steffen Dienst
@@ -124,14 +125,20 @@ public class MiniSBEGui extends JFrame {
                 SBECandidatePanel panel = (SBECandidatePanel)sbepanels.get(i);
                 boolean setPL = false;
                 if(cand.hasValidPrimer()) {
-                    SBESekStruktur struc=hatVerhinderteSekStruc(cand);
+/*                    SBESekStruktur struc=hatVerhinderteSekStruc(cand);
                     setPL=struc!=null;
                     if(setPL) {
-                        //filter.add() //TODO am besten als reg. ausdruck, der die kante beschreibt, oder?
+                        filter.add(new SecStructureEdge(null,null,struc)); //TODO am besten als reg. ausdruck, der die kante beschreibt, oder?
+                    }*/
+                    Set s=cand.getFavPrimer().getSecStrucs();
+                    for (Iterator it = s.iterator(); it.hasNext();) {
+                        SBESekStruktur struc = (SBESekStruktur) it.next();
+                        filter.add(new SecStructureEdge(null,null,struc));
                     }
                 }
                 enterInGUI(cand, panel, setPL);
             }
+            System.out.println("Filterset: "+filter);
             //run without secstrucs
             SwingWorker sw=new SwingWorker() {
                 public Object construct() {

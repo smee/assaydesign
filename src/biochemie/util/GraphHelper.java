@@ -13,6 +13,7 @@ import org._3pq.jgrapht.UndirectedGraph;
 import org._3pq.jgrapht.graph.SimpleGraph;
 
 import biochemie.sbe.multiplex.Multiplexable;
+import biochemie.util.edges.SecStructureEdge;
 
 /**
  * @author sdienst
@@ -51,6 +52,11 @@ public class GraphHelper {
      * @return Undirectedgraph
      */
     public static UndirectedGraph createIncompGraph(List multiplexables, boolean writegraph, int outputtype, Set filteredEdges) {
+//        System.out.println("Creating graph, filter.size()=="+filteredEdges.size());
+//        for (Iterator it = filteredEdges.iterator(); it.hasNext();) {
+//            Object e = (Object) it.next();
+//            System.out.println(e.hashCode());
+//        }
         List names=new ArrayList(multiplexables.size());
         for (Iterator it = multiplexables.iterator(); it.hasNext();) {
             Multiplexable p = (Multiplexable) it.next();
@@ -69,11 +75,20 @@ public class GraphHelper {
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
                 if(!s1.passtMit(s2)) {
+//                    if(s1.getLastEdge()!=null && s1.getLastEdge() instanceof SecStructureEdge) {
+//                        System.out.println(s1.getLastEdge().hashCode()+", "+filteredEdges.contains(s1.getLastEdge()));
+//                        for (Iterator it = filteredEdges.iterator(); it.hasNext();) {
+//                            Object o = (Object) it.next();
+//                            System.out.println(s1.getLastEdge()+"=="+o+"? "+s1.getLastEdge().equals(o)+" ");
+//                        }
+//                        System.out.println();
+//                    }
                     if(!filteredEdges.contains(s1.getLastEdge())) {
                         g.addEdge(s1.getLastEdge());
                         if(writegraph)
                             gw.addArc(i,j,s1.getLastEdge().toString());
-                    }
+                    }else
+                        System.out.println("skipping edge, filtered... ("+s1.getLastEdge()+")");
                 }
             }
         }
