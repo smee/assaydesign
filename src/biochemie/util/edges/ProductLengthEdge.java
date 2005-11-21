@@ -2,7 +2,7 @@ package biochemie.util.edges;
 
 import org._3pq.jgrapht.edge.UndirectedEdge;
 
-public class ProductLengthEdge extends UndirectedEdge {
+public class ProductLengthEdge extends MyUndirectedEdge {
     private final int prdiff;
     
     public ProductLengthEdge(Object sourceVertex, Object targetVertex,int prdiff) {
@@ -21,5 +21,8 @@ public class ProductLengthEdge extends UndirectedEdge {
                 && o.prdiff==prdiff;
         }
         return false;
+    }
+    public String matchString() {
+        return getSource()+" Productlen "+getTarget();
     }
 }

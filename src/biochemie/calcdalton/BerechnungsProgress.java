@@ -408,7 +408,7 @@ public class BerechnungsProgress extends JFrame{
             public Object construct() {
                 Set result=new HashSet();
                 while(primersToGo.size()>0) {
-                    final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF,Collections.EMPTY_SET));
+                    final UndirectedGraph graph = GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(new ArrayList(primersToGo),true,GraphWriter.TGF,Collections.EMPTY_SET),true,GraphWriter.TGF);
                     if(graph == null)
                         return null;
                     MaximumCliqueFinder mcf = new MaximumCliqueFinder(graph,paneldata.length,true);

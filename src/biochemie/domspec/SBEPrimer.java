@@ -138,7 +138,7 @@ public class SBEPrimer extends Primer{
     }
 
     public boolean equals(Object o){
-        if ( !(o instanceof Primer) ) {
+        if ( !(o instanceof SBEPrimer) ) {
             return false;
         }else {
             SBEPrimer other = (SBEPrimer)o;
@@ -304,7 +304,7 @@ public class SBEPrimer extends Primer{
     }
     public String toString() {
         DecimalFormat nf=new DecimalFormat("#.##");
-        return getSeq()+", "+getType()+", PL="+getBruchstelle()+", temperature="+nf.format(getTemperature())+"°, hairpins="+getHairpinPositions()+", homodimer="+getHomodimerPositions();
+        return getId()+":"+getSeq()+", "+getType()+", PL="+getBruchstelle()+", temperature="+nf.format(getTemperature())+"°, hairpins="+getHairpinPositions()+", homodimer="+getHomodimerPositions();
     }
     public String getCSVSekStructuresSeparatedBy(String sep) {
         List l=new ArrayList(sekstruc);

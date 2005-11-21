@@ -2,7 +2,7 @@ package biochemie.util.edges;
 
 import org._3pq.jgrapht.edge.UndirectedEdge;
 
-public class IdendityEdge extends UndirectedEdge {
+public class IdendityEdge extends MyUndirectedEdge {
 
     public IdendityEdge(Object sourceVertex, Object targetVertex) {
         super(sourceVertex, targetVertex);
@@ -17,5 +17,8 @@ public class IdendityEdge extends UndirectedEdge {
                 && o.getTarget().equals(getTarget());
         }
         return false;
+    }
+    public String matchString() {
+        return getSource()+" sameID "+getTarget();
     }
 }

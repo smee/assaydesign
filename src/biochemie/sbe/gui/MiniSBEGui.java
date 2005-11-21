@@ -125,15 +125,10 @@ public class MiniSBEGui extends JFrame {
                 SBECandidatePanel panel = (SBECandidatePanel)sbepanels.get(i);
                 boolean setPL = false;
                 if(cand.hasValidPrimer()) {
-/*                    SBESekStruktur struc=hatVerhinderteSekStruc(cand);
-                    setPL=struc!=null;
-                    if(setPL) {
-                        filter.add(new SecStructureEdge(null,null,struc)); //TODO am besten als reg. ausdruck, der die kante beschreibt, oder?
-                    }*/
                     Set s=cand.getFavPrimer().getSecStrucs();
                     for (Iterator it = s.iterator(); it.hasNext();) {
                         SBESekStruktur struc = (SBESekStruktur) it.next();
-                        filter.add(new SecStructureEdge(null,null,struc));
+                        filter.add(new SecStructureEdge(null,null,struc).matchString());
                     }
                 }
                 enterInGUI(cand, panel, setPL);

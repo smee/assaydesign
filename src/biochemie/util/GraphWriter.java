@@ -7,7 +7,13 @@ package biochemie.util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import org._3pq.jgrapht.Edge;
+import org._3pq.jgrapht.UndirectedGraph;
 
 
 public class GraphWriter{
@@ -62,6 +68,16 @@ public class GraphWriter{
 			e.printStackTrace();
 		}
 	}
+    public static void writeGraph(UndirectedGraph g, String filename, int type) {
+        List v=new ArrayList(g.vertexSet());
+        GraphWriter gw=new GraphWriter(v,filename,type);
+        Set edges=g.edgeSet();
+            for (Iterator it2 = edges.iterator(); it2.hasNext();) {
+                Edge e = (Edge) it2.next();
+                gw.addArc(v.indexOf(e.getSource()),v.indexOf(e.getTarget()),e.toString());
+            }
+        gw.close();    
+    }
 	/**
      * @param filename
      * @return

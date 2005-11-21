@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 import org._3pq.jgrapht.edge.UndirectedEdge;
 
-public class TMDiffEdge extends UndirectedEdge {
+public class TMDiffEdge extends MyUndirectedEdge {
 
     private final double tmdiff;
     private static final DecimalFormat df=new DecimalFormat("0.00");
@@ -23,5 +23,8 @@ public class TMDiffEdge extends UndirectedEdge {
                 && o.tmdiff==tmdiff;
         }
         return false;
+    }
+    public String matchString() {
+        return getSource()+" tmdiff "+getTarget();
     }
 }

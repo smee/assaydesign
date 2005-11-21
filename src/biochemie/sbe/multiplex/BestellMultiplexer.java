@@ -16,6 +16,7 @@ import biochemie.sbe.SBEOptions;
 import biochemie.sbe.calculators.MaximumCliqueFinder;
 import biochemie.sbe.calculators.ReusableThread;
 import biochemie.util.GraphHelper;
+import biochemie.util.GraphWriter;
 
 /**
  * Bestimmt per Maxcliquensuche die jeweils groesstmoegliche Menge von Primer.
@@ -40,7 +41,7 @@ public class BestellMultiplexer extends Multiplexer {
         System.out.println("Using BestellMultiplexer... (maximizes the size of multiplexes)");
         if(Thread.currentThread().isInterrupted())
             return;
-	    UndirectedGraph grev=GraphHelper.getKomplementaerGraph(g);
+	    UndirectedGraph grev=GraphHelper.getKomplementaerGraph(g,cfg.isDrawGraphes(),GraphWriter.TGF);
         System.out.println("RevGraph consists of "+grev.vertexSet().size()+" vertices, "+grev.edgeSet().size()+" edges.");
 	    
 	    int maxplexnr= cfg.getMaxPlex();

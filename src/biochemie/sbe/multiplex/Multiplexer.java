@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org._3pq.jgrapht.Edge;
 import org._3pq.jgrapht.UndirectedGraph;
-import org._3pq.jgrapht.edge.UndirectedEdge;
 
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
@@ -24,6 +23,7 @@ import biochemie.domspec.SekStrukturFactory;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBEOptions;
+import biochemie.util.edges.MyUndirectedEdge;
 
 /**
  * @author Steffen
@@ -261,13 +261,16 @@ public abstract class Multiplexer {
     public synchronized static boolean isStopped() {
         return stopped;
     }
-    private static class IncompCDEinbauEdge extends UndirectedEdge{
+    private static class IncompCDEinbauEdge extends MyUndirectedEdge{
 
         public IncompCDEinbauEdge(Object sourceVertex, Object targetVertex) {
             super(sourceVertex, targetVertex);
         }
         public String toString() {
             return "incomp._CD_nucleotide";
+        }
+        public String matchString() {
+            return getSource().toString()+this.toString()+getTarget().toString();
         }
     }
 }

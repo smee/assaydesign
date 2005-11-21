@@ -3,7 +3,7 @@ package biochemie.util.edges;
 import org._3pq.jgrapht.edge.UndirectedEdge;
 import org._3pq.jgrapht.edge.UndirectedEdge;
 
-public class CalcDaltonEdge extends UndirectedEdge {
+public class CalcDaltonEdge extends MyUndirectedEdge {
 
     public CalcDaltonEdge(Object sourceVertex, Object targetVertex) {
         super(sourceVertex, targetVertex);
@@ -18,5 +18,8 @@ public class CalcDaltonEdge extends UndirectedEdge {
                 && o.getTarget().equals(getTarget());
         }
         return false;
+    }
+    public String matchString() {
+        return getSource()+" calcdalton "+getTarget();
     }
 }

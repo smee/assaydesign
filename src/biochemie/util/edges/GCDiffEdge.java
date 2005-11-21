@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 import org._3pq.jgrapht.edge.UndirectedEdge;
 
-public class GCDiffEdge extends UndirectedEdge {
+public class GCDiffEdge extends MyUndirectedEdge {
     private final double gcdiff;
     private static final DecimalFormat df=new DecimalFormat("0.00");
     
@@ -23,5 +23,8 @@ public class GCDiffEdge extends UndirectedEdge {
                 && o.gcdiff==gcdiff;
         }
         return false;
+    }
+    public String matchString() {
+        return getSource()+" gcdiff "+getTarget();
     }
 }

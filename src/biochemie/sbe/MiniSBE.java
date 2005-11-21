@@ -101,6 +101,7 @@ public class MiniSBE {
         boolean drawGraph=cfg.isDrawGraphes();
         System.out.println("Creating graph with "+structs.size()+" vertices...");
         UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);
+        System.out.println("Graph has "+g.edgeSet().size()+" edges.");
         System.out.println("Graph creation took "+(System.currentTimeMillis()-t)+"ms");
         m.findMultiplexes(g);
     }

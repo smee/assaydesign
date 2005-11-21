@@ -74,10 +74,10 @@ public class SBESekStruktur extends SekStruktur{
         eq=eq && (this.type==rhs.type)
               && (this.verh==rhs.verh)
               && (this.incomp==rhs.incomp)
-              && (this.p.getId().equals(rhs.p.getId())
-              && (((SBEPrimer)p).getBruchstelle()==((SBEPrimer)rhs.p).getBruchstelle()));
-        if(CROSSDIMER == type) {  //betrachte Crossdimer mit anderen Primern als gleich, auch wenn die Bruchstelle nicht stimmt.
-            eq=eq && (other.getId().equals(rhs.other.getId())) && (((SBEPrimer)other).getBruchstelle()==((SBEPrimer)rhs.other).getBruchstelle());
+              && type==rhs.type
+              && p.equals(rhs.p);
+        if(eq==true && CROSSDIMER == type) {  //betrachte Crossdimer mit anderen Primern als gleich, auch wenn die Bruchstelle nicht stimmt.
+            eq=eq && other.equals(rhs.other);
         }
         return eq;
     }

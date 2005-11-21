@@ -9,11 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org._3pq.jgrapht.Edge;
-import org._3pq.jgrapht.edge.UndirectedEdge;
 
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
+import biochemie.util.edges.MyUndirectedEdge;
 /**
  * Vereinigung mehrerer SBECandidates, die alle in einen Multiplex sollen.
  * @author sdienst
@@ -23,7 +23,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
 
         private final List factories;
         List multiplexables;
-		Edge edge;
+        Edge edge;
         private final String givenId;
 
         public MultiKnoten(List sbec, String givenid) {
@@ -77,7 +77,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
             if(o instanceof MultiKnoten) {
                 boolean differentGivenMultiplexes = !givenId.equalsIgnoreCase(((MultiKnoten)o).givenId);
                 if(differentGivenMultiplexes) {
-                    edge = new DiffGivenMIDEdge(this,o);//kein Test, sollen nicht zusammenkommen
+                    edge = new DiffGivenMIDEdge(this,o,givenId);//kein Test, sollen nicht zusammenkommen
                     return false;
                 }
             }
@@ -121,13 +121,17 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public Edge getLastEdge() {
             return edge;
         }
-        private static class DiffGivenMIDEdge extends UndirectedEdge{
-
-            public DiffGivenMIDEdge(Object sourceVertex, Object targetVertex) {
+        private static class DiffGivenMIDEdge extends MyUndirectedEdge{
+            private final String mid;
+            public DiffGivenMIDEdge(Object sourceVertex, Object targetVertex, String mid) {
                 super(sourceVertex, targetVertex);
+                this.mid=mid;
             }
             public String toString() {
                 return "differentGivenMultiplexIDs";
+            }
+            public String matchString() {
+                return mid;
             }
         }
     }
