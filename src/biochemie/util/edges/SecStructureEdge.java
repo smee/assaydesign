@@ -21,7 +21,17 @@ public class SecStructureEdge extends UndirectedEdge {
     public boolean equals(Object other) {
         if(!(other instanceof SecStructureEdge))
             return false;
-        return s.equals(((SecStructureEdge)other).s);
+        SBESekStruktur o=((SecStructureEdge)other).s;
+        if((s.getType()==SBESekStruktur.CROSSDIMER && o.getType()!=SBESekStruktur.CROSSDIMER)
+                || (s.getType()!=SBESekStruktur.CROSSDIMER && o.getType()==SBESekStruktur.CROSSDIMER))
+            return false;
+        boolean ret=s.getPrimer().getId().equals(o.getPrimer().getId())
+            && s.bautEin()==o.bautEin()
+            && s.getPosFrom3()==o.getPosFrom3();
+        if(s.getType()==SBESekStruktur.CROSSDIMER && o.getType()==SBESekStruktur.CROSSDIMER) {
+            return ret && (s.getCrossDimerPrimer().getId().equals(o.getCrossDimerPrimer().getId())); 
+        }
+        return ret;
     }
     public int hashCode() {
         return s.hashCode();

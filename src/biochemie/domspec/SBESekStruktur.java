@@ -80,7 +80,6 @@ public class SBESekStruktur extends SekStruktur{
             eq=eq && (other.getId().equals(rhs.other.getId())) && (((SBEPrimer)other).getBruchstelle()==((SBEPrimer)rhs.other).getBruchstelle());
         }
         return eq;
-
     }
     public int hashCode() {
             int hash= new HashCodeBuilder(17, 37).
