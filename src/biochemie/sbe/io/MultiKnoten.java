@@ -4,6 +4,7 @@
 package biochemie.sbe.io;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,14 +26,21 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         List multiplexables;
         Edge edge;
         private final String givenId;
+        final int realSize;
 
         public MultiKnoten(List sbec, String givenid) {
             this.factories=sbec;
+            this.realSize=factories.size();
             if(givenid == null || givenid.length()==0)
                 throw new IllegalArgumentException("Given multiplexid \""+givenid+"\" isn't valid!");
             this.givenId = givenid !=null?givenid:"";
         }
-
+        public MultiKnoten(Collection multiplexables) {
+            this.multiplexables=new ArrayList(multiplexables);
+            givenId="multiknoten";
+            factories=null;
+            this.realSize=multiplexables.size();
+        }
         public List getMultiplexables() {
             multiplexables=new ArrayList();
             for (int j = 0; j < factories.size(); j++) {
@@ -97,7 +105,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         }
 
         public int realSize() {
-            return factories.size();
+            return realSize;
         }
 
 

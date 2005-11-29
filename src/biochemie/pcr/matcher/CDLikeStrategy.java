@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 
 /**
@@ -28,10 +29,13 @@ public class CDLikeStrategy implements MatcherStrategy {
     public CDLikeStrategy(int maxplex){
         this.maxplex=maxplex;
     }
-    public Collection getBestPCRPrimerSet(List pcrpairs) {
+    public Collection getBestPCRPrimerSet(List pcrpairs, Multiplexable needed) {
         solutionsize=Integer.MAX_VALUE;
-
-        PCRPair[][] pairs=createPairMatrix(pcrpairs);
+        List l=new ArrayList(pcrpairs.size()+1);
+        if(needed!=null)
+            l.add(needed);
+        l.addAll(pcrpairs);
+        PCRPair[][] pairs=createPairMatrix(l);
         System.out.print("got "+pairs.length+" files, with ");
         for (int i = 0; i < pairs.length; i++) {
             System.out.print(pairs[i].length+" ");

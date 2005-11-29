@@ -17,6 +17,8 @@ import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.calculators.ReusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
+import biochemie.sbe.io.MultiKnoten;
+import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.GraphHelper;
 import biochemie.util.GraphWriter;
 
@@ -34,7 +36,7 @@ public class ColorerStrategy implements MatcherStrategy {
         this.maxplex=maxplex;
     }
 
-    public Collection getBestPCRPrimerSet(List pcrpairs) {
+    public Collection getBestPCRPrimerSet(List pcrpairs, final Multiplexable needed) {
         System.out.println("Creating graph... (Might take a while!)");
         UndirectedGraph g=GraphHelper.createIncompGraph(pcrpairs,true,GraphWriter.TGF, Collections.EMPTY_SET);
 
@@ -51,9 +53,13 @@ public class ColorerStrategy implements MatcherStrategy {
         List result=new ArrayList((Collection)rt.getResult());
 
         Comparator resultcomp= new Comparator(){
-            public int compare(Object arg0, Object arg1) {
+            public int compare(Object arg0, Object arg1) {                
                 Set s1=(Set) arg0;
                 Set s2=(Set) arg1;
+                if(s1.contains(needed))
+                    return -1;
+                if(s2.contains(needed))
+                    return +1;
                 if(s1.size() != s2.size())
                     return s2.size()-s1.size();
 
@@ -77,8 +83,16 @@ public class ColorerStrategy implements MatcherStrategy {
     private double getAvg(Set s){
         double avg1=0;
         for (Iterator it = s.iterator(); it.hasNext();) {
-            PCRPair p = (PCRPair) it.next();
-            avg1+=p.leftp.getPos();
+            Object o=it.next();
+            if (o instanceof PCRPair) {
+                PCRPair p = (PCRPair) o;
+                avg1+=p.leftp.getPos();                
+            }else if (o instanceof MultiKnoten) {
+                MultiKnoten mk = (MultiKnoten) o;
+                Set ss=new HashSet(mk.getIncludedElements());
+                //unsauber, ist kein richtiger durchschnitt!
+                avg1+=getAvg(ss);
+            }
         }
         avg1/=s.size();
         return avg1;

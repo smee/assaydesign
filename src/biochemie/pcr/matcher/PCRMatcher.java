@@ -15,11 +15,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.Ostermiller.util.BadDelimiterException;
 
 import biochemie.pcr.PrimerPair;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.WrongValueException;
+import biochemie.sbe.io.MultiKnoten;
+import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 import biochemie.util.config.GeneralConfig;
 
@@ -31,16 +36,11 @@ public class PCRMatcher {
     public static final int MAXCLIQUESTRATEGY = 0;
     public static final int COLORINGSTRATEGY = 1;
     public static final int CDLIKESTRATEGY = 2;
-    private static double maxtmdiff;
-    private static double maxgcdiff;
     List primers;
-    private CrossDimerAnalysis cda;
     private int maxplex;
+    private MultiKnoten complex;
 
-    public PCRMatcher(List files, double tm, double gc, CrossDimerAnalysis cda) throws IOException {
-        maxtmdiff=tm;
-        maxgcdiff=gc;
-        this.cda=cda;
+    public PCRMatcher(List files) throws IOException {
         this.maxplex=files.size();
 
         primers=new ArrayList();
@@ -103,8 +103,8 @@ public class PCRMatcher {
             st.nextToken();//gc%1
             st.nextToken();//gc%2
             right=st.nextToken().trim().toUpperCase();
-            PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT,maxtmdiff,maxgcdiff,cda);
-            PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT,maxtmdiff,maxgcdiff,cda);
+            PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT);
+            PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT);
             primers.add(new PCRPair(p1,p2,maxplex));
         } catch (NoSuchElementException e) {
             System.err.println("Fehler beim Lesen der Zeile :\""+line+"\" in Datei \""+filename+"\"!");
@@ -113,90 +113,48 @@ public class PCRMatcher {
         return primers;
     }
 
-
-
-    public static void main(String[] args) {
-        if(args.length <1) {
-            showUsage();
-            return;
-        }
-        List filesToProcess=new LinkedList();
-        GeneralConfig conf=new GeneralConfig() {
-            protected String[][] getInitializedProperties() {
-                return new String[][]{
-                        {"FILES",""}
-                       ,{"TIME_TO_COLOR","30"}
-                       ,{"PARAM_CROSS_WINDOW_SIZE","0"}
-                       ,{"PARAM_CROSS_MIN_BINDING","0"}
-                       ,{"MAX_TM_DIFF","10"}
-                       ,{"MAX_GC_DIFF","30"}
-                       ,{"STRATEGY","2"}};
-            }};
-        try {
-            conf.readConfigFile(args[0]);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            System.err.println("Error on reading file \""+args[0]+"\"");
-            return;
-        }
-        if(args.length>1) {//overriding parameter FILES in configfile
-            for (int i = 1; i < args.length; i++) {
-                filesToProcess.add(args[i]);
-            }
-        }else {
-            StringTokenizer st=new StringTokenizer(conf.getString("FILES")," \t,;:\"");
-            while(st.hasMoreTokens())
-                filesToProcess.add(st.nextToken());
-        }
-        try {
-        	System.out.println("Using the following inputfiles:");
-        	System.out.println(Helper.toStringln(filesToProcess));
-
-
-        	int seconds=conf.getInteger("TIME_TO_COLOR");
-        	CrossDimerAnalysis cda=new CrossDimerAnalysis(conf.getString("PARAM_CROSS_WINDOW_SIZE")
-        			,conf.getString("PARAM_CROSS_MIN_BINDING")
-					,Boolean.toString(false));
-        	PCRMatcher pm=new PCRMatcher(filesToProcess, conf.getDouble("MAX_TM_DIFF"), conf.getDouble("MAX_GC_DIFF"),cda);
-
-        	int maxplex=filesToProcess.size();
-
-        	MatcherStrategy ms=null;
-
-        	int strategyToUse=conf.getInteger("STRATEGY");
-
-        	switch (strategyToUse) {
-        	case MAXCLIQUESTRATEGY:
-        		ms=new MaxCliqueStrategy(seconds,maxplex);
-        		break;
-        	case COLORINGSTRATEGY:
-        		ms=new ColorerStrategy(seconds,maxplex);
-        		break;
-        	case CDLIKESTRATEGY:
-        		ms=new CDLikeStrategy(maxplex);
-        		break;
-        	default:
-        		break;
-        	}
-        	Collection pairsToUse=ms.getBestPCRPrimerSet(pm.primers);
-        	System.out.println("Using:");
-        	System.out.println(Helper.toStringln(pairsToUse));
-            String outname="matcher_"+Helper.dateFunc()+".csv";
-            System.out.println("\nWriting to "+outname);
-            outputFile(pairsToUse, outname);
-        } catch (WrongValueException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-        }
+public static void main(String[] args) {
+    if(args.length <2) {
+        showUsage();
+        return;
     }
+    ConfigMaker cm=null;
+    try {
+        cm=new ConfigMaker(args[0]);
+    } catch (BadDelimiterException e) {
+        System.err.println("Invalid csv, wrong delimiters used!");
+        e.printStackTrace();
+    } catch (IOException e) {
+        System.err.println("Error trying to read the configfile!");
+        e.printStackTrace();
+    }
+    if(cm==null)
+        System.exit(1);
+    
+    List filesToProcess=new ArrayList(args.length-1);
+    for (int i = 1; i < args.length; i++) {
+        filesToProcess.add(args[i]);
+    }    
+    System.out.println("Using the following inputfiles:");
+    System.out.println(Helper.toStringln(filesToProcess));
+    try {
+        PCRMatcher pm=new PCRMatcher(filesToProcess);
+        pm.doTheCalcBoogie(cm);
+        String outname="matcher_"+Helper.dateFunc()+".csv";
+        System.out.println("\nWriting to "+outname);
+        pm.outputToFile(outname);
+    } catch (IOException e) {
+        System.err.println("Error while accessing files!");
+        e.printStackTrace();
+    }
+    
+}
 
-
-
-
-    private static void outputFile(Collection pairsToUse, String outname) throws IOException {
+    public void outputToFile(String outname) throws IOException {
+        List pairs=complex.getIncludedElements();
         BufferedWriter bw=new BufferedWriter(new FileWriter(outname));
         bw.write(PrimerPair.getCSVHeaderLine());
-        for (Iterator iter = pairsToUse.iterator(); iter.hasNext();) {
+        for (Iterator iter = pairs.iterator(); iter.hasNext();) {
             PCRPair pair = (PCRPair) iter.next();
             bw.write(pair.getCSVLine());
             bw.write("\n");
@@ -206,10 +164,66 @@ public class PCRMatcher {
 
 
 
+    private void doTheCalcBoogie(ConfigMaker cm) {
+        while(cm.getNumOfConfigsLeft() > 0 && primers.size() >0) {
+            GeneralConfig cfg=cm.getNextConfig();
+            MatcherStrategy ms=getMatcherStrategy(cfg);
+            updateConfigs(cfg);
+            Collection max=ms.getBestPCRPrimerSet(primers,complex);
+            createNewComplex(max);
+        }
+    }
+
+
+    /**
+     * Creates a new complex node for the graph and removes all primers with the same ID
+     * from primers;
+     * @param max
+     */
+    private void createNewComplex(Collection max) {
+        complex=new MultiKnoten(max);
+        primers.removeAll(max);
+    }
+
+
+
+    private void updateConfigs(GeneralConfig cfg) {
+        for (Iterator it = primers.iterator(); it.hasNext();) {
+            PCRPair pair = (PCRPair) it.next();
+            pair.setNewConfig(cfg);
+        }
+        if(complex==null)
+            return;
+        List inc=complex.getIncludedElements();
+        for (Iterator it = inc.iterator(); it.hasNext();) {
+            PCRPair pair = (PCRPair) it.next();
+            pair.setNewConfig(cfg);
+        }
+    }
+
+
+
+    private MatcherStrategy getMatcherStrategy(GeneralConfig cfg) {
+        int sec=cfg.getInteger("TIME_TO_COLOR",0);
+        switch (cfg.getInteger("STRATEGY",CDLIKESTRATEGY)) {
+        case MAXCLIQUESTRATEGY:
+            return new MaxCliqueStrategy(sec,maxplex);
+        case COLORINGSTRATEGY:
+            return new ColorerStrategy(sec,maxplex);
+        case CDLIKESTRATEGY:
+            return new CDLikeStrategy(maxplex);
+        default:
+            return null;
+        }
+    }
+
+
+
+
     /**
      *
      */
     private static void showUsage() {
-        System.out.println("PCRMatcher.exe configfile [pcrprimerfile1 pcrprimerfile2...]");
+        System.out.println("PCRMatcher.exe configfile PCR-File1 PCR-File2...");
     }
 }

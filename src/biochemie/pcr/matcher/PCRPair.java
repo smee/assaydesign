@@ -10,6 +10,7 @@ import java.util.List;
 import org._3pq.jgrapht.Edge;
 
 import biochemie.sbe.multiplex.Multiplexable;
+import biochemie.util.config.GeneralConfig;
 
 
 class PCRPair implements Multiplexable{
@@ -30,7 +31,11 @@ class PCRPair implements Multiplexable{
     public String getName() {
         return leftp.getId()+","+leftp.getPos();
     }
-
+    public void setNewConfig(GeneralConfig cfg) {
+        leftp.setNewConfig(cfg);
+        if(rightp != null)
+            rightp.setNewConfig(cfg);
+    }
     public boolean passtMit(Multiplexable other) {
         if(other instanceof PCRPrimer){
             boolean b=leftp.passtMit(other);

@@ -4,6 +4,7 @@
  */
 package biochemie.pcr.matcher;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import org._3pq.jgrapht.UndirectedGraph;
 
 import biochemie.sbe.calculators.MaximumCliqueFinder;
 import biochemie.sbe.calculators.ReusableThread;
+import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.GraphHelper;
 import biochemie.util.GraphWriter;
 
@@ -30,9 +32,13 @@ public class MaxCliqueStrategy implements MatcherStrategy {
         this.seconds=sec;
         this.maxplex=maxplex;
     }
-    public Collection getBestPCRPrimerSet(List pcrpairs) {
+    public Collection getBestPCRPrimerSet(List pcrpairs, Multiplexable needed) {
         System.out.println("Creating graph... (Might take a while!)");
-        UndirectedGraph g=GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(pcrpairs,true,GraphWriter.TGF,Collections.EMPTY_SET),true,GraphWriter.TGF);
+        List l=new ArrayList(pcrpairs.size()+1);
+        if(needed!=null)
+            l.add(needed);
+        l.addAll(pcrpairs);
+        UndirectedGraph g=GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(l,true,GraphWriter.TGF,Collections.EMPTY_SET),true,GraphWriter.TGF);
 
         System.out.println("Reverse graph has "+g.edgeSet().size()+" edges.");
 

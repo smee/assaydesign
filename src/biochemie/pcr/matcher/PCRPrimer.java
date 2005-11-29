@@ -12,6 +12,7 @@ import biochemie.domspec.SBESekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.multiplex.Multiplexable;
+import biochemie.util.config.GeneralConfig;
 import biochemie.util.edges.GCDiffEdge;
 import biochemie.util.edges.IdendityEdge;
 import biochemie.util.edges.SecStructureEdge;
@@ -24,21 +25,23 @@ import biochemie.util.edges.TMDiffEdge;
 public class PCRPrimer extends Primer {
     public static final String LEFT = "left";
     public static final String RIGHT = "right";
-    private final double maxtm;
-    private final double maxgc;
     private CrossDimerAnalysis cda;
     private final String type;
     private final int pos;
     private final String inputline;
-
-    public PCRPrimer(String filename, int pos, String inputline, String seq, String type,double maxtm, double maxgc, CrossDimerAnalysis cda) {
+    private GeneralConfig cfg;
+    
+    public PCRPrimer(String filename, int pos, String inputline, String seq, String type) {
         super(filename,seq);
-        this.maxtm=maxtm;
-        this.maxgc=maxgc;
-        this.cda=cda;
         this.type=type;
         this.pos=pos;
         this.inputline=inputline;
+    }
+    public void setNewConfig(GeneralConfig cfg) {
+        this.cfg=cfg;
+        this.cda=new CrossDimerAnalysis(cfg.getString("PARAM_CROSS_WINDOW_SIZE","")
+                ,cfg.getString("PARAM_CROSS_MIN_BINDING","")
+                ,Boolean.toString(false));
     }
     public boolean passtMit(Multiplexable o) {
         PCRPrimer other=(PCRPrimer) o;
@@ -47,11 +50,11 @@ public class PCRPrimer extends Primer {
             edge = new IdendityEdge(this,o);
             return false;
         }
-        if((tmp=Math.abs(temp-other.temp)) > maxtm) {
+        if((tmp=Math.abs(temp-other.temp)) > cfg.getDouble("MAX_TM_DIFF",0)) {
             edge=new TMDiffEdge(this,other,tmp);
             return false;
         }
-        if((tmp=Math.abs(gcgehalt-other.gcgehalt)) > maxgc) {
+        if((tmp=Math.abs(gcgehalt-other.gcgehalt)) > cfg.getDouble("MAX_GC_DIFF",0)) {
             edge=new GCDiffEdge(this,other,tmp);
             return false;
         }

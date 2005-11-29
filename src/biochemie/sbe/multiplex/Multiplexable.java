@@ -31,7 +31,7 @@ public interface Multiplexable {
      */
     public boolean passtMit(Multiplexable other);
     /**
-     * Anzahl der Elemente in diesem Knoten enthalten sind.
+     * Anzahl der Elemente, die in diesem Knoten enthalten sind.
      * @return
      */
     public int realSize();
