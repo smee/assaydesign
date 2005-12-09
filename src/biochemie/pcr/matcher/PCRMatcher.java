@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,23 +37,23 @@ public class PCRMatcher {
     public static final int MAXCLIQUESTRATEGY = 0;
     public static final int COLORINGSTRATEGY = 1;
     public static final int CDLIKESTRATEGY = 2;
-    List primers;
+    List pcrpairs;
     private int maxplex;
     private MultiKnoten complex;
 
     public PCRMatcher(List files) throws IOException {
         this.maxplex=files.size();
 
-        primers=new ArrayList();
+        pcrpairs=new ArrayList();
         for (Iterator it = files.iterator(); it.hasNext();) {
             String filename = (String) it.next();
             try {
-                primers.addAll(readPCRPrimersFrom(filename));
+                pcrpairs.addAll(readPCRPrimersFrom(filename));
             } catch (IOException e) {
                 System.out.println("Fehler beim Lesen von Datei \""+filename+"\", skipping...");
             }
         }
-        System.out.println("Found "+primers.size()+" primers in "+maxplex + " files");
+        System.out.println("Found "+pcrpairs.size()+" primers in "+maxplex + " files");
     }
 
 
@@ -165,11 +166,12 @@ public static void main(String[] args) {
 
 
     private void doTheCalcBoogie(ConfigMaker cm) {
-        while(cm.getNumOfConfigsLeft() > 0 && primers.size() >0) {
+        while(cm.getNumOfConfigsLeft() > 0 && pcrpairs.size() >0) {
             GeneralConfig cfg=cm.getNextConfig();
+            System.out.println("keys in config: "+cfg.getKeys());
             MatcherStrategy ms=getMatcherStrategy(cfg);
             updateConfigs(cfg);
-            Collection max=ms.getBestPCRPrimerSet(primers,complex);
+            Collection max=ms.getBestPCRPrimerSet(pcrpairs,complex);
             createNewComplex(max);
         }
     }
@@ -181,14 +183,19 @@ public static void main(String[] args) {
      * @param max
      */
     private void createNewComplex(Collection max) {
-        complex=new MultiKnoten(max);
-        primers.removeAll(max);
+        Collection pairs=new HashSet();
+        for (Iterator it = max.iterator(); it.hasNext();) {
+            Multiplexable m = (Multiplexable) it.next();
+            pairs.addAll(m.getIncludedElements());
+        }
+        complex=new MultiKnoten(pairs);
+        pcrpairs.removeAll(pairs);
     }
 
 
 
     private void updateConfigs(GeneralConfig cfg) {
-        for (Iterator it = primers.iterator(); it.hasNext();) {
+        for (Iterator it = pcrpairs.iterator(); it.hasNext();) {
             PCRPair pair = (PCRPair) it.next();
             pair.setNewConfig(cfg);
         }

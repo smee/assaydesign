@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -240,5 +241,8 @@ public abstract class GeneralConfig extends Observable{
 	}
     public String toString(){
         return prop.toString();
+    }
+    public Collection getKeys() {
+        return prop.keySet();
     }
 }

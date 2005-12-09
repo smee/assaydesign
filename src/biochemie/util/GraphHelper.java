@@ -6,6 +6,7 @@ package biochemie.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -43,8 +44,6 @@ public class GraphHelper {
 //            System.out.println("edges for v1: "+g.edgesOf(v1));
             for (int j = i+1; j < vert.size(); j++) {
                 Object v2=vert.get(j);
-//                System.out.println("v2="+v2);
-                System.out.println("g.containsedge(v1,v2)=="+g.containsEdge(v1,v2));
                 if(!g.containsEdge(v1,v2)) {
                     result.addEdge(v1,v2);
                     if(writeGraph)
@@ -66,12 +65,6 @@ public class GraphHelper {
      * @return Undirectedgraph
      */
     public static UndirectedGraph createIncompGraph(List multiplexables, final boolean writegraph, int outputtype, Set filteredEdges) {
-//        System.out.println("Creating graph, filter.size()=="+filteredEdges.size());
-//        System.out.println("contains: "+filteredEdges);
-//        for (Iterator it = filteredEdges.iterator(); it.hasNext();) {
-//            Object e = (Object) it.next();
-//            System.out.println(e.hashCode());
-//        }
         List names = createNamesList(multiplexables);
         GraphWriter gw=null;
         if(writegraph) {
@@ -86,13 +79,6 @@ public class GraphHelper {
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
                 if(!s1.passtMit(s2)) {
-//                    if(s1.getLastEdge()!=null && s1.getLastEdge() instanceof SecStructureEdge) {
-//                        System.out.println(s1.getLastEdge().hashCode()+", "+filteredEdges.contains(s1.getLastEdge()));
-//                        for (Iterator it = filteredEdges.iterator(); it.hasNext();) {
-//                            Object o = (Object) it.next();
-//                            System.out.println(s1.getLastEdge()+"=="+o+"? "+s1.getLastEdge().equals(o)+" ");
-//                        }
-//                    }
                     if(!filteredEdges.contains(((MyUndirectedEdge)s1.getLastEdge()).matchString())) {
                         g.addEdge(s1.getLastEdge());
                         if(writegraph)

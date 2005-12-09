@@ -1,24 +1,27 @@
 package biochemie.util.edges;
 
-import org._3pq.jgrapht.edge.UndirectedEdge;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.SekStruktur;
 
 public class SecStructureEdge extends MyUndirectedEdge {
 
-    private final SBESekStruktur s;
+    private final SekStruktur s;
 
-    public SecStructureEdge(Object sourceVertex, Object targetVertex, SBESekStruktur s) {
+    public SecStructureEdge(Object sourceVertex, Object targetVertex, SekStruktur s) {
         super(sourceVertex, targetVertex);
         this.s=s;
     }
-    public SBESekStruktur getSecStruc() {
+    public SekStruktur getSecStruc() {
         return s;
     }
     public String toString() {
-        return (s.isIncompatible()?"incomp. ":"")+"Sekstructure: "+s.toString();
+        if(s instanceof SBESekStruktur)            
+            return (((SBESekStruktur)s).isIncompatible()?"incomp. ":"")+"Sekstructure: "+s.toString();
+        else 
+            return "Sekstructure: "+s.toString();
     }
     public boolean equals(Object other) {
         if(other instanceof SecStructureEdge) {
@@ -38,7 +41,7 @@ public class SecStructureEdge extends MyUndirectedEdge {
             append(((SBEPrimer)s.getPrimer()).getType()).toHashCode();
     }
     public String matchString() {
-        StringBuffer sb=new StringBuffer("SBESecEdge ");
+        StringBuffer sb=new StringBuffer("SecEdge ");
         sb.append(s.getPrimer().getId()).append(" ").
         append(s.getPosFrom3()).append(" ").
         append(((SBEPrimer)s.getPrimer()).getType()).append(" ");

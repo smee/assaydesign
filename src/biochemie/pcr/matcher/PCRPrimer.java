@@ -7,8 +7,10 @@ package biochemie.pcr.matcher;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.SekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.multiplex.Multiplexable;
@@ -44,26 +46,29 @@ public class PCRPrimer extends Primer {
                 ,Boolean.toString(false));
     }
     public boolean passtMit(Multiplexable o) {
-        PCRPrimer other=(PCRPrimer) o;
-        double tmp;
-        if(id.equals(other.id)) {
-            edge = new IdendityEdge(this,o);
-            return false;
+        if(o instanceof PCRPrimer) {
+            PCRPrimer other=(PCRPrimer) o;
+            double tmp;
+            if(id.equals(other.id)) {
+                edge = new IdendityEdge(this,o);
+                return false;
+            }
+            if((tmp=Math.abs(temp-other.temp)) > cfg.getDouble("MAX_TM_DIFF",0)) {
+                edge=new TMDiffEdge(this,other,tmp);
+                return false;
+            }
+            if((tmp=Math.abs(gcgehalt-other.gcgehalt)) > cfg.getDouble("MAX_GC_DIFF",0)) {
+                edge=new GCDiffEdge(this,other,tmp);
+                return false;
+            }
+            Set cd=SekStrukturFactory.getCrossdimer(this, other, cda);
+            if(cd.size() != 0) {
+                edge=new SecStructureEdge(this,other,(SekStruktur) cd.iterator().next());
+                return false;
+            }
+            return true;
         }
-        if((tmp=Math.abs(temp-other.temp)) > cfg.getDouble("MAX_TM_DIFF",0)) {
-            edge=new TMDiffEdge(this,other,tmp);
-            return false;
-        }
-        if((tmp=Math.abs(gcgehalt-other.gcgehalt)) > cfg.getDouble("MAX_GC_DIFF",0)) {
-            edge=new GCDiffEdge(this,other,tmp);
-            return false;
-        }
-        Set cd=SekStrukturFactory.getCrossdimer(this, other, cda);
-        if(cd.size() != 0) {
-            edge=new SecStructureEdge(this,other,(SBESekStruktur) cd.iterator().next());
-            return false;
-        }
-        return true;
+        else return o.passtMit(this);
     }
 
     public String getType() {
@@ -83,5 +88,15 @@ public class PCRPrimer extends Primer {
 	}
     public String getInputLine() {
         return inputline+";"+id;
+    }
+    public boolean equals(Object other) {
+        if (other instanceof PCRPrimer) {
+            PCRPrimer o = (PCRPrimer) other;
+            return super.equals(o) && o.type.equals(type) && o.pos==pos;
+        }
+        return false;
+    }
+    public int hashCode() {
+        return new HashCodeBuilder(1847,241).appendSuper(super.hashCode()).append(type).append(pos).toHashCode();
     }
 }

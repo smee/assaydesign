@@ -11,6 +11,7 @@ import java.util.List;
 
 import org._3pq.jgrapht.Edge;
 
+import biochemie.pcr.matcher.MyDefaultEdge;
 import biochemie.sbe.SBECandidate;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
@@ -41,6 +42,8 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
             factories=null;
             this.realSize=multiplexables.size();
         }
+        
+        
         public List getMultiplexables() {
             multiplexables=new ArrayList();
             for (int j = 0; j < factories.size(); j++) {
@@ -74,7 +77,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public String getName() {
             StringBuffer sb = new StringBuffer("[");
             sb.append("gegebenerKnoten, Groesse ");
-            sb.append(factories.size());
+            sb.append(realSize);
             sb.append(']');
             return sb.toString();
         }
@@ -96,7 +99,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
                 for (Iterator iter = other.iterator(); iter.hasNext();) {
                     Multiplexable m2 = (Multiplexable) iter.next();
                         if(!m.passtMit(m2)){
-                            edge=m.getLastEdge();
+                            edge=new MyDefaultEdge(this,o);//TODO die sache mit den kanten nochmal in ruhe durchdenken
                             return false;
                         }
                 }

@@ -14,6 +14,7 @@ import org._3pq.jgrapht.Edge;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.sbe.multiplex.Multiplexable;
 
@@ -156,5 +157,16 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         List result = new ArrayList(1);
         result.add(this);
         return result;
+    }
+    public boolean equals(Object other) {
+        if(other instanceof Primer) {
+            Primer o=(Primer)other;
+            return id.equals(o.id) && seq.equals(o.seq);
+        }
+        return false;
+    }
+    public int hashCode() {
+        HashCodeBuilder b=new HashCodeBuilder(911,257).append(id).append(seq);
+        return b.toHashCode();
     }
 }

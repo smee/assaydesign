@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org._3pq.jgrapht.Edge;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.config.GeneralConfig;
+import biochemie.util.edges.MyUndirectedEdge;
 
 
 class PCRPair implements Multiplexable{
@@ -36,34 +39,42 @@ class PCRPair implements Multiplexable{
         if(rightp != null)
             rightp.setNewConfig(cfg);
     }
+    /*
+     * TODO die kanten haben pcrprimer als knoten, sollten aber besser pcrpairs sein
+     *  (non-Javadoc)
+     * @see biochemie.sbe.multiplex.Multiplexable#passtMit(biochemie.sbe.multiplex.Multiplexable)
+     */
     public boolean passtMit(Multiplexable other) {
         if(other instanceof PCRPrimer){
             boolean b=leftp.passtMit(other);
             if(!b){
-                edge=leftp.getLastEdge();
+                edge=new MyDefaultEdge(this,other);
                 return false;
             }
             b=rightp.passtMit(other);
             if(!b){
-                edge=rightp.getLastEdge();
+                edge=new MyDefaultEdge(this,other);
                 return false;
             }
-
-        }
-        PCRPair p=(PCRPair)other;
-        boolean b= leftp.passtMit(p.leftp)
-        && leftp.passtMit(p.rightp);
-        if(!b){
-            edge=leftp.getLastEdge();
-            return false;
-        }
-        b= rightp.passtMit(p.leftp)
-        && rightp.passtMit(p.rightp);
-        if(!b){
-            edge=rightp.getLastEdge();
-            return false;
-        }
-        return true;
+            return true;
+        }else
+            if(other instanceof PCRPair){
+                PCRPair p=(PCRPair)other;
+                boolean b= leftp.passtMit(p.leftp)
+                && leftp.passtMit(p.rightp);
+                if(!b){
+                    edge=new MyDefaultEdge(this,other);
+                    return false;
+                }
+                b= rightp.passtMit(p.leftp)
+                && rightp.passtMit(p.rightp);
+                if(!b){
+                    edge=new MyDefaultEdge(this,other);
+                    return false;
+                }
+                return true;
+            }else
+                return other.passtMit(this);//kenn ich nicht
     }
 
     public String toString(){
@@ -84,5 +95,15 @@ class PCRPair implements Multiplexable{
     }
     public Edge getLastEdge() {
         return edge;
+    }
+    public boolean equals(Object other) {
+        if(other instanceof PCRPair) {
+            PCRPair o=(PCRPair)other;
+            return leftp.equals(o.leftp) && rightp.equals(o.rightp);
+        }
+        return false;
+    }
+    public int hashCode() {
+        return new HashCodeBuilder(33,451).append(leftp).append(rightp).toHashCode();
     }
 }

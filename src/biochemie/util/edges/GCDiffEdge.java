@@ -13,7 +13,7 @@ public class GCDiffEdge extends MyUndirectedEdge {
         this.gcdiff=gcdiff;
     }
     public String toString() {
-        return "GCdiff too high: "+df.format(gcdiff);
+        return super.toString()+": GCdiff too high: "+df.format(gcdiff);
     }
     public boolean equals(Object other) {
         if(other instanceof GCDiffEdge) {

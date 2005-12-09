@@ -6,6 +6,7 @@ import java.io.IOException;
 import biochemie.util.config.GeneralConfig;
 
 import com.Ostermiller.util.BadDelimiterException;
+import com.Ostermiller.util.CSVParser;
 import com.Ostermiller.util.ExcelCSVParser;
 
 public class ConfigMaker {
@@ -13,7 +14,7 @@ public class ConfigMaker {
     int ptr=1;
     
     public ConfigMaker(String filename) throws BadDelimiterException, IOException {
-        ExcelCSVParser cp=new ExcelCSVParser(new FileReader(filename),';');
+        CSVParser cp=new CSVParser(new FileReader(filename),';');
         vals=cp.getAllValues();
         cp.close();
     }
@@ -24,7 +25,7 @@ public class ConfigMaker {
                 for (int i = 0; i < ret.length; i++) {
                     ret[i]=new String[2];
                     ret[i][0]=vals[0][i];
-                    ret[i][ptr]=vals[ptr][i];
+                    ret[i][1]=vals[ptr][i];
                 }
                 ptr++;
                 return ret;
