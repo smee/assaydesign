@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -156,8 +157,8 @@ public static void main(String[] args) {
         BufferedWriter bw=new BufferedWriter(new FileWriter(outname));
         bw.write(PrimerPair.getCSVHeaderLine());
         for (Iterator iter = pairs.iterator(); iter.hasNext();) {
-            PCRPair pair = (PCRPair) iter.next();
-            bw.write(pair.getCSVLine());
+            PCRPrimer pair = (PCRPrimer) iter.next();
+            bw.write(pair.getInputLine());
             bw.write("\n");
         }
         bw.close();
@@ -166,13 +167,17 @@ public static void main(String[] args) {
 
 
     private void doTheCalcBoogie(ConfigMaker cm) {
-        while(cm.getNumOfConfigsLeft() > 0 && pcrpairs.size() >0) {
+        int count=0;
+        complex=new MultiKnoten(Collections.EMPTY_LIST);
+        while(cm.getNumOfConfigsLeft() > 0 && complex.realSize()<maxplex) {
             GeneralConfig cfg=cm.getNextConfig();
             System.out.println("keys in config: "+cfg.getKeys());
             MatcherStrategy ms=getMatcherStrategy(cfg);
             updateConfigs(cfg);
             Collection max=ms.getBestPCRPrimerSet(pcrpairs,complex);
             createNewComplex(max);
+            count++;
+            System.out.println("\nDurchlauf "+count+": "+complex.realSize()+" Primer gluecklich vereint...");
         }
     }
 
@@ -203,7 +208,7 @@ public static void main(String[] args) {
             return;
         List inc=complex.getIncludedElements();
         for (Iterator it = inc.iterator(); it.hasNext();) {
-            PCRPair pair = (PCRPair) it.next();
+            PCRPrimer pair = (PCRPrimer) it.next();
             pair.setNewConfig(cfg);
         }
     }

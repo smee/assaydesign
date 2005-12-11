@@ -67,7 +67,6 @@ public  class ReusableThread extends Thread implements ActionListener{
 
     public void actionPerformed(ActionEvent e) {
         long time=System.currentTimeMillis();
-        System.out.println("timerevent occured after "+(lasttime - time));
         lasttime=time;
         stopTask();
     }
@@ -99,17 +98,11 @@ public  class ReusableThread extends Thread implements ActionListener{
      * @return
      */
     public synchronized Object getResult() {
-        System.out.println("getResult called by Thread "+Thread.currentThread().getName());
         while(!resultAvailable) {
             try {
-                //System.out.println("Mainthread: wait()...");
                 wait();
-//                System.out.println("Mainthread: was notified!");
             }catch(InterruptedException ie) {
-                System.out.println("interrupted=="+Thread.currentThread().isInterrupted());
-                System.out.println("Multiplexer.isStopped()=="+Multiplexer.isStopped());
                 if(Multiplexer.isStopped() || Thread.currentThread().isInterrupted()) {//unsauber!
-                    System.out.println("interrupted while waiting for result in ReusableThread!");
                     i.stop();
                     timer.stop();
                     notifyAll();
@@ -120,7 +113,6 @@ public  class ReusableThread extends Thread implements ActionListener{
         resultFetched=true;
         resultAvailable=false;
         notifyAll();
-        //System.out.println("Mainthread: fetching result...");
         return i.getResult();
     }
 }
