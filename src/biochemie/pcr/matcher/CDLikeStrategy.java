@@ -32,15 +32,15 @@ public class CDLikeStrategy implements MatcherStrategy {
     public Collection getBestPCRPrimerSet(List pcrpairs, Multiplexable needed) {
         solutionsize=Integer.MAX_VALUE;
         List l=new ArrayList(pcrpairs.size()+1);
-        if(needed!=null)
+        if(needed!=null && needed.realSize()>0)
             l.add(needed);
         l.addAll(pcrpairs);
-        PCRPair[][] pairs=createPairMatrix(l);
-        System.out.print("got "+pairs.length+" files, with ");
-        for (int i = 0; i < pairs.length; i++) {
-            System.out.print(pairs[i].length+" ");
-        }
-        System.out.println();
+        Multiplexable[][] pairs=createPairMatrix(l);
+//        System.out.print("got "+pairs.length+" files, with ");
+//        for (int i = 0; i < pairs.length; i++) {
+//            System.out.print(pairs[i].length+" ");
+//        }
+//        System.out.println();
         boolean[][][][] passtMatrix=createPasstMatrix(pairs);
 
         List erglist=new LinkedList();
@@ -115,7 +115,7 @@ public class CDLikeStrategy implements MatcherStrategy {
      * @param pairs
      * @return
      */
-    private boolean[][][][] createPasstMatrix(PCRPair[][] pairs) {
+    private boolean[][][][] createPasstMatrix(Multiplexable[][] pairs) {
         boolean[][][][] m=new boolean[pairs.length][][][];
         for (int i = 0; i < pairs.length; i++) {
             m[i]=new boolean[pairs[i].length][][];
@@ -142,32 +142,36 @@ public class CDLikeStrategy implements MatcherStrategy {
      * @param pcrpairs
      * @return
      */
-    private PCRPair[][] createPairMatrix(List pcrpairs) {
+    private Multiplexable[][] createPairMatrix(List pcrpairs) {
         Map ids=new HashMap();
         for (Iterator it = pcrpairs.iterator(); it.hasNext();) {
-            PCRPair p = (PCRPair) it.next();
-            String idx=p.leftp.getId();
-            List l=(List) ids.get(idx);
-            if(l == null){
-                l = new ArrayList();
-                ids.put(idx,l);
+            Multiplexable p = (Multiplexable) it.next();
+            List inc=p.getIncludedElements();
+            for (Iterator iter = inc.iterator(); iter.hasNext();) {
+                PCRPair pair = (PCRPair) iter.next();
+                String idx=pair.getName();
+                List l=(List) ids.get(idx);
+                if(l == null){
+                    l = new ArrayList();
+                    ids.put(idx,l);
+                }
+                l.add(pair);
             }
-            l.add(p);
         }
 
-        PCRPair[][] matrix=new PCRPair[ids.size()][];
+        Multiplexable[][] matrix=new Multiplexable[ids.size()][];
         int i=0;
 
         for (Iterator iter = ids.keySet().iterator(); iter.hasNext();i++) {
             String idx=(String) iter.next();
             List l=(List) ids.get(idx);
 
-            Collections.sort(l, new Comparator(){
-                public int compare(Object arg0, Object arg1) {
-                    return ((PCRPair)arg0).leftp.getPos() -  ((PCRPair)arg1).leftp.getPos() ;
-                }
-            });
-            matrix[i]= (PCRPair[]) l.toArray(new PCRPair[l.size()]);
+//            Collections.sort(l, new Comparator(){
+//                public int compare(Object arg0, Object arg1) {
+//                    return ((PCRPair)arg0).leftp.getPos() -  ((Multiplexable)arg1).leftp.getPos() ;
+//                }
+//            });
+            matrix[i]= (Multiplexable[]) l.toArray(new Multiplexable[l.size()]);
         }
 
         return matrix;

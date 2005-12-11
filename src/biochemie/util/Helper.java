@@ -734,4 +734,34 @@ public class Helper {
     public static void createAndRememberCalcDaltonFrom(CalcDaltonOptions cfg) {
         cd=new CalcDalton(cfg);
     }
+    public static char getCSVDelimiterFrom(String filename) {
+        char delim=0;
+        int count=0;
+        try {
+        BufferedReader br=new BufferedReader(new FileReader(filename));
+        String line=br.readLine();
+        char[] delims=new char[] {',',';','\t'};
+        for (int i = 0; i < delims.length; i++) {
+            int cnt=countInString(line,delims[i]);
+            if(cnt>count) {
+                count=cnt;
+                delim=delims[i];
+            }
+        }
+        }catch (IOException e) {
+        }        
+        return delim;
+    }
+    private static int countInString(String line, char c) {
+        int count=0;
+        while(line.length()>0) {
+            int pos=line.indexOf(c);
+            if(pos>-1) {
+                count++;
+                line=line.substring(pos+1);
+            }else
+                break;
+        }
+        return count;
+    }
 }

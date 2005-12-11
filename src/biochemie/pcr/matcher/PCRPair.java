@@ -32,7 +32,7 @@ class PCRPair implements Multiplexable{
     }
 
     public String getName() {
-        return leftp.getId()+","+leftp.getPos();
+        return leftp.getId();//+","+leftp.getPos();
     }
     public void setNewConfig(GeneralConfig cfg) {
         leftp.setNewConfig(cfg);
@@ -89,8 +89,9 @@ class PCRPair implements Multiplexable{
     }
     public List getIncludedElements() {
         List result= new ArrayList(2);
-        result.add(leftp);
-        result.add(rightp);
+//        result.add(leftp);
+//        result.add(rightp);
+        result.add(this);
         return result;
     }
     public Edge getLastEdge() {

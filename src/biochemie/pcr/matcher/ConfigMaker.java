@@ -3,6 +3,7 @@ package biochemie.pcr.matcher;
 import java.io.FileReader;
 import java.io.IOException;
 
+import biochemie.util.Helper;
 import biochemie.util.config.GeneralConfig;
 
 import com.Ostermiller.util.BadDelimiterException;
@@ -14,7 +15,8 @@ public class ConfigMaker {
     int ptr=1;
     
     public ConfigMaker(String filename) throws BadDelimiterException, IOException {
-        CSVParser cp=new CSVParser(new FileReader(filename),';');
+        char delim=Helper.getCSVDelimiterFrom(filename);
+        ExcelCSVParser cp=new ExcelCSVParser(new FileReader(filename),delim);
         vals=cp.getAllValues();
         cp.close();
     }

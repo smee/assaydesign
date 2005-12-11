@@ -156,9 +156,10 @@ public static void main(String[] args) {
         List pairs=complex.getIncludedElements();
         BufferedWriter bw=new BufferedWriter(new FileWriter(outname));
         bw.write(PrimerPair.getCSVHeaderLine());
+        bw.write("\n");
         for (Iterator iter = pairs.iterator(); iter.hasNext();) {
-            PCRPrimer pair = (PCRPrimer) iter.next();
-            bw.write(pair.getInputLine());
+            PCRPair pair = (PCRPair) iter.next();
+            bw.write(pair.getCSVLine());
             bw.write("\n");
         }
         bw.close();
@@ -171,7 +172,7 @@ public static void main(String[] args) {
         complex=new MultiKnoten(Collections.EMPTY_LIST);
         while(cm.getNumOfConfigsLeft() > 0 && complex.realSize()<maxplex) {
             GeneralConfig cfg=cm.getNextConfig();
-            System.out.println("keys in config: "+cfg.getKeys());
+//            System.out.println("keys in config: "+cfg.getKeys());
             MatcherStrategy ms=getMatcherStrategy(cfg);
             updateConfigs(cfg);
             Collection max=ms.getBestPCRPrimerSet(pcrpairs,complex);
@@ -208,7 +209,7 @@ public static void main(String[] args) {
             return;
         List inc=complex.getIncludedElements();
         for (Iterator it = inc.iterator(); it.hasNext();) {
-            PCRPrimer pair = (PCRPrimer) it.next();
+            PCRPair pair = (PCRPair) it.next();
             pair.setNewConfig(cfg);
         }
     }

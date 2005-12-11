@@ -76,8 +76,10 @@ public class ColorerStrategy implements MatcherStrategy {
             Set s = (Set) it.next();
             System.out.println("Size: " + s.size()+", avg. pos = " + getAvg(s));
         }
-
-        return (Collection) result.get(0);
+        Collection col=(Collection) result.get(0);
+        if(col.size()==1)
+            return Collections.EMPTY_LIST;
+        return col;
 
     }
     private double getAvg(Set s){

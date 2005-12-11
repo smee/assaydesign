@@ -29,16 +29,17 @@ public class Zeugs {
         Arrays.sort(files);
         for (int i = 0; i < files.length; i++) {
             String file = files[i].getAbsolutePath();
-            String sorted=file+".sorted";
-            sortFile(file,sorted);
-            filterInvalidLines(sorted,file+".filtered");            
+            String sorted=file+".final";
+            String filtered=file+".filtered";
+            filterInvalidLines(file,filtered);            
+            sortFile(filtered,sorted);
         }
     }
 public static void main(String[] args) throws IOException {
     File dir=new File(".");
     File[] files=dir.listFiles(new FilenameFilter(){
         public boolean accept(File dir, String name) {
-            return name.toLowerCase().endsWith(".filtered");
+            return name.toLowerCase().endsWith(".final");
         }
     });
     Arrays.sort(files);
@@ -57,11 +58,17 @@ public static void main(String[] args) throws IOException {
 private static int findPairsIn(String file) throws IOException {
     int num=0;
     BufferedReader br=new BufferedReader(new FileReader(file));
+    BufferedWriter bw=new BufferedWriter(new FileWriter(file+".pairs"));
     String lastline=br.readLine();
     String line=null;
     while ((line=br.readLine())!=null) {
-        if(isPair(lastline,line))
+        if(isPair(lastline,line)) {
             num++;
+            bw.write(lastline);
+            bw.write("\n");
+            bw.write(line);
+            bw.write("\n");
+        }
         lastline=line;
     }
     return num;
@@ -88,7 +95,7 @@ private static int findPairsIn(String file) throws IOException {
      */
     private static void sortFile(String filename, String newfilename) throws IOException, InterruptedException {
         System.out.println("sort: "+filename);
-        Process p=Runtime.getRuntime().exec("c:\\util\\usr\\local\\wbin\\sort.exe +11 -T c:/temp "+filename+" -o "+newfilename);
+        Process p=Runtime.getRuntime().exec("sort +11 "+filename+" -o "+newfilename);
         int code=p.waitFor();
         System.out.println("sortprocess exited with return code: "+code);
         if(code!=0)
