@@ -39,7 +39,7 @@ public static void main(String[] args) throws IOException {
     File dir=new File(".");
     File[] files=dir.listFiles(new FilenameFilter(){
         public boolean accept(File dir, String name) {
-            return name.toLowerCase().endsWith(".final");
+            return name.toLowerCase().endsWith(".ref");
         }
     });
     Arrays.sort(files);
@@ -71,6 +71,8 @@ private static int findPairsIn(String file) throws IOException {
         }
         lastline=line;
     }
+    br.close();
+    bw.close();
     return num;
 }
     /**
