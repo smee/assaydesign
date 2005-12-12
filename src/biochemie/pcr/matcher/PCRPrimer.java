@@ -5,6 +5,7 @@
 package biochemie.pcr.matcher;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -46,24 +47,25 @@ public class PCRPrimer extends Primer {
                 ,Boolean.toString(false));
     }
     public boolean passtMit(Multiplexable o) {
+        edgecol=new HashSet();
         if(o instanceof PCRPrimer) {
             PCRPrimer other=(PCRPrimer) o;
             double tmp;
             if(id.equals(other.id)) {
-                edge = new IdendityEdge(this,o);
+                edgecol.add(new IdendityEdge(this,o));
                 return false;
             }
             if((tmp=Math.abs(temp-other.temp)) > cfg.getDouble("MAX_TM_DIFF",0)) {
-                edge=new TMDiffEdge(this,other,tmp);
+                edgecol.add(new TMDiffEdge(this,other,tmp));
                 return false;
             }
             if((tmp=Math.abs(gcgehalt-other.gcgehalt)) > cfg.getDouble("MAX_GC_DIFF",0)) {
-                edge=new GCDiffEdge(this,other,tmp);
+                edgecol.add(new GCDiffEdge(this,other,tmp));
                 return false;
             }
             Set cd=SekStrukturFactory.getCrossdimer(this, other, cda);
             if(cd.size() != 0) {
-                edge=new SecStructureEdge(this,other,(SekStruktur) cd.iterator().next());
+                edgecol.add(new SecStructureEdge(this,other,(SekStruktur) cd.iterator().next()));
                 return false;
             }
             return true;

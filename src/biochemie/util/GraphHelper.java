@@ -78,13 +78,18 @@ public class GraphHelper {
                 return null;
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
-                if(!s1.passtMit(s2)) {//TODO was ist mit weiteren kanten? wenn z.b. sekstruk eine calcdalton-Kante ueberdeckt?
-                    if(!filteredEdges.contains(((MyUndirectedEdge)s1.getLastEdge()).matchString())) {
-                        g.addEdge(s1.getLastEdge());
-                        if(writegraph)
-                            gw.addArc(i,j,s1.getLastEdge().toString());
-                    }else
-                        System.out.println("skipping edge, filtered... ("+s1.getLastEdge()+")");
+                if(!s1.passtMit(s2)) {
+                    Collection edges=s1.getLastEdges();
+                    for (Iterator it = edges.iterator(); it.hasNext();) {
+                        MyUndirectedEdge edge = (MyUndirectedEdge) it.next();
+                        
+                        if(!filteredEdges.contains(edge.matchString())) {
+                            g.addEdge(edge);
+                            if(writegraph)
+                                gw.addArc(i,j,edge.toString());
+                        }else
+                            System.out.println("skipping edge, filtered... ("+edge+")");
+                    }
                 }
             }
         }

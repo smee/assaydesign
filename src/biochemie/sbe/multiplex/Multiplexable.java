@@ -4,9 +4,8 @@
  */
 package biochemie.sbe.multiplex;
 
+import java.util.Collection;
 import java.util.List;
-
-import org._3pq.jgrapht.Edge;
 
 /**
  * Objekt, das bestimmten Clustern zugeordnet werden soll. Kann aus anderen Multiplexables bestehen.
@@ -36,7 +35,7 @@ public interface Multiplexable {
      */
     public int realSize();
 
-    public Edge getLastEdge();
+    public Collection getLastEdges();
 
     /**
      * Alle Multiplexables, die in diesem enthalten sind. Wenn keines enthalten ist, dann this.

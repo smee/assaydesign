@@ -156,16 +156,26 @@ public class SBEPrimer extends Primer{
 }
 
     public boolean passtMit(Multiplexable o) {
+        edgecol=new HashSet();
         if(o instanceof SBEPrimer) {
             SBEPrimer other=(SBEPrimer) o;
-            return passtMitID(other)
-                && passtMitProductLength(other)
-                && passtMitSekStrucs(other) 
-                && passtMitCrossdimern(other,true) 
-                && passtMitCalcDalton(other);
+            //dumm, aber nur so umgehe ich den kurzschlussoperator &&....
+            boolean flag= true;
+            boolean temp=true;
+            temp=passtMitID(other);
+            flag=flag&&temp;
+            temp=passtMitProductLength(other) && flag;
+            flag=flag&&temp;
+            temp=passtMitSekStrucs(other)  && flag;
+            flag=flag&&temp;
+            temp=passtMitCrossdimern(other,true); 
+            flag=flag&&temp;
+            temp=passtMitCalcDalton(other);
+            flag=flag&&temp;
+            return flag;
         }else {//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
             boolean ret= o.passtMit(this);
-            edge=o.getLastEdge();
+            edgecol=o.getLastEdges();
             return ret;
         }
     }
@@ -175,29 +185,30 @@ public class SBEPrimer extends Primer{
      * @return
      */
     public boolean passtMitKompCD(SBEPrimer other) {
+        edgecol=new HashSet();
         return passtMitID(other)
         && passtMitProductLength(other)
         && passtMitSekStrucs(other) 
         && passtMitCrossdimern(other,false) 
         && passtMitCalcDalton(other);
     }
-    public boolean passtMitID(SBEPrimer other) {
+    private boolean passtMitID(SBEPrimer other) {
         if(other.getId().equals(this.getId())) {
-            edge=new IdendityEdge(this,other);
+            edgecol.add(new IdendityEdge(this,other));
             return false;   //derselbe SBECandidate
         }
         return true;
     }
-    public boolean passtMitProductLength(SBEPrimer other) {
+    private boolean passtMitProductLength(SBEPrimer other) {
         //Produktlänge
         int prdiff=productlen-other.productlen;
         if(Math.abs(prdiff)<cfg.getMinProductLenDiff()) {
-            edge=new ProductLengthEdge(this,other,prdiff);
+            edgecol.add(new ProductLengthEdge(this,other,prdiff));
             return false;    //Produktlängenunterschied zu gering
         }
         return true;
     }
-    public boolean passtMitSekStrucs(SBEPrimer other) {
+    private boolean passtMitSekStrucs(SBEPrimer other) {
         //Inkompatible Sekundärstrukturen?
         String snp1=getSNP();
         String snp2=other.getSNP();
@@ -206,7 +217,7 @@ public class SBEPrimer extends Primer{
             if(s.isVerhindert())
                 continue;
             if(-1 != snp2.indexOf(s.bautEin())){
-                edge=new SecStructureEdge(this,other, s);
+                edgecol.add(new SecStructureEdge(this,other, s));
                 return false;
             }
         }
@@ -215,7 +226,7 @@ public class SBEPrimer extends Primer{
             if(s.isVerhindert())
                 continue;
             if(snp1.indexOf(s.bautEin()) != -1){
-                edge=new SecStructureEdge(other,this, s);
+                edgecol.add(new SecStructureEdge(other,this, s));
                 return false;
             }
         }
@@ -227,7 +238,7 @@ public class SBEPrimer extends Primer{
      * @param evilcd true, jeder CD ist Ausschlusskriterium, false heisst, nur inkompatible.
      * @return
      */
-    public boolean passtMitCrossdimern(SBEPrimer other, boolean evilcd) {
+    protected boolean passtMitCrossdimern(SBEPrimer other, boolean evilcd) {
         return passtMitCDRec(this,other,evilcd) && passtMitCDRec(other,this,evilcd);//damit der crossdimer auch dem richtigen primer zugeordnet werden kann
     }
     private boolean passtMitCDRec(SBEPrimer me,SBEPrimer other, boolean evilcd) {
@@ -239,11 +250,11 @@ public class SBEPrimer extends Primer{
                 continue;
             if(!evilcd) {
                 if(s.isIncompatible()) {
-                    edge=new SecStructureEdge(me,other,s);
+                    edgecol.add(new SecStructureEdge(me,other,s));
                     return false;
                 }
             }else {
-                edge=new SecStructureEdge(me,other,s);
+                edgecol.add(new SecStructureEdge(me,other,s));
                 return false;
             }
         }
@@ -254,14 +265,14 @@ public class SBEPrimer extends Primer{
      * @param other
      * @return
      */
-    public boolean passtMitCalcDalton(SBEPrimer other) {
+    protected boolean passtMitCalcDalton(SBEPrimer other) {
         CalcDalton cd=Helper.getCalcDalton(cfg);
         String[][] sbedata= createCDParameters(this, other, cfg);
         int[] br = cfg.getPhotolinkerPositions();
 		int[] fest=new int[] {ArrayUtils.indexOf(br,this.getBruchstelle())
                 			 ,ArrayUtils.indexOf(br,other.getBruchstelle())};
         if(0 == cd.calc(sbedata, fest).length) {
-            edge=new CalcDaltonEdge(this,other);
+            edgecol.add(new CalcDaltonEdge(this,other));
             return false;
         }
         return true;

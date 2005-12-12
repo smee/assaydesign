@@ -156,7 +156,7 @@ public abstract class Multiplexer {
 
     	private List p1;
     	private List p2;
-		private Edge edge;
+		private Collection edgecol;
 		private String einbau="";
 		
 		public SBEPrimerProxy(List p1, List p2, String einbau){
@@ -196,11 +196,12 @@ public abstract class Multiplexer {
             return 2;
         }
         public boolean passtMit(Multiplexable other) {
+            edgecol=new LinkedList();
             List othermultis=getAllPrimers(other);
             for (Iterator it = othermultis.iterator(); it.hasNext();) {
                 SBEPrimer primer = (SBEPrimer) it.next();
                 if(!passenWirMit(primer)) {
-                    edge=new IncompCDEinbauEdge(this,other);
+                    edgecol.add(new IncompCDEinbauEdge(this,other));
                     return false;
                 }
             }
@@ -217,14 +218,14 @@ public abstract class Multiplexer {
             for (Iterator it = p1.iterator(); it.hasNext();) {
                 SBEPrimer p = (SBEPrimer) it.next();
                 if(!p.passtMit(other)){
-                    edge=p.getLastEdge();
+                    edgecol.add(p.getLastEdges());
                     return false;
                 }
             }
             for (Iterator it = p2.iterator(); it.hasNext();) {
                 SBEPrimer p = (SBEPrimer) it.next();
                 if(!p.passtMit(other)){
-                    edge=p.getLastEdge();
+                    edgecol.add(p.getLastEdges());
                     return false;
                 }
             }
@@ -250,8 +251,8 @@ public abstract class Multiplexer {
             result.addAll(p2);
             return result;
         }
-        public Edge getLastEdge() {
-            return edge;
+        public Collection getLastEdges() {
+            return edgecol;
         }
 
     }

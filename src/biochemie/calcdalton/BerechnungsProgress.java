@@ -559,8 +559,10 @@ public class BerechnungsProgress extends JFrame{
             return null;
         }
 
-        public Edge getLastEdge() {
-            return edge;
+        public Collection getLastEdges() {
+            List l=new ArrayList(1);
+            l.add(edge);
+            return l;
         }
     }
 
