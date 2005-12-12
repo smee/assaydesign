@@ -167,6 +167,7 @@
 	  			                                                                :${lib}/commons-functor.jar
 	  			                                                                :${lib}/commons-lang-2.0.jar
 	  			                                                                :${lib}/jgrapht-0.5.3.jar
+	  			                                                                :${lib}/ostermillerutils_1_05_00_for_java_1_4.jar
 	  			                                                                :${lib}/aspectjrt.jar"/>
 		</antcall>
 	    <!--erstelle exe-file-->
@@ -237,7 +238,6 @@
   	<antcall target="shrink" >
   		<param name="mainclassname" value="biochemie.pcr.PCR"/>
   		<param name="outjarname" value="${dist}/PCR.jar"/>
-  		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar"/>
   		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar
   			                                                                :${lib}/xml.jar
   			                                                                :${lib}/biojava.jar
