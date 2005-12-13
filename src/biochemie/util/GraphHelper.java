@@ -78,12 +78,16 @@ public class GraphHelper {
                 return null;
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
+                if(s1.equals(s2))
+                    System.out.println("Equal: "+s1+" ---- "+s2);
                 if(!s1.passtMit(s2)) {
                     Collection edges=s1.getLastEdges();
                     for (Iterator it = edges.iterator(); it.hasNext();) {
                         MyUndirectedEdge edge = (MyUndirectedEdge) it.next();
                         
                         if(!filteredEdges.contains(edge.matchString())) {
+                            if(edge.getSource().equals(edge.getTarget()))
+                                System.out.println("Loopedge: "+edge.getSource()+" - "+edge.getTarget());
                             g.addEdge(edge);
                             if(writegraph)
                                 gw.addArc(i,j,edge.toString());

@@ -196,11 +196,11 @@ public abstract class Multiplexer {
             return 2;
         }
         public boolean passtMit(Multiplexable other) {
-            edgecol=new LinkedList();
             List othermultis=getAllPrimers(other);
             for (Iterator it = othermultis.iterator(); it.hasNext();) {
                 SBEPrimer primer = (SBEPrimer) it.next();
                 if(!passenWirMit(primer)) {
+                    edgecol=new LinkedList();
                     edgecol.add(new IncompCDEinbauEdge(this,other));
                     return false;
                 }
@@ -218,14 +218,14 @@ public abstract class Multiplexer {
             for (Iterator it = p1.iterator(); it.hasNext();) {
                 SBEPrimer p = (SBEPrimer) it.next();
                 if(!p.passtMit(other)){
-                    edgecol.add(p.getLastEdges());
+                    edgecol=p.getLastEdges();
                     return false;
                 }
             }
             for (Iterator it = p2.iterator(); it.hasNext();) {
                 SBEPrimer p = (SBEPrimer) it.next();
                 if(!p.passtMit(other)){
-                    edgecol.add(p.getLastEdges());
+                    edgecol=p.getLastEdges();
                     return false;
                 }
             }
