@@ -69,7 +69,7 @@ public class Helper {
      * @return
      */
     public static String complPrimer(String primer) {
-        StringBuffer rev= new StringBuffer(primer);
+        StringBuffer rev= new StringBuffer(primer.length());
         char letter;
         for (int i= 0; i < primer.length(); i++) {
             rev.append(complNucl(primer.charAt(i)));

@@ -60,7 +60,7 @@ public class SBEPrimerReader {
         if(n>=getCount() || 0 > n)
             return null;
         String line=Helper.clearEmptyCSVEntries((String)list.get(n));
-        return SBECandidate.getSBECandidateFrom(cfg,line);
+        return SBECandidate.getSBECandidateFromInputline(cfg,line);
     }
     /**
      * Erzeuge Liste mit Kandidaten. Funktioniert nur einmal, da die originale Liste intern gehalten wird, damit beim Speichern spaeter

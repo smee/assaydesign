@@ -602,6 +602,7 @@ public class MiniSBEGui extends JFrame {
 	            try {
 	                BufferedReader br = new BufferedReader(new FileReader(file));
 	                String line=br.readLine();//skip header
+                    final boolean isInputfile=line.trim().startsWith("SBE-ID");
 	                while((line=br.readLine())!=null) {
 	                    primerlines.add(Helper.clearEmptyCSVEntries(line));
 	                }
@@ -612,7 +613,10 @@ public class MiniSBEGui extends JFrame {
 	                int i=0;
 	                for (Iterator it = primerlines.iterator(); it.hasNext();i++) {
 	                    SBECandidatePanel p=((SBECandidatePanel)sbepanels.get(i));
-	                    p.setValuesFromCSVLine((String)it.next());
+                        if(isInputfile)
+                            p.setValuesFromCSVInputLine((String)it.next());
+                        else
+                            p.setValuesFromCSVOutputLine((String)it.next());
 	                    p.setUnchanged();
 	                }
 	            } catch (IOException e1) {

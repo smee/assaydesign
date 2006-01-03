@@ -672,7 +672,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
      * @return
      * @throws WrongValueException
      */
-    public static SBECandidate getSBECandidateFrom(SBEOptions cfg, String line) throws WrongValueException {
+    public static SBECandidate getSBECandidateFromInputline(SBEOptions cfg, String line) throws WrongValueException {
         StringTokenizer st=new StringTokenizer(line,";\"");
         String[] seq=new String[2];
         String hair5="",hair3="";

@@ -17,6 +17,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import biochemie.calcdalton.gui.PBSequenceField;
+import biochemie.domspec.SBEPrimer;
 import biochemie.gui.MyPanel;
 import biochemie.gui.NuklSelectorPanel;
 import biochemie.gui.PLSelectorPanel;
@@ -448,7 +449,7 @@ public class SBECandidatePanel extends MyPanel {
      * TODO auch Ausgabedateien lesen!!!
      * @param id
      */
-    public void setValuesFromCSVLine(String line) {
+    public void setValuesFromCSVInputLine(String line) {
         dirty();
         StringTokenizer stok = new StringTokenizer(line,";\"");
         String id = stok.nextToken();
@@ -485,6 +486,41 @@ public class SBECandidatePanel extends MyPanel {
         getMultiplexidPanel().setText(multiplexid);
         getFiltersPanel().setText(filters);
         getFixedPrimerCB().setSelected(Boolean.valueOf(fixed).booleanValue());
+    }
+    public void setValuesFromCSVOutputLine(String line) {
+        dirty();
+        StringTokenizer st=new StringTokenizer(line,";\"");
+        st.nextToken();//mid
+        String id=st.nextToken();
+        st.nextToken();//seq. bio....
+        String snp=st.nextToken();
+        int pl=-1;
+        try {
+            pl=Integer.parseInt(st.nextToken());
+        }catch (NumberFormatException e) {
+        }
+        for(int i=0;i<9;i++)
+            st.nextToken();
+        boolean is5Seq=st.nextToken().trim().equals(SBEPrimer._5_);
+        st.nextToken();
+        st.nextToken();
+        String prodlen=st.nextToken();
+        String seq=st.nextToken();
+        
+        getTfId().setText(id);
+        if(is5Seq) {
+            getSeq5tf().setText(seq);
+            getPlpanel5().setSelectedPL(pl);
+        }else {
+            getSeq3tf().setText(Helper.revcomplPrimer(seq));
+            snp=Helper.complPrimer(snp);//TODO ???
+            getPlpanel3().setSelectedPL(pl);
+        }
+        getSNPSelectorPanel().setSelectedNukleotides(snp);
+        getPcrLenPanel().setText(prodlen);
+        getMultiplexidPanel().setText("");
+        getFiltersPanel().setText("");
+        getFixedPrimerCB().setSelected(false);
     }
 	/**
 	 * This method initializes stringEntryPanel
