@@ -250,10 +250,10 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     private List createSortedCandidateList(String left, String bautEin5, char repll, String right, String bautEin3, char replr) {
         System.out.println("\nDetailed report for choice of possible 5' primer for " + id +
 		 "\n-----------------------------------------------------------------");
-    	List liste= getFilteredPTTStructList(left, SBEPrimer._5_,bautEin5,repll);
+    	List liste= getFilteredPrimerList(left, SBEPrimer._5_,bautEin5,repll);
         System.out.println("\nDetailed report for choice of possible 3' primer for " + id +
 		 "\n-----------------------------------------------------------------");
-    	liste.addAll(getFilteredPTTStructList(right, SBEPrimer._3_,bautEin3,replr));
+    	liste.addAll(getFilteredPrimerList(right, SBEPrimer._3_,bautEin3,replr));
         Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
 
         System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
@@ -269,7 +269,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
  * @param repl 
  * @return
  */
-    private List getFilteredPTTStructList(String primer, String type,String bautein, char repl) {
+    private List getFilteredPrimerList(String primer, String type,String bautein, char repl) {
         if(type.equals(SBEPrimer._3_)) {
             primer=Helper.revcomplPrimer(primer);
             repl=Helper.complNucl(repl);
