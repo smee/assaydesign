@@ -117,8 +117,8 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
      * @param givenmplex
      * @param unwanted
      */
-    public SBECandidate(SBEOptions cfg, String id, String seq, String snp, int productlen, String bautein5, String givenmplex, String unwanted, boolean userGiven) {
-        this(cfg,id,seq,"",snp,productlen,bautein5,"",givenmplex,unwanted, userGiven,false);
+    public SBECandidate(SBEOptions cfg, String id, String seq, char repl,String snp, int productlen, String bautein5, String givenmplex, String unwanted, boolean userGiven) {
+        this(cfg,id,seq,repl,"",'0',snp,productlen,bautein5,"",givenmplex,unwanted, userGiven,false);
     }
 
     /**
@@ -128,7 +128,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
      * @param givenMultiplexid
      * @param unwanted Ausdruck fuer Primer, die der User nicht will (List a la "3'_length_PL ...", z.B.: "3'_25_11 5'_19_8")
       */
-    public SBECandidate(SBEOptions cfg,String id, String l, String r, 
+    public SBECandidate(SBEOptions cfg,String id, String l, char repll,String r, char replr, 
             String snp, int productlen, String bautEin5, String bautEin3, 
             String givenMultiplexid, String unwanted, boolean userGiven, boolean rememberOutput) {
         leftstring=l;
@@ -148,18 +148,18 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
         if(userGiven){
             if(Helper.getPosOfPl(leftstring) > 0) {
             	System.out.println("Using given 5' primer.");
-                SBEPrimer primer = new SBEPrimer(cfg, id, leftstring, snp, SBEPrimer._5_,bautEin5, productlen, true);
+                SBEPrimer primer = new SBEPrimer(cfg, id, leftstring, repll,snp, SBEPrimer._5_,bautEin5, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
             if(Helper.getPosOfPl(rightstring) > 0) {
             	System.out.println("Using given 3' primer.");
-                SBEPrimer primer = new SBEPrimer(cfg, id, rightstring, snp, SBEPrimer._3_,bautEin3, productlen, true);
+                SBEPrimer primer = new SBEPrimer(cfg, id, rightstring, replr,snp, SBEPrimer._3_,bautEin3, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
         }else
-        	createValidCandidate(leftstring, bautEin5,rightstring,bautEin3);
+        	createValidCandidate(leftstring, bautEin5,repll, rightstring,bautEin3,replr);
         //this.logstring=bos.toString();
         System.setOut(orgout);
         if(rememberOutput)
@@ -173,11 +173,13 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     /**
      * Erzeuge eine Liste von Sequenzen, die allen Kriterien gerecht werden und setzt alle entsprechenden
      * Instanzfelder.
+     * @param replr 
+     * @param repll 
      *
      */
-    private void createValidCandidate(String l, String b5, String r, String b3) {
+    private void createValidCandidate(String l, String b5, char repll, String r, String b3, char replr) {
         //Erzeuge Array mit Structs sortiert nach Abstand von optimaler Temperatur, alle nicht möglichen Kandidaten sind schon entfernt
-        primercandidates=findBestPrimers(createSortedCandidateList(l, b5, r, b3));
+        primercandidates=findBestPrimers(createSortedCandidateList(l, b5, repll,r, b3,replr));
         System.out.println("\nPrimer chosen for multiplexing for "+id+":\n" +
                                "------------------------------------------------\n"
                     + Helper.toStringln(primercandidates.toArray(new Object[primercandidates.size()])));
@@ -241,15 +243,17 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
      * nicht beruecksichtigt. Ausserdem werden alle Primer mit einer Laenge von <18 geloescht.
      * Die Liste besteht aus: Primer ohne Hairpin, nach Abstand von optimaler Temperatur ansteigend geordnet
      * gefolgt von Primern mit genau einem Hairpin, auch geordnet nach Abstand von opt. Temp.
+     * @param replr 
+     * @param repll 
      * @return
      */
-    private List createSortedCandidateList(String left, String bautEin5, String right, String bautEin3) {
+    private List createSortedCandidateList(String left, String bautEin5, char repll, String right, String bautEin3, char replr) {
         System.out.println("\nDetailed report for choice of possible 5' primer for " + id +
 		 "\n-----------------------------------------------------------------");
-    	List liste= getFilteredPTTStructList(left, SBEPrimer._5_,bautEin5);
+    	List liste= getFilteredPTTStructList(left, SBEPrimer._5_,bautEin5,repll);
         System.out.println("\nDetailed report for choice of possible 3' primer for " + id +
 		 "\n-----------------------------------------------------------------");
-    	liste.addAll(getFilteredPTTStructList(right, SBEPrimer._3_,bautEin3));
+    	liste.addAll(getFilteredPTTStructList(right, SBEPrimer._3_,bautEin3,replr));
         Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
 
         System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
@@ -258,15 +262,18 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
         return liste;
     }
 /**
- * Erzeugt eine Liste von PTTStructs, die geordnet Kandidaten enthält, die die Filter überlebt haben.
+ * Erzeugt eine Liste von SBEPrimern, die geordnet Kandidaten enthält, die die Filter überlebt haben.
  * @param primer
  * @param type
  * hh Schalter für Hairpin/Homodimer, bei true werden sie verwendet
+ * @param repl 
  * @return
  */
-    private List getFilteredPTTStructList(String primer, String type,String bautein) {
-        if(type.equals(SBEPrimer._3_))
+    private List getFilteredPTTStructList(String primer, String type,String bautein, char repl) {
+        if(type.equals(SBEPrimer._3_)) {
             primer=Helper.revcomplPrimer(primer);
+            repl=Helper.complNucl(repl);
+        }
         ArrayList liste= new ArrayList();
 		boolean hh=!bautein.equalsIgnoreCase("none") && 0 == bautein.length(); //in diesen beiden Fällen werden die H-Filter nicht verwendet
         /*
@@ -284,8 +291,9 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
                      * Ich kann den Primer nicht einfach clonen, weil sonst die Sekundaerstrukturen immer noch auf den originalen Primer verweisen,
                      * so dass eine gesetzte Bruchstelle keine Wirkung haette.
                      */
-                    String seq = Helper.replacePL(primer.substring(startidx),br[j]);
-                    SBEPrimer p=new SBEPrimer(cfg,id,seq,snp,type,bautein,productlen,false);
+                    repl=Helper.getNuklAtPos(primer,br[j]);
+                    String seq = Helper.replaceWithPL(primer.substring(startidx),br[j]);
+                    SBEPrimer p=new SBEPrimer(cfg,id,seq,repl,snp,type,bautein,productlen,false);
                     p.addObserver(this);
                     liste.add(p);
                 }
@@ -350,6 +358,9 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     public String getFavSeq() {
         assertPrimerChosen();
         return chosen.getSeq();
+    }
+    public String getFavSeqWOPl() {
+        return chosen.getSeqWOPl();
     }
     public String getMultiplexId() {
         assertPrimerChosen();
@@ -514,7 +525,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
         sb.append(';');
         sb.append(getProduktLaenge());
         sb.append(';');
-        sb.append(getFavSeq());
+        sb.append(getFavSeqWOPl());
         sb.append(';');
         sb.append(getReason());
         return sb.toString();
@@ -704,11 +715,11 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             int posOfL=Helper.getPosOfPl(seq[0]);
             if(posOfL != -1 && posOfL != festeBruchstelle)
                 throw new IllegalArgumentException("In primer ID="+id+": Left primer has a L in position="+posOfL+" != field PL="+festeBruchstelle+" !");
-
-            String primer = Helper.replacePL(seq[0],festeBruchstelle);
-            return new SBECandidate(cfg, id, primer,snp, productlen, hair5, givenMultiplexid, unwanted, userGiven);
+            char repl=Helper.getNuklAtPos(seq[0],festeBruchstelle);
+            String primer = Helper.replaceWithPL(seq[0],festeBruchstelle);
+            return new SBECandidate(cfg, id, primer,repl,snp, productlen, hair5, givenMultiplexid, unwanted, userGiven);
         }else
-            return new SBECandidate(cfg,id,seq[0],seq[1],snp,productlen,hair5,hair3,givenMultiplexid,unwanted, userGiven, false);
+            return new SBECandidate(cfg,id,seq[0],'0',seq[1],'0',snp,productlen,hair5,hair3,givenMultiplexid,unwanted, userGiven, false);
     }
     private final static String[] csvheader =
         new String[] {

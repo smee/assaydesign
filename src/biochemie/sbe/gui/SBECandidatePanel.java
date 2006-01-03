@@ -407,7 +407,9 @@ public class SBECandidatePanel extends MyPanel {
             return null;
         }
         String l=getSeq5tf().getText();
+        char repll=inputcontrollerL.getReplNucl();
         String r=getSeq3tf().isEnabled()?getSeq3tf().getText():"";
+        char replr=inputcontrollerR!=null?inputcontrollerR.getReplNucl():'0';
         if(l.length() == 0 && r.length()==0) //keine primer da
             return null;
 
@@ -430,7 +432,7 @@ public class SBECandidatePanel extends MyPanel {
         int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
         boolean userGiven=getFixedPrimerCB().isSelected();
 
-        s=new SBECandidate(cfg,id,l,r,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
+        s=new SBECandidate(cfg,id,l,repll,r,replr,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
         return s;
     }
 
@@ -443,6 +445,7 @@ public class SBECandidatePanel extends MyPanel {
     }
 
     /**
+     * TODO auch Ausgabedateien lesen!!!
      * @param id
      */
     public void setValuesFromCSVLine(String line) {

@@ -71,33 +71,29 @@ public class Helper {
     public static String complPrimer(String primer) {
         StringBuffer rev= new StringBuffer(primer);
         char letter;
-        for (int i= 0; i < rev.length(); i++) {
-
-            switch (rev.charAt(i)) {
-                case 'A' :
-                case 'a' :
-                    letter= 'T';
-                    break;
-                case 'C' :
-                case 'c' :
-                    letter= 'G';
-                    break;
-                case 'G' :
-                case 'g' :
-                    letter= 'C';
-                    break;
-                case 'T' :
-                case 't' :
-                    letter= 'A';
-                    break;
-
-                default :
-                    letter= Character.toUpperCase(rev.charAt(i));
-                    break;
-            }
-            rev.setCharAt(i, letter);
+        for (int i= 0; i < primer.length(); i++) {
+            rev.append(complNucl(primer.charAt(i)));
         }
         return rev.toString();
+    }
+    public static char complNucl(char nucl) {
+        switch (nucl) {
+        case 'A' :
+        case 'a' :
+            return 'T';
+        case 'C' :
+        case 'c' :
+            return 'G';
+        case 'G' :
+        case 'g' :
+            return 'C';
+        case 'T' :
+        case 't' :
+            return 'A';
+
+        default :
+            return Character.toUpperCase(nucl);
+    }
     }
     /**
      * Gibt revers-komplement&auml;ren Primer zurück.
@@ -678,8 +674,16 @@ public class Helper {
      * @param bruchstelle
      * @return
      */
-    public static String replacePL(String seq, int pos) {
+    public static String replaceWithPL(String seq, int pos) {
         return replaceNukl(seq,pos,'L');
+    }
+    public static String replacePL(String seq, char nucl) {
+        return replaceNukl(seq,getPosOfPl(seq),nucl);
+    }
+    public static char getNuklAtPos(String string, int plpos) {
+        if(plpos<0 || plpos>=string.length())
+            throw new IllegalArgumentException("PL position out of range: "+plpos);
+        return string.charAt(string.length()-plpos);
     }
     public static String replaceNukl(String seq, int plpos, char c) {
         if(plpos >0)
@@ -764,4 +768,5 @@ public class Helper {
         }
         return count;
     }
+
 }

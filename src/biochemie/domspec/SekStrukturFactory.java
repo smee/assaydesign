@@ -29,7 +29,7 @@ public class SekStrukturFactory {
             SBEPrimer sbep=(SBEPrimer)p;
             int pos =-1;
             if((pos=sbep.getBruchstelle() )!=-1){
-                seq=biochemie.util.Helper.replacePL(seq,pos);
+                seq=biochemie.util.Helper.replaceWithPL(seq,pos);
             }
         }
         List poshairpins= hpa.getHairpinPositions(seq);
@@ -79,14 +79,14 @@ public class SekStrukturFactory {
             SBEPrimer sbep=(SBEPrimer)p;
             int pos =-1;
             if((pos=sbep.getBruchstelle() )!=-1){
-                pseq=biochemie.util.Helper.replacePL(pseq,pos);
+                pseq=biochemie.util.Helper.replaceWithPL(pseq,pos);
             }
         }
         if(other instanceof SBEPrimer) {//ersetze photolinker surch X
             SBEPrimer sbep=(SBEPrimer)other;
             int pos =-1;
             if((pos=sbep.getBruchstelle() )!=-1){
-                oseq=biochemie.util.Helper.replacePL(oseq,pos);
+                oseq=biochemie.util.Helper.replaceWithPL(oseq,pos);
             }
         }
         List positions= cda.getCrossDimerPositions(pseq,oseq);

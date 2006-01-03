@@ -45,25 +45,28 @@ public class SBEPrimer extends Primer{
     private final String snp;
     private final SBEOptions cfg;
     private final int productlen;
+    private char repl;
 
 
-    public void setPlexID(String s) {
-        super.setPlexID(s);
+    public SBEPrimer(SBEOptions cfg,String id,String seq,String snp, String type, String bautein, int prodlen,boolean usergiven) {
+        this(cfg,id,seq,'0',snp,type,bautein,prodlen,usergiven);
     }
     /**
      * This constructor needs a L within the sequence to determine the position of the photolinker
      * @param cfg SBEOptionsProvider
      * @param id unique id
      * @param seq String consisting of ACGT and max. one L which specifies the pl
+     * @param repl nucleotide that was replaced by the photolinker
      * @param snp String of ACGT
      * @param type SBEPrimer._5_ or SBEPrimer._3_
      * @param bautein String of ACGT
      * @param prodlen Length of the sbeproduct
      * @param usergiven tru: don't probe for secstructures.
      */
-    public SBEPrimer(SBEOptions cfg,String id,String seq, String snp, String type, String bautein, int prodlen,boolean usergiven) {
+    public SBEPrimer(SBEOptions cfg,String id,String seq, char repl, String snp, String type, String bautein, int prodlen,boolean usergiven) {
         super(id,seq);
         this.cfg = cfg;
+        this.repl=repl;
         this.pl=Helper.getPosOfPl(seq);
         if(pl == -1)
             throw new IllegalArgumentException("Sequence of primer "+id+" has no L within sequence!");
@@ -81,7 +84,9 @@ public class SBEPrimer extends Primer{
 			sekstruc = SekStrukturFactory.getSecStruks(this,cfg);
 		return Collections.unmodifiableSet(sekstruc);
 	}
-
+    public void setPlexID(String s) {
+        super.setPlexID(s);
+    }
     /**
      * @return
      */
@@ -380,5 +385,14 @@ public class SBEPrimer extends Primer{
             if(p!=this)
             	sekstruc.addAll(SekStrukturFactory.getCrossdimer(this,p,cfg));
         }
+    }
+    /**
+     * Returns the sequence without the PL if possible.
+     * @return
+     */
+    public String getSeqWOPl() {
+        if(repl!='0')
+            return Helper.replacePL(getSeq(),repl);
+        return getSeq();
     }
 }

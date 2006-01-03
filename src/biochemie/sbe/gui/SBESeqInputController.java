@@ -162,7 +162,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         torepl = seq.charAt(pl - 1);//von links betrachten
                     if(torepl!='L') {
                         replacedNukl=torepl;
-                        newseq=biochemie.util.Helper.replacePL(seq,pl);
+                        newseq=biochemie.util.Helper.replaceWithPL(seq,pl);
                     }
                 }
             }else {//schon vorher was gewaehlt
@@ -181,7 +181,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     if(newrepl == 'L')
                         return;
                     newseq = Helper.replaceNukl(seq, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
-                    newseq = Helper.replacePL(newseq, newpl);
+                    newseq = Helper.replaceWithPL(newseq, newpl);
                     replacedNukl = newrepl;
                 }
             }
@@ -256,5 +256,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     public void itemStateChanged(ItemEvent e) {
         if(e.getStateChange() == ItemEvent.SELECTED)
             handlePLPanelChange();
+    }
+    public char getReplNucl() {
+        return replacedNukl;
     }
 }
