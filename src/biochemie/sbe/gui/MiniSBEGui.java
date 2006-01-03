@@ -94,7 +94,7 @@ import biochemie.util.edges.SecStructureEdge;
 
 /**
  * @author Steffen Dienst
- *
+ * TODO NLS
  */
 public class MiniSBEGui extends JFrame {
 
@@ -918,7 +918,7 @@ public class MiniSBEGui extends JFrame {
 	private JMenu getHelpMenu() {
 		if (helpMenu == null) {
 			helpMenu = new JMenu();
-			helpMenu.setText("Hilfe");
+			helpMenu.setText("Help");
 			helpMenu.add(getHelpMenuItem());
 			helpMenu.add(getAboutMenuItem());
 		}
