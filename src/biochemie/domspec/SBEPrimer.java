@@ -320,7 +320,10 @@ public class SBEPrimer extends Primer{
     }
     public String toString() {
         DecimalFormat nf=new DecimalFormat("#.##");
-        return getId()+":"+getSeq()+", "+getType()+", PL="+getBruchstelle()+", Tm="+nf.format(getTemperature())+"°, hairpins="+getHairpinPositions()+", homodimer="+getHomodimerPositions();
+        return getId()+":"+getSeq()+", "+getType()+", PL="+getBruchstelle()+
+        ", GC="+nf.format(getGCGehalt())+
+        ", Tm="+nf.format(getTemperature())+"°, hairpins="
+        +getHairpinPositions()+", homodimer="+getHomodimerPositions();
     }
     public String getCSVSekStructuresSeparatedBy(String sep) {
         List l=new ArrayList(sekstruc);

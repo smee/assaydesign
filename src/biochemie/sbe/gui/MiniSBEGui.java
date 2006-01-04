@@ -600,8 +600,10 @@ public class MiniSBEGui extends JFrame {
 	            List primerlines = new LinkedList();
 	            try {
 	                BufferedReader br = new BufferedReader(new FileReader(file));
-	                String line=br.readLine();//skip header
-                    final boolean isInputfile=line.trim().startsWith("SBE-ID");
+	                String line=br.readLine().trim();//skip header
+                    if(line.charAt(0)=='"')
+                        line=line.substring(1);
+                    final boolean isInputfile=line.startsWith("SBE-ID");
 	                while((line=br.readLine())!=null) {
 	                    primerlines.add(Helper.clearEmptyCSVEntries(line));
 	                }
@@ -687,17 +689,17 @@ public class MiniSBEGui extends JFrame {
          */
         private void writeSBECandidatesFile(List sbec, File file) throws IOException{
             BufferedWriter bw=new BufferedWriter(new FileWriter(file));
-            final String header = "\"SBE-ID\";" +
-                    "\"5\' Sequenz (in 5\'->3\')\";" +
-                    "\"Definitiver Hairpin 5\'\";" +
-                    "\"SNP Variante\";" +
-                    "\"3\' Sequenz (in 5\' -> 3\')\"" +
-                    ";\"Definitiver Hairpin 3\'\";" +
-                    "\"PCR Produkt\";" +
-                    "\"Feste Photolinkerposition (leer, wenn egal)\";" +
-                    "\"feste MultiplexID\";" +
-                    "\"Ausgeschlossene Primer\";" +
-                    "\"Primer wird verwendet as-is";
+            final String header = "SBE-ID;" +
+                    "5\' Sequenz (in 5\'->3\');" +
+                    "Definitiver Hairpin 5\';" +
+                    "SNP Variante;" +
+                    "3\' Sequenz (in 5\' -> 3\')" +
+                    ";Definitiver Hairpin 3\';" +
+                    "PCR Produkt;" +
+                    "Feste Photolinkerposition (leer, wenn egal);" +
+                    "feste MultiplexID;" +
+                    "Ausgeschlossene Primer;" +
+                    "Primer wird verwendet as-is";
             bw.write(header);
             bw.write("\n");
             for (Iterator it = sbec.iterator(); it.hasNext();) {
