@@ -38,6 +38,7 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
                 it.remove();
                 count++;
                 sb.append(getSBEPrimerDescription(p));
+                sb.append(", ").append(markRed("Tm="+nf.format(p.getTemperature())+"°"));
                 sb.append("\n");
             }
         }

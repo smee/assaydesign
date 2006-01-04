@@ -38,7 +38,8 @@ public class GCFilter extends AbstractKandidatenFilter {
             if(gc<gcMin || gc>gcMax){
                 it.remove();
                 count++;
-                sb.append(getSBEPrimerDescription(p));
+                sb.append(getSBEPrimerDescription(p)).append(", ");
+                sb.append(markRed("GC="+nf.format(gc)+"%"));
                 sb.append("\n");
             }
         }

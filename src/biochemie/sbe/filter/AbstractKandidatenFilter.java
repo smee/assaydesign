@@ -22,12 +22,15 @@ public abstract class AbstractKandidatenFilter implements KandidatenFilter{
 		this.cfg = cfg;
         this.debug=cfg.isDebug();;
 	}
-    private static NumberFormat nf =new DecimalFormat("0.00");
+    protected static NumberFormat nf =new DecimalFormat("0.00");
     protected static String getSBEPrimerDescription(SBEPrimer p) {
         StringBuffer sb=new StringBuffer();
         sb.append(p.getSeq()).append(", PL=").append(p.getBruchstelle()).
         append(", GC=").append(nf.format(p.getGCGehalt())).append('%').
         append(", Tm=").append(nf.format(p.getTemperature())).append('°');
         return sb.toString();
+    }
+    protected static String markRed(String string) {
+        return "<FONT COLOR=\"FF0000\">"+string+"</FONT>";
     }
 }

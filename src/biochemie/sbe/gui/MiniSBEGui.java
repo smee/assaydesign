@@ -27,6 +27,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -54,7 +56,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -67,6 +68,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
@@ -138,7 +141,7 @@ public class MiniSBEGui extends JFrame {
             SwingWorker sw=new SwingWorker() {
                 public Object construct() {
                     System.out.println("Running step 1 of the pl optimizer....");
-                    List sbec2=(List) getCalculationAction().runCalculation("",getCalculationAction().getCompactedSBECandidates(cfg),filter,cfg,false).get();
+                    List sbec2=(List) getCalculationAction().runCalculation("",getCalculationAction().getCompactedSBECandidates(cfg),filter,cfg,false);
                     return sbec2;
                 }
                 public void finished() {
@@ -153,17 +156,19 @@ public class MiniSBEGui extends JFrame {
                     SwingWorker sw2= new SwingWorker() {
                         public Object construct() {
                             System.out.println("Running step 2 of the pl optimizer....");
-                            return getCalculationAction().runCalculation("PL-optimized results",getCalculationAction().getCompactedSBECandidates(cfg),Collections.EMPTY_SET,cfg,true).get();
+                            return getCalculationAction().runCalculation("PL-optimized results",getCalculationAction().getCompactedSBECandidates(cfg),Collections.EMPTY_SET,cfg,true);
                         }
                         public void finished() {
                             getLoadPrimerAction().loadFromFile(toLoad);
                             if(toLoad != null)
                                 toLoad.delete();
+                            getCalculationAction().hideProgressIndicator();
                         }
                     };
                     sw2.start();
                 }
             };
+            getCalculationAction().showProgressIndicator(sw);
             sw.start();
         }
 
@@ -214,7 +219,7 @@ public class MiniSBEGui extends JFrame {
             String id=(String) table.getValueAt(row,1);
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel panel = (SBECandidatePanel) it.next();
-                if(panel.getTfId().getText().equals(id)) {
+                if(panel.getTfId().getText().trim().equals(id)) {
                     showExplanationFrameFor(panel);
                     return;
                 }
@@ -227,23 +232,34 @@ public class MiniSBEGui extends JFrame {
             String output=panel.getSBECandidate(cfg, true).getOutput();
             JFrame frame = new JFrame("Detailed report for "+panel.getTfId().getText());
             frame.getContentPane().setLayout(new BorderLayout());
-            JTextArea ed=new JTextArea(output);
-            ed.setRows(40);
-            ed.setFont(new Font("Courier",Font.PLAIN,11));
-            JScrollPane pane = new JScrollPane(ed);
+            JEditorPane ep = new JEditorPane() {
+                public Dimension getPreferredScrollableViewportSize() {
+                    return new Dimension(500,700);
+                }
+                public boolean getScrollableTracksViewportWidth() {
+                    return false;
+                 }
+            };
+            output="<html><body><font size=\"2\" face=\"Courier\"><pre>"+output+"</pre></font></html></body>";
+            ep.setEditable(false);
+            ep.setContentType("text/html");
+            ep.setText(output);
+            ep.setCaretPosition(0);
+            //JTextArea ed=new JTextArea(output);
+//            ed.setRows(40);
+//            ed.setFont(new Font("Courier",Font.PLAIN,11));
+//            JScrollPane pane = new JScrollPane(ed);
+            JScrollPane pane = new JScrollPane(ep);
             frame.getContentPane().add(pane,BorderLayout.CENTER);
             frame.pack();
-            frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    System.out.println("closing...");
-                }
-            });
-            //frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setVisible(true);
-            
+            System.out.println(frame.getBounds());
         }
     }
     public class CalculateAction extends MyAction {
+        private JDialog progressdialog;
+
         public CalculateAction() {
             super("Calculate","Start calculation",
                     CalculateAction.class.getClassLoader().getResource("images/play.gif"),
@@ -254,9 +270,19 @@ public class MiniSBEGui extends JFrame {
                 JOptionPane.showMessageDialog(MiniSBEGui.this,"Invalid primerfilters. Please review the marked fields!");
                 return;
             }
-            SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
-            List sbeccoll = getCompactedSBECandidates(cfg);
-        	runCalculation("Results",sbeccoll, Collections.EMPTY_SET,cfg,true);
+            SwingWorker sw=new SwingWorker() {
+                public Object construct() {
+                    SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
+                    List sbeccoll = getCompactedSBECandidates(cfg);
+                    runCalculation("Results",sbeccoll, Collections.EMPTY_SET,cfg,true);
+                    return null;
+                }
+                public void finished() {
+                    hideProgressIndicator();
+                }
+            };
+            showProgressIndicator(sw);
+            sw.start();
         }
         /**
          * Tests, if the format of the filters entered by the user are correct.
@@ -292,15 +318,10 @@ public class MiniSBEGui extends JFrame {
             Algorithms.remove(sbec.iterator(),IsNull.instance());
             return SBEPrimerReader.collapseMultiplexes(sbec,cfg);
         }
-        /**
-         * @param compactsbec
-         * @param cfg
-         */
-        private SwingWorker runCalculation(final String title, final List compactsbec, final Set filter,final SBEOptions cfg, final boolean showResult) {
-            Multiplexer.stop(false);
-        	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        public void showProgressIndicator(final SwingWorker sw) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             //dialog um den user zu informieren
-            final JDialog dialog = new JDialog(MiniSBEGui.this,"Calculationprogress",true);
+            final JDialog dialog = new JDialog(MiniSBEGui.this,"Calculationprogress",false);
             dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
             Container pane=dialog.getContentPane();
             pane.setLayout(new BoxLayout(pane,BoxLayout.Y_AXIS));
@@ -310,44 +331,38 @@ public class MiniSBEGui extends JFrame {
             pane.add(new JLabel("Please have some patience, this operation might need some time."));
             GUIHelper.center(dialog, MiniSBEGui.this);
             getInfiniteProgressPanel().start();
-            final SwingWorker sw = new SwingWorker(){
-        		public Object construct() {
-                    MiniSBE m = null;
-                    try {
-						m = new MiniSBE(compactsbec,cfg,filter);
-                        if(Thread.currentThread().isInterrupted())
-                            return null;
-						normalizeSekStruks(getSBECandidatesFromMultiKnotenList(compactsbec));
-					} catch (RuntimeException e) {
-						e.printStackTrace();
-					}
-                    return compactsbec;
-        		}
-        		public void finished() {
-                    if(!isDone())
-                        return;
-                    dialog.dispose();
-                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                    if(showResult)
-                        showResultFrame(title,getSBECandidatesFromMultiKnotenList(compactsbec),cfg);
-                    getInfiniteProgressPanel().stop();
-        		}
-        	};
-        	JButton stopbutton = new JButton("Cancel");
-        	stopbutton.addActionListener(new ActionListener() {
-        	    public void actionPerformed(ActionEvent e) {
+            JButton stopbutton = new JButton("Cancel");
+            stopbutton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
                     Multiplexer.stop(true);
-        	        sw.interrupt();
-                    dialog.dispose();
-                    getInfiniteProgressPanel().stop();
-                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        	    }
-        	});
+                    sw.interrupt();
+                    hideProgressIndicator();
+                }
+            });
             pane.add(stopbutton);
-        	sw.start();
             dialog.pack();
             dialog.setVisible(true);
-            return sw;
+            progressdialog=dialog;
+        }
+        public void hideProgressIndicator() {
+            progressdialog.dispose();
+            progressdialog=null;
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            getInfiniteProgressPanel().stop();
+        }
+        /**
+         * @param compactsbec
+         * @param cfg
+         */
+        private List runCalculation(final String title, final List compactsbec, final Set filter,final SBEOptions cfg, final boolean showResult) {
+            Multiplexer.stop(false);
+            MiniSBE m = new MiniSBE(compactsbec,cfg,filter);
+            if(Thread.currentThread().isInterrupted())
+                return null;
+            normalizeSekStruks(getSBECandidatesFromMultiKnotenList(compactsbec));
+            if(showResult)
+                showResultFrame(title,getSBECandidatesFromMultiKnotenList(compactsbec),cfg);
+            return compactsbec;
         }
         /**
          * Liefert List mit SBEcandidates, compactsbec kann SBECs, Multiknoten enthalten.

@@ -33,7 +33,8 @@ public class LaengenFilter extends AbstractKandidatenFilter {
             if(p.getSeq().length()<len){
                 it.remove();
                 count++;
-                sb.append(getSBEPrimerDescription(p)).append(", length=").append(p.getSeq().length()).append("bp");
+                sb.append(getSBEPrimerDescription(p)).append(", ");
+                sb.append(markRed("length="+p.getSeq().length()+"bp"));
                 sb.append("\n");
             }
         }

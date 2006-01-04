@@ -63,6 +63,8 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
                     it.remove();
                     count++;
                     sb.append(getSBEPrimerDescription(p));
+                    sb.append(", ");
+                    sb.append(markRed("user defined filter"));
                     sb.append("\n");
                     break;
                 }

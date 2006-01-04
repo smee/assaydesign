@@ -49,7 +49,8 @@ public class PolyXFilter extends AbstractKandidatenFilter {
                     if(counter>polyX){
                         it.remove();
                         count++;                        	
-                        sb.append(getSBEPrimerDescription(p)).append(", polyx=").append(counter);  
+                        sb.append(getSBEPrimerDescription(p)).append(", ");
+                        sb.append(markRed("polyx="+counter));
                         sb.append("\n");
                         break;//beende innere for-Schleife
                     }              
