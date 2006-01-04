@@ -46,16 +46,15 @@ public class PolyXFilter extends AbstractKandidatenFilter {
                         tracingrun=false;
                         i--;
                     }
-                    if(counter>polyX){
-                        it.remove();
-                        count++;                        	
-                        sb.append(getSBEPrimerDescription(p)).append(", ");
-                        sb.append(markRed("polyx="+counter));
-                        sb.append("\n");
-                        break;//beende innere for-Schleife
-                    }              
                 }
             }
+            if(counter>polyX){
+                it.remove();
+                count++;                        	
+                sb.append(getSBEPrimerDescription(p)).append(", ");
+                sb.append(markRed("polyX="+counter));
+                sb.append("\n");
+            }              
         }
         System.out.println(sb);
     }
