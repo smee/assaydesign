@@ -588,8 +588,7 @@ public class MiniSBEGui extends JFrame {
 	            }
 	        };
 	        File file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Load sbeprimers...",filter,FileSelector.OPEN_DIALOG);
-	        loadFromFile(file);
-	        
+            loadFromFile(file);
 	    }
         /**
          * @param file
@@ -624,7 +623,10 @@ public class MiniSBEGui extends JFrame {
 	                JOptionPane.showMessageDialog(MiniSBEGui.this,"Error loading file "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
 	            } catch (RuntimeException e2) {
 	                e2.printStackTrace();
-	                JOptionPane.showMessageDialog(MiniSBEGui.this,"Encountered error while parsing input file: "+file.getName(),"",JOptionPane.ERROR_MESSAGE);
+	                JOptionPane.showMessageDialog(MiniSBEGui.this,
+                            "Encountered error while parsing input file: "+file.getName()+". Message: "+e2.getMessage(),
+                            "Invalid inputfile",
+                            JOptionPane.ERROR_MESSAGE);
 	            }
                 getSbepanelsPanel().revalidate();
                 getSbepanelsPanel().repaint();

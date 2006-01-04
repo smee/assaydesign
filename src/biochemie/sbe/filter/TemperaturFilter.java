@@ -18,7 +18,7 @@ import biochemie.sbe.SBEOptions;
 public class TemperaturFilter extends AbstractKandidatenFilter {
     private double maxT;
     private double minT;
-    private static NumberFormat nf =new DecimalFormat("0.00");
+
     public TemperaturFilter(SBEOptions cfg) {
     	super(cfg);
         this.minT= cfg.getMinTemperature();
@@ -37,7 +37,7 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
             if(p.getTemperature() < minT || p.getTemperature() > maxT){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", Tm="+nf.format(p.getTemperature())+"°");
+                sb.append(getSBEPrimerDescription(p));
                 sb.append("\n");
             }
         }

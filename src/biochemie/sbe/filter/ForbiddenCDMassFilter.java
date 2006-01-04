@@ -24,7 +24,7 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
             if(cd.invalidMassesIn(masses)) {
                 it.remove();
                 count++;
-                sb.append(primer.getSeq()+", masses="+Helper.toString(masses));
+                sb.append(getSBEPrimerDescription(primer)+", masses="+Helper.toString(masses));
                 sb.append("\n");
             }
         }

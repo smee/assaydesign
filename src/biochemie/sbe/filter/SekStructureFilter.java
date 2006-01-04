@@ -38,7 +38,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
             if(hatMehrereInkompatibleHairpins(p)){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", too many incompatible secondary structures!");
+                sb.append(getSBEPrimerDescription(p)).append(", too many incompatible secondary structures!");
                 sb.append("\n");
                 appendAsciiArt(sb, p);
             }else {//keine Seq. hat mehrere, jetzt schauen, ob nur eine inkomp. existiert, die nicht verhindert werden kann
@@ -46,7 +46,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
                 if(hatNichtVerhinderbareSekStruks(p)) {
                     it.remove();
                     count++;
-                    sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", can't avoid incomp. secondary structure!");
+                    sb.append(getSBEPrimerDescription(p)).append(", can't avoid incomp. secondary structure!");
                     sb.append("\n");
                     appendAsciiArt(sb, p);
                 }

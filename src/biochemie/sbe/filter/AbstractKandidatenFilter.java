@@ -4,6 +4,10 @@
  */
 package biochemie.sbe.filter;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
 
 /**
@@ -18,4 +22,12 @@ public abstract class AbstractKandidatenFilter implements KandidatenFilter{
 		this.cfg = cfg;
         this.debug=cfg.isDebug();;
 	}
+    private static NumberFormat nf =new DecimalFormat("0.00");
+    protected static String getSBEPrimerDescription(SBEPrimer p) {
+        StringBuffer sb=new StringBuffer();
+        sb.append(p.getSeq()).append(", PL=").append(p.getBruchstelle()).
+        append(", GC-Value=").append(p.getGCGehalt()).
+        append(", Tm=").append(nf.format(p.getTemperature()));
+        return sb.toString();
+    }
 }

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import biochemie.domspec.Primer;
+import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
 
 /**
@@ -32,12 +33,12 @@ public class GCFilter extends AbstractKandidatenFilter {
     public void filter(List cand) {
     	StringBuffer sb=new StringBuffer("Primers out of GC:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
-            Primer p=(Primer) it.next();
+            SBEPrimer p=(SBEPrimer) it.next();
             double gc=p.getGCGehalt();
             if(gc<gcMin || gc>gcMax){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", GC-Value="+gc);
+                sb.append(getSBEPrimerDescription(p));
                 sb.append("\n");
             }
         }

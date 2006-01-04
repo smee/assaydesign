@@ -7,7 +7,7 @@ package biochemie.sbe.filter;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.domspec.Primer;
+import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
 
 /**
@@ -29,7 +29,7 @@ public class PolyXFilter extends AbstractKandidatenFilter {
     public void filter(List cand) {
     	StringBuffer sb=new StringBuffer("Primers exceeding polyX:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
-            Primer p= (Primer) it.next();
+            SBEPrimer p= (SBEPrimer) it.next();
             String seq=p.getSeq();
             int counter=0;
             char c=0;
@@ -49,7 +49,7 @@ public class PolyXFilter extends AbstractKandidatenFilter {
                     if(counter>polyX){
                         it.remove();
                         count++;                        	
-                        sb.append(seq+", exceeds polyX");  
+                        sb.append(getSBEPrimerDescription(p)).append(", polyx=").append(counter);  
                         sb.append("\n");
                         break;//beende innere for-Schleife
                     }              
