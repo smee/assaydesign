@@ -26,8 +26,8 @@ public abstract class AbstractKandidatenFilter implements KandidatenFilter{
     protected static String getSBEPrimerDescription(SBEPrimer p) {
         StringBuffer sb=new StringBuffer();
         sb.append(p.getSeq()).append(", PL=").append(p.getBruchstelle()).
-        append(", GC=").append(nf.format(p.getGCGehalt())).
-        append(", Tm=").append(nf.format(p.getTemperature()));
+        append(", GC=").append(nf.format(p.getGCGehalt())).append('%').
+        append(", Tm=").append(nf.format(p.getTemperature())).append('°');
         return sb.toString();
     }
 }

@@ -321,7 +321,7 @@ public class SBEPrimer extends Primer{
     public String toString() {
         DecimalFormat nf=new DecimalFormat("#.##");
         return getId()+":"+getSeq()+", "+getType()+", PL="+getBruchstelle()+
-        ", GC="+nf.format(getGCGehalt())+
+        ", GC="+nf.format(getGCGehalt())+"%"+
         ", Tm="+nf.format(getTemperature())+"°, hairpins="
         +getHairpinPositions()+", homodimer="+getHomodimerPositions();
     }
