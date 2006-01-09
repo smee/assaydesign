@@ -724,7 +724,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     private final static String[] csvheader =
         new String[] {
             "Multiplex ID"
-            ,"SBE-ID"
+            ,"SBE-Primer ID"
             ,"Sequence incl. PL"
             ,"SNP allele"
             ,"Photolinker (=PL): position"

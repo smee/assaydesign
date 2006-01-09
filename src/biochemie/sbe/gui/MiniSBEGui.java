@@ -618,6 +618,7 @@ public class MiniSBEGui extends JFrame {
 	                String line=br.readLine().trim();//skip header
                     if(line.charAt(0)=='"')
                         line=line.substring(1);
+                    //TODO generisch laden (Format erkennen etc.)
                     final boolean isInputfile=line.startsWith("SBE-ID");
 	                while((line=br.readLine())!=null) {
 	                    primerlines.add(Helper.clearEmptyCSVEntries(line));

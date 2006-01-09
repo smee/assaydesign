@@ -35,6 +35,10 @@ public class SaveResultsAction extends MyAction {
     public void actionPerformed(ActionEvent e) {
         File file = FileSelector.getUserSelectedFile(null,"Save result",FileSelector.CSV_FILEFILTER,FileSelector.SAVE_DIALOG);
         if(file != null) {
+            String path=file.getAbsolutePath();
+            if(!path.endsWith(".csv") && !path.endsWith(".CSV"))
+                path += ".csv";
+            file=new File(path);
             SBEPrimerReader.writeSBEResults(file.getAbsolutePath(),sbec);
         }
     }
