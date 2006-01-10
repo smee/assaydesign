@@ -27,8 +27,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,6 +58,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
 import javax.swing.Scrollable;
 import javax.swing.ToolTipManager;
@@ -68,8 +69,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.html.HTMLEditorKit;
+
+import netprimer.cal_Hairpins;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
@@ -418,7 +419,8 @@ public class MiniSBEGui extends JFrame {
             toolbar.add(showexplanation);
             JButton optimize=new JButton(new OptimizePLAction(sbec));
             toolbar.add(optimize);
-            
+            JButton showSekStrucs=new JButton(new ShowSekStrucsAction(table,sbec));
+            toolbar.add(showSekStrucs);
             ToolTipManager.sharedInstance().setDismissDelay(100000);
             frame.pack();
             frame.setVisible(true);
@@ -429,7 +431,7 @@ public class MiniSBEGui extends JFrame {
 
             final TableSorter sorter = new TableSorter(model);
             JTableEx table = new JTableEx(sorter) {
-//            JTableEx table = new JTableEx(model) {
+
                 public String getToolTipText(MouseEvent event) {
                     Point p= event.getPoint();
                     int row= rowAtPoint(p);
@@ -488,6 +490,8 @@ public class MiniSBEGui extends JFrame {
                     sb.append("</html>");
                     return new String(sb);
                 }
+
+
             };
             table.setPreferredScrollableViewportSize(new Dimension(400,table.getPreferredSize().height));
             sorter.setTableHeader(table.getTableHeader());

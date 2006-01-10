@@ -68,9 +68,8 @@ public class Helper {
      * @param primer
      * @return
      */
-    public static String complPrimer(String primer) {
+    public static String complPrimer(CharSequence primer) {
         StringBuffer rev= new StringBuffer(primer.length());
-        char letter;
         for (int i= 0; i < primer.length(); i++) {
             rev.append(complNucl(primer.charAt(i)));
         }
@@ -90,7 +89,9 @@ public class Helper {
         case 'T' :
         case 't' :
             return 'A';
-
+        case 'L':    
+        case 'l':
+            return 'K';//halt n anti-pl :)
         default :
             return Character.toUpperCase(nucl);
     }
@@ -272,7 +273,7 @@ public class Helper {
      * (8600 + 5600 + 11900 + 5600 + 8600 + 6000 + 6500 + 11900 + 6500 + 6000 + 7800) = -85000 cal/mol
      * = -85 kcal/mol.
      */
-    private static double calcDeltaH(String primer) {
+    private static double calcDeltaH(CharSequence primer) {
         double[][] lookup= { { 9100, 6500, 7800, 8600 }, {
                 5800, 11000, 11900, 7800 }, {
                 5600, 11100, 11000, 6500 }, {
@@ -300,7 +301,7 @@ public class Helper {
      * (23.9 + 13.5 + 27.8 + 13.5 + 23.9 + 16.9 + 17.3 + 27.8 + 17.3 + 16.9 + 20.8) + 15.1 = -234.7 cal/K/mol
      * = -0.23 kcal/K/mol.
      */
-    private static double calcDeltaS(String primer) {
+    private static double calcDeltaS(CharSequence primer) {
         double[][] lookup= { { 24, 17.3, 20.8, 23.9 }, {
                 12.9, 26.6, 27.8, 20.8 }, {
                 13.5, 26.7, 26.6, 17.3 }, {
@@ -319,6 +320,13 @@ public class Helper {
             dS += lookup[x][y];
         }
         return -dS;
+    }
+    public static double cal_dG_secondaryStruct(CharSequence theseq) {
+        double dH= calcDeltaH(theseq);
+        double dS= (calcDeltaS(theseq) * 1000D + 15.1D) / 1000D;
+        double TT= 25;//TODO als parameter
+        double adG= dH - TT * dS;
+        return adG;
     }
     public static double calcTM(String primer) {
         return calcTM(primer, 50, 1.5);
