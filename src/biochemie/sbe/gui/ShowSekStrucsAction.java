@@ -40,6 +40,8 @@ public class ShowSekStrucsAction extends MyAction {
 
     public void actionPerformed(ActionEvent e) {
         int row=table.getSelectedRow();
+        if(row<0)
+            return;
         String id=(String) table.getModel().getValueAt(row,1);
         String seq=findSBECandidateWithID(id);
         if(seq==null)

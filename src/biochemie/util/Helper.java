@@ -253,11 +253,11 @@ public class Helper {
         /**
          * This is the entropy of the primer as calculated by the nearest neighbor method of Breslauer,
          */
-        double dS= calcDeltaS(primer);
+        double dS= calcDeltaS(primer)*1000;
         /**
          * This is the enthalpy of the primer as calculated by the nearest neighbor method of Breslauer, K.J. et. al.
          */
-        double dH= calcDeltaH(primer);
+        double dH= calcDeltaH(primer)*1000;
         //System.out.println("R+...="+(R*Math.log(C/4)));
         //System.out.println(".../(dS+...)="+(dS+R*Math.log(C/4)));
         //System.out.println("16.6*...="+(16.6*Math.log(K/(1+0.7*K))/2.3026-273.15)); funzt!
@@ -290,7 +290,7 @@ public class Helper {
                 y= "acgt".indexOf(primer.charAt(i + 1));
             dH += lookup[x][y];
         }
-        return -dH;
+        return -dH/1000;
     }
     /**
      * sS is entropy for helix formation.
@@ -319,12 +319,12 @@ public class Helper {
 
             dS += lookup[x][y];
         }
-        return -dS;
+        return -dS/1000;
     }
     public static double cal_dG_secondaryStruct(CharSequence theseq) {
         double dH= calcDeltaH(theseq);
         double dS= (calcDeltaS(theseq) * 1000D + 15.1D) / 1000D;
-        double TT= 25;//TODO als parameter
+        double TT= 298.15;//TODO als parameter, in kelvin (25C)
         double adG= dH - TT * dS;
         return adG;
     }
