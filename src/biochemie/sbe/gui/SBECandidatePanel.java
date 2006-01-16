@@ -360,7 +360,7 @@ public class SBECandidatePanel extends MyPanel {
     protected StringEntryPanel getPcrLenPanel() {
 		if (pcrLenPanel == null) {
 			pcrLenPanel = new StringEntryPanel();
-			pcrLenPanel.setLabel("PCR length");
+			pcrLenPanel.setLabel("PCR-product length");
 			pcrLenPanel.setColumns(4);
 			pcrLenPanel.setRekTooltip("Enter the length of the pcr product.");
 			pcrLenPanel.setText("0");
@@ -530,7 +530,7 @@ public class SBECandidatePanel extends MyPanel {
 	protected StringEntryPanel getFiltersPanel() {
 		if (filtersPanel == null) {
 			filtersPanel = new StringEntryPanel();
-            filtersPanel.setLabel("Filtered primers");
+            filtersPanel.setLabel("Excluded primers");
             filtersPanel.setColumns(20);
             filtersPanel.setMaxLen(Integer.MAX_VALUE);
             filtersPanel.setResizeToStringLen(false);

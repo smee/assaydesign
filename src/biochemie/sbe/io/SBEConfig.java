@@ -284,6 +284,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonSelectedPLMass();
     }    public void setCalcDaltonSelectedPLMass(int val) {
         cdopt.setCalcDaltonSelectedPLMass(val);
+    }    public String getBiotinString() {
+        return cdopt.getBiotinString();
+    }    public void setBiotinString(String biotin) {
+        cdopt.setBiotinString(biotin);
     }
     //proxy end -----------------------------------------------------------------------------------------
 

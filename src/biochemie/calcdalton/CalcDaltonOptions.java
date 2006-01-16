@@ -90,4 +90,7 @@ public interface CalcDaltonOptions extends GeneralOptions{
     public void setCalcDaltonSelectedPLMass(int val);
     public boolean getCalcDaltonShowIons();
     public void setCalcDaltonShowIons(boolean val);
+    
+    public String getBiotinString();
+    public void setBiotinString(String biotin);
 }

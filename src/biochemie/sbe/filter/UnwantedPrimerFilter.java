@@ -53,7 +53,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     }
 
     public void filter(List cand) {
-    	StringBuffer sb=new StringBuffer("Primers filtered by user:\n ");
+    	StringBuffer sb=new StringBuffer("Primers excluded by user:\n ");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             SBEPrimer p=(SBEPrimer) it.next();
             for (int i = 0; i < type.length; i++) {
@@ -78,7 +78,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     }
 
     public String rejectReason() {
-        return "Filtered by the user: ";
+        return "Excluded by the user: ";
     }
 
 }

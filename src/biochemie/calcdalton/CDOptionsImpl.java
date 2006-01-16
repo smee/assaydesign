@@ -41,6 +41,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.showions","true"}
            ,{"misc.maxcalctime","10"}
            ,{"misc.debug","false"}
+           ,{"misc.biotin","bio"}
            };
     }
     public int[] getPhotolinkerPositions(){
@@ -189,5 +190,11 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public void setCalcDaltonSelectedPLMass(int val) {
         setProperty("calcdalton.plmassidx",Integer.toString(val));
     }
+    public String getBiotinString() {
+        return this.getString("misc.biotin","bio");
+    }
 
+    public void setBiotinString(String biotin) {
+        setProperty("misc.biotin",biotin);
+    }
 }

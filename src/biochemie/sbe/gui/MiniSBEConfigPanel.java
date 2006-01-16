@@ -274,7 +274,7 @@ public class MiniSBEConfigPanel extends JPanel {
 			jLabel6.setText("Maxplexsize");
 			gridBagConstraints12.gridx = 3;
 			gridBagConstraints12.gridy = 0;
-			jLabel7.setText("Min. pcrproduct diff.");
+			jLabel7.setText("Min. PCR-product length difference");
 			gridBagConstraints2.gridx = 3;
 			gridBagConstraints2.gridy = 1;
 			gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;

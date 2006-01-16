@@ -190,6 +190,7 @@ public class SBEConfigDialog extends JDialog {
 	public SBEOptions getSBEOptionsFromGui() {
         SBEOptions sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
         getRestPanel().saveTo(sbeconfig);
+        getCdMassPanel().saveToConfig(sbeconfig);
         sbeconfig.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
 	    sbeconfig.setCrossimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getFrom()),' '));
 	    sbeconfig.setHairpinMinbinds(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getTo()),' '));

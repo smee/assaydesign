@@ -333,7 +333,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             		invalidreason3+=r;
             }
         }
-        String prefix = "All: "+filtcount+"/"+allcount+", ";
+        String prefix = "Excluded primers: "+filtcount+"/"+allcount+", ";
         if(type.equals(SBEPrimer._5_)) {
             invalidreason5=prefix+invalidreason5.substring(0,invalidreason5.length());
             invalidreason5=invalidreason5.substring(0,invalidreason5.length()-2);
@@ -388,8 +388,9 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             if (0 == (j + 1) % 3)
                 sb.append(' ');
         }
-        sb.append("oib");
-        return sb.reverse().toString();
+        sb.reverse();
+        sb.insert(0,cfg.getBiotinString());
+        return sb.toString();
     }
     /**
      * Entweder 5 oder 3
@@ -741,7 +742,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             ,"Fragment: T-Content"
             ,"Fragment: G-content"
             ,"PCR-Product-length"
-            ,"Sequence excl.PL"
+            ,"Actual sequence"
             ,"Comment"};
 
     public String getOutput() {
