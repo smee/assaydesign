@@ -106,7 +106,7 @@ public class SBECandidatePanel extends MyPanel {
 		GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
-		this.setSize(864, 198);
+		//this.setSize(864, 198);
 		this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "SBE-Primer "+num, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 		jLabel.setText("ID");
 		gridBagConstraints1.gridx = 0;
@@ -121,6 +121,7 @@ public class SBECandidatePanel extends MyPanel {
 		gridBagConstraints7.gridx = 5;
 		gridBagConstraints7.gridy = 0;
 		gridBagConstraints7.gridheight = 2;
+		gridBagConstraints7.weightx=1;
 		gridBagConstraints7.insets = new java.awt.Insets(5,10,5,0);
 		gridBagConstraints4.gridx = 2;
 		gridBagConstraints4.gridy = 0;
@@ -147,7 +148,7 @@ public class SBECandidatePanel extends MyPanel {
 		jLabel2.setText("3'-Sequence");
 		gridBagConstraints12.gridx = 9;
 		gridBagConstraints12.gridy = 1;
-		gridBagConstraints12.weightx = 1.0;
+		gridBagConstraints12.weightx = 2.0;
 		gridBagConstraints12.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints12.insets = new java.awt.Insets(0,10,0,0);
 		gridBagConstraints14.gridx = 10;
@@ -191,6 +192,7 @@ public class SBECandidatePanel extends MyPanel {
         gridBagConstraints15.insets = new java.awt.Insets(0,0,0,5);
         gridBagConstraints16.gridx = 10;
         gridBagConstraints16.gridy = 0;
+        gridBagConstraints16.weightx=1;
         gridBagConstraints16.gridheight = 2;
         gridBagConstraints16.insets = new java.awt.Insets(5,10,5,0);
         this.add(getPlpanel5(), gridBagConstraints7);
@@ -218,7 +220,7 @@ public class SBECandidatePanel extends MyPanel {
 			seq5tf = new SBESequenceTextField();
 			seq5tf.setMaxLen(100);
 			seq5tf.setUpper(true);
-			seq5tf.setColumns(10);
+			seq5tf.setColumns(15);
             seq5tf.cutFront(true);
             seq5tf.getDocument().addDocumentListener(cl);
 		}
@@ -296,7 +298,7 @@ public class SBECandidatePanel extends MyPanel {
     protected SBESequenceTextField getSeq3tf() {
 		if (seq3tf == null) {
 			seq3tf = new SBESequenceTextField(100,true,"ACGTacgt");
-			seq3tf.setColumns(10);
+			seq3tf.setColumns(15);
             seq3tf.cutFront(false);
             seq3tf.getDocument().addDocumentListener(cl);
 		}

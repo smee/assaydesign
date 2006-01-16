@@ -745,7 +745,7 @@ public class MiniSBEGui extends JFrame {
     private class ScrollablePanel extends JPanel implements Scrollable{
 
         public boolean getScrollableTracksViewportHeight() {return false;}
-        public boolean getScrollableTracksViewportWidth() {return false;}
+        public boolean getScrollableTracksViewportWidth() {return false;}//true, dann passt sich das an
         public Dimension getPreferredScrollableViewportSize() {return getPreferredSize();}
         public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
             return getScrollableUnitIncrement(visibleRect,orientation,direction);
@@ -1129,7 +1129,7 @@ public class MiniSBEGui extends JFrame {
         if(index%2 == 1)
         	p.setBackground(new Color(230,230,255));
         sbepanels.add(p);
-        sbepanelsPanel.add(p);
+        getSbepanelsPanel().add(p);
     }
     /**
 	 * This method initializes jScrollPane
