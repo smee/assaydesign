@@ -522,7 +522,7 @@ public class SBECandidatePanel extends MyPanel {
         getPcrLenPanel().setText(prodlen);
         getMultiplexidPanel().setText("");
         getFiltersPanel().setText("");
-        getFixedPrimerCB().setSelected(false);
+        getFixedPrimerCB().setSelected(true);
     }
 	/**
 	 * This method initializes stringEntryPanel

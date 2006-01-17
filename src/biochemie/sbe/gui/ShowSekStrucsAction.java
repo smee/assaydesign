@@ -51,7 +51,7 @@ public class ShowSekStrucsAction extends MyAction {
         p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));
         JScrollPane pane=new JScrollPane(p);
         p.add(new JLabel("Hairpins:"));
-        p.add(new JLabel(new DisplayStructureIcon(cal_Hairpins.cal_Hairpins(seq),SekStruktur.HAIRPIN)));
+        p.add(new JLabel(new DisplayStructureIcon(cal_Hairpins.getHairpins(seq),SekStruktur.HAIRPIN)));
         p.add(new JLabel("Homodimers:"));
         p.add(new JLabel(new DisplayStructureIcon(cal_Dimers.cal_Dimers(seq),SekStruktur.HOMODIMER)));
         f.getContentPane().add(pane);

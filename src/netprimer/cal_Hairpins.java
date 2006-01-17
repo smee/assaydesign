@@ -16,7 +16,7 @@ import biochemie.util.Helper;
 public class cal_Hairpins
 {
 
-    public static Collection cal_Hairpins(CharSequence theSequence)
+    public static Collection getHairpins(CharSequence theSequence)
     {
         int i = 0;
         int k = 0;

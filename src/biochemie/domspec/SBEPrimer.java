@@ -339,7 +339,10 @@ public class SBEPrimer extends Primer{
                 positions+="unknown";
             else
                 positions+=pos;
-            nucl+="dd"+Character.toUpperCase(s.bautEin());
+            if(Character.toUpperCase(s.bautEin())=='K')//anti pl
+                nucl+=" - ";
+            else
+                nucl+="dd"+Character.toUpperCase(s.bautEin());
             switch (s.getType()) {
             case SBESekStruktur.HAIRPIN:
                 clazz+="hairpin, ";
