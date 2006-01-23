@@ -725,6 +725,7 @@ public class MiniSBEGui extends JFrame {
             for (Iterator it = sbec.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
                 bw.write(p.getCSVLine());
+                p.setUnchanged();
                 bw.write("\n");
             }
             bw.close();

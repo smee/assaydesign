@@ -154,7 +154,9 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             }
             if(Helper.getPosOfPl(rightstring) > 0) {
             	System.out.println("Using given 3' primer.");
-                SBEPrimer primer = new SBEPrimer(cfg, id, rightstring, replr,snp, SBEPrimer._3_,bautEin3, productlen, true);
+                String rstring=Helper.revcomplPrimer(rightstring).replace('k','l').replace('K','L');//falls es compl. wurde und ein pl enthalten ist
+                SBEPrimer primer = new SBEPrimer(cfg, id, rstring, Helper.complNucl(replr),
+                        snp, SBEPrimer._3_,bautEin3, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }

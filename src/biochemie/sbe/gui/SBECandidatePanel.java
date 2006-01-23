@@ -370,7 +370,7 @@ public class SBECandidatePanel extends MyPanel {
 		return pcrLenPanel;
 	}
 
-    public String getCSVLine() {
+    public String getCSVLine() {//TODO beide pl speichern!
         String id=getTfId().getText();
         String l=inputcontrollerL.getSequenceWOL();
         String r=inputcontrollerR.getSequenceWOL();
@@ -381,6 +381,8 @@ public class SBECandidatePanel extends MyPanel {
         String productlen=getPcrLenPanel().getText();
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
         int festerpl=getPlpanel5().getSelectedPL();
+        if(festerpl==-1)
+            festerpl=getPlpanel3().getSelectedPL();
         StringBuffer sb=new StringBuffer();
         sb.append(id);
         sb.append(';');
@@ -411,7 +413,7 @@ public class SBECandidatePanel extends MyPanel {
         }
         String l=getSeq5tf().getText();
         char repll=inputcontrollerL.getReplNucl();
-        String r=getSeq3tf().isEnabled()?getSeq3tf().getText():"";
+        String r=getSeq3tf().getText();
         char replr=inputcontrollerR!=null?inputcontrollerR.getReplNucl():'0';
         if(l.length() == 0 && r.length()==0) //keine primer da
             return null;
@@ -454,8 +456,8 @@ public class SBECandidatePanel extends MyPanel {
     public void setValuesFromCSVInputLine(String line) {
         dirty();
         StringTokenizer stok = new StringTokenizer(line,";\"");
-        String id = stok.nextToken();
-        String l = stok.nextToken();
+        String id = stok.nextToken().trim();
+        String l = stok.nextToken().trim();
         String bautein5 = stok.nextToken();
         String snp = stok.nextToken();
         String r = stok.nextToken();
@@ -484,7 +486,10 @@ public class SBECandidatePanel extends MyPanel {
         getSeq3tf().setText(r);
         getHairpin3SelectionPanel().setSelectedNukleotides(bautein3);
         getPcrLenPanel().setText(Integer.toString(productlen));
-        getPlpanel5().setSelectedPL(pl);
+        if(l.length()>0)
+            getPlpanel5().setSelectedPL(pl);
+        else
+            getPlpanel3().setSelectedPL(pl);
         getMultiplexidPanel().setText(multiplexid);
         getFiltersPanel().setText(filters);
         getFixedPrimerCB().setSelected(Boolean.valueOf(fixed).booleanValue());

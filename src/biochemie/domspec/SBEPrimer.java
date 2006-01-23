@@ -73,10 +73,11 @@ public class SBEPrimer extends Primer{
 
         this.productlen= prodlen;
         this.type=type;
-        if(type.indexOf(_3_) != -1)
+        if(type.equals(_3_)) {
             this.snp=Helper.complPrimer(snp);
-        else
+        }else {
             this.snp=snp;
+        }
         init(bautein, usergiven);
 	}
 	public Set getSecStrucs() {

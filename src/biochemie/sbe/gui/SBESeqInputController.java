@@ -63,6 +63,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         sel=false;
                     if(sel == true)//nur dann!
                         plpanel.setEnabled(false);
+                    else
+                        plpanel.setEnabled(getReplNucl()!=0);
                     tf.setEnabled(!sel);
                 }
             });
