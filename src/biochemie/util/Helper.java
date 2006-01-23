@@ -702,7 +702,7 @@ public class Helper {
         return seq;
     }
     public static int getPosOfPl(String seq) {
-        int pos = seq.indexOf('L');
+        int pos = Math.max(seq.indexOf('L'), seq.indexOf('K'));
         if(pos == -1)
             return -1;
         return seq.length() - pos;
