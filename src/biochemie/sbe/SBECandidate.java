@@ -273,7 +273,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
  */
     private List getFilteredPrimerList(String primer, String type,String bautein, char repl) {
         if(type.equals(SBEPrimer._3_)) {
-            primer=Helper.revcomplPrimer(primer);
+            primer=Helper.revcomplPrimer(primer).replace('K','L').replace('k','l');
             repl=Helper.complNucl(repl);
         }
         ArrayList liste= new ArrayList();

@@ -38,8 +38,13 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
             Object[] entries = new Object[st.countTokens() + 2];
             int j =0;
             while (st.hasMoreTokens()) {
-                entries[j++] = st.nextToken();
+                entries[j++] = st.nextToken().trim();
             }
+/*            if(entries[4]!=null && ((String)entries[4]).length()>0)
+                entries[4]=new Integer((String) entries[4]);
+            if(entries[5]!=null && ((String)entries[5]).length()>0)
+                entries[5]=new Integer((String) entries[5]);*/
+            //TODO was ist mit leeren feldern? classcastexception beim sortieren!
             entries[entries.length - 2] = Boolean.FALSE;
             entries[entries.length - 1] = Boolean.FALSE;
             data[i] = entries;
@@ -64,7 +69,7 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
      * then the last column would contain text ("true"/"false"),
      * rather than a check box.
      */
-    public Class getColumnClass(int c) {
+    public Class getColumnClass(int c) {//TODO unsauber, z.b. fuer integer in spalte 4/5, kann ja leer sein! 
         return getValueAt(0, c).getClass();
     }
     public boolean isCellEditable(int row, int col) {
