@@ -160,8 +160,6 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         return;
                     }
                     char torepl = seq.charAt(seq.length() - pl);
-                    if(isRight)
-                        torepl = seq.charAt(pl - 1);//von links betrachten
                     if(torepl!='L') {
                         replacedNukl=torepl;
                         newseq=biochemie.util.Helper.replaceWithPL(seq,pl);
