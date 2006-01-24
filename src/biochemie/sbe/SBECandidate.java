@@ -97,7 +97,6 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     List primercandidates;
     private String invalidreason3="",invalidreason5="",usedreason="";
     private final String id;
-    private final String leftstring, rightstring;
     private final String snp;
     private final int productlen;
     private String givenMultiplexID;
@@ -131,8 +130,6 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
     public SBECandidate(SBEOptions cfg,String id, String l, int pl5,String r, int pl3, 
             String snp, int productlen, String bautEin5, String bautEin3, 
             String givenMultiplexid, String unwanted, boolean userGiven, boolean rememberOutput) {
-        leftstring=l;
-        rightstring= r;
         this.id=id;
         this.productlen=productlen;
         this.snp=snp;
@@ -146,22 +143,22 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
         System.setOut(new PrintStream(bos));
 
         if(userGiven){
-            if(Helper.getPosOfPl(leftstring) > 0) {
+            if(pl5 > 0) {
             	System.out.println("Using given 5' primer.");
-                SBEPrimer primer = new SBEPrimer(cfg, id, leftstring, pl5,snp, SBEPrimer._5_,bautEin5, productlen, true);
+                SBEPrimer primer = new SBEPrimer(cfg, id, l, pl5,snp, SBEPrimer._5_,bautEin5, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
-            if(Helper.getPosOfPl(rightstring) > 0) {
+            if(pl3 > 0) {
             	System.out.println("Using given 3' primer.");
-                String rstring=Helper.revcomplPrimer(rightstring);
+                String rstring=Helper.revcomplPrimer(r);
                 SBEPrimer primer = new SBEPrimer(cfg, id, rstring, pl3,
                         snp, SBEPrimer._3_,bautEin3, productlen, true);
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
         }else
-        	createValidCandidate(leftstring, bautEin5,pl5, rightstring,bautEin3,pl3);
+        	createValidCandidate(l, bautEin5,pl5, r,bautEin3,pl3);
         //this.logstring=bos.toString();
         System.setOut(orgout);
         if(rememberOutput)
@@ -170,7 +167,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
             System.out.println(bos.toString());
      }
     public String toString() {
-        return "Sbec. \""+id+"\" l="+leftstring+", r="+rightstring;
+        return "Sbec. \""+id;
     }
     /**
      * Erzeuge eine Liste von Sequenzen, die allen Kriterien gerecht werden und setzt alle entsprechenden
@@ -187,7 +184,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
                     + Helper.toStringln(primercandidates.toArray(new Object[primercandidates.size()])));
        
         if (0 == primercandidates.size()) {
-            System.out.println("==> No Primer found for " + leftstring + " and " + rightstring);
+            System.out.println("==> No Primer found for " + l + " and " + r);
             return;
         }
 
@@ -275,7 +272,6 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
         if(type.equals(SBEPrimer._3_)) {
             primer=Helper.revcomplPrimer(primer).replace('K','L').replace('k','l');
         }
-        char repl=0;
         ArrayList liste= new ArrayList();
 		boolean hh=!bautein.equalsIgnoreCase("none") && 0 == bautein.length(); //in diesen beiden Fällen werden die H-Filter nicht verwendet
         /*
@@ -292,7 +288,7 @@ public class SBECandidate implements  MultiplexableFactory, Observer {
                      * Ich kann den Primer nicht einfach clonen, weil sonst die Sekundaerstrukturen immer noch auf den originalen Primer verweisen,
                      * so dass eine gesetzte Bruchstelle keine Wirkung haette.
                      */
-                    SBEPrimer p=new SBEPrimer(cfg,id,primer.substring(startidx),pl,snp,type,bautein,productlen,false);
+                    SBEPrimer p=new SBEPrimer(cfg,id,primer.substring(startidx),br[j],snp,type,bautein,productlen,false);
                     p.addObserver(this);
                     liste.add(p);
                 }
