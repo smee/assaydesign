@@ -89,12 +89,12 @@ public class Helper {
         case 'T' :
         case 't' :
             return 'A';
-        case 'L':    
-        case 'l':
-            return 'K';//halt n anti-pl :)
-        case 'K':    
-        case 'k':
-            return 'L';//halt n anti-pl :)
+//        case 'L':    
+//        case 'l':
+//            return 'K';//halt n anti-pl :)
+//        case 'K':    
+//        case 'k':
+//            return 'L';//halt n anti-pl :)
         default :
             return Character.toUpperCase(nucl);
     }

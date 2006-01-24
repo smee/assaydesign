@@ -129,7 +129,7 @@ public class SBESekStruktur extends SekStruktur{
         case HAIRPIN:
             return Helper.outputHairpin(seq,pos-1,seq.length());
         case HOMODIMER:
-            return Helper.outputXDimer(seq,seq,seq.length() - pos,p.seq.length());
+            return Helper.outputXDimer(seq,seq,seq.length() - pos,p.getSeq().length());
         case CROSSDIMER:
             String otherseq = Helper.replaceWithPL(other.getSeq(), ((SBEPrimer)other).getBruchstelle());
             return Helper.outputXDimer(seq,otherseq,seq.length()-pos,Math.min(seq.length(),otherseq.length()));

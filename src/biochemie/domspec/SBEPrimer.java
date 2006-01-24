@@ -45,7 +45,6 @@ public class SBEPrimer extends Primer{
     private final String snp;
     private final SBEOptions cfg;
     private final int productlen;
-    private char repl;
 
 
     public SBEPrimer(SBEOptions cfg,String id,String seq,String snp, String type, String bautein, int prodlen,boolean usergiven) {
@@ -63,14 +62,13 @@ public class SBEPrimer extends Primer{
      * @param prodlen Length of the sbeproduct
      * @param usergiven tru: don't probe for secstructures.
      */
-    public SBEPrimer(SBEOptions cfg,String id,String seq, char repl, String snp, String type, String bautein, int prodlen,boolean usergiven) {
+    public SBEPrimer(SBEOptions cfg,String id,String seq, int pl, String snp, String type, String bautein, int prodlen,boolean usergiven) {
         super(id,seq);
         this.cfg = cfg;
-        this.repl=repl;
-        this.pl=Helper.getPosOfPl(seq);
+        this.pl=pl;
         if(pl == -1)
             throw new IllegalArgumentException("Sequence of primer "+id+" has no L within sequence!");
-
+        
         this.productlen= prodlen;
         this.type=type;
         if(type.equals(_3_)) {
@@ -398,8 +396,13 @@ public class SBEPrimer extends Primer{
      * @return
      */
     public String getSeqWOPl() {
-        if(repl!='0')
-            return Helper.replacePL(getSeq(),repl);
-        return getSeq();
+        return super.getSeq();
+    }
+    /* (non-Javadoc)
+     * @see biochemie.domspec.Primer#getSeq()
+     */
+    public String getSeq() {
+        String seq=super.getSeq();
+        return Helper.replaceWithPL(seq,pl);
     }
 }

@@ -28,7 +28,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
 	public final static String SEKSTRUK_CHANGED="sec.structures changed";
 	public final static String PLEXID_CHANGED="multiplexid changed";
 
-    protected final String seq;
+    private final String seq;
     protected String plexid;
     protected final String id;
     protected final double temp;

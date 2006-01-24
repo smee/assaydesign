@@ -411,19 +411,19 @@ public class SBECandidatePanel extends MyPanel {
         if(!inputcontrollerL.isOkay()) {
             return null;
         }
-        String l=getSeq5tf().getText();
-        char repll=inputcontrollerL.getReplNucl();
-        String r=getSeq3tf().getText();
-        char replr=inputcontrollerR!=null?inputcontrollerR.getReplNucl():'0';
+        String l=this.inputcontrollerL.getSequenceWOL();
+        int pl5=getPlpanel5().getSelectedPL();
+        String r=this.inputcontrollerR.getSequenceWOL();
+        int pl3=getPlpanel3().getSelectedPL();
         if(l.length() == 0 && r.length()==0) //keine primer da
             return null;
 
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
         String id=getId();
 
-        int pl=0;
+        int pcrlen=0;
         try {
-            pl = Integer.parseInt(getPcrLenPanel().getText());
+            pcrlen = Integer.parseInt(getPcrLenPanel().getText());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -434,10 +434,9 @@ public class SBECandidatePanel extends MyPanel {
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
         String multiplexid = getMultiplexidPanel().getPBSequenceField().isEnabled()?getMultiplexidPanel().getText():"";
         String unwanted = getFiltersPanel().getText();
-        int pcrlen=Integer.parseInt(getPcrLenPanel().getText());
         boolean userGiven=getFixedPrimerCB().isSelected();
 
-        s=new SBECandidate(cfg,id,l,repll,r,replr,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
+        s=new SBECandidate(cfg,id,l,pl5,r,pl3,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
         return s;
     }
 

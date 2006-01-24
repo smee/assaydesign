@@ -199,7 +199,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     public String getSequenceWOL() {
         if(replacedNukl!=0) {
             String seq=left.getText();
-            return Helper.replaceNukl(seq,Helper.getPosOfPl(seq),replacedNukl);
+            return Helper.replacePL(seq,replacedNukl);
         }
         return left.getText();
     }
