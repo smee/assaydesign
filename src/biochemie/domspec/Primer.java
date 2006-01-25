@@ -31,7 +31,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
     private final String seq;
     protected String plexid;
     protected final String id;
-    protected final double temp;
+    protected double temp;
     protected final double gcgehalt;
 
     protected Set sekstruc;

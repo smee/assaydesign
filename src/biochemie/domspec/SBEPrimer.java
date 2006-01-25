@@ -127,6 +127,7 @@ public class SBEPrimer extends Primer{
                 }
             }
         }
+        temp=Helper.calcTM(getSeq());//temperatur mit pl ist anders als ohne
     }
 
 
