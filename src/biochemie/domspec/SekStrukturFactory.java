@@ -25,13 +25,6 @@ public class SekStrukturFactory {
         HomoDimerAnalysis hda= getHomoDimerAnalysisInstance(cfg);
         String seq=p.getSeq();
         
-        if(p instanceof SBEPrimer) {//ersetze photolinker surch X
-            SBEPrimer sbep=(SBEPrimer)p;
-            int pos =-1;
-            if((pos=sbep.getBruchstelle() )!=-1){
-                seq=biochemie.util.Helper.replaceWithPL(seq,pos);
-            }
-        }
         List poshairpins= hpa.getHairpinPositions(seq);
         List poshomodimer= hda.getHomoDimerPositions(seq);
         Set sekstrukts=new HashSet(poshairpins.size()+poshomodimer.size());
@@ -75,20 +68,7 @@ public class SekStrukturFactory {
     public static Set getCrossdimer(Primer p, Primer other, CrossDimerAnalysis cda) {
         String pseq = p.getSeq();
         String oseq =other.getSeq();
-        if(p instanceof SBEPrimer) {//ersetze photolinker surch X
-            SBEPrimer sbep=(SBEPrimer)p;
-            int pos =-1;
-            if((pos=sbep.getBruchstelle() )!=-1){
-                pseq=biochemie.util.Helper.replaceWithPL(pseq,pos);
-            }
-        }
-        if(other instanceof SBEPrimer) {//ersetze photolinker surch X
-            SBEPrimer sbep=(SBEPrimer)other;
-            int pos =-1;
-            if((pos=sbep.getBruchstelle() )!=-1){
-                oseq=biochemie.util.Helper.replaceWithPL(oseq,pos);
-            }
-        }
+
         List positions= cda.getCrossDimerPositions(pseq,oseq);
         Set sek=new HashSet();
         
