@@ -119,23 +119,4 @@ public class SBESekStruktur extends SekStruktur{
         };
     }
 
-
-    /* (non-Javadoc)
-     * @see biochemie.domspec.SekStruktur#getAsciiArt()
-     */
-    public String getAsciiArt() {
-        String seq = Helper.replaceWithPL(p.getSeq(),((SBEPrimer)p).getBruchstelle());
-        switch (type) {
-        case HAIRPIN:
-            return Helper.outputHairpin(seq,pos-1,seq.length());
-        case HOMODIMER:
-            return Helper.outputXDimer(seq,seq,seq.length() - pos,p.getSeq().length());
-        case CROSSDIMER:
-            String otherseq = Helper.replaceWithPL(other.getSeq(), ((SBEPrimer)other).getBruchstelle());
-            return Helper.outputXDimer(seq,otherseq,seq.length()-pos,Math.min(seq.length(),otherseq.length()));
-
-        default:
-            return "unknown type of sec.struk encountered.";
-        }
-    }
 }

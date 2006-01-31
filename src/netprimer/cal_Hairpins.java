@@ -132,4 +132,13 @@ public class cal_Hairpins
         }
         return itsHairpinList;
     }
+    public static void main(String[] args) {
+        System.out.println(getHairpins("AAAAAACCCCCCAAAAAGGCGGG"));
+        System.out.println(Helper.cal_dG_secondaryStruct("GGG")+Helper.LoopEnergy(10)-1);
+        System.out.println(Helper.cal_dG_secondaryStruct("GGG")+Helper.LoopEnergy(9)-1);
+        System.out.println(Helper.cal_dG_secondaryStruct("GGG")+Helper.LoopEnergy(8)-1);
+        System.out.println();
+        System.out.println(Helper.cal_dG_secondaryStruct("ACCGAA")+Helper.LoopEnergy(8)-1);
+        System.out.println(Helper.cal_dG_secondaryStruct("TTCGGT")+Helper.LoopEnergy(8)-1);
+    }
 }

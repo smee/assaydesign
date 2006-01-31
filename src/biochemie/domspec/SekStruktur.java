@@ -148,6 +148,20 @@ public class SekStruktur  implements Cloneable{
             return "unknown type of sec.struk encountered.";
         }
     }
-
-
+    protected static String getBindingSeq(String primer, String rcPrimer, int i) {
+        int tempindex;
+        tempindex=primer.length()-1;
+        StringBuffer binding=new StringBuffer(Math.max(primer.length(),rcPrimer.length()));
+        for(int j=i-1;0 < j;j--) {  //maximal bis maxmatchlength suchen
+            tempindex--;
+            if(primer.charAt(tempindex)==rcPrimer.charAt(j) && Helper.isNukleotid(rcPrimer.charAt(j))) {
+                binding.append(primer.charAt(tempindex));
+            }else
+                break;
+        }
+        return binding.toString();
+    }
+    protected static int getLoopLength(int primerlength, int matchstart, int matchlen) {
+        return 0;
+    }
 }
