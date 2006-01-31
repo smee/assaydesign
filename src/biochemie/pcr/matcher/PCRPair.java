@@ -31,7 +31,7 @@ class PCRPair implements Multiplexable{
     }
 
     public String getName() {
-        return leftp.getId();//+","+leftp.getPos();
+        return leftp.getId()+","+leftp.getPos();
     }
     public void setNewConfig(GeneralConfig cfg) {
         leftp.setNewConfig(cfg);

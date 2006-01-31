@@ -134,6 +134,9 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public Collection getLastEdges() {
             return edgecol;
         }
+        public String toString() {
+            return getIncludedElements().toString();
+        }
         private static class DiffGivenMIDEdge extends MyUndirectedEdge{
             private final String mid;
             public DiffGivenMIDEdge(Object sourceVertex, Object targetVertex, String mid) {

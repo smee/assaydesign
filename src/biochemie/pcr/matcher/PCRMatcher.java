@@ -171,14 +171,14 @@ public static void main(String[] args) {
         int count=0;
         complex=new MultiKnoten(Collections.EMPTY_LIST);
         while(cm.getNumOfConfigsLeft() > 0 && complex.realSize()<maxplex) {
+            System.out.println("\nStarte Durchlauf "+count+"...");
             GeneralConfig cfg=cm.getNextConfig();
-//            System.out.println("keys in config: "+cfg.getKeys());
             MatcherStrategy ms=getMatcherStrategy(cfg);
             updateConfigs(cfg);
             Collection max=ms.getBestPCRPrimerSet(pcrpairs,complex);
             createNewComplex(max);
+            System.out.println("Durchlauf "+count+": "+complex.realSize()+" Primer gluecklich vereint... "+complex.toString());
             count++;
-            System.out.println("\nDurchlauf "+count+": "+complex.realSize()+" Primer gluecklich vereint...");
         }
     }
 

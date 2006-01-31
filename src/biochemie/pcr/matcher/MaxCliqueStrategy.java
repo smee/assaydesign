@@ -35,7 +35,7 @@ public class MaxCliqueStrategy implements MatcherStrategy {
     public Collection getBestPCRPrimerSet(List pcrpairs, Multiplexable needed) {
         System.out.println("Creating graph... (Might take a while!)");
         List l=new ArrayList(pcrpairs.size()+1);
-        if(needed!=null)
+        if(needed!=null && needed.realSize()>0)
             l.add(needed);
         l.addAll(pcrpairs);
         UndirectedGraph g=GraphHelper.getKomplementaerGraph(GraphHelper.createIncompGraph(l,true,GraphWriter.TGF,Collections.EMPTY_SET),true,GraphWriter.TGF);

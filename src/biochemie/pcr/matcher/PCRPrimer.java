@@ -99,6 +99,9 @@ public class PCRPrimer extends Primer {
         return false;
     }
     public int hashCode() {
-        return new HashCodeBuilder(1847,241).appendSuper(super.hashCode()).append(type).append(pos).toHashCode();
+        return new HashCodeBuilder(1847,241).appendSuper(super.hashCode()).
+        append(type).
+        append(pos).
+        append(id).toHashCode();
     }
 }
