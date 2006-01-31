@@ -33,12 +33,14 @@ public class SecStructureEdge extends MyUndirectedEdge {
             return false;
     }
     public int hashCode() {
-        return new HashCodeBuilder(77,33).
+        HashCodeBuilder hcb= new HashCodeBuilder(77,33).
             append(s.getPrimer().getId()).
             append(s.getPosFrom3()).
             append(s.bautEin()).
-            append(s.getType()==SBESekStruktur.CROSSDIMER).
-            append(((SBEPrimer)s.getPrimer()).getType()).toHashCode();
+            append(s.getType()==SBESekStruktur.CROSSDIMER);
+        if(s.getPrimer() instanceof SBEPrimer)
+            hcb.append(((SBEPrimer)s.getPrimer()).getType());
+        return hcb.toHashCode();
     }
     public String matchString() {
         StringBuffer sb=new StringBuffer("SecEdge ");

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org._3pq.jgrapht.UndirectedGraph;
 
+import biochemie.domspec.Primer;
 import biochemie.sbe.calculators.ReusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
 import biochemie.sbe.io.MultiKnoten;
@@ -47,8 +48,10 @@ public class ColorerStrategy implements MatcherStrategy {
 
         System.out.println("Time for Coloring: "+seconds+" s");
         System.out.println("Starting coloring search...");
-
-        SBEColorerProxy scp=new SBEColorerProxy(g,new HashSet(),maxplex,true);
+        
+        Set init=new HashSet();
+        init.add(needed);
+        SBEColorerProxy scp=new SBEColorerProxy(g,init,maxplex,true);
         rt.setInterruptableJob(scp);
         List result=new ArrayList((Collection)rt.getResult());
 
@@ -74,7 +77,7 @@ public class ColorerStrategy implements MatcherStrategy {
         		                          "------------------------------------------------------------");
         for (Iterator it = result.iterator(); it.hasNext();) {
             Set s = (Set) it.next();
-            System.out.println("Size: " + s.size()+", avg. pos = " + getAvg(s));
+            System.out.println("Size: " + getNumOfPrimers(s)+", avg. pos = " + getAvg(s));
         }
         Collection col=(Collection) result.get(0);
         if(col.size()==1)
@@ -82,6 +85,14 @@ public class ColorerStrategy implements MatcherStrategy {
         return col;
 
     }
+    private int getNumOfPrimers(Set s) {
+        int count=0;
+        for (Iterator it = s.iterator(); it.hasNext();) {
+            count+=((Multiplexable)it.next()).realSize();
+        }
+        return count;
+    }
+
     private double getAvg(Set s){
         double avg1=0;
         for (Iterator it = s.iterator(); it.hasNext();) {
