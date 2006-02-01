@@ -446,6 +446,7 @@ public class SBECandidatePanel extends MyPanel {
      */
     public void refreshData(SBEOptions cfg) {
         getPlpanel5().setPLPositions(cfg.getPhotolinkerPositions());
+        getPlpanel3().setPLPositions(cfg.getPhotolinkerPositions());
     }
 
     /**

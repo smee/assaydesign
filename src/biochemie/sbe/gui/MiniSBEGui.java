@@ -537,10 +537,10 @@ public class MiniSBEGui extends JFrame {
                 e1.printStackTrace();
             }
         	getSavePrimerAction().saveToFile(f);
-//            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
-//                SBECandidatePanel panel = (SBECandidatePanel) it.next();
-//                panel.refreshData(dia.getSBEOptionsFromGui());
-//            }
+            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+                SBECandidatePanel panel = (SBECandidatePanel) it.next();
+                panel.refreshData(dia.getSBEOptionsFromGui());
+            }
             getLoadPrimerAction().loadFromFile(f);
             if(f != null)
                 f.delete();
