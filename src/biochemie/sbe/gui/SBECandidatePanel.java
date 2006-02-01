@@ -285,7 +285,7 @@ public class SBECandidatePanel extends MyPanel {
     protected PLSelectorPanel getPlpanel5() {
 		if (plpanel5 == null) {
 			plpanel5 = new PLSelectorPanel();
-            plpanel5.setTitle("PL 5'");
+            plpanel5.setTitle("Linker 5'");
 			plpanel5.setPreferredSize(new java.awt.Dimension(90,56));
 		}
 		return plpanel5;
@@ -607,7 +607,7 @@ public class SBECandidatePanel extends MyPanel {
 	protected PLSelectorPanel getPlpanel3() {
 		if (plpanel3 == null) {
 			plpanel3 = new PLSelectorPanel();
-			plpanel3.setTitle("PL 3'");
+			plpanel3.setTitle("Linker 3'");
 		}
 		return plpanel3;
 	}
