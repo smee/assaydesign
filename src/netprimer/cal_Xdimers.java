@@ -6,6 +6,7 @@
 package netprimer;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 
 import biochemie.util.Helper;
@@ -158,5 +159,12 @@ public class cal_Xdimers
             SeqForDg = new StringBuffer(2 * maxLength);
         }
         return itsXDimerList;
+    }
+    public static void main(String[] args) {
+        Collection col=cal_Xdimers("AAAAAACCCCCLAAAAAGGCGGG","CAGGTACCGTLTACGTGTTCCCACTGAATCCCGAT");
+        for (Iterator iter = col.iterator(); iter.hasNext();) {
+            Xdimer d = (Xdimer) iter.next();
+            System.out.println(d);
+        }
     }
 }

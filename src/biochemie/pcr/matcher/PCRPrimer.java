@@ -47,7 +47,7 @@ public class PCRPrimer extends Primer {
                 ,Boolean.toString(false));
     }
     public boolean passtMit(Multiplexable o) {
-        edgecol=new HashSet();
+        edgecol.clear();
         if(o instanceof PCRPrimer) {
             PCRPrimer other=(PCRPrimer) o;
             double tmp;

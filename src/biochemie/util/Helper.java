@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -40,8 +41,16 @@ import biochemie.calcdalton.CalcDaltonOptions;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class Helper {
-
-
+    private static final DecimalFormat df=new DecimalFormat("#.##");
+    /**
+     * Formats a double as #.##
+     * @param d
+     * @return
+     */
+    public static String format(double d) {
+        return df.format(d);
+    }
+    
     public static int[] clone(int[]arr) {
         if(null == arr)
             return null;
@@ -143,8 +152,9 @@ public class Helper {
      * @param primer
      * @param i von 3' aus gerechnet mit 0-Index
      * @param windowsize
+     * @param enthalpy 
      */
-    public static String outputHairpin(String primer, int i, int windowsize) {
+    public static String outputHairpin(String primer, int i, int windowsize, double enthalpy) {
             StringBuffer sb= new StringBuffer();
         try {
             int start= primer.length() - i - 1;
@@ -152,7 +162,8 @@ public class Helper {
 
             sb.append(primer.substring(0, breakPos + 1));
 
-            sb.append("-|\n");
+            sb.append("-|   ");
+            sb.append("\u0394G=").append(format(enthalpy)).append("kcal/mol\n");
             for (int j= 0; j < start; j++)
                 sb.append(' ');
             String complp= Helper.complPrimer(primer);
@@ -177,8 +188,9 @@ public class Helper {
      * @param primer
      * @param primer2
      * @param pos anzahl der leerzeichen, die der zweite primer verschoben werden muss, damit es matcht
+     * @param enthalpy 
      */
-    public static String outputXDimer(String primer, String primer2, int pos, int windowsize) {
+    public static String outputXDimer(String primer, String primer2, int pos, int windowsize, double enthalpy) {
             StringBuffer sb= new StringBuffer();
             /*
              * Es kann sein, dass  pos negativ ist, dann muss die erste Zeile auch nach rechts verschoben werden.
@@ -187,7 +199,8 @@ public class Helper {
                 sb.append(StringUtils.repeat(" ", Math.abs(pos)));
             }
             sb.append(primer);
-            sb.append('\n');
+            sb.append("   ");
+            sb.append("\u0394G=").append(format(enthalpy)).append("kcal/mol\n");
             sb.append(StringUtils.repeat(" ",Math.abs(pos)));
 
             String rcPrimer= revcomplPrimer(primer2);

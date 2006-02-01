@@ -4,7 +4,6 @@
  */
 package biochemie.domspec;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +47,7 @@ public class SBEPrimer extends Primer{
 
 
     public SBEPrimer(SBEOptions cfg,String id,String seq,String snp, String type, String bautein, int prodlen,boolean usergiven) {
-        this(cfg,id,seq,'0',snp,type,bautein,prodlen,usergiven);
+        this(cfg,id,seq,Helper.getPosOfPl(seq),snp,type,bautein,prodlen,usergiven);
     }
     /**
      * This constructor needs a L within the sequence to determine the position of the photolinker
@@ -162,7 +161,7 @@ public class SBEPrimer extends Primer{
 }
 
     public boolean passtMit(Multiplexable o) {
-        edgecol=new HashSet();
+        edgecol.clear();
         if(o instanceof SBEPrimer) {
             SBEPrimer other=(SBEPrimer) o;
             //dumm, aber nur so umgehe ich den kurzschlussoperator &&....
@@ -181,7 +180,7 @@ public class SBEPrimer extends Primer{
             return flag;
         }else {//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
             boolean ret= o.passtMit(this);
-            edgecol=o.getLastEdges();
+            edgecol.addAll(o.getLastEdges());
             return ret;
         }
     }
@@ -191,7 +190,7 @@ public class SBEPrimer extends Primer{
      * @return
      */
     public boolean passtMitKompCD(SBEPrimer other) {
-        edgecol=new HashSet();
+        edgecol.clear();
         return passtMitID(other)
         && passtMitProductLength(other)
         && passtMitSekStrucs(other) 
@@ -248,7 +247,6 @@ public class SBEPrimer extends Primer{
         return passtMitCDRec(this,other,evilcd) && passtMitCDRec(other,this,evilcd);//damit der crossdimer auch dem richtigen primer zugeordnet werden kann
     }
     private boolean passtMitCDRec(SBEPrimer me,SBEPrimer other, boolean evilcd) {
-        boolean retval=true;
         Set cross=SekStrukturFactory.getCrossdimer(me,other,cfg);
         for (Iterator it = cross.iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
@@ -320,10 +318,10 @@ public class SBEPrimer extends Primer{
         return getId()+'_'+getBruchstelle()+'_'+getType();
     }
     public String toString() {
-        DecimalFormat nf=new DecimalFormat("#.##");
+        
         return getId()+":"+getSeq()+", "+getType()+", PL="+getBruchstelle()+
-        ", GC="+nf.format(getGCGehalt())+"%"+
-        ", Tm="+nf.format(getTemperature())+"°, hairpins="
+        ", GC="+Helper.format(getGCGehalt())+"%"+
+        ", Tm="+Helper.format(getTemperature())+"°, hairpins="
         +getHairpinPositions()+", homodimer="+getHomodimerPositions();
     }
     public String getCSVSekStructuresSeparatedBy(String sep) {

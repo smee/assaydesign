@@ -6,6 +6,7 @@ package biochemie.domspec;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -35,7 +36,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
     protected double gcgehalt;
 
     protected Set sekstruc;
-    protected Collection edgecol;
+    protected final Collection edgecol=new HashSet();
     /**
      * @param seq
      */
@@ -109,7 +110,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
      * @return
      */
     public Collection getLastEdges() {
-        return edgecol;
+        return new HashSet(edgecol);
     }
 
     /**

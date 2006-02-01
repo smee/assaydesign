@@ -70,7 +70,7 @@ public class HairpinAnalysis extends SekAnalysis{
         	liste=new ArrayList();
     	String rcPrimer= Helper.revcomplPrimer(primer);
     	
-    	for (int i= 2*minbinds[idx]+1; i < plength-1; i++) {
+    	for (int i= 2*minbinds[idx]+2; i < plength-1; i++) {
     		/* Im revcompl-Primer muss die Sequenz von minbinding+2 bis max. länge-1 liegen.
     		 * minbind+2 wegen min. 2 Basen Abstand zwischen bindenden 3'-Ende und 
     		 * Match und länge-1 wegen kein Hairpin der Enden (steht in Holgers Anforderung) 
@@ -90,7 +90,7 @@ public class HairpinAnalysis extends SekAnalysis{
                 if(binds>=minbinds[idx]){
                     liste.add(new Integer(i+1));
 					if(debug)
-						System.out.println(Helper.outputHairpin(primer,pos,windowsize[idx]));
+						System.out.println(Helper.outputHairpin(primer,pos,windowsize[idx],0));
                 }				
     		}
     	}

@@ -80,21 +80,8 @@ public class TestHelper extends TestCase {
         assertEquals(10, Helper.getPosOfPl("LCGTACGAGG"));
         assertEquals(1, Helper.getPosOfPl("acgtcagactgcatL"));
     }
-    public void testOutputXDimer() {
-        String exp="AAAAAAAAA\n" +
-                   "     ||||\n" +
-                   "     TTTTTTTTT";
-        assertEquals(exp,Helper.outputXDimer("AAAAAAAAA"
-                                            ,"TTTTTTTTT"
-                                            ,5
-                                            ,4));
-
-        String exp2="   CCCCCCCCCC\n" +
-                    "      | | | |\n" +
-                    "AAAAAAGAGAGAGAGAGA";
-        assertEquals(exp2,Helper.outputXDimer("CCCCCCCCCC"
-                                            ,"AGAGAGAGAGAGAAAAAA"
-                                            ,-3
-                                            ,Integer.MAX_VALUE));
+    public void testCalcSecEnthalpy() {
+        assertEquals(-5.23,Helper.cal_dG_secondaryStruct("AAAC"),1e-2);
+        assertEquals(-3.29,Helper.cal_dG_secondaryStruct("AAC"),1e-2);
     }
 }

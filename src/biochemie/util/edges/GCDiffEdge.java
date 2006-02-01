@@ -1,19 +1,17 @@
 package biochemie.util.edges;
 
-import java.text.DecimalFormat;
 
-import org._3pq.jgrapht.edge.UndirectedEdge;
+import biochemie.util.Helper;
 
 public class GCDiffEdge extends MyUndirectedEdge {
     private final double gcdiff;
-    private static final DecimalFormat df=new DecimalFormat("0.00");
     
     public GCDiffEdge(Object sourceVertex, Object targetVertex, double gcdiff) {
         super(sourceVertex, targetVertex);
         this.gcdiff=gcdiff;
     }
     public String toString() {
-        return super.toString()+": GCdiff too high: "+df.format(gcdiff);
+        return super.toString()+": GCdiff too high: "+Helper.format(gcdiff);
     }
     public boolean equals(Object other) {
         if(other instanceof GCDiffEdge) {

@@ -6,7 +6,6 @@ package biochemie.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +21,7 @@ import biochemie.util.edges.MyUndirectedEdge;
  *
  */
 public class GraphHelper {
-
+    
     /**
      * Erstellt komplementaeren Graphen.
      * @param g
@@ -40,8 +39,8 @@ public class GraphHelper {
         result.addAllVertices(vert);
         for (int i = 0; i < vert.size(); i++) {
             Object v1=vert.get(i);
-//            System.out.println("v1="+v1);
-//            System.out.println("edges for v1: "+g.edgesOf(v1));
+//          System.out.println("v1="+v1);
+//          System.out.println("edges for v1: "+g.edgesOf(v1));
             for (int j = i+1; j < vert.size(); j++) {
                 Object v2=vert.get(j);
                 if(!g.containsEdge(v1,v2)) {
@@ -55,7 +54,7 @@ public class GraphHelper {
             gw.close();
         return result;
     }
-
+    
     /**
      * Erstellt den Unvertraeglichkkeitsgraphen von einer List von Multiplexables.
      * @param multiplexables
@@ -78,17 +77,15 @@ public class GraphHelper {
                 return null;
             for (int j = i+1; j < multiplexables.size(); j++) {
                 Multiplexable s2=(Multiplexable) multiplexables.get(j);
-                if(s1.equals(s2))
-                    System.out.println("Equal: "+s1+" ---- "+s2);
                 if(!s1.passtMit(s2)) {
                     Collection edges=s1.getLastEdges();
                     for (Iterator it = edges.iterator(); it.hasNext();) {
                         MyUndirectedEdge edge = (MyUndirectedEdge) it.next();
                         
                         if(!filteredEdges.contains(edge.matchString())) {
-                            if(edge.getSource().equals(edge.getTarget()))
-                                System.out.println("Loopedge: "+edge.getSource()+" - "+edge.getTarget());
-                            g.addEdge(edge);
+                            //loops lassen wir weg, entstehen z.b. wenn man wegen kompatiblen crossdimern multiknoten bildet
+                            if(!edge.getSource().equals(edge.getTarget()))
+                                g.addEdge(edge);
                             if(writegraph)
                                 gw.addArc(i,j,edge.toString());
                         }else
@@ -101,7 +98,7 @@ public class GraphHelper {
             gw.close();
         return g;
     }
-
+    
     /**
      * @param multiplexables
      * @return

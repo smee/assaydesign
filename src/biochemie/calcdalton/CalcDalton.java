@@ -19,12 +19,9 @@ package biochemie.calcdalton;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.commons.lang.ArrayUtils;
 
 import biochemie.sbe.calculators.Interruptible;
 import biochemie.util.Helper;

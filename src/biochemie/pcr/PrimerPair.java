@@ -4,8 +4,6 @@
  */
 package biochemie.pcr;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import biochemie.util.Helper;
 
@@ -28,7 +26,6 @@ public class PrimerPair {
                                              ,"Hairpin-Analyse","Homodimer-Analyse"
                                              ,"Crossdimer-Analyse"};
 
-    private static final DecimalFormat df=new DecimalFormat("#.##");
     public final String leftp;
     public final String rightp;
     public final int leftpos;
@@ -223,9 +220,9 @@ public class PrimerPair {
         sb.append(';');
         sb.append(leftlen);
         sb.append(';');
-        sb.append(df.format(gcleft));
+        sb.append(Helper.format(gcleft));
         sb.append(';');
-        sb.append(df.format(Helper.getXGehalt(leftp,"GgCc")));
+        sb.append(Helper.format(Helper.getXGehalt(leftp,"GgCc")));
         sb.append(';');
         sb.append(rightp);
         sb.append(';');
@@ -233,15 +230,15 @@ public class PrimerPair {
         sb.append(';');
         sb.append(rightlen);
         sb.append(';');
-        sb.append(df.format(gcright));
+        sb.append(Helper.format(gcright));
         sb.append(';');
-        sb.append(df.format(Helper.getXGehalt(rightp,"GgCc")));
+        sb.append(Helper.format(Helper.getXGehalt(rightp,"GgCc")));
         sb.append(';');
         sb.append(productlen);
         sb.append(';');
         sb.append(productlen+2*anhangsize);
         sb.append(';');
-        sb.append(df.format(gcdiff));
+        sb.append(Helper.format(gcdiff));
         sb.append(';');
         int sum=0;
         for(int i=0;7 >= i;i++){

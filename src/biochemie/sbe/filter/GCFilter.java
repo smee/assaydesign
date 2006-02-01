@@ -7,9 +7,9 @@ package biochemie.sbe.filter;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.domspec.Primer;
 import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
+import biochemie.util.Helper;
 
 /**
  *
@@ -39,7 +39,7 @@ public class GCFilter extends AbstractKandidatenFilter {
                 it.remove();
                 count++;
                 sb.append(getSBEPrimerDescription(p)).append(", ");
-                sb.append(markRed("GC="+nf.format(gc)+"%"));
+                sb.append(markRed("GC="+Helper.format(gc)+"%"));
                 sb.append("\n");
             }
         }

@@ -59,7 +59,15 @@ public class Xdimer
         Xdimer aXDimer = (Xdimer)theObj;
         return itsDg == aXDimer.itsDg ? 0 : itsDg < aXDimer.itsDg ? -1 : 1;
     }
-
+    public String toString()
+    {
+        StringBuffer sb=new StringBuffer("DG:");
+        sb.append(itsDg).append("\n").
+        append(this.itsUpperFragment).append("\n").
+        append(itsBondString).append("\n").
+        append(itsLowerFragment);
+        return sb.toString();
+    }
     private String itsUpperFragment;
     private String itsLowerFragment;
     private String itsBondString;

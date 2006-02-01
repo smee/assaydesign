@@ -78,7 +78,7 @@ public class HomoDimerAnalysis extends SekAnalysis{
                 if(binds>=minbinds[idx]){
                     liste.add(new Integer(primer.length()-i));
 					if(debug)
-						System.out.println(Helper.outputXDimer(primer,primer,pos,windowsize[idx]));
+						System.out.println(Helper.outputXDimer(primer,primer,pos,windowsize[idx],0));
                 }
             }
         }
