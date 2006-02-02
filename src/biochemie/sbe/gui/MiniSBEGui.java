@@ -419,6 +419,8 @@ public class MiniSBEGui extends JFrame {
             toolbar.add(showexplanation);
             JButton optimize=new JButton(new OptimizePLAction(sbec));
             toolbar.add(optimize);
+            JButton showSekStrucs=new JButton(new ShowSekStrucsAction(table,sbec));
+            toolbar.add(showSekStrucs);
             ToolTipManager.sharedInstance().setDismissDelay(100000);
             frame.pack();
             frame.setVisible(true);
