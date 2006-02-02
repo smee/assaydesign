@@ -80,7 +80,7 @@ public class SBEPrimer extends Primer{
 	public Set getSecStrucs() {
 		if(sekstruc == null)
 			sekstruc = SekStrukturFactory.getSecStruks(this,cfg);
-		return Collections.unmodifiableSet(sekstruc);
+		return sekstruc;
 	}
     public void setPlexID(String s) {
         super.setPlexID(s);
@@ -89,7 +89,7 @@ public class SBEPrimer extends Primer{
      * @return
      */
     public boolean hasInkompatibleHomodimer() {
-        boolean ret=((Boolean)Algorithms.inject(sekstruc.iterator(),Boolean.FALSE,new BinaryFunction() {
+        boolean ret=((Boolean)Algorithms.inject(getSecStrucs().iterator(),Boolean.FALSE,new BinaryFunction() {
             public Object evaluate(Object seed, Object sek) {
                 SBESekStruktur s=(SBESekStruktur)sek;
                 return Boolean.valueOf(((Boolean)seed).booleanValue() ||  (SBESekStruktur.HOMODIMER == s.getType() && s.isIncompatible()));
@@ -116,7 +116,7 @@ public class SBEPrimer extends Primer{
      * @param bautein
      */
     private void init(String bautein,boolean usergiven) {
-        if(usergiven==false && bautein.length()==0){
+        if(bautein.length()==0){
             sekstruc = null;
         }else{//es wurde schon was vorgegeben
             sekstruc=new HashSet();
@@ -217,7 +217,7 @@ public class SBEPrimer extends Primer{
         //Inkompatible Sekundärstrukturen?
         String snp1=getSNP();
         String snp2=other.getSNP();
-        for (Iterator it = sekstruc.iterator(); it.hasNext();) {
+        for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.isVerhindert())
                 continue;
@@ -226,7 +226,7 @@ public class SBEPrimer extends Primer{
                 return false;
             }
         }
-        for (Iterator it = other.sekstruc.iterator(); it.hasNext();) {
+        for (Iterator it = other.getSecStrucs().iterator(); it.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) it.next();
             if(s.isVerhindert())
                 continue;
@@ -325,7 +325,7 @@ public class SBEPrimer extends Primer{
         +getHairpinPositions()+", homodimer="+getHomodimerPositions();
     }
     public String getCSVSekStructuresSeparatedBy(String sep) {
-        List l=new ArrayList(sekstruc);
+        List l=new ArrayList(getSecStrucs());
         Collections.sort(l,SBESekStruktur.getSeverityComparator());
         String positions="";
         String nucl="";
@@ -381,14 +381,11 @@ public class SBEPrimer extends Primer{
      * of secondary structures.
      */
     public void normalizeCrossdimers(Collection primers) {
-        if(sekstruc == null)
-            return; //nothing to normalize
-        getSecStrucs();
-        
+     
         for (Iterator it = primers.iterator(); it.hasNext();) {
             SBEPrimer p = (SBEPrimer) it.next();
             if(p!=this)
-            	sekstruc.addAll(SekStrukturFactory.getCrossdimer(this,p,cfg));
+            	getSecStrucs().addAll(SekStrukturFactory.getCrossdimer(this,p,cfg));
         }
     }
     /**
