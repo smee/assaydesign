@@ -180,6 +180,32 @@
 	  	<delete file="${dist}/pcrmatcher-${DSTAMP}.jar"/>
 	  	<move file="${dist}/pcrmatcher.jar" tofile="${dist}/pcrmatcher-${DSTAMP}.jar"/>
 	  </target>
+	<!--**********************************************************-->
+		  <target name="besttransformer"
+			  	  depends="clean, compile"
+			      description="create new BestTransformer executable">
+			<!--erstelle jar-File mit allen relevanten Klassen-->
+			<classfileset id="bestclasses" dir="${build}">
+			  <rootfileset dir="${build}" includes="biochemie/haplo.BestTransformer.class"/>
+			</classfileset>
+		    <jar jarfile="${dist}/besttransformer-${DSTAMP}.jar"
+		    	 update="false">
+				<fileset refid="bestclasses"/>
+		    	<manifest>
+		    		<attribute name="Built-By" value="${user.name}"/>
+		    		<attribute name="Main-Class" value="biochemie.haplo.BestTransformer"/>
+		       	</manifest>
+		    </jar>
+		    <!--erstelle exe-file-->
+		  	<jsmoothgen project="${build.dir}/besttransformer.jsmooth"
+		      	skeletonroot="${jsmooth}/skeletons"/> 
+		    <!--packe exe-file mit upx-->
+		  	<exec dir="${dist}" executable="${upxcmd}" failonerror="true">
+		    	<arg line="PCRMatcher.exe"/>
+		    </exec>
+		  	<delete file="${dist}/besttransformer-${DSTAMP}.jar"/>
+		  	<move file="${dist}/besttransformer.jar" tofile="${dist}/besttransformer-${DSTAMP}.jar"/>
+		  </target>
 	  <!--**********************************************************-->
   <target name="minisbe"
 	  	  depends="ajcompile"
