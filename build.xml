@@ -188,7 +188,7 @@
 			<classfileset id="bestclasses" dir="${build}">
 			  <rootfileset dir="${build}" includes="biochemie/haplo.BestTransformer.class"/>
 			</classfileset>
-		    <jar jarfile="${dist}/besttransformer-${DSTAMP}.jar"
+		    <jar jarfile="${dist}/besttransformer.jar"
 		    	 update="false">
 				<fileset refid="bestclasses"/>
 		    	<manifest>
@@ -203,7 +203,6 @@
 		  	<exec dir="${dist}" executable="${upxcmd}" failonerror="true">
 		    	<arg line="PCRMatcher.exe"/>
 		    </exec>
-		  	<delete file="${dist}/besttransformer-${DSTAMP}.jar"/>
 		  	<move file="${dist}/besttransformer.jar" tofile="${dist}/besttransformer-${DSTAMP}.jar"/>
 		  </target>
 	  <!--**********************************************************-->
