@@ -201,7 +201,7 @@
 		      	skeletonroot="${jsmooth}/skeletons"/> 
 		    <!--packe exe-file mit upx-->
 		  	<exec dir="${dist}" executable="${upxcmd}" failonerror="true">
-		    	<arg line="PCRMatcher.exe"/>
+		    	<arg line="besttransformer.exe"/>
 		    </exec>
 		  	<move file="${dist}/besttransformer.jar" tofile="${dist}/besttransformer-${DSTAMP}.jar"/>
 		  </target>
