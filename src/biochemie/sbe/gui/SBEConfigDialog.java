@@ -141,7 +141,7 @@ public class SBEConfigDialog extends JDialog {
 	        	cdicon = new ImageIcon(url);
 	        }
 			jTabbedPane.addTab("CalcDalton settings", cdicon, getCdScrollPane(), null);
-			jTabbedPane.addTab("CalcDalton masses", null, getCdMassPanel(), null);
+			jTabbedPane.addTab("Assay specifications", null, getCdMassPanel(), null);
 			jTabbedPane.addTab("MiniSBE settings", null, getSbePanel(), null);
 			jTabbedPane.addTab("Expert settings", null, getAdvPanel(), null);
 			jTabbedPane.addTab("Misc settings", null, getRestPanel(), null);

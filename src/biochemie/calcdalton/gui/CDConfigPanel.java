@@ -257,7 +257,7 @@ public class CDConfigPanel extends JPanel{
 		double text=28;
         double[][] bruchSizes={{b,80,60,p,b},{b,text,b,text,b,text,2*b,text,b}};
         bruchStellenPanel.setLayout(new TableLayout(bruchSizes));
-        bruchStellenPanel.setBorder( BorderFactory.createTitledBorder( "Preferred usage order of cleavable linkers" ) );
+        bruchStellenPanel.setBorder( BorderFactory.createTitledBorder( "Positions of cleavable linkers (from 3’)" ) );
         bruchStellenPanel.setToolTipText("Preferred usage order of cleavable linkers (from 3´)");
         bruchList = new JList( bruchstelleVector );
         bruchList.setVisibleRowCount(5);
