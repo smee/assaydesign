@@ -167,6 +167,7 @@
 	  			                                                                :${lib}/commons-functor.jar
 	  			                                                                :${lib}/commons-lang-2.0.jar
 	  			                                                                :${lib}/jgrapht-0.5.3.jar
+	  			                                                                :${lib}/ostermillerutils_1_05_00_for_java_1_4.jar
 	  			                                                                :${lib}/aspectjrt.jar"/>
 		</antcall>
 	    <!--erstelle exe-file-->
@@ -179,6 +180,31 @@
 	  	<delete file="${dist}/pcrmatcher-${DSTAMP}.jar"/>
 	  	<move file="${dist}/pcrmatcher.jar" tofile="${dist}/pcrmatcher-${DSTAMP}.jar"/>
 	  </target>
+	<!--**********************************************************-->
+		  <target name="besttransformer"
+			  	  depends="clean, compile"
+			      description="create new BestTransformer executable">
+			<!--erstelle jar-File mit allen relevanten Klassen-->
+			<classfileset id="bestclasses" dir="${build}">
+			  <rootfileset dir="${build}" includes="biochemie/haplo.BestTransformer.class"/>
+			</classfileset>
+		    <jar jarfile="${dist}/besttransformer.jar"
+		    	 update="false">
+				<fileset refid="bestclasses"/>
+		    	<manifest>
+		    		<attribute name="Built-By" value="${user.name}"/>
+		    		<attribute name="Main-Class" value="biochemie.haplo.BestTransformer"/>
+		       	</manifest>
+		    </jar>
+		    <!--erstelle exe-file-->
+		  	<jsmoothgen project="${build.dir}/besttransformer.jsmooth"
+		      	skeletonroot="${jsmooth}/skeletons"/> 
+		    <!--packe exe-file mit upx-->
+		  	<exec dir="${dist}" executable="${upxcmd}" failonerror="true">
+		    	<arg line="besttransformer.exe"/>
+		    </exec>
+		  	<move file="${dist}/besttransformer.jar" tofile="${dist}/besttransformer-${DSTAMP}.jar"/>
+		  </target>
 	  <!--**********************************************************-->
   <target name="minisbe"
 	  	  depends="ajcompile"
@@ -237,7 +263,6 @@
   	<antcall target="shrink" >
   		<param name="mainclassname" value="biochemie.pcr.PCR"/>
   		<param name="outjarname" value="${dist}/PCR.jar"/>
-  		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar"/>
   		<param name="neededjars" value = "${dist}/PCR-${DSTAMP}.jar
   			                                                                :${lib}/xml.jar
   			                                                                :${lib}/biojava.jar
@@ -368,7 +393,7 @@
     			<include name="looks-1.3.1.jar"/>
 			</fileset>
 			<fileset dir="${build.dir}">
-    			<include name="sbegui.jnlp"/>
+    			<include name="sbegui_paper.jnlp"/>
 			</fileset>
 		</copy>
 		<move tofile="${public_html}/sbeguitest.jar" file="${public_html}/minisbe-${DSTAMP}.jar"/>

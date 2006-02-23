@@ -46,7 +46,7 @@ public class MultiplexerTest extends TestCase {
 		primers.add(primerB);
 		primers.add(primerC);
 		m=new Multiplexer(cfg){
-			public void findMultiplexes(UndirectedGraph g) {
+			public void findMultiplexes(UndirectedGraph sbec) {
 			}
 		};
 	}
