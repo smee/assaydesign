@@ -14,6 +14,8 @@ import java.util.HashMap;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import biochemie.util.Helper;
+
 
 
 /**
@@ -65,11 +67,11 @@ private void initTable(String[] names, double[][] weights) {
                         double d1 = weights[i][k];
                         double d2 = weights[j][l];
                         if (0 < d1 && 0 < d2)
-                            hm.put(getNameFor(i, j, k, l, names), new Double(d1 - d2));
+                            hm.put(getNameFor(i, j, k, l, names), Helper.format(d1 - d2));
                         else {
                             d1=Math.abs(d1);
                             d2=Math.abs(d2);
-                            hm.put("["+getNameFor(i, j, k, l, names) +"]", new Double(d1 - d2));
+                            hm.put(getNameFor(i, j, k, l, names), "["+Helper.format(d1 - d2)+"]");
                         }
                     }
                 }
@@ -79,8 +81,14 @@ private void initTable(String[] names, double[][] weights) {
     firstcolumn=new ArrayList(hm.keySet());
         Collections.sort(firstcolumn,new Comparator(){
             public int compare(Object o1, Object o2) {
-                double d1=((Double) hm.get(o1)).doubleValue();
-                double d2=((Double) hm.get(o2)).doubleValue();
+                String s1=(String) hm.get(o1);
+                String s2=(String) hm.get(o2);
+                if(s1.startsWith("["))
+                    s1=s1.substring(1,s1.length()-1);
+                if(s2.startsWith("["))
+                    s2=s2.substring(1,s2.length()-1);
+                double d1=Double.parseDouble(s1);
+                double d2=Double.parseDouble(s2);
                 d1*=(0 > d1)?-1:1;
                 d2*=(0 > d2)?-1:1;
                 return Double.compare(d1,d2);
@@ -183,9 +191,7 @@ private void initTable(String[] names, double[][] weights) {
 
 
 	public Class getColumnClass(int columnIndex) {
-		if(0 == columnIndex)
-			return String.class;
-		return Double.class;
+	    return String.class;
 	}
 
 
