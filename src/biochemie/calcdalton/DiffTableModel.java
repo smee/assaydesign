@@ -64,8 +64,13 @@ private void initTable(String[] names, double[][] weights) {
                     for (int l = 0; l < weights[j].length; l++) {
                         double d1 = weights[i][k];
                         double d2 = weights[j][l];
-                        if (0 != d1 && 0 != d2)
+                        if (0 < d1 && 0 < d2)
                             hm.put(getNameFor(i, j, k, l, names), new Double(d1 - d2));
+                        else {
+                            d1=Math.abs(d1);
+                            d2=Math.abs(d2);
+                            hm.put("["+getNameFor(i, j, k, l, names) +"]", new Double(d1 - d2));
+                        }
                     }
                 }
             }
@@ -143,9 +148,10 @@ private void initTable(String[] names, double[][] weights) {
 					erg[j][i]=0;
 				else {
 				    if(entry.charAt(0)=='[' && entry.charAt(entry.length()-1)==']') {
-				        if(allExtension) {
-				            entry=entry.substring(1,entry.length()-1);
-				        }else continue;
+				        entry=entry.substring(1,entry.length()-1);
+				        if(!allExtension) {
+                            entry="-"+entry;
+				        }
 				    }
 					erg[j][i]=Double.parseDouble(entry);
                 }
