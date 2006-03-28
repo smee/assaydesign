@@ -48,11 +48,11 @@ public DiffTableModel(String[] names, double[][] weights) {
 private void initTable(String[] names, double[][] weights) {
     hm=new HashMap();
     if(names.length == 1) {
-        hm.put(names[0],new Double(weights[0][0]));
-        hm.put("+A",new Double(weights[0][1]));
-        hm.put("+C",new Double(weights[0][2]));
-        hm.put("+G",new Double(weights[0][3]));
-        hm.put("+T",new Double(weights[0][4]));
+        hm.put(names[0],Double.toString(weights[0][0]));
+        hm.put("+A",Double.toString(weights[0][1]));
+        hm.put("+C",Double.toString(weights[0][2]));
+        hm.put("+G",Double.toString(weights[0][3]));
+        hm.put("+T",Double.toString(weights[0][4]));
         firstcolumn=new ArrayList();
         firstcolumn.add(names[0]);
         firstcolumn.add("+A");
