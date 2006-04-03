@@ -59,22 +59,22 @@ public class BestTransformer {
         if(orig.length()!=line.length()) {
             
         }
-        StringBuffer res=new StringBuffer(line);
+        StringBuffer res=new StringBuffer(line.length());
         for(int i=0;i<orig.length();i++)
-            res.setCharAt(i,adjustChar(orig.charAt(i),line.charAt(i)));
+            res.append(adjustChar(orig.charAt(i),line.charAt(i)));
         return res.toString();
     }
 
-    private static char adjustChar(char orig, char c) {
+    private static String adjustChar(char orig, char c) {
         switch (c) {
         case '-'://identical
-            return orig;
+            return Character.toString(orig);
         case '*'://not sequenced
-            return orig;
+            return Character.toString(orig);
         case '.'://deletion
-            return orig;
+            return "";
         default:
-            return c;
+            return Character.toString(c);
         }
     }
 
