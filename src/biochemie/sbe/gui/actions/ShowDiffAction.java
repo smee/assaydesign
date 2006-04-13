@@ -153,19 +153,30 @@ public class ShowDiffAction extends MyAction {
      */
     private TableModel generateDiffTableModelFor(final String id, List sbec) {
         List mysbec = getFilteredList(id, sbec);
-
-        double[][] weights = new double[mysbec.size()][];
-        String[] sbenames = new String[mysbec.size()];
-        int i=0;
         CalcDalton cd=Helper.getCalcDalton(cfg);
+        String[][] params=new String[mysbec.size()][];
+        int[] br=cfg.getPhotolinkerPositions();
+        int[] fest=new int[mysbec.size()];
+        
+        int i=0;
+        SBETable table=new SBETable(getNames(mysbec),br);
         for (Iterator iter = mysbec.iterator(); iter.hasNext();i++) {
             CleavablePrimerFactory  s = (CleavablePrimerFactory ) iter.next();
-            sbenames[i]=s.getId();
-            weights[i]=cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),false);
+            params[i]=Primer.getCDParamLine(s.getFavPrimer());
+            fest[i]=ArrayUtils.indexOf(br,s.getBruchstelle());
         }
-        return  new DiffTableModel(sbenames,weights);
+        cd.calc(params,table,fest);
+        return  new DiffTableModel(table,cfg.getCalcDaltonAllExtensions());
     }
-
+    private String[] getNames(List sbec) {
+        String[] sbenames = new String[sbec.size()];
+        int i=0;
+        for (Iterator iter = sbec.iterator(); iter.hasNext();i++) {
+            CleavablePrimerFactory  s = (CleavablePrimerFactory ) iter.next();
+            sbenames[i]=s.getId();
+        }
+        return sbenames;
+    }
     /**
      * liste aller sbec, die zu diesem multiplex gehoeren
      * @param multiplexid

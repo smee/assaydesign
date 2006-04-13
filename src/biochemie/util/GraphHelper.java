@@ -6,7 +6,6 @@ package biochemie.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +21,7 @@ import biochemie.util.edges.MyUndirectedEdge;
  *
  */
 public class GraphHelper {
-
+    
     /**
      * Erstellt komplementaeren Graphen.
      * @param g
@@ -40,8 +39,8 @@ public class GraphHelper {
         result.addAllVertices(vert);
         for (int i = 0; i < vert.size(); i++) {
             Object v1=vert.get(i);
-//            System.out.println("v1="+v1);
-//            System.out.println("edges for v1: "+g.edgesOf(v1));
+//          System.out.println("v1="+v1);
+//          System.out.println("edges for v1: "+g.edgesOf(v1));
             for (int j = i+1; j < vert.size(); j++) {
                 Object v2=vert.get(j);
                 if(!g.containsEdge(v1,v2)) {
@@ -55,7 +54,7 @@ public class GraphHelper {
             gw.close();
         return result;
     }
-
+    
     /**
      * Erstellt den Unvertraeglichkkeitsgraphen von einer List von Multiplexables.
      * @param multiplexables
@@ -64,27 +63,35 @@ public class GraphHelper {
      * @param filteredEdges Kanten, die ignoriert werden sollen
      * @return Undirectedgraph
      */
-    public static UndirectedGraph createIncompGraph(List multiplexables, final boolean writegraph, int outputtype, Set filteredEdges) {
+    public static UndirectedGraph createIncompGraph(Collection multiplexables, final boolean writegraph, int outputtype, Set filteredEdges) {
         List names = createNamesList(multiplexables);
         GraphWriter gw=null;
         if(writegraph) {
             gw=new GraphWriter(names,"graph",outputtype);
         }
+        Multiplexable[] mult=(Multiplexable[]) multiplexables.toArray(new Multiplexable[multiplexables.size()]);
         UndirectedGraph g=new SimpleGraph();
         g.addAllVertices(multiplexables);
-        for (int i = 0; i < multiplexables.size(); i++) {
-            Multiplexable s1=(Multiplexable) multiplexables.get(i);
+        for (int i = 0; i < mult.length; i++) {
+            Multiplexable s1=(Multiplexable) mult[i];
             if(Thread.currentThread().isInterrupted())
                 return null;
-            for (int j = i+1; j < multiplexables.size(); j++) {
-                Multiplexable s2=(Multiplexable) multiplexables.get(j);
+            for (int j = i+1; j < mult.length; j++) {
+                Multiplexable s2=(Multiplexable) mult[j];
                 if(!s1.passtMit(s2)) {
-                    if(!filteredEdges.contains(((MyUndirectedEdge)s1.getLastEdge()).matchString())) {
-                        g.addEdge(s1.getLastEdge());
-                        if(writegraph)
-                            gw.addArc(i,j,s1.getLastEdge().toString());
-                    }else
-                        System.out.println("skipping edge, filtered... ("+s1.getLastEdge()+")");
+                    Collection edges=s1.getLastEdges();
+                    for (Iterator it = edges.iterator(); it.hasNext();) {
+                        MyUndirectedEdge edge = (MyUndirectedEdge) it.next();
+                        
+                        if(!filteredEdges.contains(edge.matchString())) {
+                            //loops lassen wir weg, entstehen z.b. wenn man wegen kompatiblen crossdimern multiknoten bildet
+                            if(!edge.getSource().equals(edge.getTarget()))
+                                g.addEdge(edge);
+                            if(writegraph)
+                                gw.addArc(i,j,edge.toString());
+                        }else
+                            System.out.println("skipping edge, filtered... ("+edge+")");
+                    }
                 }
             }
         }
@@ -92,7 +99,7 @@ public class GraphHelper {
             gw.close();
         return g;
     }
-
+    
     /**
      * @param multiplexables
      * @return

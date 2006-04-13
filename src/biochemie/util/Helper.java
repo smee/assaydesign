@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +43,7 @@ import biochemie.calcdalton.CalcDaltonOptions;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class Helper {
-    private static final DecimalFormat df=new DecimalFormat("#.##");
+    private static final DecimalFormat df=new DecimalFormat("#.##",new DecimalFormatSymbols(Locale.US));
     /**
      * Formats a double as #.##
      * @param d

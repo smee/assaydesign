@@ -69,11 +69,13 @@ public class MiniSBE {
     	doCalculation(sbec, cfg,filter);
     }
     protected void doCalculation(List sbec, SBEOptions cfg,Set filter){
+        UndirectedGraph oldGraph=null;
+        
         Helper.createAndRememberCalcDaltonFrom(cfg);//XXX unsauber, muss anders gehen. 
         Multiplexer m1=new ExperimentMultiplexer(cfg);
         Multiplexer m2=new BestellMultiplexer(cfg);
         while(true) {
-            List structs=new ArrayList();
+            Set structs=new HashSet();
             boolean allgiven=true;
             for (Iterator it = sbec.iterator(); it.hasNext();) {
                 MultiplexableFactory mf = (MultiplexableFactory) it.next();
@@ -86,24 +88,37 @@ public class MiniSBE {
             if(Thread.currentThread().isInterrupted())
                 return;
             if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
-                createGraphAndMultiplex(structs,cfg,m1,filter);
+                oldGraph=createGraphAndMultiplex(structs,oldGraph,cfg,m1,filter);
             }else{
 	            if(cfg.getSecStrucOptions().getAllCrossdimersAreEvil() == false)
 	                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
-	            createGraphAndMultiplex(structs,cfg,m2,filter);
+	            oldGraph=createGraphAndMultiplex(structs,oldGraph,cfg,m2,filter);
             }
         }
     }
 
 
-    private void createGraphAndMultiplex(List structs, SBEOptions cfg, Multiplexer m,Set filter) {
+    private UndirectedGraph createGraphAndMultiplex(Set structs, UndirectedGraph oldGraph, SBEOptions cfg, Multiplexer m,Set filter) {
         long t=System.currentTimeMillis();
         boolean drawGraph=cfg.isDrawGraphes();
-        System.out.println("Creating graph with "+structs.size()+" vertices...");
-        UndirectedGraph g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);
-        System.out.println("Graph has "+g.edgeSet().size()+" edges.");
-        System.out.println("Graph creation took "+(System.currentTimeMillis()-t)+"ms");
+        UndirectedGraph g;
+        if(oldGraph!=null) {
+            System.out.println("Recycling old graph....");
+            Set vert=new HashSet(oldGraph.vertexSet());
+            for (Iterator it = vert.iterator(); it.hasNext();) {
+                Object v = (Object) it.next();
+                if(!structs.contains(v))
+                    oldGraph.removeVertex(v);
+            }
+            g=oldGraph;
+        }else {
+            System.out.println("Creating graph with "+structs.size()+" vertices...");
+            g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);
+            System.out.println("Graph has "+g.edgeSet().size()+" edges.");
+            System.out.println("Graph creation took "+(System.currentTimeMillis()-t)+"ms");
+        }
         m.findMultiplexes(g);
+        return g;
     }
     public static void main(String[] args) {
         if ( args.length < 2) {
