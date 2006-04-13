@@ -63,20 +63,21 @@ public class GraphHelper {
      * @param filteredEdges Kanten, die ignoriert werden sollen
      * @return Undirectedgraph
      */
-    public static UndirectedGraph createIncompGraph(List multiplexables, final boolean writegraph, int outputtype, Set filteredEdges) {
+    public static UndirectedGraph createIncompGraph(Collection multiplexables, final boolean writegraph, int outputtype, Set filteredEdges) {
         List names = createNamesList(multiplexables);
         GraphWriter gw=null;
         if(writegraph) {
             gw=new GraphWriter(names,"graph",outputtype);
         }
+        Multiplexable[] mult=(Multiplexable[]) multiplexables.toArray(new Multiplexable[multiplexables.size()]);
         UndirectedGraph g=new SimpleGraph();
         g.addAllVertices(multiplexables);
-        for (int i = 0; i < multiplexables.size(); i++) {
-            Multiplexable s1=(Multiplexable) multiplexables.get(i);
+        for (int i = 0; i < mult.length; i++) {
+            Multiplexable s1=(Multiplexable) mult[i];
             if(Thread.currentThread().isInterrupted())
                 return null;
-            for (int j = i+1; j < multiplexables.size(); j++) {
-                Multiplexable s2=(Multiplexable) multiplexables.get(j);
+            for (int j = i+1; j < mult.length; j++) {
+                Multiplexable s2=(Multiplexable) mult[j];
                 if(!s1.passtMit(s2)) {
                     Collection edges=s1.getLastEdges();
                     for (Iterator it = edges.iterator(); it.hasNext();) {

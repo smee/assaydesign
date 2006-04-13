@@ -81,9 +81,9 @@ public abstract class Multiplexer {
      * @param sbep List von SBEPrimern
      * @return
      */
-    public static  List getEnhancedPrimerList(List sbep,SBEOptions cfg){
+    public static  Set getEnhancedPrimerList(Set sbep,SBEOptions cfg){
         System.out.println("Creating pseudoprimers because of comp. crossdimers. Comparing "+sbep.size()+" primers..");
-    	List result=new ArrayList(sbep);
+    	Set result=new HashSet(sbep);
     	Multiplexable[] mults=(Multiplexable[]) sbep.toArray(new Multiplexable[sbep.size()]);
     	for (int i = 0; i < mults.length; i++) {
             List primers1=getAllPrimers(mults[i]);
