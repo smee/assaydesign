@@ -25,8 +25,7 @@ public class StringEntryPanel extends MyPanel {
 	 * This is the default constructor
 	 */
 	public StringEntryPanel() {
-		super();
-		initialize();
+		this("Label");
 	}
 	public StringEntryPanel(String label){
 		super();
@@ -62,6 +61,10 @@ public class StringEntryPanel extends MyPanel {
 		gridBagConstraints3.insets = new java.awt.Insets(0,5,0,5);
 		this.add(getLabelTf(), gridBagConstraints2);
 		this.add(getPBSequenceField(), gridBagConstraints3);
+        getPBSequenceField().setValidChars("abcdefghijklmnopqrstuvwxyz" +
+                                          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                                          "0123456789" +
+                                          ",.-=_+[]|<>?!#$%&*() ");
         setUnchanged();
 	}
 	/**
@@ -87,10 +90,6 @@ public class StringEntryPanel extends MyPanel {
 			PBSequenceField.setMaxLen(20);
 			PBSequenceField.setUpper(false);
 			PBSequenceField.setColumns(10);
-			PBSequenceField.setValidChars("abcdefghijklmnopqrstuvwxyz" +
-										  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-										  "0123456789" +
-										  ",.-=_+[]|<>?!#$%&*() ");
             PBSequenceField.getDocument().addDocumentListener(new DocumentListener() {
                 public void changedUpdate(DocumentEvent e) {
                     dirty();
@@ -113,7 +112,12 @@ public class StringEntryPanel extends MyPanel {
 		//TODO
 	}
 
-
+	public void setValidChars(String chars){
+	    getPBSequenceField().setValidChars(chars);   
+    }
+    public String getValidChars(){
+        return getPBSequenceField().getValidChars();
+    }
 	public String getText(){
 		return getPBSequenceField().getText();
 	}

@@ -88,7 +88,7 @@ public class MiniSBE {
             if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
                 createGraphAndMultiplex(structs,cfg,m1,filter);
             }else{
-	            if(cfg.getAllCrossdimersAreEvil() == false)
+	            if(cfg.getSecStrucOptions().getAllCrossdimersAreEvil() == false)
 	                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
 	            createGraphAndMultiplex(structs,cfg,m2,filter);
             }

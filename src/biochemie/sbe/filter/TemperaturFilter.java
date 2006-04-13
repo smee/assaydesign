@@ -3,13 +3,12 @@
  *
  */
 package biochemie.sbe.filter;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.Primer;
 import biochemie.sbe.SBEOptions;
+import biochemie.util.Helper;
 /**
  *
  * @author Steffen
@@ -18,7 +17,7 @@ import biochemie.sbe.SBEOptions;
 public class TemperaturFilter extends AbstractKandidatenFilter {
     private double maxT;
     private double minT;
-    private static NumberFormat nf =new DecimalFormat("0.00");
+
     public TemperaturFilter(SBEOptions cfg) {
     	super(cfg);
         this.minT= cfg.getMinTemperature();
@@ -32,12 +31,13 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
     	StringBuffer sb=new StringBuffer("Primers out of TM:\n");
     	
         for (Iterator it= cand.iterator(); it.hasNext();) {
-            SBEPrimer p=(SBEPrimer) it.next();
+            Primer p=(Primer) it.next();
 
             if(p.getTemperature() < minT || p.getTemperature() > maxT){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", Tm="+nf.format(p.getTemperature())+"°");
+                sb.append(getPrimerDescription(p));
+                sb.append(", ").append(markRed("Tm="+Helper.format(p.getTemperature())+"°"));
                 sb.append("\n");
             }
         }

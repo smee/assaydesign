@@ -9,6 +9,7 @@ import java.util.List;
 
 import biochemie.domspec.Primer;
 import biochemie.sbe.SBEOptions;
+import biochemie.util.Helper;
 
 /**
  *
@@ -37,7 +38,8 @@ public class GCFilter extends AbstractKandidatenFilter {
             if(gc<gcMin || gc>gcMax){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", GC-Value="+gc);
+                sb.append(getPrimerDescription(p)).append(", ");
+                sb.append(markRed("GC="+Helper.format(gc)+"%"));
                 sb.append("\n");
             }
         }

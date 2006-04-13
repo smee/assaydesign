@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import biochemie.calcdalton.CalcDalton;
+import biochemie.domspec.Primer;
 import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
 import biochemie.util.Helper;
@@ -18,17 +19,26 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
     public void filter(List cand) {
         StringBuffer sb=new StringBuffer("Primer or product is within prohibited mass range:\n");
         for (Iterator it = cand.iterator(); it.hasNext();) {
-            SBEPrimer primer = (SBEPrimer) it.next();
-            String[] params=SBEPrimer.getCDParamLine(primer);
-            double[] masses=cd.calcSBEMass(params,primer.getBruchstelle(),true);
+            Primer primer = (Primer) it.next();
+            double[] masses=getMasses(primer);
             if(cd.invalidMassesIn(masses)) {
                 it.remove();
                 count++;
-                sb.append(primer.getSeq()+", masses="+Helper.toString(masses));
+                sb.append(getPrimerDescription(primer));
+                sb.append(", ");
+                sb.append(markRed("masses="+Helper.toString(masses)));
                 sb.append("\n");
             }
         }
         System.out.println(sb);
+    }
+
+    private double[] getMasses(Primer primer) {
+        String[] params=Primer.getCDParamLine(primer);
+        if (primer instanceof SBEPrimer) {
+            return cd.calcSBEMass(params,((SBEPrimer)primer).getBruchstelle(),true);
+        }else
+            return cd.calcSBEMass(params,true);
     }
 
     private int count=0;

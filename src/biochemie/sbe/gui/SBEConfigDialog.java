@@ -46,7 +46,9 @@ import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.gui.CalcTimePanel;
 import biochemie.gui.IntegerValueIntervallPanel;
 import biochemie.sbe.SBEOptions;
+import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.io.SBEConfig;
+import biochemie.sbe.io.SecStrucConfig;
 import biochemie.util.FileSelector;
 import biochemie.util.MyAction;
 /**
@@ -140,8 +142,8 @@ public class SBEConfigDialog extends JDialog {
 	        if(null != url){
 	        	cdicon = new ImageIcon(url);
 	        }
-			jTabbedPane.addTab("CalcDalton settings", cdicon, getCdScrollPane(), null);
-			jTabbedPane.addTab("CalcDalton masses", null, getCdMassPanel(), null);
+			jTabbedPane.addTab("MALDI settings", cdicon, getCdScrollPane(), null);
+			jTabbedPane.addTab("Assay specifications", null, getCdMassPanel(), null);
 			jTabbedPane.addTab("MiniSBE settings", null, getSbePanel(), null);
 			jTabbedPane.addTab("Expert settings", null, getAdvPanel(), null);
 			jTabbedPane.addTab("Misc settings", null, getRestPanel(), null);
@@ -188,14 +190,16 @@ public class SBEConfigDialog extends JDialog {
 	 *
 	 */
 	public SBEOptions getSBEOptionsFromGui() {
-        SBEOptions sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider());
+	    SecStrucOptions sec=new SecStrucConfig();
+        SBEOptions sbeconfig = new SBEConfig(getCdPanel().getCalcDaltonOptionsProvider(), sec);
         getRestPanel().saveTo(sbeconfig);
-        sbeconfig.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
-	    sbeconfig.setCrossimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getFrom()),' '));
-	    sbeconfig.setHairpinMinbinds(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getTo()),' '));
-	    sbeconfig.setHairpinWindowsizes(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getFrom()),' '));
-	    sbeconfig.setHomodimerMinbinds(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getTo()),' '));
-	    sbeconfig.setHomodimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getFrom()),' '));
+        getCdMassPanel().saveToConfig(sbeconfig);
+        sec.setCrossdimerMinbinds(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getTo()),' '));
+        sec.setCrossimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getCrossdimerValuePanel().getFrom()),' '));
+        sec.setHairpinMinbinds(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getTo()),' '));
+        sec.setHairpinWindowsizes(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getFrom()),' '));
+        sec.setHomodimerMinbinds(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getTo()),' '));
+        sec.setHomodimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getFrom()),' '));
 	    sbeconfig.setMaxGC(((Number)getSbePanel().getMaxgcSpinner().getValue()).intValue());
 	    sbeconfig.setMinGC(((Number)getSbePanel().getMingcSpinner().getValue()).intValue());
 	    sbeconfig.setMaxPlex(((Number)getSbePanel().getMaxplexSpinner().getValue()).intValue());
@@ -205,7 +209,7 @@ public class SBEConfigDialog extends JDialog {
 	    sbeconfig.setMaxTemperature(((Number)getSbePanel().getMaxTspinner().getValue()).intValue());
 	    sbeconfig.setOptTemperature(((Number)getSbePanel().getOptTspinner().getValue()).intValue());
 	    sbeconfig.setDrawGraphes(getDrawGraphesCheckbox().isSelected());
-	    sbeconfig.setAllCrossdimersAreEvil(getEvilCrossdimerCheckBox().isSelected());
+	    sec.setAllCrossdimersAreEvil(getEvilCrossdimerCheckBox().isSelected());
 	    sbeconfig.setPolyX(((Number)getSbePanel().getPolyxSpinner().getValue()).intValue());
         sbeconfig.setDebug(getDebugCheckBox().isSelected());
 	    return sbeconfig;
@@ -534,13 +538,14 @@ public class SBEConfigDialog extends JDialog {
         mp.getMaxplexSpinner().setValue(new Integer(c.getMaxPlex()));
         mp.getPcrpdiffSpinner().setValue(new Integer(c.getMinProductLenDiff()));
         //setze expertenoptionen
-        getEvilCrossdimerCheckBox().setSelected(c.getAllCrossdimersAreEvil());
         IntegerValueIntervallPanel ip=getHairpinValuePanel();
-        ip.loadFromString(c.getHairpinWindowsizes(),c.getHairpinMinbinds());
+        SecStrucOptions sec=c.getSecStrucOptions();
+        getEvilCrossdimerCheckBox().setSelected(sec.getAllCrossdimersAreEvil());
+        ip.loadFromString(sec.getHairpinWindowsizes(),sec.getHairpinMinbinds());
         ip=getHomodimerValuePanel();
-        ip.loadFromString(c.getHomodimerWindowsizes(),c.getHomodimerMinbinds());
+        ip.loadFromString(sec.getHomodimerWindowsizes(),sec.getHomodimerMinbinds());
         ip=getCrossdimerValuePanel();
-        ip.loadFromString(c.getCrossDimerWindowsizes(),c.getCrossdimerMinbinds());
+        ip.loadFromString(sec.getCrossDimerWindowsizes(),sec.getCrossdimerMinbinds());
         getDrawGraphesCheckbox().setSelected(c.isDrawGraphes());
         getDebugCheckBox().setSelected(c.isDebug());
     }

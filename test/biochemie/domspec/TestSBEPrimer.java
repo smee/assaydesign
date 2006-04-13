@@ -9,7 +9,9 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import biochemie.sbe.SBEOptions;
+import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.io.SBEConfig;
+import biochemie.sbe.io.SecStrucConfig;
 
 /**
  * @author Steffen Dienst
@@ -20,8 +22,8 @@ public class TestSBEPrimer extends TestCase {
 
     public void setUp() {
         cfg= new SBEConfig();
-        cfg.setCrossimerWindowsizes("7");
-        cfg.setCrossdimerMinbinds("6");
+        cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
+        cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
         cfg.setPhotolinkerPositions(new int[] {9,8,10,11,12,13,14,15});
         cfg.setCalcDaltonVerbFrom(new double[] {1000.0});
         cfg.setCalcDaltonVerbTo(new double[] {2000.0});
@@ -32,7 +34,7 @@ public class TestSBEPrimer extends TestCase {
         SBEPrimer p1= new SBEPrimer(cfg,"197","GGACCAGAGATTCTTTLTTGCACAT","AG",SBEPrimer._5_,"",0,true);
         //pl==9
         SBEPrimer p2= new SBEPrimer(cfg,"165","TGAGGAAATTGTAGTTAAATALTTAGAAAG","AG",SBEPrimer._5_,"",0,true);
-        Set cd=SekStrukturFactory.getCrossdimer(p1,p2,cfg);
+        Set cd=SekStrukturFactory.getCrossdimer(p1,p2,cfg.getSecStrucOptions());
 
         /*
          * Macht keinen crossdimer, weil nur das ende von 197 an 165 bindet, aber nicht 6 von 7.
@@ -43,7 +45,7 @@ public class TestSBEPrimer extends TestCase {
         //pl jeweils 9
         SBEPrimer p1= new SBEPrimer(cfg,"197","GGACCAGAGATTCTTTLTTGCACAT","AG",SBEPrimer._5_,"",0,true);
         SBEPrimer p2= new SBEPrimer(cfg,"165","TGAGGAAATTGTAGTTAAATALTAAGAAAG","AG",SBEPrimer._5_,"",0,true);
-        Set cd=SekStrukturFactory.getCrossdimer(p2,p1,cfg);
+        Set cd=SekStrukturFactory.getCrossdimer(p2,p1,cfg.getSecStrucOptions());
 
         //genau ein crossdimer muss gefunden werden
         assertEquals(1,cd.size());
@@ -70,9 +72,9 @@ public class TestSBEPrimer extends TestCase {
     }
 
     public void testNonBadCrossdimers() {
-        cfg.setAllCrossdimersAreEvil(false);
-        cfg.setCrossdimerMinbinds("5");
-        cfg.setCrossimerWindowsizes("6");
+        cfg.getSecStrucOptions().setAllCrossdimersAreEvil(false);
+        cfg.getSecStrucOptions().setCrossdimerMinbinds("5");
+        cfg.getSecStrucOptions().setCrossimerWindowsizes("6");
         //pl jeweils 12
         SBEPrimer p1= new SBEPrimer(cfg,"330ctla4","agctagctagctagctLgctaaaaaggt","AG",SBEPrimer._5_,"",0,true);
         SBEPrimer p2= new SBEPrimer(cfg,"331ctla4","ttggttggttggtLggttggttttt","CT",SBEPrimer._5_,"",0,true);
@@ -100,17 +102,17 @@ public class TestSBEPrimer extends TestCase {
     	/*
     	 * primerA macht Crossdimer mit primerB, inkompatibel, nicht verhindert
     	 */
-    	cfg.setCrossdimerMinbinds("6");
-    	cfg.setCrossimerWindowsizes("7");
+    	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
+    	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl==9
     	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
         //pl==10
         SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);//soll auch L erkennen und PL setzen!
 
-    	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg);
+    	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg.getSecStrucOptions());
     	assertTrue(cross2.size()==0);
 
-    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(1, cross1.size());
 
     	SBESekStruktur sek = (SBESekStruktur) cross1.iterator().next();
@@ -126,14 +128,14 @@ public class TestSBEPrimer extends TestCase {
     	 * primerA  : baut A ein, inkompatibel, nicht verhindert
     	 * primerB  : baut anti-pl ein, ist verhindert,
     	 */
-    	cfg.setCrossdimerMinbinds("6");
-    	cfg.setCrossimerWindowsizes("7");
+    	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
+    	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl==9
     	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
         //pl==10
         SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAACT","TG",SBEPrimer._5_,"",0,true);
 
-    	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg);
+    	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg.getSecStrucOptions());
     	assertEquals(1,cross2.size());
     	SBESekStruktur sek2 = (SBESekStruktur) cross2.iterator().next();
     	assertEquals(1, cross2.size());
@@ -143,7 +145,7 @@ public class TestSBEPrimer extends TestCase {
     	assertTrue(sek2.isVerhindert());
     	assertFalse(sek2.isIncompatible());//ist kompatibel
 
-    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(1,cross1.size());
     	SBESekStruktur sek1 = (SBESekStruktur) cross1.iterator().next();
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
@@ -157,14 +159,14 @@ public class TestSBEPrimer extends TestCase {
     	 * primerA : beide nicht verhindert, nicht kompatibel, pos: 8 und 34
     	 * primerB :
     	 */
-    	cfg.setCrossdimerMinbinds("6");
-    	cfg.setCrossimerWindowsizes("7");
+    	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
+    	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl==9
     	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
         //pl == 10
         SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);
 
-    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 
@@ -188,14 +190,14 @@ public class TestSBEPrimer extends TestCase {
     	 * primerA : beide nicht verhindert, kompatibel und inkompatibel, pos: 8 und 34
     	 * primerB :
     	 */
-    	cfg.setCrossdimerMinbinds("6");
-    	cfg.setCrossimerWindowsizes("7");
+    	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
+    	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl ==  9
         SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
     	//pl == 10
         SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATAAGGACCAATGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","CG",SBEPrimer._5_,"",0,true);
 
-    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg);
+    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 

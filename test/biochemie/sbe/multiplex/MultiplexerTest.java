@@ -35,8 +35,8 @@ public class MultiplexerTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		cfg=new SBEConfig();
-		cfg.setCrossimerWindowsizes("5");
-		cfg.setCrossdimerMinbinds("5");
+		cfg.getSecStrucOptions().setCrossimerWindowsizes("5");
+		cfg.getSecStrucOptions().setCrossdimerMinbinds("5");
 		//alle passen eigentlich miteinander, aber wenn a und b zusammen sind, bauen sie ein G ein, sind dann also nicht mehr mit c kompatibel
 		primerA=new SBEPrimer(cfg,"primerA","TGTLGTGTGTGTGT","AT",SBEPrimer._5_,"",1,true);
 		primerB=new SBEPrimer(cfg,"primerB","ACALCACACACACA","AT",SBEPrimer._5_,"",1,true);
@@ -51,7 +51,7 @@ public class MultiplexerTest extends TestCase {
 		};
 	}
 	public void testEnhancePrimerList(){
-        cfg.setAllCrossdimersAreEvil(false);//sollte keine Auswirkungen haben
+        cfg.getSecStrucOptions().setAllCrossdimersAreEvil(false);//sollte keine Auswirkungen haben
 		assertTrue(primerA.passtMitKompCD(primerB));
 		assertTrue(primerA.passtMitKompCD(primerC));
 		assertTrue(primerB.passtMitKompCD(primerC));

@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import biochemie.domspec.PinpointPrimer;
+import biochemie.domspec.Primer;
 import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
 
@@ -18,6 +20,11 @@ import biochemie.sbe.SBEOptions;
 public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     String[] type = new String[0];
     int[] len = new int[0];
+    /**
+     * Je nach Primer typ: 
+     * cleavable - photolinker
+     * pinpint   -  laenge des T-Schwanzes
+     */
     int[] pl = new int[0];
     private int count = 0;
     /**
@@ -53,18 +60,22 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     }
 
     public void filter(List cand) {
-    	StringBuffer sb=new StringBuffer("Primers filtered by user:\n ");
+    	StringBuffer sb=new StringBuffer("Primers excluded by user:\n ");
         for (Iterator it= cand.iterator(); it.hasNext();) {
-            SBEPrimer p=(SBEPrimer) it.next();
+            Primer p=(Primer) it.next();
             for (int i = 0; i < type.length; i++) {
                 if((p.getType().equals(type[i]) || type[i].equals("*")) &&
-                   (p.getSeq().length() == len[i] || len[i] < 0) &&
-                   (p.getBruchstelle() == pl[i] || pl[i] < 0)){
+                   (p.getSeq().length() == len[i] || len[i] < 0)){
+                    if((p instanceof SBEPrimer && (((SBEPrimer)p).getBruchstelle() == pl[i] || pl[i] < 0))
+                            || (p instanceof PinpointPrimer && (((PinpointPrimer)p).getTTail().length()==pl[i] || pl[i] >0))){
                     it.remove();
                     count++;
-                    sb.append(p.getSeq()+", PL="+p.getBruchstelle());
+                    sb.append(getPrimerDescription(p));
+                    sb.append(", ");
+                    sb.append(markRed("user defined filter"));
                     sb.append("\n");
                     break;
+                    }
                 }
             }
         }
@@ -76,7 +87,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     }
 
     public String rejectReason() {
-        return "Filtered by the user: ";
+        return "Excluded by the user: ";
     }
 
 }

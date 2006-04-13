@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -40,8 +41,16 @@ import biochemie.calcdalton.CalcDaltonOptions;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class Helper {
-
-
+    private static final DecimalFormat df=new DecimalFormat("#.##");
+    /**
+     * Formats a double as #.##
+     * @param d
+     * @return
+     */
+    public static String format(double d) {
+        return df.format(d);
+    }
+    
     public static int[] clone(int[]arr) {
         if(null == arr)
             return null;
@@ -68,36 +77,30 @@ public class Helper {
      * @param primer
      * @return
      */
-    public static String complPrimer(String primer) {
-        StringBuffer rev= new StringBuffer(primer);
-        char letter;
-        for (int i= 0; i < rev.length(); i++) {
-
-            switch (rev.charAt(i)) {
-                case 'A' :
-                case 'a' :
-                    letter= 'T';
-                    break;
-                case 'C' :
-                case 'c' :
-                    letter= 'G';
-                    break;
-                case 'G' :
-                case 'g' :
-                    letter= 'C';
-                    break;
-                case 'T' :
-                case 't' :
-                    letter= 'A';
-                    break;
-
-                default :
-                    letter= Character.toUpperCase(rev.charAt(i));
-                    break;
-            }
-            rev.setCharAt(i, letter);
+    public static String complPrimer(CharSequence primer) {
+        StringBuffer rev= new StringBuffer(primer.length());
+        for (int i= 0; i < primer.length(); i++) {
+            rev.append(complNucl(primer.charAt(i)));
         }
         return rev.toString();
+    }
+    public static char complNucl(char nucl) {
+        switch (nucl) {
+        case 'A' :
+        case 'a' :
+            return 'T';
+        case 'C' :
+        case 'c' :
+            return 'G';
+        case 'G' :
+        case 'g' :
+            return 'C';
+        case 'T' :
+        case 't' :
+            return 'A';
+        default :
+            return Character.toUpperCase(nucl);
+    }
     }
     /**
      * Gibt revers-komplement&auml;ren Primer zurück.
@@ -143,8 +146,9 @@ public class Helper {
      * @param primer
      * @param i von 3' aus gerechnet mit 0-Index
      * @param windowsize
+     * @param enthalpy 
      */
-    public static String outputHairpin(String primer, int i, int windowsize) {
+    public static String outputHairpin(String primer, int i, int windowsize, double enthalpy) {
             StringBuffer sb= new StringBuffer();
         try {
             int start= primer.length() - i - 1;
@@ -152,7 +156,8 @@ public class Helper {
 
             sb.append(primer.substring(0, breakPos + 1));
 
-            sb.append("-|\n");
+            sb.append("-|   ");
+            sb.append("\u0394G=").append(format(enthalpy)).append("kcal/mol\n");
             for (int j= 0; j < start; j++)
                 sb.append(' ');
             String complp= Helper.complPrimer(primer);
@@ -177,8 +182,9 @@ public class Helper {
      * @param primer
      * @param primer2
      * @param pos anzahl der leerzeichen, die der zweite primer verschoben werden muss, damit es matcht
+     * @param enthalpy 
      */
-    public static String outputXDimer(String primer, String primer2, int pos, int windowsize) {
+    public static String outputXDimer(String primer, String primer2, int pos, int windowsize, double enthalpy) {
             StringBuffer sb= new StringBuffer();
             /*
              * Es kann sein, dass  pos negativ ist, dann muss die erste Zeile auch nach rechts verschoben werden.
@@ -187,7 +193,8 @@ public class Helper {
                 sb.append(StringUtils.repeat(" ", Math.abs(pos)));
             }
             sb.append(primer);
-            sb.append('\n');
+            sb.append("   ");
+            sb.append("\u0394G=").append(format(enthalpy)).append("kcal/mol\n");
             sb.append(StringUtils.repeat(" ",Math.abs(pos)));
 
             String rcPrimer= revcomplPrimer(primer2);
@@ -256,11 +263,11 @@ public class Helper {
         /**
          * This is the entropy of the primer as calculated by the nearest neighbor method of Breslauer,
          */
-        double dS= calcDeltaS(primer);
+        double dS= calcDeltaS(primer)*1000;
         /**
          * This is the enthalpy of the primer as calculated by the nearest neighbor method of Breslauer, K.J. et. al.
          */
-        double dH= calcDeltaH(primer);
+        double dH= calcDeltaH(primer)*1000;
         //System.out.println("R+...="+(R*Math.log(C/4)));
         //System.out.println(".../(dS+...)="+(dS+R*Math.log(C/4)));
         //System.out.println("16.6*...="+(16.6*Math.log(K/(1+0.7*K))/2.3026-273.15)); funzt!
@@ -276,7 +283,7 @@ public class Helper {
      * (8600 + 5600 + 11900 + 5600 + 8600 + 6000 + 6500 + 11900 + 6500 + 6000 + 7800) = -85000 cal/mol
      * = -85 kcal/mol.
      */
-    private static double calcDeltaH(String primer) {
+    private static double calcDeltaH(CharSequence primer) {
         double[][] lookup= { { 9100, 6500, 7800, 8600 }, {
                 5800, 11000, 11900, 7800 }, {
                 5600, 11100, 11000, 6500 }, {
@@ -293,7 +300,7 @@ public class Helper {
                 y= "acgt".indexOf(primer.charAt(i + 1));
             dH += lookup[x][y];
         }
-        return -dH;
+        return -dH/1000;
     }
     /**
      * sS is entropy for helix formation.
@@ -304,7 +311,7 @@ public class Helper {
      * (23.9 + 13.5 + 27.8 + 13.5 + 23.9 + 16.9 + 17.3 + 27.8 + 17.3 + 16.9 + 20.8) + 15.1 = -234.7 cal/K/mol
      * = -0.23 kcal/K/mol.
      */
-    private static double calcDeltaS(String primer) {
+    private static double calcDeltaS(CharSequence primer) {
         double[][] lookup= { { 24, 17.3, 20.8, 23.9 }, {
                 12.9, 26.6, 27.8, 20.8 }, {
                 13.5, 26.7, 26.6, 17.3 }, {
@@ -322,7 +329,14 @@ public class Helper {
 
             dS += lookup[x][y];
         }
-        return -dS;
+        return -dS/1000;
+    }
+    public static double cal_dG_secondaryStruct(CharSequence theseq) {
+        double dH= calcDeltaH(theseq);
+        double dS= (calcDeltaS(theseq) * 1000D + 15.1D) / 1000D;
+        double TT= 298.15;//TODO als parameter, in kelvin (25C)
+        double adG= dH - TT * dS;
+        return adG;
     }
     public static double calcTM(String primer) {
         return calcTM(primer, 50, 1.5);
@@ -678,8 +692,16 @@ public class Helper {
      * @param bruchstelle
      * @return
      */
-    public static String replacePL(String seq, int pos) {
+    public static String replaceWithPL(String seq, int pos) {
         return replaceNukl(seq,pos,'L');
+    }
+    public static String replacePL(String seq, char nucl) {
+        return replaceNukl(seq,getPosOfPl(seq),nucl);
+    }
+    public static char getNuklAtPos(String string, int plpos) {
+        if(plpos<0 || plpos>=string.length())
+            throw new IllegalArgumentException("PL position out of range: "+plpos);
+        return string.charAt(string.length()-plpos);
     }
     public static String replaceNukl(String seq, int plpos, char c) {
         if(plpos >0)
@@ -687,7 +709,7 @@ public class Helper {
         return seq;
     }
     public static int getPosOfPl(String seq) {
-        int pos = seq.indexOf('L');
+        int pos = Math.max(seq.indexOf('L'), seq.indexOf('K'));
         if(pos == -1)
             return -1;
         return seq.length() - pos;
@@ -730,8 +752,155 @@ public class Helper {
     public static CalcDalton getCalcDalton(CalcDaltonOptions cfg) {
     	return new CalcDalton(cfg);
     }
+    public static CalcDalton getCalcDalton() {
+        return cd;
+    }
     private static CalcDalton cd=null;
     public static void createAndRememberCalcDaltonFrom(CalcDaltonOptions cfg) {
         cd=new CalcDalton(cfg);
     }
+    public static char getCSVDelimiterFrom(String filename) {
+        char delim=0;
+        int count=0;
+        try {
+        BufferedReader br=new BufferedReader(new FileReader(filename));
+        String line=br.readLine();
+        char[] delims=new char[] {',',';','\t'};
+        for (int i = 0; i < delims.length; i++) {
+            int cnt=countInString(line,delims[i]);
+            if(cnt>count) {
+                count=cnt;
+                delim=delims[i];
+            }
+        }
+        }catch (IOException e) {
+        }        
+        return delim;
+    }
+    private static int countInString(String line, char c) {
+        int count=0;
+        while(line.length()>0) {
+            int pos=line.indexOf(c);
+            if(pos>-1) {
+                count++;
+                line=line.substring(pos+1);
+            }else
+                break;
+        }
+        return count;
+    }
+    public static double LoopEnergy(int NoOfBases)
+    {
+        switch(NoOfBases)
+        {
+        case 3: // '\003'
+            return 5.2000000000000002D;
+    
+        case 4: // '\004'
+            return 4.5D;
+    
+        case 5: // '\005'
+            return 4.4000000000000004D;
+    
+        case 6: // '\006'
+            return 4.2999999999999998D;
+    
+        case 7: // '\007'
+            return 4.0999999999999996D;
+    
+        case 8: // '\b'
+            return 4.0999999999999996D;
+    
+        case 9: // '\t'
+            return 4.2000000000000002D;
+    
+        case 10: // '\n'
+            return 4.2999999999999998D;
+    
+        case 11: // '\013'
+            return 4.5D;
+    
+        case 12: // '\f'
+            return 4.9000000000000004D;
+    
+        case 13: // '\r'
+            return 5.2000000000000002D;
+    
+        case 14: // '\016'
+            return 5.5999999999999996D;
+    
+        case 15: // '\017'
+            return 5.7999999999999998D;
+    
+        case 16: // '\020'
+            return 6.0999999999999996D;
+    
+        case 17: // '\021'
+            return 6.4000000000000004D;
+    
+        case 18: // '\022'
+            return 6.7000000000000002D;
+    
+        case 19: // '\023'
+            return 6.9000000000000004D;
+    
+        case 20: // '\024'
+            return 7.0999999999999996D;
+    
+        case 21: // '\025'
+            return 7.2999999999999998D;
+    
+        case 22: // '\026'
+            return 7.5D;
+    
+        case 23: // '\027'
+            return 7.7000000000000002D;
+    
+        case 24: // '\030'
+            return 7.9000000000000004D;
+    
+        case 25: // '\031'
+            return 8.0999999999999996D;
+    
+        case 26: // '\032'
+            return 8.3000000000000007D;
+    
+        case 27: // '\033'
+            return 8.4000000000000004D;
+    
+        case 28: // '\034'
+            return 8.5999999999999996D;
+    
+        case 29: // '\035'
+            return 8.8000000000000007D;
+    
+        case 30: // '\036'
+            return 8.9000000000000004D;
+        }
+        if(NoOfBases > 30 && NoOfBases <= 35)
+            return 9.0999999999999996D;
+        if(NoOfBases > 35 && NoOfBases <= 40)
+            return 9.6999999999999993D;
+        if(NoOfBases > 40 && NoOfBases <= 45)
+            return 10.199999999999999D;
+        if(NoOfBases > 45 && NoOfBases <= 50)
+            return 10.6D;
+        if(NoOfBases > 50 && NoOfBases <= 55)
+            return 11D;
+        if(NoOfBases > 55 && NoOfBases <= 60)
+            return 11.300000000000001D;
+        if(NoOfBases > 60 && NoOfBases <= 65)
+            return 11.5D;
+        if(NoOfBases > 65 && NoOfBases <= 70)
+            return 11.699999999999999D;
+        if(NoOfBases > 70 && NoOfBases <= 80)
+            return 11.9D;
+        if(NoOfBases > 80 && NoOfBases <= 90)
+            return 12.1D;
+        if(NoOfBases > 90 && NoOfBases <= 100)
+            return 12.300000000000001D;
+        else
+            return NoOfBases > 100 ? 12.300000000000001D : 0.0D;
+    }
+
 }

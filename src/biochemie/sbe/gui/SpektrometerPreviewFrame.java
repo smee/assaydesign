@@ -33,7 +33,7 @@ import org.jfree.ui.TextAnchor;
 import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.calcdalton.SBETable;
-import biochemie.sbe.SBECandidate;
+import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.util.Helper;
 
 /*
@@ -128,7 +128,7 @@ public class SpektrometerPreviewFrame extends JFrame{
         XYSeriesCollection collection = new XYSeriesCollection();
         CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
-            SBECandidate s = (SBECandidate) it.next();
+            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();
             double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),true);
             String id = s.getId();
             String snp = s.getSNP();            

@@ -11,7 +11,6 @@ import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.sbe.SBEOptions;
 
@@ -31,14 +30,14 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
     public void filter(List cand) {
     	StringBuffer sb=new StringBuffer("Primers with incomp. sec.strucs:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
-            SBEPrimer p=(SBEPrimer) it.next();
+            Primer p=(Primer) it.next();
 
             if(p.numOfHHSekStruks() == 0)
                 continue;
             if(hatMehrereInkompatibleHairpins(p)){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", too many incompatible secondary structures!");
+                sb.append(getPrimerDescription(p)).append(", ").append(markRed("too many incompatible secondary structures!"));
                 sb.append("\n");
                 appendAsciiArt(sb, p);
             }else {//keine Seq. hat mehrere, jetzt schauen, ob nur eine inkomp. existiert, die nicht verhindert werden kann
@@ -46,7 +45,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
                 if(hatNichtVerhinderbareSekStruks(p)) {
                     it.remove();
                     count++;
-                    sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", can't avoid incomp. secondary structure!");
+                    sb.append(getPrimerDescription(p)).append(", ").append(markRed("can't avoid incomp. secondary structure!"));
                     sb.append("\n");
                     appendAsciiArt(sb, p);
                 }
@@ -59,7 +58,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
      * @param sb
      * @param p
      */
-    private void appendAsciiArt(StringBuffer sb, SBEPrimer p) {
+    private void appendAsciiArt(StringBuffer sb, Primer p) {
         for (Iterator iter = p.getSecStrucs().iterator(); iter.hasNext();) {
             SBESekStruktur s = (SBESekStruktur) iter.next();
             sb.append(s.getAsciiArt()).append("\n");

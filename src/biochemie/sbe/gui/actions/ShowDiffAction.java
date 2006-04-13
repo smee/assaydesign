@@ -37,9 +37,9 @@ import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.Primer;
 import biochemie.gui.ColumnResizer;
-import biochemie.sbe.SBECandidate;
+import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
@@ -71,7 +71,7 @@ public class ShowDiffAction extends MyAction {
         sbecfilt = new ArrayList(sbec);
         Algorithms.remove(sbecfilt.iterator(), new UnaryPredicate() {
             public boolean test(Object obj) {
-                return !((SBECandidate)obj).isFoundValidSeq();
+                return !((CleavablePrimerFactory)obj).isFoundValidSeq();
             }
         });
 
@@ -79,7 +79,7 @@ public class ShowDiffAction extends MyAction {
         //suche alle vorhandenen Multiplexids
         Algorithms.foreach(sbecfilt.iterator(),new UnaryProcedure() {
             public void run(Object obj) {
-                mids.add(((SBECandidate)obj).getMultiplexId());
+                mids.add(((CleavablePrimerFactory)obj).getMultiplexId());
             }
         });
         System.out.println(sbecfilt);
@@ -123,7 +123,7 @@ public class ShowDiffAction extends MyAction {
 
         int i=0;
         for (Iterator it = mysbec.iterator(); it.hasNext();i++) {
-            SBECandidate s = (SBECandidate) it.next();
+            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();
             names[i]=s.getId();
             paneldata[i]=createAnhangsData(s);
             fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),s.getBruchstelle());
@@ -137,13 +137,13 @@ public class ShowDiffAction extends MyAction {
         return sbetable;
     }
 
-    private String[] createAnhangsData(SBECandidate s) {
-        if(cfg.getCalcDaltonAllExtensions()) {
-            return new String[]{s.getFavSeq(),"A","C","G","T"};
-        }else {
-            String[] arr=SBEPrimer.getCDParamLine(s.getFavPrimer());
+    private String[] createAnhangsData(CleavablePrimerFactory s) {
+//        if(cfg.getCalcDaltonAllExtensions()) {
+//            return new String[]{s.getFavSeq(),"A","C","G","T"};
+//        }else {
+            String[] arr=Primer.getCDParamLine(s.getFavPrimer());
             return arr;
-        }
+//        }
     }
 
     /**
@@ -159,7 +159,7 @@ public class ShowDiffAction extends MyAction {
         int i=0;
         CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator iter = mysbec.iterator(); iter.hasNext();i++) {
-            SBECandidate  s = (SBECandidate ) iter.next();
+            CleavablePrimerFactory  s = (CleavablePrimerFactory ) iter.next();
             sbenames[i]=s.getId();
             weights[i]=cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),false);
         }
@@ -177,7 +177,7 @@ public class ShowDiffAction extends MyAction {
             public boolean test(Object obj) {
                 if(multiplexid == null)
                     return true;
-                return ((SBECandidate)obj).getMultiplexId().equals(multiplexid);
+                return ((CleavablePrimerFactory)obj).getMultiplexId().equals(multiplexid);
             }
         }), new ArrayList());
         return mysbec;

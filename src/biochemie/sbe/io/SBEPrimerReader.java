@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import biochemie.sbe.SBECandidate;
+import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.WrongValueException;
 import biochemie.sbe.multiplex.MultiplexableFactory;
@@ -56,29 +56,29 @@ public class SBEPrimerReader {
                 list.add(line);
         }
     }
-    private SBECandidate useRow(int n) throws WrongValueException  {
+    private CleavablePrimerFactory useRow(int n) throws WrongValueException  {
         if(n>=getCount() || 0 > n)
             return null;
         String line=Helper.clearEmptyCSVEntries((String)list.get(n));
-        return SBECandidate.getSBECandidateFrom(cfg,line);
+        return CleavablePrimerFactory.getSBECandidateFromInputline(cfg,line);
     }
     /**
      * Erzeuge Liste mit Kandidaten. Funktioniert nur einmal, da die originale Liste intern gehalten wird, damit beim Speichern spaeter
      * keine verloren gehen.
      * @throws WrongValueException
-     * @see SBECandidate
+     * @see CleavablePrimerFactory
      */
     public List getSBECandidates(String filename, SBEOptions cfg) throws IOException, WrongValueException {
         initForRead(filename, cfg);
         if(null == sbec) {
             sbec=new ArrayList();
             for(int i=0;i<getCount();i++) {
-                SBECandidate sbec=useRow(i);
+                CleavablePrimerFactory sbec=useRow(i);
                 this.sbec.add(sbec);
             }
         }
         for (Iterator it = sbec.iterator(); it.hasNext();) {
-            SBECandidate s = (SBECandidate) it.next();
+            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();
             if(0 != s.getGivenMultiplexID().length() && !s.hasPL()) {
                 throw new IllegalArgumentException("Primer ID="+s.getId()+" has no given cleavable linker, so it can't be in the given multiplex "+s.getGivenMultiplexID()+'!');
             }
@@ -92,7 +92,7 @@ public class SBEPrimerReader {
 	public static List collapseMultiplexes(List sbec, SBEOptions cfg) {
 		Collections.sort(sbec,new Comparator() {
             public int compare(Object arg0, Object arg1) {
-                return ((SBECandidate)arg0).getGivenMultiplexID().compareTo(((SBECandidate)arg1).getGivenMultiplexID());
+                return ((CleavablePrimerFactory)arg0).getGivenMultiplexID().compareTo(((CleavablePrimerFactory)arg1).getGivenMultiplexID());
             }
         });
         List l=new ArrayList();
@@ -100,9 +100,9 @@ public class SBEPrimerReader {
             return l;
         int startpos=0;
         for (int i=0; i < sbec.size();i++) {
-            SBECandidate s = (SBECandidate) sbec.get(i);
+            CleavablePrimerFactory s = (CleavablePrimerFactory) sbec.get(i);
             String id=s.getGivenMultiplexID();
-            if(i+1 == sbec.size() || 0 == id.length() || !(((SBECandidate) sbec.get(i+1)).getGivenMultiplexID()).equals(id)) {
+            if(i+1 == sbec.size() || 0 == id.length() || !(((CleavablePrimerFactory) sbec.get(i+1)).getGivenMultiplexID()).equals(id)) {
                 List knoten=new LinkedList();
                 for(int idx=startpos; idx <= i; idx++)
                     knoten.add(sbec.get(idx));
@@ -130,7 +130,7 @@ public class SBEPrimerReader {
     }
 
     public static void writeSBEResults(String filename, List sbec) {
-        StringBuffer sb=new StringBuffer(StringUtils.join(SBECandidate.getCsvheader(),';') +"\n");
+        StringBuffer sb=new StringBuffer(StringUtils.join(CleavablePrimerFactory.getCsvheader(),';') +"\n");
 
         for (int i= 0; i < sbec.size(); i++) {
             String line=((MultiplexableFactory) sbec.get(i)).getCSVRow();

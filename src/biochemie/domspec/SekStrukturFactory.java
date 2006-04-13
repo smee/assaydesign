@@ -12,7 +12,7 @@ import java.util.Set;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.pcr.modules.HairpinAnalysis;
 import biochemie.pcr.modules.HomoDimerAnalysis;
-import biochemie.sbe.SBEOptions;
+import biochemie.sbe.SecStrucOptions;
 
 /**
  * @author Steffen Dienst
@@ -20,18 +20,11 @@ import biochemie.sbe.SBEOptions;
  */
 public class SekStrukturFactory {
 
-	public static Set getSecStruks(Primer p, SBEOptions cfg){
+	public static Set getSecStruks(Primer p, SecStrucOptions cfg){
         HairpinAnalysis hpa= getHairpinAnalysisInstance(cfg);
         HomoDimerAnalysis hda= getHomoDimerAnalysisInstance(cfg);
         String seq=p.getSeq();
         
-        if(p instanceof SBEPrimer) {//ersetze photolinker surch X
-            SBEPrimer sbep=(SBEPrimer)p;
-            int pos =-1;
-            if((pos=sbep.getBruchstelle() )!=-1){
-                seq=biochemie.util.Helper.replacePL(seq,pos);
-            }
-        }
         List poshairpins= hpa.getHairpinPositions(seq);
         List poshomodimer= hda.getHomoDimerPositions(seq);
         Set sekstrukts=new HashSet(poshairpins.size()+poshomodimer.size());
@@ -52,18 +45,18 @@ public class SekStrukturFactory {
         }
         return sekstrukts;
 	}
-	public static Set getCrossdimer(Primer p, Primer other, SBEOptions cfg){
+	public static Set getCrossdimer(Primer p, Primer other, SecStrucOptions cfg){
         CrossDimerAnalysis cda = getCrossDimerAnalysisInstance(cfg);
         return getCrossdimer(p,other,cda);
 	}
 	
-	public static HairpinAnalysis getHairpinAnalysisInstance(SBEOptions cfg){
+	public static HairpinAnalysis getHairpinAnalysisInstance(SecStrucOptions cfg){
 		return new HairpinAnalysis(cfg.getHairpinWindowsizes(),cfg.getHairpinMinbinds(),"false");
 	}
-    public static HomoDimerAnalysis getHomoDimerAnalysisInstance(SBEOptions cfg){
+    public static HomoDimerAnalysis getHomoDimerAnalysisInstance(SecStrucOptions cfg){
 		return new HomoDimerAnalysis(cfg.getHomodimerWindowsizes(),cfg.getHomodimerMinbinds(),"false");
 	}
-    public static CrossDimerAnalysis getCrossDimerAnalysisInstance(SBEOptions cfg){
+    public static CrossDimerAnalysis getCrossDimerAnalysisInstance(SecStrucOptions cfg){
 		return new CrossDimerAnalysis(cfg.getCrossDimerWindowsizes(),cfg.getCrossdimerMinbinds(),"false");
 	}
     /**
@@ -75,20 +68,7 @@ public class SekStrukturFactory {
     public static Set getCrossdimer(Primer p, Primer other, CrossDimerAnalysis cda) {
         String pseq = p.getSeq();
         String oseq =other.getSeq();
-        if(p instanceof SBEPrimer) {//ersetze photolinker surch X
-            SBEPrimer sbep=(SBEPrimer)p;
-            int pos =-1;
-            if((pos=sbep.getBruchstelle() )!=-1){
-                pseq=biochemie.util.Helper.replacePL(pseq,pos);
-            }
-        }
-        if(other instanceof SBEPrimer) {//ersetze photolinker surch X
-            SBEPrimer sbep=(SBEPrimer)other;
-            int pos =-1;
-            if((pos=sbep.getBruchstelle() )!=-1){
-                oseq=biochemie.util.Helper.replacePL(oseq,pos);
-            }
-        }
+
         List positions= cda.getCrossDimerPositions(pseq,oseq);
         Set sek=new HashSet();
         

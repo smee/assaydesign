@@ -7,7 +7,7 @@ package biochemie.sbe.filter;
 import java.util.Iterator;
 import java.util.List;
 
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.Primer;
 import biochemie.sbe.SBEOptions;
 
 /**
@@ -29,11 +29,12 @@ public class LaengenFilter extends AbstractKandidatenFilter {
     public void filter(List cand) {
     	StringBuffer sb=new StringBuffer("Primers too short:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
-            SBEPrimer  p = (SBEPrimer) it.next();
+            Primer  p = (Primer) it.next();
             if(p.getSeq().length()<len){
                 it.remove();
                 count++;
-                sb.append(p.getSeq()+", PL="+p.getBruchstelle()+", length<"+len);
+                sb.append(getPrimerDescription(p)).append(", ");
+                sb.append(markRed("length="+p.getSeq().length()+"bp"));
                 sb.append("\n");
             }
         }

@@ -6,6 +6,8 @@ package biochemie.domspec;
 
 import java.util.Comparator;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import biochemie.util.Helper;
 
 /**
@@ -21,6 +23,7 @@ public class SekStruktur  implements Cloneable{
     protected final Primer p;
     protected final Primer other;
     protected final int pos;
+    protected boolean incomp;
     protected char bautAn = 0;
 
     /**
@@ -36,7 +39,7 @@ public class SekStruktur  implements Cloneable{
         this.other=other;
         this.type=CROSSDIMER;
         this.pos=pos;
-
+        init();
     }
 
     /**
@@ -50,14 +53,9 @@ public class SekStruktur  implements Cloneable{
         this.other=null;
         this.pos=-1;
         this.bautAn=Character.toUpperCase(einbau);
-        switch (t) {
-            case HAIRPIN :
-            case HOMODIMER:
-                this.type=t;
-                break;
-            default :
-                throw new IllegalArgumentException("invalid secondary strucure type given!");
-        }
+        this.type=t;
+        init();
+
     }
 
     /**
@@ -73,9 +71,28 @@ public class SekStruktur  implements Cloneable{
         this.type=t;
         this.pos=pos;
         this.other=null;
+        init();
     }
 
+    private void init() {
+        switch (type) {
+        case HAIRPIN :
+        case HOMODIMER:
+            incomp=Helper.isInkompatibleSekStruktur(p.getSeq(),getPosFrom3(),p.getSNP());
+            break;
+        case CROSSDIMER:
+            //es sind zwei SNPs beteiligt, gegen die getestet werden muss.
+            incomp=Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),p.getSNP())
+                          || Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),other.getSNP());
+            break;
+        default :
+            throw new IllegalArgumentException("invalid secondary strucure type given!");
+    }        
+    }
 
+    public boolean isIncompatible() {
+        return incomp;
+    }
     /**
      * @return
      */
@@ -120,7 +137,22 @@ public class SekStruktur  implements Cloneable{
         };
     }
 
-
+    public double getEnthalpy() {
+        String match=null;
+        switch (getType()) {
+        case HAIRPIN:
+            match=getBindingSeq(getPrimer().getSeq(),Helper.revcomplPrimer(getPrimer().getSeq()),getPosFrom3());
+            return Helper.cal_dG_secondaryStruct(match)+Helper.LoopEnergy(getLoopLength(getPosFrom3(),match.length()))-1;
+        case HOMODIMER:
+            match=getBindingSeq(getPrimer().getSeq(),Helper.revcomplPrimer(getPrimer().getSeq()),getPosFrom3());
+            return Helper.cal_dG_secondaryStruct(match)-1;
+        case CROSSDIMER:
+            match=getBindingSeq(getPrimer().getSeq(), Helper.revcomplPrimer(getCDPrimer().getSeq()),getPosFrom3());
+            return Helper.cal_dG_secondaryStruct(Helper.complPrimer(match))-1;
+        default:
+            return 0;
+        }
+    }
 
     /**
      * @return
@@ -138,16 +170,57 @@ public class SekStruktur  implements Cloneable{
     public String getAsciiArt() {
         switch (type) {
         case HAIRPIN:
-            return Helper.outputHairpin(p.getSeq(),pos-1,p.getSeq().length());
+            return Helper.outputHairpin(p.getSeq(),pos-1,p.getSeq().length(), getEnthalpy());
         case HOMODIMER:
-            return Helper.outputXDimer(p.getSeq(),p.getSeq(),p.getSeq().length() - pos,p.getSeq().length());
+            return Helper.outputXDimer(p.getSeq(),p.getSeq(),p.getSeq().length() - pos,p.getSeq().length(), getEnthalpy());
         case CROSSDIMER:
-            return Helper.outputXDimer(p.getSeq(),other.getSeq(),p.getSeq().length() - pos,Math.min(p.getSeq().length(),other.getSeq().length()));
+            return Helper.outputXDimer(p.getSeq(),other.getSeq(),p.getSeq().length() - pos,Math.min(p.getSeq().length(),other.getSeq().length()), getEnthalpy());
 
         default:
             return "unknown type of sec.struk encountered.";
         }
     }
-
-
+    protected static String getBindingSeq(String primer, String rcPrimer,int pos) {
+        int tempindex=primer.length()-1;
+        StringBuffer binding=new StringBuffer(Math.max(primer.length(),rcPrimer.length()));
+        for(int j=pos-1;0 <= j;j--,tempindex--) {  //maximal bis maxmatchlength suchen
+            if(primer.charAt(tempindex)==rcPrimer.charAt(j) && Helper.isNukleotid(rcPrimer.charAt(j))) {
+                binding.append(primer.charAt(tempindex));
+            }else
+                break;
+        }
+        return binding.toString();
+    }
+    protected static int getLoopLength(int matchstart, int matchlen) {
+        int looplen=matchstart-2*matchlen;
+        if(looplen<0)
+            throw new IllegalArgumentException("hairpin looplen <0!");
+        return looplen;
+    }
+    public int hashCode() {
+        int hash= new HashCodeBuilder(17, 37).
+           append("SBESekstruktur").
+           append(p.getId()).
+           append(pos).
+           append(type).
+           toHashCode();
+        return hash;
+    }
+    public boolean equals(Object obj) {
+        if ( !(obj instanceof SekStruktur) ) {
+            return false;
+        }
+        if(this==obj)
+            return true;
+        SekStruktur rhs = (SekStruktur) obj;
+        boolean eq=true;
+        eq=eq && (this.type==rhs.type)
+              && (this.incomp==rhs.incomp)
+              && type==rhs.type
+              && p.equals(rhs.p);
+        if(eq==true && CROSSDIMER == type) {  //betrachte Crossdimer mit anderen Primern als gleich, auch wenn die Bruchstelle nicht stimmt.
+            eq=eq && other.equals(rhs.other);
+        }
+        return eq;
+    }
 }

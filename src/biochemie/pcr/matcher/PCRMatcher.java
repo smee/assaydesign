@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import java.util.StringTokenizer;
 
 import com.Ostermiller.util.BadDelimiterException;
 
+import biochemie.domspec.Primer;
 import biochemie.pcr.PrimerPair;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.WrongValueException;
@@ -104,8 +106,8 @@ public class PCRMatcher {
             st.nextToken();//gc%1
             st.nextToken();//gc%2
             right=st.nextToken().trim().toUpperCase();
-            PCRPrimer p1=new PCRPrimer(filename,pos,line,left,PCRPrimer.LEFT);
-            PCRPrimer p2=new PCRPrimer(filename,pos,line,right,PCRPrimer.RIGHT);
+            PCRPrimer p1=new PCRPrimer(filename,pos,line,left,Primer._5_);
+            PCRPrimer p2=new PCRPrimer(filename,pos,line,right,Primer._3_);
             primers.add(new PCRPair(p1,p2,maxplex));
         } catch (NoSuchElementException e) {
             System.err.println("Fehler beim Lesen der Zeile :\""+line+"\" in Datei \""+filename+"\"!");
@@ -155,6 +157,7 @@ public static void main(String[] args) {
         List pairs=complex.getIncludedElements();
         BufferedWriter bw=new BufferedWriter(new FileWriter(outname));
         bw.write(PrimerPair.getCSVHeaderLine());
+        bw.write("\n");
         for (Iterator iter = pairs.iterator(); iter.hasNext();) {
             PCRPair pair = (PCRPair) iter.next();
             bw.write(pair.getCSVLine());
@@ -166,13 +169,17 @@ public static void main(String[] args) {
 
 
     private void doTheCalcBoogie(ConfigMaker cm) {
-        while(cm.getNumOfConfigsLeft() > 0 && pcrpairs.size() >0) {
+        int count=0;
+        complex=new MultiKnoten(Collections.EMPTY_LIST);
+        while(cm.getNumOfConfigsLeft() > 0 && complex.realSize()<maxplex) {
+            System.out.println("\nStarte Durchlauf "+count+"...");
             GeneralConfig cfg=cm.getNextConfig();
-            System.out.println("keys in config: "+cfg.getKeys());
             MatcherStrategy ms=getMatcherStrategy(cfg);
             updateConfigs(cfg);
             Collection max=ms.getBestPCRPrimerSet(pcrpairs,complex);
             createNewComplex(max);
+            System.out.println("Durchlauf "+count+": "+complex.realSize()+" Primer gluecklich vereint... "+complex.toString());
+            count++;
         }
     }
 

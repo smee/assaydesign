@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import biochemie.sbe.calculators.Interruptible;
 import biochemie.util.Helper;
 public class CalcDalton implements Interruptible{
@@ -41,7 +39,7 @@ public class CalcDalton implements Interruptible{
 	private double[] verbMasseFrom;
     protected int[] br;
     protected int[] laufvar;
-    protected int brlen;
+    final protected int brlen;
     protected int anzahlVarsNeeded=0;
     static boolean debug=false,progress=false;
     protected int maxreacheddepth=0;
@@ -67,7 +65,10 @@ public class CalcDalton implements Interruptible{
         this.addonMasses=addonMasses;
         this.plMass=plMass;
 		this.br=Helper.clone(br);
-		this.brlen=br.length;
+        if(br==null || br.length==0)
+            this.brlen=1;
+        else
+            this.brlen=br.length;
 		this.from=Helper.clone(abstaendeFrom);
 		this.to=Helper.clone(abstaendeTo);
 		this.fromAbs=Helper.clone(abstaendeFrom);
@@ -160,9 +161,17 @@ public class CalcDalton implements Interruptible{
 	public double[] calcSBEMass(String[] p1, int bruch,boolean allExtension) {
         if(1 > p1.length)
             return new double[0];
+		String temp=p1[0];
+		p1[0]=temp.substring((temp.length() - bruch) + 1);
+        double[] res=calcSBEMass(p1,allExtension);
+        p1[0]=temp;
+        return res;
+	}
+    public double[] calcSBEMass(String[] p1, boolean allExtension) {
+        if(1 > p1.length)
+            return new double[0];
         List masses=new ArrayList();
-		String temp=p1[0].substring((p1[0].length() - bruch) + 1);
-        final double m=calcPrimerMasse(temp);
+        final double m=calcPrimerMasse(p1[0]);
         masses.add( new Double(m));
         for (int i= 1; i < p1.length; i++)
             if(allExtension || p1[i].charAt(0)!='>')
@@ -172,8 +181,7 @@ public class CalcDalton implements Interruptible{
             ergebnis[i]=((Double)masses.get(i)).doubleValue();
         }
         return ergebnis;
-	}
-
+    }
 	public boolean invalidMassesIn(double[] massen){
 		for (int i = 0; i < verbMasseFrom.length; i++) {
 			for (int j = 0; j < massen.length; j++) {
@@ -322,7 +330,11 @@ public class CalcDalton implements Interruptible{
         return sbeTable;   
     }
     
-   
+    public int[][] calc(String[][] sbeData) {
+        int[] fest=new int[sbeData.length];
+        Arrays.fill(fest,-1);
+        return calc(sbeData,fest);
+    }
     /**
 	 * Berechnung.
 	 * @param paneldata Jede Zeile enthält Sequenz, Anhang1, Anhang 2... 
@@ -330,14 +342,14 @@ public class CalcDalton implements Interruptible{
      * @param fest array mit indizes der festen bruchstellen, wenn egal, dann -1
 	 */
     public int[][] calc(String[][] sbeData, int[] fest) {
-        if(sbeData.length == 0 || fest.length == 0)
+        if(sbeData.length == 0 || fest.length != brlen)
             return new int[0][];
         calcThread = Thread.currentThread();
         
         List erglist=new ArrayList();
         boolean[] brIstFest=new boolean[fest.length]; //Feld fuer feste Bruchstellen
         solutionSize=Integer.MAX_VALUE;
-        anzahl_sbe=fest.length;        //wieviele SBE-Primer?
+        anzahl_sbe=sbeData.length;        //wieviele SBE-Primer?
         //anzahlVarsNeeded=(int) Math.ceil(Math.log(brlen)/Math.log(10000));
         anzahlVarsNeeded=6 > anzahl_sbe?anzahl_sbe:6;
         /*Workaround für feste Bruchstelle:
@@ -454,12 +466,15 @@ public class CalcDalton implements Interruptible{
     protected void initializeMassen(String[][] sbedata){
         massenList=new double[sbedata.length][][];
         for(int i=0;i<sbedata.length;i++){
-            massenList[i]=new double[br.length][];
+            massenList[i]=new double[brlen][];
         }
         for(int i=0;i<sbedata.length;i++){
-            for(int j=0;j<br.length;j++){
+            for(int j=0;j<brlen;j++){
                 double[] massenArray=null;
-                massenArray=calcSBEMass(sbedata[i],br[j],this.allExtension);
+                if(br == null || br.length == 0)
+                    massenArray=calcSBEMass(sbedata[i],this.allExtension);
+                else
+                    massenArray=calcSBEMass(sbedata[i],br[j],this.allExtension);
                 if(invalidMassesIn(massenArray))
                     massenArray=null;
                 massenList[i][j]=massenArray;

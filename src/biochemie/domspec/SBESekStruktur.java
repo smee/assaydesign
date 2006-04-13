@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import biochemie.util.Helper;
 
 public class SBESekStruktur extends SekStruktur{
-    private boolean incomp=false;
+
     private boolean verh=false;
 
     protected  SBESekStruktur(SBEPrimer p,SBEPrimer other,int pos) {
@@ -38,14 +38,10 @@ public class SBESekStruktur extends SekStruktur{
             switch (type) {
             case HAIRPIN :
             case HOMODIMER :
-                incomp=Helper.isInkompatibleSekStruktur(p.getSeq(),getPosFrom3(),((SBEPrimer)p).getSNP());
                 int pl=((SBEPrimer)p).getBruchstelle();
                 verh=getPosFrom3() == pl || getPosFrom3() == pl-1;
                 break;
             case CROSSDIMER:
-                //es sind zwei SNPs beteiligt, gegen die getestet werden muss.
-                incomp=Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),((SBEPrimer)p).getSNP())
-                              || Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),((SBEPrimer)other).getSNP());
                 //bei crossdimern verhindert ja der PL des anderen Primers
                 int plo=((SBEPrimer)other).getBruchstelle();
                 verh=getPosFrom3() == plo || getPosFrom3() == plo-1;
@@ -57,9 +53,7 @@ public class SBESekStruktur extends SekStruktur{
         }
     }
 
-    public boolean isIncompatible() {
-        return incomp;
-    }
+
     public boolean isVerhindert() {
         return verh;
     }
@@ -70,25 +64,13 @@ public class SBESekStruktur extends SekStruktur{
         if(this==obj)
             return true;
         SBESekStruktur rhs = (SBESekStruktur) obj;
-        boolean eq=true;
-        eq=eq && (this.type==rhs.type)
-              && (this.verh==rhs.verh)
-              && (this.incomp==rhs.incomp)
-              && type==rhs.type
-              && p.equals(rhs.p);
-        if(eq==true && CROSSDIMER == type) {  //betrachte Crossdimer mit anderen Primern als gleich, auch wenn die Bruchstelle nicht stimmt.
-            eq=eq && other.equals(rhs.other);
-        }
-        return eq;
+        return this.verh==rhs.verh && super.equals(obj);
     }
     public int hashCode() {
-            int hash= new HashCodeBuilder(17, 37).
-               append("SBESekstruktur").
-               append(p.getId()).
+            int hash= new HashCodeBuilder(977, 1523).
+               appendSuper(super.hashCode()).
                append(((SBEPrimer)p).getBruchstelle()).
-               append(pos).
                append(verh).
-               append(type).
                toHashCode();
             return hash;
     }
@@ -119,23 +101,4 @@ public class SBESekStruktur extends SekStruktur{
         };
     }
 
-
-    /* (non-Javadoc)
-     * @see biochemie.domspec.SekStruktur#getAsciiArt()
-     */
-    public String getAsciiArt() {
-        String seq = Helper.replacePL(p.getSeq(),((SBEPrimer)p).getBruchstelle());
-        switch (type) {
-        case HAIRPIN:
-            return Helper.outputHairpin(seq,pos-1,seq.length());
-        case HOMODIMER:
-            return Helper.outputXDimer(seq,seq,seq.length() - pos,p.seq.length());
-        case CROSSDIMER:
-            String otherseq = Helper.replacePL(other.getSeq(), ((SBEPrimer)other).getBruchstelle());
-            return Helper.outputXDimer(seq,otherseq,seq.length()-pos,Math.min(seq.length(),otherseq.length()));
-
-        default:
-            return "unknown type of sec.struk encountered.";
-        }
-    }
 }

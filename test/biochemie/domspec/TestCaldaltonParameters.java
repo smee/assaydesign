@@ -14,7 +14,7 @@ public class TestCaldaltonParameters extends TestCase{
     public void testNurSNPAnhaenge() {
         cfg.setCalcDaltonAllExtensions(true);
         SBEPrimer p=new SBEPrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", SBEPrimer._5_,"",100,true);
-        String[] arr=SBEPrimer.getCDParamLine(p);
+        String[] arr=Primer.getCDParamLine(p);
         
         assertEquals(3,arr.length);
         String[] exp=new String[] {"foobar","A","G"};
@@ -25,7 +25,7 @@ public class TestCaldaltonParameters extends TestCase{
     public void testNurSNPAnhaenge2() {
         cfg.setCalcDaltonAllExtensions(true);
         SBEPrimer p=new SBEPrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", SBEPrimer._5_,"none",100,true);
-        String[] arr=SBEPrimer.getCDParamLine(p);
+        String[] arr=Primer.getCDParamLine(p);
         
         assertEquals(3,arr.length);
         String[] exp=new String[] {"foobar","A","G"};
@@ -37,7 +37,7 @@ public class TestCaldaltonParameters extends TestCase{
     public void testSNPUndHairpinAnhaenge() {
         cfg.setCalcDaltonAllExtensions(true);
         SBEPrimer p=new SBEPrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", SBEPrimer._5_,"T",100,true);
-        String[] arr=SBEPrimer.getCDParamLine(p);
+        String[] arr=Primer.getCDParamLine(p);
         
         assertEquals(4,arr.length);
         String[] exp=new String[] {"foobar","A","G","T"};
@@ -47,10 +47,10 @@ public class TestCaldaltonParameters extends TestCase{
     }
     public void testSNPUndHairpinAnhaenge2() {
         cfg.setCalcDaltonAllExtensions(true);
-        cfg.setHairpinWindowsizes("4");
-        cfg.setHairpinMinbinds("4");
+        cfg.getSecStrucOptions().setHairpinWindowsizes("4");
+        cfg.getSecStrucOptions().setHairpinMinbinds("4");
         SBEPrimer p=new SBEPrimer(cfg,"primer1","GTTTTAAAALAAAAAAAAA","AG", SBEPrimer._5_,"",100,false);
-        String[] arr=SBEPrimer.getCDParamLine(p);
+        String[] arr=Primer.getCDParamLine(p);
         
         assertEquals(4,arr.length);
         String[] exp=new String[] {"foobar","A","C","G"};

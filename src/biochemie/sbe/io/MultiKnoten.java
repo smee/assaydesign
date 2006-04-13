@@ -12,7 +12,7 @@ import java.util.List;
 import org._3pq.jgrapht.Edge;
 
 import biochemie.pcr.matcher.MyDefaultEdge;
-import biochemie.sbe.SBECandidate;
+import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.util.edges.MyUndirectedEdge;
@@ -25,7 +25,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
 
         private final List factories;
         List multiplexables;
-        Edge edge;
+        Collection edgecol;
         private final String givenId;
         final int realSize;
 
@@ -85,26 +85,28 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
          * 
          */
         public boolean passtMit(Multiplexable o) {
+            edgecol=new LinkedList();
             if(o instanceof MultiKnoten) {
                 boolean differentGivenMultiplexes = !givenId.equalsIgnoreCase(((MultiKnoten)o).givenId);
                 if(differentGivenMultiplexes) {
-                    edge = new DiffGivenMIDEdge(this,o,givenId);//kein Test, sollen nicht zusammenkommen
+                    edgecol.add(new DiffGivenMIDEdge(this,o,givenId));//kein Test, sollen nicht zusammenkommen
                     return false;
                 }
             }
             
             List other=o.getIncludedElements();
+            boolean flag=true;
             for (Iterator it = multiplexables.iterator(); it.hasNext();) {
                 Multiplexable m = (Multiplexable) it.next();
                 for (Iterator iter = other.iterator(); iter.hasNext();) {
                     Multiplexable m2 = (Multiplexable) iter.next();
                         if(!m.passtMit(m2)){
-                            edge=new MyDefaultEdge(this,o);//TODO die sache mit den kanten nochmal in ruhe durchdenken
-                            return false;
+                            edgecol.add(new MyDefaultEdge(this,o));//TODO die sache mit den kanten nochmal in ruhe durchdenken
+                            flag=false;
                         }
                 }
             }
-            return true;
+            return flag;
         }
 
         public int realSize() {
@@ -119,7 +121,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
             List ret = new LinkedList();
             for (Iterator it = factories.iterator(); it.hasNext();) {
                 MultiplexableFactory mf = (MultiplexableFactory) it.next();
-                if(mf instanceof SBECandidate)
+                if(mf instanceof CleavablePrimerFactory)
                     ret.add(mf);
                 else if(mf instanceof MultiKnoten)
                     ret.addAll(((MultiKnoten)mf).getSBECandidates());
@@ -129,8 +131,11 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
             return ret;
         }
 
-        public Edge getLastEdge() {
-            return edge;
+        public Collection getLastEdges() {
+            return edgecol;
+        }
+        public String toString() {
+            return getIncludedElements().toString();
         }
         private static class DiffGivenMIDEdge extends MyUndirectedEdge{
             private final String mid;
