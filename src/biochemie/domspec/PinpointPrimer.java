@@ -59,4 +59,9 @@ public class PinpointPrimer extends Primer{
         return getType()+"_"+getPrimerSeq().length()+"_"+tTail.length();
     }
 
+    public String getCSVSekStructuresSeparatedBy(String sep) {
+        // TODO Auto-generated method stub
+        return "";
+    }
+
 }

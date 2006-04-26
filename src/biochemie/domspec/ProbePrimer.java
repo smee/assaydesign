@@ -52,4 +52,8 @@ public class ProbePrimer extends Primer {
     public String getFilter() {
         return getType()+"_"+getPrimerSeq().length()+"_"+getAssayType();
     }
+    public String getCSVSekStructuresSeparatedBy(String sep) {
+        // TODO Auto-generated method stub
+        return "";
+    }
 }

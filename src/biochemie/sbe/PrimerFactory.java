@@ -235,9 +235,6 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
         return chosen.getPlexID();
     }
 
-    public String getSNP() {
-        return snp;
-    }
 
     /**
      * @return
@@ -337,6 +334,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
                 l.add(chosen);
             return l;
         }
+        createPrimers();
         l.addAll(primercandidates);
         return l;
     }

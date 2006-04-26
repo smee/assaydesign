@@ -1,5 +1,6 @@
 package biochemie.sbe;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import biochemie.domspec.Primer;
 import biochemie.domspec.ProbePrimer;
+import biochemie.domspec.SBEPrimer;
 import biochemie.util.Helper;
 
 public class ProbePrimerFactory extends PrimerFactory {
@@ -83,7 +85,7 @@ public class ProbePrimerFactory extends PrimerFactory {
             List addons=generateAddons(Primer._5_,givenAssay5);
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                ProbePrimer primer=new ProbePrimer(getId(),seq5,Primer._5_,getSNP(),givenAssay5,addon,cfg.getSecStrucOptions());
+                ProbePrimer primer=new ProbePrimer(getId(),seq5,Primer._5_,snp,givenAssay5,addon,cfg.getSecStrucOptions());
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
@@ -108,20 +110,18 @@ public class ProbePrimerFactory extends PrimerFactory {
         return primers;
     }
 
-    public String getCSVRow() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 
     public Collection createPossiblePrimers(String seq, String type) {
         //TODO kombination mit entweder cleavable oder pinpoint
         Collection result=new ArrayList();
+        String snp=this.snp;
+        if(type.equals(Primer._3_))
+            snp=Helper.complPrimer(snp);
         for (int i = 0; i < ASSAYTYPES.length; i++) {
             List addons=generateAddons(type,i);
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                result.add(new ProbePrimer(getId(),seq,type,getSNP(),i,addon,cfg.getSecStrucOptions()));
+                result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,cfg.getSecStrucOptions()));
             }
         }
         return result;
@@ -131,7 +131,7 @@ public class ProbePrimerFactory extends PrimerFactory {
     List generateAddons(String type, int assay) {
         List result=new ArrayList(4);
         String right=seq3;
-        String snp=getSNP();
+        String snp=this.snp;
         if(type.equals(Primer._3_)){
             snp=Helper.complPrimer(snp);
             right=Helper.revcomplPrimer(seq5);
@@ -156,10 +156,60 @@ public class ProbePrimerFactory extends PrimerFactory {
         return result;
     }
 
+    public String getCSVRow() {
+        if(chosen == null && primercandidates.size()==0)
+            return ";"+getId()+";;;;;;;" +invalidreason5
+                    + ";" + invalidreason3
+                    + ";;;;;;;;;;";
 
+        assertPrimerChosen();
+        StringBuffer sb=new StringBuffer();
+        DecimalFormat df= new DecimalFormat("0.00");
+        sb.append(chosen.getPlexID());
+        sb.append(';');
+        sb.append(getId());
+        sb.append(';');
+        sb.append(chosen.getCompletePrimerSeq());
+        sb.append(';');
+        sb.append(chosen.getSNP());
+        sb.append(';');
+        sb.append(getFavSeq().length());
+        sb.append(';');
+        sb.append(df.format(chosen.getGCGehalt()));
+        sb.append(';');
+        sb.append(df.format(chosen.getTemperature()));
+        sb.append(';');
+        sb.append(invalidreason5);
+        sb.append(';');
+        sb.append(invalidreason3);
+        sb.append(';');
+        sb.append(chosen.getCSVSekStructuresSeparatedBy(";"));
+        sb.append(';');
+        sb.append(getType());
+        sb.append(';');
+        sb.append(chosen.getPrimerSeq());
+        sb.append(';');
+        sb.append(getProductLength());
+        return sb.toString();
+    }
     public String[] getCsvheader() {
-        // TODO Auto-generated method stub
-        return null;
+        return new String[] {
+                "Multiplex ID"
+                ,"SBE-Primer ID"
+                ,"Sequence"
+                ,"SNP allele"
+                ,"Probe assay type"
+                ,"Primerlength"
+                ,"GC contents"
+                ,"Tm"
+                ,"Excluded 5\' Primers"
+                ,"Excluded 3\' Primers"
+                ,"Sec.struc.: position (3\')"
+                ,"Sec.struc.: incorporated nucleotide"
+                ,"Sec.struc.: class"
+                ,"Primer from 3' or 5'"
+                ,"Actual sequence"
+                ,"PCR-Product-length"};
     }
 
 }

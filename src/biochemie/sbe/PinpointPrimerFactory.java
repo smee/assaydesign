@@ -45,7 +45,7 @@ public class PinpointPrimerFactory extends PrimerFactory {
         System.out.println("Creating given pinpoint primers...");
         if(tCount5>0){
             System.out.println("Using given 5' primer.");
-            PinpointPrimer primer=new PinpointPrimer(getId(),seq5,Primer._5_,getSNP(),StringUtils.repeat("T",tCount5),cfg);
+            PinpointPrimer primer=new PinpointPrimer(getId(),seq5,Primer._5_,snp,StringUtils.repeat("T",tCount5),cfg);
             primer.addObserver(this);
             primercandidates.add(primer);
         }

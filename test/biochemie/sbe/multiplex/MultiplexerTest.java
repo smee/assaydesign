@@ -6,13 +6,15 @@
  */
 package biochemie.sbe.multiplex;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import junit.framework.TestCase;
 
 import org._3pq.jgrapht.UndirectedGraph;
 
-import junit.framework.TestCase;
 import biochemie.domspec.SBEPrimer;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
@@ -26,7 +28,7 @@ import biochemie.sbe.multiplex.Multiplexer.SBEPrimerProxy;
  */
 public class MultiplexerTest extends TestCase {
 
-	List primers;
+	Set primers;
 	SBEOptions cfg;
 	Multiplexer m;
 	SBEPrimer primerA;
@@ -41,7 +43,7 @@ public class MultiplexerTest extends TestCase {
 		primerA=new SBEPrimer(cfg,"primerA","TGTLGTGTGTGTGT","AT",SBEPrimer._5_,"",1,true);
 		primerB=new SBEPrimer(cfg,"primerB","ACALCACACACACA","AT",SBEPrimer._5_,"",1,true);
 		primerC=new SBEPrimer(cfg,"primerC","TTTLTTTTTTTTTTTT","CG",SBEPrimer._5_,"",1,true);
-		primers=new ArrayList();
+		primers=new HashSet();
 		primers.add(primerA);
 		primers.add(primerB);
 		primers.add(primerC);
@@ -59,7 +61,7 @@ public class MultiplexerTest extends TestCase {
 		assertTrue(primerA.passtMit(primerC));
 		assertTrue(primerB.passtMit(primerC));
 
-		List result = m.getEnhancedPrimerList(primers, cfg);
+		Set result = m.getEnhancedPrimerList(primers, cfg);
 		assertEquals(4, result.size());
 		boolean foundProxy=false;
 		Multiplexer.SBEPrimerProxy proxy=null;

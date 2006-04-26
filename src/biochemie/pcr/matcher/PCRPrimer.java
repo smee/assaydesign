@@ -109,4 +109,7 @@ public class PCRPrimer extends Primer {
     public String getFilter() {
         return null;
     }
+    public String getCSVSekStructuresSeparatedBy(String sep) {
+        return "";
+    }
 }

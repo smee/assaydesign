@@ -228,7 +228,7 @@ public class CleavablePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(getFavSeqMitPhotolinker());
         sb.append(';');
-        sb.append(getSNP());
+        sb.append(chosen.getSNP());
         sb.append(';');
         sb.append(getBruchstelle());
         sb.append(';');

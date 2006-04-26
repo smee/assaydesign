@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +39,7 @@ import biochemie.calcdalton.SBETable;
 import biochemie.domspec.Primer;
 import biochemie.gui.ColumnResizer;
 import biochemie.sbe.CleavablePrimerFactory;
+import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
@@ -71,7 +71,7 @@ public class ShowDiffAction extends MyAction {
         sbecfilt = new ArrayList(sbec);
         Algorithms.remove(sbecfilt.iterator(), new UnaryPredicate() {
             public boolean test(Object obj) {
-                return !((CleavablePrimerFactory)obj).isFoundValidSeq();
+                return !((PrimerFactory)obj).isFoundValidSeq();
             }
         });
 

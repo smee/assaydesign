@@ -128,7 +128,7 @@ public class SpektrometerPreviewFrame extends JFrame{
         XYSeriesCollection collection = new XYSeriesCollection();
         CalcDalton cd=Helper.getCalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
-            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();
+            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();//FIXME
             double[] m = cd.calcSBEMass(new String[]{s.getFavSeq(),"A","C","G","T"},s.getBruchstelle(),true);
             String id = s.getId();
             String snp = s.getSNP();            

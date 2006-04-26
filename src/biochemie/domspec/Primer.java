@@ -18,7 +18,6 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.multiplex.Multiplexable;
@@ -319,8 +318,8 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
             chars.add(new Character(snp.charAt(i)));
         Set sekstrucs1=p.getSecStrucs();
         for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
-            SBESekStruktur s = (SBESekStruktur) it.next();
-            if(s.getType()==SBESekStruktur.HAIRPIN || s.getType()==SBESekStruktur.HOMODIMER)
+            SekStruktur s = (SekStruktur) it.next();
+            if(s.getType()==SekStruktur.HAIRPIN || s.getType()==SekStruktur.HOMODIMER)
                 chars.add(new Character(Character.toUpperCase(s.bautEin())));
         }
         char[] attachments=new char[] {'A','C','G','T'};
@@ -342,4 +341,5 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         }
 
     public abstract String getFilter();
+    public abstract String getCSVSekStructuresSeparatedBy(String sep);
 }

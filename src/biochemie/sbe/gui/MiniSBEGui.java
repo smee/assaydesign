@@ -228,7 +228,9 @@ public class OptimizePLAction extends MyAction {
         private void showExplanationFrameFor(SBECandidatePanel panel) {
             SBEOptions cfg=getConfigDialog().getSBEOptionsFromGui();
             cfg.setDebug(true);
-            String output=panel.createPrimerFactory(cfg, true).getOutput();
+            PrimerFactory pf=panel.createPrimerFactory(cfg, true);
+            pf.createPrimers();
+            String output=pf.getOutput();
             JFrame frame = new JFrame("Detailed report for "+panel.getTfId().getText());
             frame.getContentPane().setLayout(new BorderLayout());
             JEditorPane ep = new JEditorPane() {
