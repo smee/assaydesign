@@ -27,6 +27,23 @@ public class ProbePrimerFactory extends PrimerFactory {
         {false,false,true,false},
         {false,false,false,true},
     };
+    public static String[] ASSAYTYPES_DESC=new String[]{
+        "ddA,ddC,ddG,ddT",
+        "dA,ddC,ddG,ddT",
+        "ddA,dC,ddG,ddT",
+        "ddA,ddC,dG,ddT",
+        "ddA,ddC,ddG,dT",
+        "ddA,ddC,dG,dT",
+        "ddA,dC,ddG,dT",
+        "ddA,dC,dG,ddT",
+        "dA,ddC,ddG,dT",
+        "dA,ddC,dG,ddT",
+        "dA,dC,ddG,ddT",
+        "ddA,dC,dG,dT",
+        "dA,ddC,dG,dT",
+        "dA,dC,ddG,dT",
+        "dA,dC,dG,ddT"
+    };
     public static int getPos(char c){
         switch (c) {
         case 'A':
@@ -60,7 +77,7 @@ public class ProbePrimerFactory extends PrimerFactory {
 
 
     protected void createGivenPrimers() {
-        System.out.println("Creating given pinpoint primers...");
+        System.out.println("Creating given probeprimers...");
         if(givenAssay5>=0  && givenAssay5 <ASSAYTYPES.length){
             System.out.println("Using given 5' primer.");
             List addons=generateAddons(Primer._5_,givenAssay5);
@@ -137,6 +154,12 @@ public class ProbePrimerFactory extends PrimerFactory {
             }
         }
         return result;
+    }
+
+
+    public String[] getCsvheader() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

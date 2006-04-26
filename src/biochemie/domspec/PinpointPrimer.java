@@ -55,4 +55,8 @@ public class PinpointPrimer extends Primer{
         return tTail;
     }
 
+    public String getFilter() {
+        return getType()+"_"+getPrimerSeq().length()+"_"+tTail.length();
+    }
+
 }

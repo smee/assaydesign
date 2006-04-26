@@ -34,6 +34,10 @@ import biochemie.util.LogStdStreams;
  */
 public class MiniSBE {
     SBEPrimerReader sbpr = null;
+    public static final int PROBE=2;
+    public static final int PINPOINT=1;
+    public static final int CLEAVABLE=0;
+    public static String[] assayTypes=new String[]{"Cleavable linker","Pinpoint","Probe"};
 
     public MiniSBE(String optname, String primername) {
         List sbec=null;

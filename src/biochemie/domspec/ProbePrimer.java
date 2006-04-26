@@ -6,7 +6,7 @@ import biochemie.util.edges.DifferentAssayTypeEdge;
 
 public class ProbePrimer extends Primer {
     private final Primer p;
-    private int assayType;
+    private final int assayType;
     private final String addon;
     
     public ProbePrimer(String id, String seq, String type, String snp, int assayType, String addon, SecStrucOptions cfg) {
@@ -14,7 +14,6 @@ public class ProbePrimer extends Primer {
         this.assayType=assayType;
         p=null;
         this.addon=addon;
-        this.assayType=assayType;
     }
     public ProbePrimer(Primer p, int assayType, String addon){//TODO
         super(p.id,p.getPrimerSeq(),p.getType(),p.getSNP(),p.cfg);
@@ -46,5 +45,11 @@ public class ProbePrimer extends Primer {
     }
     public String getCompletePrimerSeq() {
         return super.getPrimerSeq()+addon;
+    }
+    public int getAssayType(){
+        return assayType;
+    }
+    public String getFilter() {
+        return getType()+"_"+getPrimerSeq().length()+"_"+getAssayType();
     }
 }

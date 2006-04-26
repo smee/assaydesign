@@ -4,6 +4,7 @@
  */
 package biochemie.sbe.gui;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.StringTokenizer;
@@ -16,6 +17,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.sun.java_cup.internal.production;
+
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.domspec.SBEPrimer;
 import biochemie.gui.MyPanel;
@@ -23,6 +26,10 @@ import biochemie.gui.NuklSelectorPanel;
 import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
 import biochemie.sbe.CleavablePrimerFactory;
+import biochemie.sbe.MiniSBE;
+import biochemie.sbe.PinpointPrimerFactory;
+import biochemie.sbe.PrimerFactory;
+import biochemie.sbe.ProbePrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.util.Helper;
 /**
@@ -30,7 +37,7 @@ import biochemie.util.Helper;
  *
  */
 public class SBECandidatePanel extends MyPanel {
-
+    private final int assayType;
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
 	private SBESequenceTextField seq5tf = null;
@@ -68,12 +75,17 @@ public class SBECandidatePanel extends MyPanel {
     private SBESeqInputController inputcontrollerR;
     
 	private PLSelectorPanel plpanel3 = null;
+    private StringEntryPanel pinpoint5;
+    private StringEntryPanel pinpoint3;
+    private ProbeTypeSelectorPanel probePanel5;
+    private ProbeTypeSelectorPanel probePanel3;
 	/**
 	 * This is the default constructor
 	 * @param
 	 */
-	public SBECandidatePanel(String id, int maxlen, int num) {
+	public SBECandidatePanel(String id, int maxlen, int num, int assayType) {
 		super();
+        this.assayType=assayType;
 		initialize(maxlen, num);
         getTfId().setText(id);
 	}
@@ -195,7 +207,7 @@ public class SBECandidatePanel extends MyPanel {
         gridBagConstraints16.weightx=1;
         gridBagConstraints16.gridheight = 2;
         gridBagConstraints16.insets = new java.awt.Insets(5,10,5,0);
-        this.add(getPlpanel5(), gridBagConstraints7);
+        this.add(getSeq5AssayDataComponent(), gridBagConstraints7);
         this.add(jLabel2, gridBagConstraints10);
         this.add(getSeq3tf(), gridBagConstraints12);
         this.add(getSNPSelectorPanel(), gridBagConstraints11);
@@ -204,13 +216,39 @@ public class SBECandidatePanel extends MyPanel {
         this.add(getMultiplexidPanel(), gridBagConstraints51);
         this.add(getPcrLenPanel(), gridBagConstraints6);
         this.add(getFiltersPanel(), gridBagConstraints13);
-        this.add(getPlpanel3(), gridBagConstraints16);
+        this.add(getSeq3AssayDataComponent(), gridBagConstraints16);
         this.add(jLabel1, gridBagConstraints4);
         this.add(getSeq5tf(), gridBagConstraints5);
         this.add(getFixedPrimerCB(), gridBagConstraints15);
         setUnchanged();
 	}
-	/**
+	private Component getSeq5AssayDataComponent() {
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            return getPlpanel5();
+        case MiniSBE.PINPOINT:
+            return getPinpointAddonPanel5();
+        case MiniSBE.PROBE:
+            return getProbePanel5();
+        default:
+            throw new IllegalArgumentException("Unknown assaytype "+assayType+", don't know how to create gui.");
+        }
+    }
+
+    private Component getSeq3AssayDataComponent() {
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            return getPlpanel3();
+        case MiniSBE.PINPOINT:
+            return getPinpointAddonPanel3();
+        case MiniSBE.PROBE:
+            return getProbePanel3();
+        default:
+            throw new IllegalArgumentException("Unknown assaytype "+assayType+", don't know how to create gui.");
+        }
+    }
+
+    /**
 	 * This method initializes PBSequenceField
 	 *
 	 * @return biochemie.calcdalton.gui.PBSequenceField
@@ -290,6 +328,38 @@ public class SBECandidatePanel extends MyPanel {
 		}
 		return plpanel5;
 	}
+    protected StringEntryPanel getPinpointAddonPanel5() {
+        if (pinpoint5 == null) {
+            pinpoint5 = new StringEntryPanel("Length of dT 3'");
+            pinpoint5.setValidChars(PBSequenceField.NUMBERS);
+            pinpoint5.setPreferredSize(new java.awt.Dimension(90,56));
+        }
+        return pinpoint5;
+    }
+    protected StringEntryPanel getPinpointAddonPanel3() {
+        if (pinpoint3 == null) {
+            pinpoint3 = new StringEntryPanel("Length of dT 3'");
+            pinpoint3.setValidChars(PBSequenceField.NUMBERS);
+            pinpoint3.setPreferredSize(new java.awt.Dimension(90,56));
+        }
+        return pinpoint3;
+    }
+    private ProbeTypeSelectorPanel getProbePanel5() {
+        if(probePanel5==null){
+            probePanel5=new ProbeTypeSelectorPanel();
+            probePanel5.setTitle("Probe type 5'");
+            probePanel5.setPreferredSize(new java.awt.Dimension(140,56));
+        }
+        return probePanel5;
+    }
+    private ProbeTypeSelectorPanel getProbePanel3() {
+        if(probePanel3==null){
+            probePanel3=new ProbeTypeSelectorPanel();
+            probePanel3.setTitle("Probe type 3'");
+            probePanel3.setPreferredSize(new java.awt.Dimension(140,56));
+        }
+        return probePanel3;
+    }
 	/**
 	 * This method initializes PBSequenceField
 	 *
@@ -407,39 +477,39 @@ public class SBECandidatePanel extends MyPanel {
         sb.append(getFixedPrimerCB().isSelected());
         return new String(sb);
     }
-    public CleavablePrimerFactory getSBECandidate(SBEOptions cfg, boolean rememberoutput){
+    private CleavablePrimerFactory getCleavablePrimerFactory(SBEOptions cfg, boolean rememberoutput, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven){
         if(!inputcontrollerL.isOkay()) {
             return null;
         }
-        String l=this.inputcontrollerL.getSequenceWOL();
+        seq5=this.inputcontrollerL.getSequenceWOL();
         int pl5=getPlpanel5().getSelectedPL();
-        String r=this.inputcontrollerR.getSequenceWOL();
+        seq3=this.inputcontrollerR.getSequenceWOL();
         int pl3=getPlpanel3().getSelectedPL();
-        if(l.length() == 0 && r.length()==0) //keine primer da
+        if(seq5.length() == 0 && seq3.length()==0) //keine primer da
             return null;
 
-        String snp=getSNPSelectorPanel().getSelectedNukleotides();
-        String id=getId();
-
-        int pcrlen=0;
-        try {
-            pcrlen = Integer.parseInt(getPcrLenPanel().getText());
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        CleavablePrimerFactory s=null;
-
-        String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
-        String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
-        String multiplexid = getMultiplexidPanel().getPBSequenceField().isEnabled()?getMultiplexidPanel().getText():"";
-        String unwanted = getFiltersPanel().getText();
-        boolean userGiven=getFixedPrimerCB().isSelected();
-
-        s=new CleavablePrimerFactory(cfg,id,l,pl5,r,pl3,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
+        CleavablePrimerFactory s=new CleavablePrimerFactory(cfg,id,seq5,pl5,seq3,pl3,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
         return s;
     }
+    private PrimerFactory getPinpointPrimerFactory(SBEOptions cfg, boolean b, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven) {
+        int tCount5=-1;
+        try{
+            tCount5=Integer.parseInt(getPinpointAddonPanel5().getText());
+        }catch (NumberFormatException e) {
+        }
+        int tCount3=-1;
+        try{
+            tCount3=Integer.parseInt(getPinpointAddonPanel3().getText());
+        }catch (NumberFormatException e) {
+        }
+        return new PinpointPrimerFactory(cfg,id,seq5,snp,seq3,bautein5,bautein5,tCount5,tCount3,pcrlen,multiplexid,unwanted,userGiven,b);
+    }
 
+    private PrimerFactory getProbePrimerFactory(SBEOptions cfg, boolean b, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven) {
+        int probeType5=getProbePanel5().getSelectedType();
+        int probeType3=getProbePanel3().getSelectedType();
+        return new ProbePrimerFactory(cfg,id,seq5,snp,seq3,bautein5,bautein3,pcrlen,multiplexid,probeType5,probeType3,userGiven,unwanted,b);
+    }
     /**
      * TODO listenerartig basteln...
      * @param optionsFromGui
@@ -611,4 +681,37 @@ public class SBECandidatePanel extends MyPanel {
 		}
 		return plpanel3;
 	}
+
+    public PrimerFactory createPrimerFactory(SBEOptions cfg, boolean b) {
+        String seq5=getSeq5tf().getText();
+        String seq3=getSeq3tf().getText();
+        if(seq5.length() == 0 && seq3.length()==0) //keine primer da
+            return null;
+        String id=getId();
+        String snp=getSNPSelectorPanel().getSelectedNukleotides();
+        String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
+        String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
+        int pcrlen=getPcrLenPanel().getText().length();
+        try {
+            pcrlen = Integer.parseInt(getPcrLenPanel().getText());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        String multiplexid = getMultiplexidPanel().getPBSequenceField().isEnabled()?getMultiplexidPanel().getText():"";
+        String unwanted = getFiltersPanel().getText();
+        boolean userGiven=getFixedPrimerCB().isSelected();
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            return getCleavablePrimerFactory(cfg,b,id,seq5,seq3,snp,bautein5,bautein3,pcrlen,multiplexid,unwanted,userGiven);
+        case MiniSBE.PROBE:
+            return getProbePrimerFactory(cfg,b,id,seq5,seq3,snp,bautein5,bautein3,pcrlen,multiplexid,unwanted,userGiven);
+        case MiniSBE.PINPOINT:
+            return getPinpointPrimerFactory(cfg,b,id,seq5,seq3,snp,bautein5,bautein3,pcrlen,multiplexid,unwanted,userGiven);
+
+        default:
+            break;
+        }
+        return null;
+    }
+
       }  //  @jve:decl-index=0:visual-constraint="65,28"

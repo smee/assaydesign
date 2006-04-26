@@ -16,7 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -29,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +58,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
 import javax.swing.Scrollable;
 import javax.swing.ToolTipManager;
@@ -72,17 +69,17 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import netprimer.cal_Hairpins;
-
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.core.IsNull;
+import org.apache.commons.lang.ArrayUtils;
 
 import biochemie.calcdalton.JTableEx;
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
 import biochemie.gui.InfiniteProgressPanel;
-import biochemie.sbe.MiniSBE;
 import biochemie.sbe.CleavablePrimerFactory;
+import biochemie.sbe.MiniSBE;
+import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.actions.SaveResultsAction;
 import biochemie.sbe.gui.actions.ShowDiffAction;
@@ -103,8 +100,7 @@ import biochemie.util.edges.SecStructureEdge;
  * TODO NLS
  */
 public class MiniSBEGui extends JFrame {
-
-    public class OptimizePLAction extends MyAction {
+public class OptimizePLAction extends MyAction {
         private List sbec;
 
         public OptimizePLAction(List sbec) {
@@ -115,7 +111,7 @@ public class MiniSBEGui extends JFrame {
             this.sbec=sbec;
         }
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {//FIXME
             final SBEOptions cfg = getConfigDialog().getSBEOptionsFromGui();
             File tempfile = null;
             try {
@@ -232,7 +228,7 @@ public class MiniSBEGui extends JFrame {
         private void showExplanationFrameFor(SBECandidatePanel panel) {
             SBEOptions cfg=getConfigDialog().getSBEOptionsFromGui();
             cfg.setDebug(true);
-            String output=panel.getSBECandidate(cfg, true).getOutput();
+            String output=panel.createPrimerFactory(cfg, true).getOutput();
             JFrame frame = new JFrame("Detailed report for "+panel.getTfId().getText());
             frame.getContentPane().setLayout(new BorderLayout());
             JEditorPane ep = new JEditorPane() {
@@ -316,7 +312,7 @@ public class MiniSBEGui extends JFrame {
             List sbec= new ArrayList(sbepanels.size());
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
-                sbec.add(p.getSBECandidate(cfg, false));
+                sbec.add(p.createPrimerFactory(cfg, false));
             }
             Algorithms.remove(sbec.iterator(),IsNull.instance());
             return SBEPrimerReader.collapseMultiplexes(sbec,cfg);
@@ -376,7 +372,7 @@ public class MiniSBEGui extends JFrame {
             List ret=new ArrayList();
             for (Iterator it = compactsbec.iterator(); it.hasNext();) {
                 Object o = it.next();
-                if(o instanceof CleavablePrimerFactory) {
+                if(o instanceof PrimerFactory) {
                     ret.add(o);
                     continue;
                 }else if(o instanceof MultiKnoten) {
@@ -392,7 +388,7 @@ public class MiniSBEGui extends JFrame {
          */
         protected void normalizeSekStruks(List sbec) {
             for (Iterator iter = sbec.iterator(); iter.hasNext();) {
-                CleavablePrimerFactory sc = (CleavablePrimerFactory) iter.next();
+                PrimerFactory sc = (PrimerFactory) iter.next();
                 if(sc.hasValidPrimer())
                     sc.normalizeCrossdimers(new HashSet(sbec));
             }
@@ -452,7 +448,7 @@ public class MiniSBEGui extends JFrame {
                  * @return
                  */
                 protected String getSekStrukTooltipFor(String id) {
-                    CleavablePrimerFactory s=findSBECandidateWithID(id);
+                    PrimerFactory s=findSBECandidateWithID(id);
                     if(s==null || !s.hasValidPrimer())
                         return null;
                     StringBuffer sb = new StringBuffer("<html>");
@@ -469,9 +465,9 @@ public class MiniSBEGui extends JFrame {
                     return new String(sb);
                 }
 
-                private CleavablePrimerFactory findSBECandidateWithID(String id) {
+                private PrimerFactory findSBECandidateWithID(String id) {
                     for (Iterator iter = sbec.iterator(); iter.hasNext();) {
-                        CleavablePrimerFactory s = (CleavablePrimerFactory) iter.next();
+                        PrimerFactory s = (PrimerFactory) iter.next();
                         if(s.getId().equals(id))
                             return s;
                     }
@@ -789,6 +785,7 @@ public class MiniSBEGui extends JFrame {
 	private SBEConfigDialog dialog = null;
 
 	private int sbe_anzahl=-1;
+    private int assayType=-1;
 	List sbepanels;
 
     private Action newAction;
@@ -812,16 +809,8 @@ public class MiniSBEGui extends JFrame {
 	public MiniSBEGui() {
 		super();
 
-		while( sbe_anzahl < 1) {
-			try{
-                String input=JOptionPane.showInputDialog(null,"Please enter assay size level (1-?):","1");
-                if(null == input)
-                    System.exit(0);
-				sbe_anzahl = Integer.parseInt(input);
-
-			}
-		catch(NumberFormatException nfe){}
-		}
+		askForAssaySize();
+        askForAssayType();
 		initialize();
 		int windowX = prefs.getInt(WINDOW_X_KEY, DEFAULT_WINDOW_X);
 		int windowY = prefs.getInt(WINDOW_Y_KEY, DEFAULT_WINDOW_Y);
@@ -835,7 +824,25 @@ public class MiniSBEGui extends JFrame {
 			}
 		});
 	}
-	private void exitApp() {
+    /**
+     * 
+     */
+    private void askForAssaySize() {
+        while( sbe_anzahl < 1) {
+			try{
+                String input=JOptionPane.showInputDialog(null,"Please enter assay size level (1-?):","1");
+                if(null == input)
+                    System.exit(0);
+				sbe_anzahl = Integer.parseInt(input);
+			}
+		catch(NumberFormatException nfe){}
+		}
+    }
+	private void askForAssayType() {
+	    String selected=(String) JOptionPane.showInputDialog(this,"Please choose the assay type:","Assay type",JOptionPane.QUESTION_MESSAGE,null,MiniSBE.assayTypes,MiniSBE.assayTypes[0]);
+        this.assayType=ArrayUtils.indexOf(MiniSBE.assayTypes,selected);
+    }
+    private void exitApp() {
 //		 Save the state of the window as preferences
         int answer = askUserForSaveIfNeeded();
         if (answer == JOptionPane.CANCEL_OPTION)
@@ -1063,25 +1070,9 @@ public class MiniSBEGui extends JFrame {
 			jToolBar.add(getPrefAction());
 			jToolBar.add(getExpertToggleButton());
 			jToolBar.add(getConsoleToggleButton());
-            JPanel p=new JPanel(new BorderLayout());
-            p.add(getAssayTypeDropdownButton(),BorderLayout.WEST);
-			jToolBar.add(p);
 		}
 		return jToolBar;
 	}
-	private JComboBox getAssayTypeDropdownButton() {
-        if (assayDropdown == null) {
-            assayDropdown = new JComboBox(new Object[]{"Cleavable linker", "Pinpoint", "Probe"});
-            assayDropdown.setToolTipText("Chosen assay type");
-            assayDropdown.addItemListener(new ItemListener(){
-                public void itemStateChanged(ItemEvent e) {
-                    // TODO Auto-generated method stub
-                    
-                }
-            });
-        }
-        return assayDropdown;
-    }
     /**
      * @return
      */
@@ -1142,7 +1133,7 @@ public class MiniSBEGui extends JFrame {
      * @param index
      */
     private void addSBECandidatePanel(int index) {
-        SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1), getConfigDialog().getSBEOptionsFromGui().getMinCandidateLen(),(index+1));
+        SBECandidatePanel p = new SBECandidatePanel("ID"+(index+1), getConfigDialog().getSBEOptionsFromGui().getMinCandidateLen(),(index+1),assayType);
         p.refreshData(getConfigDialog().getSBEOptionsFromGui());
         p.setUnchanged();
         p.setExpertMode(expertmode);

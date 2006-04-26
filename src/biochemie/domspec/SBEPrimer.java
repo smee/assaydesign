@@ -255,4 +255,7 @@ public class SBEPrimer extends Primer{
         String seq=super.getPrimerSeq();
         return Helper.replaceWithPL(seq,pl);
     }
+    public String getFilter() {
+        return getType()+"_"+getPrimerSeq().length()+"_"+getBruchstelle();
+    }
 }

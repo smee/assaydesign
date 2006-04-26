@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.sbe.CleavablePrimerFactory;
+import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.WrongValueException;
 import biochemie.sbe.multiplex.MultiplexableFactory;
@@ -92,7 +93,7 @@ public class SBEPrimerReader {
 	public static List collapseMultiplexes(List sbec, SBEOptions cfg) {
 		Collections.sort(sbec,new Comparator() {
             public int compare(Object arg0, Object arg1) {
-                return ((CleavablePrimerFactory)arg0).getGivenMultiplexID().compareTo(((CleavablePrimerFactory)arg1).getGivenMultiplexID());
+                return ((PrimerFactory)arg0).getGivenMultiplexID().compareTo(((CleavablePrimerFactory)arg1).getGivenMultiplexID());
             }
         });
         List l=new ArrayList();
@@ -100,9 +101,9 @@ public class SBEPrimerReader {
             return l;
         int startpos=0;
         for (int i=0; i < sbec.size();i++) {
-            CleavablePrimerFactory s = (CleavablePrimerFactory) sbec.get(i);
+            PrimerFactory s = (PrimerFactory) sbec.get(i);
             String id=s.getGivenMultiplexID();
-            if(i+1 == sbec.size() || 0 == id.length() || !(((CleavablePrimerFactory) sbec.get(i+1)).getGivenMultiplexID()).equals(id)) {
+            if(i+1 == sbec.size() || 0 == id.length() || !(((PrimerFactory) sbec.get(i+1)).getGivenMultiplexID()).equals(id)) {
                 List knoten=new LinkedList();
                 for(int idx=startpos; idx <= i; idx++)
                     knoten.add(sbec.get(idx));
@@ -130,7 +131,10 @@ public class SBEPrimerReader {
     }
 
     public static void writeSBEResults(String filename, List sbec) {
-        StringBuffer sb=new StringBuffer(StringUtils.join(CleavablePrimerFactory.getCsvheader(),';') +"\n");
+        if(sbec.size()==0)
+            return;
+        String[] header=((PrimerFactory)sbec.get(0)).getCsvheader();
+        StringBuffer sb=new StringBuffer(StringUtils.join(header,';') +"\n");
 
         for (int i= 0; i < sbec.size(); i++) {
             String line=((MultiplexableFactory) sbec.get(i)).getCSVRow();

@@ -106,4 +106,7 @@ public class PCRPrimer extends Primer {
     public String getCompletePrimerSeq() {
         return super.getPrimerSeq();
     }
+    public String getFilter() {
+        return null;
+    }
 }

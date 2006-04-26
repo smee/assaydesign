@@ -18,4 +18,8 @@ public interface MultiplexableFactory {
     public List getMultiplexables();
     
     public String getCSVRow();
+    /**
+     * @return Returns the csvheader.
+     */
+    public String[] getCsvheader() ;
 }

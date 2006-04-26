@@ -20,9 +20,9 @@ public class PinpointPrimerFactory extends PrimerFactory {
     public PinpointPrimerFactory(SBEOptions cfg, String id, String seq5, String snp, String seq3, String bautEin5, String bautEin3, 
             int tCount5, int tCount3,
             int productlen, String givenMultiplexID, String unwanted, 
-            boolean userGiven, boolean rememberOutput, double maxMass) {
+            boolean userGiven, boolean rememberOutput) {
         super(cfg, id, seq5, snp, seq3, bautEin5, bautEin3, productlen,givenMultiplexID,userGiven, unwanted, rememberOutput);
-        this.maxMass=maxMass;
+        this.maxMass=cfg.getMaxMass();
         this.tCount5=tCount5;
         this.tCount3=tCount3;
     }
@@ -70,6 +70,12 @@ public class PinpointPrimerFactory extends PrimerFactory {
             addOn+="T";
         }
         return result;
+    }
+
+
+    public String[] getCsvheader() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

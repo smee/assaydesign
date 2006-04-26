@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 import javax.swing.table.AbstractTableModel;
 
 import biochemie.sbe.CleavablePrimerFactory;
+import biochemie.sbe.PrimerFactory;
 import biochemie.util.Helper;
 
 /**
@@ -25,7 +26,12 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
 
     public MiniSBEResultTableModel(List sb) {
         this.sbec = sb;
-        String[] origheader = CleavablePrimerFactory.getCsvheader();
+        if(sb.size()==0){
+            data=new Object[0][];
+            header=new String[0];
+            return;
+        }
+        String[] origheader = ((PrimerFactory)sb.get(0)).getCsvheader();
         header  = new String[origheader.length + 2];
         System.arraycopy(origheader,0,header,0,origheader.length);
         header[header.length-2] = "Exclude primer";
@@ -33,7 +39,7 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
         data = new Object[sbec.size()][];
         int i=0;
         for (Iterator it = sbec.iterator(); it.hasNext();i++) {
-            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();
+            PrimerFactory s = (PrimerFactory) it.next();
             StringTokenizer st = new StringTokenizer(Helper.clearEmptyCSVEntries(s.getCSVRow()),";");
             Object[] entries = new Object[st.countTokens() + 2];
             int j =0;
@@ -86,9 +92,9 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
     }
     public String getFilterFor(String id) {
         for (Iterator it = sbec.iterator(); it.hasNext();) {
-            CleavablePrimerFactory p = (CleavablePrimerFactory) it.next();
+            PrimerFactory p = (PrimerFactory) it.next();
             if(p.getId().equals(id)) {
-                return p.getType()+"_"+p.getFavSeq().length()+"_"+p.getBruchstelle();
+                return p.getFavPrimer().getFilter();
             }
         }
         return "";

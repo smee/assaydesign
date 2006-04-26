@@ -340,4 +340,6 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
                 return new String[][] {Primer.getCDParamLine(p1), Primer.getCDParamLine(p2)};
                 
         }
+
+    public abstract String getFilter();
 }

@@ -150,4 +150,7 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
                 return mid;
             }
         }
+        public String[] getCsvheader() {
+            return null;
+        }
     }

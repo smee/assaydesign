@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.IsNull;
-import org.apache.commons.lang.ArrayUtils;
 
 import biochemie.domspec.Primer;
 import biochemie.domspec.SBEPrimer;
@@ -334,12 +333,6 @@ public class CleavablePrimerFactory extends PrimerFactory {
     }
 
     /**
-     * @return Returns the csvheader.
-     */
-    public static String[] getCsvheader() {
-        return (String[]) ArrayUtils.clone(csvheader);
-    }
-    /**
      * Liest alle Werte aus dem CSV-String und liefert Instanz von <code>SBECandidate </code>.
      * @param line
      * @return
@@ -394,28 +387,6 @@ public class CleavablePrimerFactory extends PrimerFactory {
         }else
             return new CleavablePrimerFactory(cfg,id,seq[0],'0',seq[1],'0',snp,productlen,hair5,hair3,givenMultiplexid,unwanted, userGiven, false);
     }
-    private final static String[] csvheader =
-        new String[] {
-            "Multiplex ID"
-            ,"SBE-Primer ID"
-            ,"Sequence incl. L"
-            ,"SNP allele"
-            ,"Linker (=L): position"
-            ,"Primerlength"
-            ,"GC contents incl L"
-            ,"Tm incl L"
-            ,"Excluded 5\' Primers"
-            ,"Excluded 3\' Primers"
-            ,"Sec.struc.: position (3\')"
-            ,"Sec.struc.: incorporated nucleotide"
-            ,"Sec.struc.: class"
-            ,"Sec.struc.: irrelevant due to PL"
-            ,"Primer from 3' or 5'"
-            ,"Fragment: T-Content"
-            ,"Fragment: G-content"
-            ,"PCR-Product-length"
-            ,"Actual sequence"
-            ,"Comment"};
 
 
     protected void assertPrimerChosen() {
@@ -469,5 +440,29 @@ public class CleavablePrimerFactory extends PrimerFactory {
             }
         }
         return result;
+    }
+        
+    public String[] getCsvheader() {
+        return new String[] {
+                "Multiplex ID"
+                ,"SBE-Primer ID"
+                ,"Sequence incl. L"
+                ,"SNP allele"
+                ,"Linker (=L): position"
+                ,"Primerlength"
+                ,"GC contents incl L"
+                ,"Tm incl L"
+                ,"Excluded 5\' Primers"
+                ,"Excluded 3\' Primers"
+                ,"Sec.struc.: position (3\')"
+                ,"Sec.struc.: incorporated nucleotide"
+                ,"Sec.struc.: class"
+                ,"Sec.struc.: irrelevant due to PL"
+                ,"Primer from 3' or 5'"
+                ,"Fragment: T-Content"
+                ,"Fragment: G-content"
+                ,"PCR-Product-length"
+                ,"Actual sequence"
+                ,"Comment"};
     }
 }

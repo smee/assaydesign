@@ -14,6 +14,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import biochemie.domspec.Primer;
 import biochemie.domspec.SBEPrimer;
 import biochemie.domspec.SBESekStruktur;
@@ -110,8 +112,10 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
         this.bautEin5=bautEin5;
         this.bautEin3=bautEin3;
     }
-
-    public void createPrimers(PrimerCreatorCallback cb){
+    public void createPrimers(){
+        createPrimers(this);
+    }
+    protected void createPrimers(PrimerCreatorCallback cb){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintStream orgout=System.out;
         System.setOut(new PrintStream(bos));
