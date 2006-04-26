@@ -30,11 +30,11 @@ public class LaengenFilter extends AbstractKandidatenFilter {
     	StringBuffer sb=new StringBuffer("Primers too short:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             Primer  p = (Primer) it.next();
-            if(p.getSeq().length()<len){
+            if(p.getPrimerSeq().length()<len){
                 it.remove();
                 count++;
                 sb.append(getPrimerDescription(p)).append(", ");
-                sb.append(markRed("length="+p.getSeq().length()+"bp"));
+                sb.append(markRed("length="+p.getPrimerSeq().length()+"bp"));
                 sb.append("\n");
             }
         }

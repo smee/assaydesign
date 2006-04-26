@@ -100,8 +100,8 @@ public class SBEPrimer extends Primer{
                 }
             }
         }
-        temp=Helper.calcTM(getSeq());//temperatur mit pl ist anders als ohne
-        gcgehalt=Helper.getXGehalt(getSeq(),"CcGg");//wegen pl
+        temp=Helper.calcTM(getCompletePrimerSeq());//temperatur mit pl ist anders als ohne
+        gcgehalt=Helper.getXGehalt(getCompletePrimerSeq(),"CcGg");//wegen pl
     }
 
 
@@ -122,7 +122,7 @@ public class SBEPrimer extends Primer{
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
            append(getId()).
-           append(getSeq()).
+           append(getCompletePrimerSeq()).
            append(getBruchstelle()).
            toHashCode();
 }
@@ -194,7 +194,7 @@ public class SBEPrimer extends Primer{
     }
     public String toString() {
         
-        return getId()+":"+getSeq()+", "+getType()+", PL="+getBruchstelle()+
+        return getId()+":"+getCompletePrimerSeq()+", "+getType()+", PL="+getBruchstelle()+
         ", GC="+Helper.format(getGCGehalt())+"%"+
         ", Tm="+Helper.format(getTemperature())+"°, hairpins="
         +getHairpinPositions()+", homodimer="+getHomodimerPositions();
@@ -251,18 +251,8 @@ public class SBEPrimer extends Primer{
     }
 
 
-    /**
-     * Returns the sequence without the PL if possible.
-     * @return
-     */
-    public String getSeqWOPl() {
-        return super.getSeq();
-    }
-    /* (non-Javadoc)
-     * @see biochemie.domspec.Primer#getSeq()
-     */
-    public String getSeq() {
-        String seq=super.getSeq();
+    public String getCompletePrimerSeq() {
+        String seq=super.getPrimerSeq();
         return Helper.replaceWithPL(seq,pl);
     }
 }

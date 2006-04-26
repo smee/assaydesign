@@ -65,7 +65,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
             Primer p=(Primer) it.next();
             for (int i = 0; i < type.length; i++) {
                 if((p.getType().equals(type[i]) || type[i].equals("*")) &&
-                   (p.getSeq().length() == len[i] || len[i] < 0)){
+                   (p.getPrimerSeq().length() == len[i] || len[i] < 0)){
                     if((p instanceof SBEPrimer && (((SBEPrimer)p).getBruchstelle() == pl[i] || pl[i] < 0))
                             || (p instanceof PinpointPrimer && (((PinpointPrimer)p).getTTail().length()==pl[i] || pl[i] >0))){
                     it.remove();

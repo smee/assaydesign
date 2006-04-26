@@ -47,8 +47,8 @@ public class PinpointPrimer extends Primer{
         }
         return true;
     }
-    public String getSeq() {
-        return super.getSeq()+tTail;
+    public String getCompletePrimerSeq() {
+        return super.getPrimerSeq()+tTail;
     }
 
     public String getTTail() {

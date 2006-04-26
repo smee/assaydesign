@@ -89,17 +89,21 @@ public class Helper {
     public static char complNucl(char nucl) {
         switch (nucl) {
         case 'A' :
-        case 'a' :
             return 'T';
+        case 'a' :
+            return 't';
         case 'C' :
-        case 'c' :
             return 'G';
+        case 'c' :
+            return 'g';
         case 'G' :
-        case 'g' :
             return 'C';
+        case 'g' :
+            return 'c';
         case 'T' :
-        case 't' :
             return 'A';
+        case 't' :
+            return 'a';
         default :
             return Character.toUpperCase(nucl);
     }

@@ -103,4 +103,7 @@ public class PCRPrimer extends Primer {
         append(pos).
         append(id).toHashCode();
     }
+    public String getCompletePrimerSeq() {
+        return super.getPrimerSeq();
+    }
 }

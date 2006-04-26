@@ -2,11 +2,10 @@ package biochemie.sbe;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -33,10 +32,11 @@ import biochemie.util.Helper;
  *
  * @author Steffen
  */
-public class CleavablePrimerFactory extends PrimerFactory implements Observer {
+public class CleavablePrimerFactory extends PrimerFactory {
 
 
 
+    private static final String PL = "pl key";
     private final int pl5;
     private final int pl3;
 
@@ -70,24 +70,11 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
 
         this.pl5=pl5;
         this.pl3=pl3;
-
      }
     public String toString() {
         return "Sbec. \""+id;
     }
     
-    protected void createValidPrimerCandidates() {
-        //Erzeuge Array mit Structs sortiert nach Abstand von optimaler Temperatur, alle nicht möglichen Kandidaten sind schon entfernt
-        primercandidates.addAll(findBestPrimers(createSortedCandidateList(seq5, bautEin5, pl5,seq3, bautEin3,pl3)));
-        System.out.println("\nPrimer chosen for multiplexing for "+id+":\n" +
-                               "------------------------------------------------\n"
-                    + Helper.toStringln(primercandidates.toArray(new Object[primercandidates.size()])));
-       
-        if (0 == primercandidates.size()) {
-            System.out.println("==> No Primer found for " + seq5 + " and " + seq3);
-            return;
-        }
-    }
 
     public boolean hasPL(){
         return -1 != getBruchstelle();
@@ -125,72 +112,8 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
         assertPrimerChosen();
         return ((SBEPrimer)chosen).getBruchstelle();
     }
-    /**
-     * Liefert Liste zurueck mit PrimerTypeTemperatureStructs im Temperaturbereich, absteigend
-     * sortiert nach Abstand zur optimalen Temperatur. Alle Primer ausserhalb des GCGehaltes werden
-     * nicht beruecksichtigt. Ausserdem werden alle Primer mit einer Laenge von <18 geloescht.
-     * Die Liste besteht aus: Primer ohne Hairpin, nach Abstand von optimaler Temperatur ansteigend geordnet
-     * gefolgt von Primern mit genau einem Hairpin, auch geordnet nach Abstand von opt. Temp.
-     */
-    protected List createSortedCandidateList(String left, String bautEin5, int pl5, String right, String bautEin3, int pl3) {
-        System.out.println("\nDetailed report for choice of possible 5' primer for " + id +
-		 "\n-----------------------------------------------------------------");
-    	List liste= generateFilteredPrimerList(left, SBEPrimer._5_,bautEin5,pl5);
-        System.out.println("\nDetailed report for choice of possible 3' primer for " + id +
-		 "\n-----------------------------------------------------------------");
-    	liste.addAll(generateFilteredPrimerList(right, SBEPrimer._3_,bautEin3,pl3));
-        Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
-
-        System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
-        					 "--------------------------------------------------------------------------------\n"
-                + Helper.toStringln(liste.toArray(new Object[liste.size()])));
-        return liste;
-    }
-/**
- * Erzeugt eine Liste von SBEPrimern, die geordnet Kandidaten enthält, die die Filter überlebt haben.
- * @param primer
- * @param type
- * hh Schalter für Hairpin/Homodimer, bei true werden sie verwendet
- * @param repl 
- * @return
- */
-    private List generateFilteredPrimerList(String primer, String type,String bautein, int pl) {
-        String snp=this.snp;
-        if(type.equals(Primer._3_)) {
-            primer=Helper.revcomplPrimer(primer);
-            snp=Helper.complPrimer(snp);
-        }
-        ArrayList liste= new ArrayList();
-		boolean hh=!bautein.equalsIgnoreCase("none") && 0 == bautein.length(); //in diesen beiden Fällen werden die H-Filter nicht verwendet
-        /*
-         * lege Liste an mit allen Sequenzen, die aus Primer entstehen, indem Basen am 5'-Ende abgeschnitten werden.
-         */
-        int[] br=cfg.getPhotolinkerPositions();
-        if(pl !=  -1) {
-            br=new int[] {pl};//vorgegebener pl
-        }
-        for (int startidx= 0; startidx < primer.length(); startidx++) {
-            for (int j = 0; j < br.length; j++) {
-                if(primer.length() - startidx > br[j]) {        //wenn die Sequenz kuerzer ist als die Pos. des PL kann mans gleich lassen
-                    /*
-                     * Ich kann den Primer nicht einfach clonen, weil sonst die Sekundaerstrukturen immer noch auf den originalen Primer verweisen,
-                     * so dass eine gesetzte Bruchstelle keine Wirkung haette.
-                     */
-                    SBEPrimer p=new SBEPrimer(cfg,id,primer.substring(startidx),br[j],snp,type,bautein,getProductLength(),false);
-                    p.addObserver(this);
-                    liste.add(p);
-                }
-            }
-        }
-        return filterPrimerList(liste, hh, type);
-
-    }
 
 
-
-    public String getFavSeqWOPl() {
-        return ((SBEPrimer)chosen).getSeqWOPl();
-    }
     /**
      * Sequenz im Format "bioc gta cc(L) gta cga ccg"
      * @return
@@ -200,7 +123,7 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
 
         if (-1 == getBruchstelle())
             return "";
-        String seq= chosen.getSeq();
+        String seq= chosen.getCompletePrimerSeq();
         StringBuffer sb= new StringBuffer();
         int j= 0;
         for (int i= seq.length() - 1; 0 <= i; i--, j++) {
@@ -230,7 +153,7 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
         if (-1 == ((SBEPrimer)chosen).getBruchstelle()) {
             return 0;
         }
-        StringBuffer sb= new StringBuffer(chosen.getSeq());
+        StringBuffer sb= new StringBuffer(chosen.getCompletePrimerSeq());
         sb.deleteCharAt(sb.length() - ((SBEPrimer)chosen).getBruchstelle());
         return Helper.calcTM(sb.toString());
     }
@@ -238,7 +161,7 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
     private double getGCGehaltMitPhotolinker() {
         assertPrimerChosen();
 
-        StringBuffer sb= new StringBuffer(chosen.getSeq());
+        StringBuffer sb= new StringBuffer(chosen.getCompletePrimerSeq());
         if (-1 == ((SBEPrimer)chosen).getBruchstelle()) {
             return 0;
         }
@@ -253,7 +176,7 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
         if (-1 == bruch)
             return 0;
 
-        String primer= chosen.getSeq();
+        String primer= chosen.getCompletePrimerSeq();
         return Helper.getXGehalt(primer.substring(primer.length() - bruch+1), nukl);//zum bruchstueck zaehlt der pl nicht dazu
     }
     /**
@@ -330,7 +253,7 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
         sb.append(';');
         sb.append(getProductLength());
         sb.append(';');
-        sb.append(getFavSeqWOPl());
+        sb.append(chosen.getPrimerSeq());
         sb.append(';');
         sb.append(getReason());
         return sb.toString();
@@ -409,10 +332,7 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
 
         return ret;
     }
-    public void update(Observable o, Object arg) {
-		if(arg.equals(SBEPrimer.PLEXID_CHANGED))
-			choose((SBEPrimer) o);
-	}
+
     /**
      * @return Returns the csvheader.
      */
@@ -514,11 +434,40 @@ public class CleavablePrimerFactory extends PrimerFactory implements Observer {
         if(pl3 > 0) {
             System.out.println("Using given 3' primer.");
             String rstring=Helper.revcomplPrimer(seq3);
+            String rsnp=Helper.revcomplPrimer(snp);
             SBEPrimer primer = new SBEPrimer(cfg, id, rstring, pl3,
-                    snp, Primer._3_,bautEin3, productlen, true);
+                    rsnp, Primer._3_,bautEin3, productlen, true);
             primer.addObserver(this);
             primercandidates.add(primer);
         }
             
+    }
+
+    public Collection createPossiblePrimers(String seq, String type) {
+        int[] br=cfg.getPhotolinkerPositions();
+        int pl=-1;
+        String bautEin=null;
+        if(type.equals(Primer._5_)){
+            pl=pl5;
+            bautEin=bautEin5;
+        }else{
+            pl=pl3;
+            bautEin=bautEin3;
+        }
+        if(pl !=  -1) {
+            br=new int[] {pl};//vorgegebener pl
+        }
+        Collection result=new ArrayList(br.length);
+        for (int j = 0; j < br.length; j++) {
+            if(seq.length() > br[j]) {        //wenn die Sequenz kuerzer ist als die Pos. des PL kann mans gleich lassen
+                /*
+                 * Ich kann den Primer nicht einfach clonen, weil sonst die Sekundaerstrukturen immer noch auf den originalen Primer verweisen,
+                 * so dass eine gesetzte Bruchstelle keine Wirkung haette.
+                 */
+                SBEPrimer p=new SBEPrimer(cfg,id,seq,br[j],snp,type,bautEin,getProductLength(),false);
+                result.add(p);
+            }
+        }
+        return result;
     }
 }

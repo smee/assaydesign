@@ -76,7 +76,7 @@ public class SBESekStruktur extends SekStruktur{
     }
     public String toString() {
         if( getType() != CROSSDIMER )
-            return p.getId()+": "+p.getSeq()+",PL="+((SBEPrimer)p).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible "+(HAIRPIN == getType()?"hairpin":"homodimer")+", pos="+getPosFrom3()+", bautein="+bautEin()+", "+(verh?"ir":"")+"relevant";
+            return p.getId()+": "+p.getCompletePrimerSeq()+",PL="+((SBEPrimer)p).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible "+(HAIRPIN == getType()?"hairpin":"homodimer")+", pos="+getPosFrom3()+", bautein="+bautEin()+", "+(verh?"ir":"")+"relevant";
         else
             return p.getId()+"(PL="+((SBEPrimer)p).getBruchstelle()+") with "+other.getId()+"(PL="+((SBEPrimer)other).getBruchstelle()+"): "
                      +(isIncompatible()?"in":"")+"compatible crossdimer, "+(verh?"ir":"")+"relevant";

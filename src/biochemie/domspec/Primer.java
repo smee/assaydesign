@@ -46,7 +46,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
     protected final Collection edgecol=new HashSet();
     private final String type;
     protected final String snp;
-    private final SecStrucOptions cfg;
+    protected final SecStrucOptions cfg;
     
     /**
      * @param seq
@@ -100,10 +100,18 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         }
         return count;
     }
-
-    public String getSeq() {
+    /**
+     * Returns the sequence of the original primer only.
+     * @return
+     */
+    public String getPrimerSeq() {
         return seq;
     }
+    /**
+     * Returns the primerseq that is actually used, including all addons etc.
+     * @return
+     */
+    public abstract String getCompletePrimerSeq();
 
     public double getTemperature() {
         return temp;
@@ -304,7 +312,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
 
 
 
-    public static String[] getCDParamLine(Primer p) {
+    public static String[] getCDParamLine(Primer p) {//TODO anpassen fuer andere anhaenge
         Set chars=new TreeSet();
         String snp=p.getSNP();
         for(int i=0;i<snp.length();i++)
@@ -317,7 +325,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         }
         char[] attachments=new char[] {'A','C','G','T'};
         String[] arr=new String[attachments.length+1];
-        arr[0]=p.getSeq();
+        arr[0]=p.getPrimerSeq();
         for (int i = 0; i < attachments.length; i++) {
             arr[i+1]="";
             if(!chars.contains(new Character(attachments[i])))

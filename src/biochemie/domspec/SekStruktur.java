@@ -78,12 +78,12 @@ public class SekStruktur  implements Cloneable{
         switch (type) {
         case HAIRPIN :
         case HOMODIMER:
-            incomp=Helper.isInkompatibleSekStruktur(p.getSeq(),getPosFrom3(),p.getSNP());
+            incomp=Helper.isInkompatibleSekStruktur(p.getCompletePrimerSeq(),getPosFrom3(),p.getSNP());
             break;
         case CROSSDIMER:
             //es sind zwei SNPs beteiligt, gegen die getestet werden muss.
-            incomp=Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),p.getSNP())
-                          || Helper.isInkompatibleSekStruktur(other.getSeq(),getPosFrom3(),other.getSNP());
+            incomp=Helper.isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),p.getSNP())
+                          || Helper.isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),other.getSNP());
             break;
         default :
             throw new IllegalArgumentException("invalid secondary strucure type given!");
@@ -109,9 +109,9 @@ public class SekStruktur  implements Cloneable{
 
     public char bautEin() {
         if(0 == this.bautAn) {
-            String seq=p.getSeq();
+            String seq=p.getCompletePrimerSeq();
             if(getType()==CROSSDIMER)
-                seq=other.getSeq();
+                seq=other.getCompletePrimerSeq();
             bautAn = Helper.sekundaerStrukturBautEin(seq,getPosFrom3());
         }
         return bautAn;
@@ -141,13 +141,13 @@ public class SekStruktur  implements Cloneable{
         String match=null;
         switch (getType()) {
         case HAIRPIN:
-            match=getBindingSeq(getPrimer().getSeq(),Helper.revcomplPrimer(getPrimer().getSeq()),getPosFrom3());
+            match=getBindingSeq(getPrimer().getPrimerSeq(),Helper.revcomplPrimer(getPrimer().getPrimerSeq()),getPosFrom3());
             return Helper.cal_dG_secondaryStruct(match)+Helper.LoopEnergy(getLoopLength(getPosFrom3(),match.length()))-1;
         case HOMODIMER:
-            match=getBindingSeq(getPrimer().getSeq(),Helper.revcomplPrimer(getPrimer().getSeq()),getPosFrom3());
+            match=getBindingSeq(getPrimer().getPrimerSeq(),Helper.revcomplPrimer(getPrimer().getPrimerSeq()),getPosFrom3());
             return Helper.cal_dG_secondaryStruct(match)-1;
         case CROSSDIMER:
-            match=getBindingSeq(getPrimer().getSeq(), Helper.revcomplPrimer(getCDPrimer().getSeq()),getPosFrom3());
+            match=getBindingSeq(getPrimer().getPrimerSeq(), Helper.revcomplPrimer(getCDPrimer().getPrimerSeq()),getPosFrom3());
             return Helper.cal_dG_secondaryStruct(Helper.complPrimer(match))-1;
         default:
             return 0;
@@ -170,11 +170,11 @@ public class SekStruktur  implements Cloneable{
     public String getAsciiArt() {
         switch (type) {
         case HAIRPIN:
-            return Helper.outputHairpin(p.getSeq(),pos-1,p.getSeq().length(), getEnthalpy());
+            return Helper.outputHairpin(p.getCompletePrimerSeq(),pos-1,p.getCompletePrimerSeq().length(), getEnthalpy());
         case HOMODIMER:
-            return Helper.outputXDimer(p.getSeq(),p.getSeq(),p.getSeq().length() - pos,p.getSeq().length(), getEnthalpy());
+            return Helper.outputXDimer(p.getCompletePrimerSeq(),p.getCompletePrimerSeq(),p.getCompletePrimerSeq().length() - pos,p.getCompletePrimerSeq().length(), getEnthalpy());
         case CROSSDIMER:
-            return Helper.outputXDimer(p.getSeq(),other.getSeq(),p.getSeq().length() - pos,Math.min(p.getSeq().length(),other.getSeq().length()), getEnthalpy());
+            return Helper.outputXDimer(p.getCompletePrimerSeq(),other.getCompletePrimerSeq(),p.getCompletePrimerSeq().length() - pos,Math.min(p.getCompletePrimerSeq().length(),other.getCompletePrimerSeq().length()), getEnthalpy());
 
         default:
             return "unknown type of sec.struk encountered.";

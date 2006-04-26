@@ -4,10 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import biochemie.domspec.Primer;
@@ -23,8 +27,9 @@ import biochemie.sbe.filter.SekStructureFilter;
 import biochemie.sbe.filter.TemperaturFilter;
 import biochemie.sbe.filter.UnwantedPrimerFilter;
 import biochemie.sbe.multiplex.MultiplexableFactory;
+import biochemie.util.Helper;
 
-public abstract class PrimerFactory  implements  MultiplexableFactory{
+public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, PrimerCreatorCallback{
     static protected final class TemperatureDistanceAndHairpinComparator implements Comparator {
 
             private final double opt;
@@ -106,14 +111,14 @@ public abstract class PrimerFactory  implements  MultiplexableFactory{
         this.bautEin3=bautEin3;
     }
 
-    public void createPrimers(){
+    public void createPrimers(PrimerCreatorCallback cb){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintStream orgout=System.out;
         System.setOut(new PrintStream(bos));
         if(userGiven)
             createGivenPrimers();
         else
-            createValidPrimerCandidates();
+            createValidPrimerCandidates(cb);
         System.setOut(orgout);
         if(rememberOutput)
             this.writtenoutput=bos.toString();
@@ -121,7 +126,70 @@ public abstract class PrimerFactory  implements  MultiplexableFactory{
             System.out.println(bos.toString());
     }
     
-    protected abstract void createValidPrimerCandidates();
+    protected void createValidPrimerCandidates(PrimerCreatorCallback cb){
+        //Erzeuge Array mit Structs sortiert nach Abstand von optimaler Temperatur, alle nicht möglichen Kandidaten sind schon entfernt
+        primercandidates.addAll(findBestPrimers(createSortedCandidateList(seq5, bautEin5, seq3, bautEin3, cb)));
+        System.out.println("\nPrimer chosen for multiplexing for "+id+":\n" +
+                               "------------------------------------------------\n"
+                    + Helper.toStringln(primercandidates.toArray(new Object[primercandidates.size()])));
+       
+        if (0 == primercandidates.size()) {
+            System.out.println("==> No Primer found for " + seq5 + " and " + seq3);
+            return;
+        }
+    }
+    /**
+     * Liefert Liste zurueck mit PrimerTypeTemperatureStructs im Temperaturbereich, absteigend
+     * sortiert nach Abstand zur optimalen Temperatur. Alle Primer ausserhalb des GCGehaltes werden
+     * nicht beruecksichtigt. Ausserdem werden alle Primer mit einer Laenge von <18 geloescht.
+     * Die Liste besteht aus: Primer ohne Hairpin, nach Abstand von optimaler Temperatur ansteigend geordnet
+     * gefolgt von Primern mit genau einem Hairpin, auch geordnet nach Abstand von opt. Temp.
+     */
+    protected List createSortedCandidateList(String left, String bautEin5, String right, String bautEin3, PrimerCreatorCallback cb) {
+        System.out.println("\nDetailed report for choice of possible 5' primer for " + id +
+         "\n-----------------------------------------------------------------");
+        List liste= generateFilteredPrimerList(left, Primer._5_,bautEin5,cb);
+        System.out.println("\nDetailed report for choice of possible 3' primer for " + id +
+         "\n-----------------------------------------------------------------");
+        liste.addAll(generateFilteredPrimerList(right, Primer._3_,bautEin3,cb));
+        Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
+
+        System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
+                             "--------------------------------------------------------------------------------\n"
+                + Helper.toStringln(liste.toArray(new Object[liste.size()])));
+        return liste;
+    }
+    /**
+     * Erzeugt eine Liste von Primern, die geordnet Kandidaten enthält, die die Filter überlebt haben.
+     * @param primer
+     * @param type
+     * hh Schalter für Hairpin/Homodimer, bei true werden sie verwendet
+     * @return
+     */
+    protected List generateFilteredPrimerList(String primer, String type,String bautein, PrimerCreatorCallback cb) {
+        String snp=this.snp;
+        if(type.equals(Primer._3_)) {
+            primer=Helper.revcomplPrimer(primer);
+            snp=Helper.complPrimer(snp);
+        }
+        ArrayList liste= new ArrayList();
+        boolean hh=!bautein.equalsIgnoreCase("none") && 0 == bautein.length(); //in diesen beiden Fällen werden die H-Filter nicht verwendet
+        /*
+         * lege Liste an mit allen Sequenzen, die aus Primer entstehen, indem Basen am 5'-Ende abgeschnitten werden.
+         */
+        for (int startidx= 0; startidx < primer.length(); startidx++) {
+            String seq=primer.substring(startidx);
+            Collection col=cb.createPossiblePrimers(seq,type);
+            for (Iterator it = col.iterator(); it.hasNext();) {
+                Primer p = (Primer) it.next();
+                p.addObserver(this);
+                liste.add(p);
+                
+            }
+        }
+        return filterPrimerList(liste, hh, type);
+
+    }
 
     protected abstract void createGivenPrimers();
 
@@ -155,7 +223,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory{
      */
     public String getFavSeq() {
         assertPrimerChosen();
-        return chosen.getSeq();
+        return chosen.getCompletePrimerSeq();
     }
 
     public String getMultiplexId() {
@@ -301,6 +369,10 @@ public abstract class PrimerFactory  implements  MultiplexableFactory{
      * Gibt an, ob ein gueltiger Primer gefunden wurde.
      */
     public boolean isFoundValidSeq() {
-        return null != chosen && 0 != chosen.getSeq().length();
+        return null != chosen && 0 != chosen.getCompletePrimerSeq().length();
+    }
+    public void update(Observable o, Object arg) {
+        if(arg.equals(Primer.PLEXID_CHANGED))
+            choose((SBEPrimer) o);
     }
 }

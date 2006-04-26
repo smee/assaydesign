@@ -23,7 +23,7 @@ public class SekStrukturFactory {
 	public static Set getSecStruks(Primer p, SecStrucOptions cfg){
         HairpinAnalysis hpa= getHairpinAnalysisInstance(cfg);
         HomoDimerAnalysis hda= getHomoDimerAnalysisInstance(cfg);
-        String seq=p.getSeq();
+        String seq=p.getCompletePrimerSeq();
         
         List poshairpins= hpa.getHairpinPositions(seq);
         List poshomodimer= hda.getHomoDimerPositions(seq);
@@ -66,8 +66,8 @@ public class SekStrukturFactory {
      * @return
      */
     public static Set getCrossdimer(Primer p, Primer other, CrossDimerAnalysis cda) {
-        String pseq = p.getSeq();
-        String oseq =other.getSeq();
+        String pseq = p.getCompletePrimerSeq();
+        String oseq =other.getCompletePrimerSeq();
 
         List positions= cda.getCrossDimerPositions(pseq,oseq);
         Set sek=new HashSet();

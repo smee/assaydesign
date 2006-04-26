@@ -30,7 +30,7 @@ public class PolyXFilter extends AbstractKandidatenFilter {
     	StringBuffer sb=new StringBuffer("Primers exceeding polyX:\n");
         for (Iterator it= cand.iterator(); it.hasNext();) {
             Primer p= (Primer) it.next();
-            String seq=p.getSeq();
+            String seq=p.getPrimerSeq();
             int counter=0;
             char c=0;
             boolean tracingrun=false;

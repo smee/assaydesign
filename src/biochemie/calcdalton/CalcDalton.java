@@ -122,7 +122,7 @@ public class CalcDalton implements Interruptible{
 	 * @param seq
 	 * @return
 	 */
-    private double calcPrimerMasse(String seq) {
+    public double calcPrimerMasse(String seq) {
         double summe= 0.0D;
         if (null == seq)
             return 0.0D;
@@ -134,13 +134,16 @@ public class CalcDalton implements Interruptible{
         return summe + plMass;//masse des pl
     }
     
+    public double calcPrimerMasseWithPL(String seq) {
+        return calcPrimerMasse(seq)+plMass;
+    }
 	/**
 	 * Berechnung der Masse einer Sequenz mit angehängtem Nukleotid.
 	 * @param seq
 	 * @param addon
 	 * @return
 	 */
-	private  double calcPrimerAddonMasse(double mass, String addon) {
+	public double calcPrimerAddonMasse(double mass, String addon) {
 		if (null == addon)
 			return mass;
 		for (int i= 0; i < addon.length(); i++) {
@@ -171,7 +174,7 @@ public class CalcDalton implements Interruptible{
         if(1 > p1.length)
             return new double[0];
         List masses=new ArrayList();
-        final double m=calcPrimerMasse(p1[0]);
+        final double m=calcPrimerMasseWithPL(p1[0]);
         masses.add( new Double(m));
         for (int i= 1; i < p1.length; i++)
             if(allExtension || p1[i].charAt(0)!='>')
