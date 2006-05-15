@@ -227,7 +227,7 @@
   	<antcall target="shrink" >
   		<param name="mainclassname" value="biochemie.sbe.**"/>
   		<param name="outjarname" value="${dist}/minisbepaper.jar"/>
-  		<param name="neededjars" value = "${dist}/minisbe-${DSTAMP}.jar
+  		<param name="neededjars" value = "${dist}/minisbepaper-${DSTAMP}.jar
   			                              :${lib}/commons-functor.jar
   			                              :${lib}/commons-lang-2.0.jar
   			                              :${lib}/jgrapht-0.5.3.jar
