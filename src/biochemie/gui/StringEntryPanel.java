@@ -30,7 +30,7 @@ public class StringEntryPanel extends MyPanel {
 	public StringEntryPanel(String label){
 		super();
 		initialize();
-		getLabelTf().setText(label);
+		setLabel(label);
 	}
 	public void setLabel(String label){
 		getLabelTf().setText(label);

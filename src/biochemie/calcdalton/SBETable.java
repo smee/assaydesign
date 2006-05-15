@@ -241,7 +241,14 @@ private void initTableBruchstellen() {
             m[4]=Double.parseDouble(val);
         return m;
     }
-
+    public String[] getAddonNamesOfColumn(int i){
+        return new String[]{
+                (String)getValueAt(2,i),
+                (String)getValueAt(5,i),
+                (String)getValueAt(6,i),
+                (String)getValueAt(7,i),
+                (String)getValueAt(8,i)};
+    }
 
     /**
      * @param val

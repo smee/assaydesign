@@ -3,15 +3,37 @@ package biochemie.sbe;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.core.IsNull;
+
 import biochemie.domspec.Primer;
 import biochemie.domspec.ProbePrimer;
-import biochemie.domspec.SBEPrimer;
 import biochemie.util.Helper;
 
 public class ProbePrimerFactory extends PrimerFactory {
+    static public final String CSVHEADER =
+                    "PROBE Multiplex ID;"
+                    +"SBE-Primer ID;"
+                    +"Sequence;"
+                    +"SNP allele;"
+                    +"Probe assay type;"
+                    +"Primerlength;"
+                    +"GC contents;"
+                    +"Tm;"
+                    +"Excluded 5\' Primers;"
+                    +"Excluded 3\' Primers;"
+                    +"Primer from 3' or 5';"
+                    +"PCR-Product-length;"
+                    +"Actual sequence;"
+                    +"Sec.struc.: position (3\');"
+                    +"Sec.struc.: incorporated nucleotide;"
+                    +"Sec.struc.: class";
+    
     public static final boolean[][] ASSAYTYPES={
         {true,true,true,true},
         {false,true,true,true},
@@ -29,7 +51,7 @@ public class ProbePrimerFactory extends PrimerFactory {
         {false,false,true,false},
         {false,false,false,true},
     };
-    public static String[] ASSAYTYPES_DESC=new String[]{
+    public final static String[] ASSAYTYPES_DESC=new String[]{
         "ddA,ddC,ddG,ddT",
         "dA,ddC,ddG,ddT",
         "ddA,dC,ddG,ddT",
@@ -66,15 +88,24 @@ public class ProbePrimerFactory extends PrimerFactory {
     }
     private final int givenAssay5;
     private final int givenAssay3;
+    private final Collection otherPrimers;
     
     public ProbePrimerFactory(SBEOptions cfg, String id, String seq5,
             String snp, String seq3, String bautEin5, String bautEin3,
             int productlen, String givenMultiplexid, int givenAssay5, int givenAssay3, boolean userGiven,
-            String unwanted, boolean rememberOutput) {
+            String unwanted, boolean rememberOutput){
+        this(cfg,id,seq5,snp,seq3,bautEin5,bautEin3,productlen,givenMultiplexid,givenAssay5,givenAssay3,userGiven,unwanted,rememberOutput,Collections.EMPTY_LIST);
+    }
+    
+    public ProbePrimerFactory(SBEOptions cfg, String id, String seq5,
+            String snp, String seq3, String bautEin5, String bautEin3,
+            int productlen, String givenMultiplexid, int givenAssay5, int givenAssay3, boolean userGiven,
+            String unwanted, boolean rememberOutput, Collection otherprimers) {
         super(cfg, id, seq5, snp, seq3, bautEin5, bautEin3, productlen,
                 givenMultiplexid, userGiven, unwanted, rememberOutput);
         this.givenAssay5=givenAssay5;
         this.givenAssay3=givenAssay3;
+        this.otherPrimers=otherprimers;
     }
 
 
@@ -85,7 +116,7 @@ public class ProbePrimerFactory extends PrimerFactory {
             List addons=generateAddons(Primer._5_,givenAssay5);
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                ProbePrimer primer=new ProbePrimer(getId(),seq5,Primer._5_,snp,givenAssay5,addon,cfg.getSecStrucOptions());
+                ProbePrimer primer=new ProbePrimer(getId(),seq5,Primer._5_,snp,givenAssay5,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
@@ -97,19 +128,36 @@ public class ProbePrimerFactory extends PrimerFactory {
             List addons=generateAddons(Primer._3_,givenAssay5);
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                ProbePrimer primer=new ProbePrimer(getId(),rseq,Primer._3_,rsnp,givenAssay3,addon,cfg.getSecStrucOptions());
+                ProbePrimer primer=new ProbePrimer(getId(),rseq,Primer._3_,rsnp,givenAssay3,addon,productlen, cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
                 primer.addObserver(this);
                 primercandidates.add(primer);
             }
         }
-
     }
 
-    protected List findBestPrimers(List primers) {
-        // TODO Auto-generated method stub
-        return primers;
-    }
+    protected List findBestPrimers(List liste) {
 
+        List l=new ArrayList();
+        for (int i = 0; i < ASSAYTYPES.length; i++) {
+           final int var=i;
+           l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
+                    public boolean test(Object obj) {
+                        ProbePrimer p=((ProbePrimer)obj);
+                        return p.getAssayType() == var && p.getType().equals(Primer._5_);
+                    }
+                },null));
+           l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
+                    public boolean test(Object obj) {
+                        ProbePrimer p=((ProbePrimer)obj);
+                        return p.getAssayType() == var && p.getType().equals(Primer._3_);
+                    }
+                },null));
+        }
+        Algorithms.remove(l.iterator(),IsNull.instance());
+        chosen=null;
+        return l;
+
+    }
 
     public Collection createPossiblePrimers(String seq, String type) {
         //TODO kombination mit entweder cleavable oder pinpoint
@@ -121,7 +169,7 @@ public class ProbePrimerFactory extends PrimerFactory {
             List addons=generateAddons(type,i);
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,cfg.getSecStrucOptions()));
+                result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff()));
             }
         }
         return result;
@@ -173,6 +221,8 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(chosen.getSNP());
         sb.append(';');
+        sb.append(((ProbePrimer)chosen).getAssayType());
+        sb.append(';');
         sb.append(getFavSeq().length());
         sb.append(';');
         sb.append(df.format(chosen.getGCGehalt()));
@@ -183,33 +233,22 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(invalidreason3);
         sb.append(';');
-        sb.append(chosen.getCSVSekStructuresSeparatedBy(";"));
-        sb.append(';');
         sb.append(getType());
+        sb.append(';');
+        sb.append(getProductLength());
         sb.append(';');
         sb.append(chosen.getPrimerSeq());
         sb.append(';');
-        sb.append(getProductLength());
+        sb.append(chosen.getCSVSekStructuresSeparatedBy(";"));
         return sb.toString();
     }
-    public String[] getCsvheader() {
-        return new String[] {
-                "Multiplex ID"
-                ,"SBE-Primer ID"
-                ,"Sequence"
-                ,"SNP allele"
-                ,"Probe assay type"
-                ,"Primerlength"
-                ,"GC contents"
-                ,"Tm"
-                ,"Excluded 5\' Primers"
-                ,"Excluded 3\' Primers"
-                ,"Sec.struc.: position (3\')"
-                ,"Sec.struc.: incorporated nucleotide"
-                ,"Sec.struc.: class"
-                ,"Primer from 3' or 5'"
-                ,"Actual sequence"
-                ,"PCR-Product-length"};
+    public String getCsvheader() {
+        return CSVHEADER;
+    }
+
+    public String getFilter() {
+        assertPrimerChosen();
+        return chosen.getType()+"_*_"+((ProbePrimer)chosen).getAssayType();
     }
 
 }

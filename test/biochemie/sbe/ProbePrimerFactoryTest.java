@@ -12,6 +12,14 @@ public class ProbePrimerFactoryTest extends TestCase {
     protected void setUp() throws Exception {
         fac=new ProbePrimerFactory(new SBEConfig(),"testseq","acccgggtttaa","ag","ttccggaaaaagt","","",0,"",-1,-1,false,"",false);
     }
+    private void compareListToArray(String[] shallBe,List is) {
+        assertEquals(is.size(),shallBe.length);
+        int i=0;
+        for (Iterator it = is.iterator(); it.hasNext();i++) {
+            String s = (String) it.next();
+            assertEquals("entry "+i,shallBe[i],s);
+        }
+    }
 
     /*
      * Test method for 'biochemie.sbe.ProbePrimerFactory.createPossiblePrimers(String, String)'
@@ -40,13 +48,5 @@ public class ProbePrimerFactoryTest extends TestCase {
         compareListToArray(shallBe,is);
     }
 
-    private void compareListToArray(String[] shallBe,List is) {
-        assertEquals(is.size(),shallBe.length);
-        int i=0;
-        for (Iterator it = is.iterator(); it.hasNext();i++) {
-            String s = (String) it.next();
-            assertEquals("entry "+i,shallBe[i],s);
-        }
-    }
 
 }

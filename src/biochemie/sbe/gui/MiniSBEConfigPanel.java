@@ -15,6 +15,10 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import biochemie.calcdalton.gui.PBSequenceField;
+import biochemie.gui.StringEntryPanel;
+import biochemie.sbe.MiniSBE;
 /**
  * @author Steffen Dienst
  *
@@ -41,7 +45,8 @@ public class MiniSBEConfigPanel extends JPanel {
 	private JSpinner candlenSpinner = null;
 	private JLabel jLabel7 = null;
 	private JSpinner pcrpdiffSpinner = null;
-	/**
+    private StringEntryPanel maxMassPanel = null;
+    /**
 	 * This is the default constructor
 	 */
 	public MiniSBEConfigPanel() {
@@ -244,6 +249,10 @@ public class MiniSBEConfigPanel extends JPanel {
 	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
+			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+			gridBagConstraints13.gridx = 4;
+			gridBagConstraints13.gridheight = 2;
+			gridBagConstraints13.gridy = 0;
 			jLabel7 = new JLabel();
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
@@ -274,7 +283,7 @@ public class MiniSBEConfigPanel extends JPanel {
 			jLabel6.setText("Maxplexsize");
 			gridBagConstraints12.gridx = 3;
 			gridBagConstraints12.gridy = 0;
-			jLabel7.setText("Min. pcrproduct diff.");
+			jLabel7.setText("Min. PCR-product length difference");
 			gridBagConstraints2.gridx = 3;
 			gridBagConstraints2.gridy = 1;
 			gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -285,6 +294,7 @@ public class MiniSBEConfigPanel extends JPanel {
 			jPanel2.add(jLabel6, gridBagConstraints25);
 			jPanel2.add(jLabel7, gridBagConstraints12);
 			jPanel2.add(getPcrpdiffSpinner(), gridBagConstraints2);
+			jPanel2.add(getMaxMassPanel(), gridBagConstraints13);
 		}
 		return jPanel2;
 	}
@@ -326,4 +336,18 @@ public class MiniSBEConfigPanel extends JPanel {
 		}
 		return pcrpdiffSpinner;
 	}
+    /**
+     * This method initializes maxMassPanel	
+     * 	
+     * @return biochemie.gui.StringEntryPanel	
+     */
+    public StringEntryPanel getMaxMassPanel() {
+        if (maxMassPanel == null) {
+            maxMassPanel = new StringEntryPanel();
+            maxMassPanel.setValidChars(PBSequenceField.NUMBERS);
+            maxMassPanel.setLabel("Max. primer mass");
+            maxMassPanel.setColumns(5);
+        }
+        return maxMassPanel;
+    }
             }  //  @jve:decl-index=0:visual-constraint="10,10"

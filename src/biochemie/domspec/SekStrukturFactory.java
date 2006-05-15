@@ -31,15 +31,15 @@ public class SekStrukturFactory {
         
         for (Iterator it= poshairpins.iterator(); it.hasNext();) {
             Integer pos= (Integer)it.next();
-            if(p instanceof SBEPrimer)
-            	sekstrukts.add(new SBESekStruktur((SBEPrimer)p,SekStruktur.HAIRPIN,pos.intValue()));
+            if(p instanceof CleavablePrimer)
+            	sekstrukts.add(new CleavableSekStruktur((CleavablePrimer)p,SekStruktur.HAIRPIN,pos.intValue()));
             else
             	sekstrukts.add(new SekStruktur(p,SekStruktur.HAIRPIN,pos.intValue()));
         }
         for (Iterator it= poshomodimer.iterator(); it.hasNext();) {
             Integer pos= (Integer)it.next();
-            if(p instanceof SBEPrimer)
-            	sekstrukts.add(new SBESekStruktur((SBEPrimer)p,SekStruktur.HOMODIMER,pos.intValue()));
+            if(p instanceof CleavablePrimer)
+            	sekstrukts.add(new CleavableSekStruktur((CleavablePrimer)p,SekStruktur.HOMODIMER,pos.intValue()));
             else
             	sekstrukts.add(new SekStruktur(p,SekStruktur.HOMODIMER,pos.intValue()));
         }
@@ -74,8 +74,8 @@ public class SekStrukturFactory {
         
         for (Iterator it = positions.iterator(); it.hasNext();) {
             Integer pos = (Integer) it.next();
-            if(p instanceof SBEPrimer && other instanceof SBEPrimer)
-                sek.add(new SBESekStruktur((SBEPrimer)p,(SBEPrimer)other,pos.intValue()));
+            if(p instanceof CleavablePrimer && other instanceof CleavablePrimer)
+                sek.add(new CleavableSekStruktur((CleavablePrimer)p,(CleavablePrimer)other,pos.intValue()));
             else
                 sek.add(new SekStruktur(p,other,pos.intValue()));
         }

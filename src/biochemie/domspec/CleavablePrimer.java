@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
@@ -21,6 +22,7 @@ import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 import biochemie.util.edges.CalcDaltonEdge;
 import biochemie.util.edges.ProductLengthEdge;
+import biochemie.util.edges.SecStructureEdge;
 
 
 /**
@@ -29,16 +31,12 @@ import biochemie.util.edges.ProductLengthEdge;
  * @author Steffen
  *
  */
-public class SBEPrimer extends Primer{
+public class CleavablePrimer extends Primer{
 
     private final int pl;
     final SBEOptions cfg;
-    private final int productlen;
 
 
-    public SBEPrimer(SBEOptions cfg,String id,String seq,String snp, String type, String bautein, int prodlen,boolean usergiven) {
-        this(cfg,id,seq,Helper.getPosOfPl(seq),snp,type,bautein,prodlen,usergiven);
-    }
     /**
      * This constructor needs a L within the sequence to determine the position of the photolinker
      * @param cfg SBEOptionsProvider
@@ -51,13 +49,26 @@ public class SBEPrimer extends Primer{
      * @param prodlen Length of the sbeproduct
      * @param usergiven true: don't probe for secstructures.
      */
-    public SBEPrimer(SBEOptions cfg,String id,String seq, int pl, String snp, String type, String bautein, int prodlen,boolean usergiven) {
-        super(id,seq, type,snp,cfg.getSecStrucOptions());
+    public CleavablePrimer(SBEOptions cfg,String id,String seq,String snp, String type, String bautein, int prodlen,boolean usergiven) {
+        this(cfg,id,seq,Helper.getPosOfPl(seq),snp,type,bautein,prodlen,usergiven);
+    }
+    /**
+     * @param cfg SBEOptionsProvider
+     * @param id unique id
+     * @param seq String consisting of ACGT and max. one L which specifies the pl
+     * @param repl nucleotide that was replaced by the photolinker
+     * @param snp String of ACGT
+     * @param type SBEPrimer._5_ or SBEPrimer._3_
+     * @param bautein String of ACGT    
+     * @param prodlen Length of the sbeproduct
+     * @param usergiven true: don't probe for secstructures.
+     */
+    public CleavablePrimer(SBEOptions cfg,String id,String seq, int pl, String snp, String type, String bautein, int prodlen,boolean usergiven) {
+        super(id,seq, type,snp,prodlen, cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
         this.cfg = cfg;
         this.pl=pl;
         if(pl == -1)
             throw new IllegalArgumentException("Sequence of primer "+id+" has no L within sequence!");
-        this.productlen= prodlen;
         init(bautein);
 	}
 
@@ -67,8 +78,8 @@ public class SBEPrimer extends Primer{
     public boolean hasInkompatibleHomodimer() {
         boolean ret=((Boolean)Algorithms.inject(getSecStrucs().iterator(),Boolean.FALSE,new BinaryFunction() {
             public Object evaluate(Object seed, Object sek) {
-                SBESekStruktur s=(SBESekStruktur)sek;
-                return Boolean.valueOf(((Boolean)seed).booleanValue() ||  (SBESekStruktur.HOMODIMER == s.getType() && s.isIncompatible()));
+                CleavableSekStruktur s=(CleavableSekStruktur)sek;
+                return Boolean.valueOf(((Boolean)seed).booleanValue() ||  (CleavableSekStruktur.HOMODIMER == s.getType() && s.isIncompatible()));
             }
         })).booleanValue();
         return ret;
@@ -79,8 +90,8 @@ public class SBEPrimer extends Primer{
     public boolean hasInkompatibleHairpins() {
         boolean ret=((Boolean)Algorithms.inject(sekstruc.iterator(),Boolean.FALSE,new BinaryFunction() {
             public Object evaluate(Object seed, Object sek) {
-                SBESekStruktur s=(SBESekStruktur)sek;
-                return Boolean.valueOf(((Boolean) seed).booleanValue() || SBESekStruktur.HAIRPIN == s.getType() && true == s.isIncompatible());
+                CleavableSekStruktur s=(CleavableSekStruktur)sek;
+                return Boolean.valueOf(((Boolean) seed).booleanValue() || CleavableSekStruktur.HAIRPIN == s.getType() && true == s.isIncompatible());
             }
         })).booleanValue();
         return ret;
@@ -96,7 +107,7 @@ public class SBEPrimer extends Primer{
             sekstruc=new HashSet();
             if(!bautein.equalsIgnoreCase("none")){
                 for (int i = 0; i < bautein.length(); i++) {
-                    sekstruc.add(new SBESekStruktur(this,SBESekStruktur.HAIRPIN,bautein.charAt(i)));
+                    sekstruc.add(new CleavableSekStruktur(this,CleavableSekStruktur.HAIRPIN,bautein.charAt(i)));
                 }
             }
         }
@@ -110,13 +121,12 @@ public class SBEPrimer extends Primer{
     }
 
     public boolean equals(Object o){
-        if ( !(o instanceof SBEPrimer) ) {
+        if ( !(o instanceof CleavablePrimer) ) {
             return false;
         }else {
-            SBEPrimer other = (SBEPrimer)o;
-            return getId().equals(other.getId())
-                    && getBruchstelle()==other.getBruchstelle()
-                    && getType().equals(other.getType());
+            CleavablePrimer other = (CleavablePrimer)o;
+            return getBruchstelle()==other.getBruchstelle()
+                    && super.equals(other);
         }
     }
     public int hashCode() {
@@ -129,54 +139,25 @@ public class SBEPrimer extends Primer{
 
     public boolean passtMit(Multiplexable o) {
         edgecol.clear();
-        if(o instanceof SBEPrimer) {
-            SBEPrimer other=(SBEPrimer) o;
+        if(o instanceof CleavablePrimer) {
+            CleavablePrimer other=(CleavablePrimer) o;
             //dumm, aber nur so umgehe ich den kurzschlussoperator &&....
             boolean flag= super.passtMit(other);
             boolean temp=true;
             temp=passtMitProductLength(other) && flag;
-            flag=flag&&temp;
-            temp=passtMitCalcDalton(other);
             flag=flag&&temp;
             return flag;
         }else {//keine Ahnung, wie ich mich mit dem vergleichen soll, is ja kein Primer...
             return super.passtMit(o);
         }
     }
-    /**
-     * Testet, ob dieser Primer mit other passt, wobei nur inkompatible Crossdimer beruecksichtigt werden.
-     * @param other
-     * @return
-     */
-    public boolean passtMitKompCD(SBEPrimer other) {
-        edgecol.clear();
-        boolean flag=true, temp=true;
-        flag= passtMitID(other);
-        temp= passtMitProductLength(other);
-        flag=flag&&temp;
-        temp= passtMitSekStrucs(other) ;
-        flag=flag&&temp;
-        temp= passtMitCrossdimern(other,false) ;
-        flag=flag&&temp;
-        temp= passtMitCalcDalton(other);
-        flag=flag&&temp;
-        return flag;
-    }
-    private boolean passtMitProductLength(SBEPrimer other) {
-        //Produktlänge
-        int prdiff=productlen-other.productlen;
-        if(Math.abs(prdiff)<cfg.getMinProductLenDiff()) {
-            edgecol.add(new ProductLengthEdge(this,other,prdiff));
-            return false;    //Produktlängenunterschied zu gering
-        }
-        return true;
-    }
+    
     /**
      * @param struct
      * @param other
      * @return
      */
-    protected boolean passtMitCalcDalton(SBEPrimer other) {
+    protected boolean passtMitCalcDalton(CleavablePrimer other) {
         CalcDalton cd=Helper.getCalcDalton();
         String[][] sbedata= createCDParameters(this, other);
         int[] br = cfg.getPhotolinkerPositions();
@@ -188,26 +169,45 @@ public class SBEPrimer extends Primer{
         }
         return true;
     }
+    
+    protected boolean passtMitCDRec(Primer me, Primer other, boolean evilcd) {
+        Set cross=SekStrukturFactory.getCrossdimer(me,other,cfg.getSecStrucOptions());
+        for (Iterator it = cross.iterator(); it.hasNext();) {
+            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
+            if(s.isVerhindert())
+                continue;
+            if(!evilcd) {
+                if(s.isIncompatible()) {
+                    edgecol.add(new SecStructureEdge(me,other,s));
+                    return false;
+                }
+            }else {
+                edgecol.add(new SecStructureEdge(me,other,s));
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String getName() {
         return getId()+'_'+getBruchstelle()+'_'+getType();
     }
     public String toString() {
-        
-        return getId()+":"+getCompletePrimerSeq()+", "+getType()+", PL="+getBruchstelle()+
-        ", GC="+Helper.format(getGCGehalt())+"%"+
-        ", Tm="+Helper.format(getTemperature())+"°, hairpins="
-        +getHairpinPositions()+", homodimer="+getHomodimerPositions();
+        StringBuffer sb=new StringBuffer();
+        sb.append(getId()).append(":").append(getCompletePrimerSeq()).append(", ").append(getType()).append(", PL=").append(getBruchstelle());
+        sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
+        sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
+        return sb.toString();
     }
     public String getCSVSekStructuresSeparatedBy(String sep) {
         List l=new ArrayList(getSecStrucs());
-        Collections.sort(l,SBESekStruktur.getSeverityComparator());
+        Collections.sort(l,CleavableSekStruktur.getSeverityComparator());
         String positions="";
         String nucl="";
         String clazz="";
         String irrel="";
         for (Iterator it = l.iterator(); it.hasNext();) {
-            SBESekStruktur s = (SBESekStruktur) it.next();
+            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
             int pos=s.getPosFrom3();
             if(-1 == pos)
                 positions+="unknown";
@@ -218,13 +218,13 @@ public class SBEPrimer extends Primer{
             else
                 nucl+="dd"+Character.toUpperCase(s.bautEin());
             switch (s.getType()) {
-            case SBESekStruktur.HAIRPIN:
+            case CleavableSekStruktur.HAIRPIN:
                 clazz+="hairpin, ";
                 break;
-            case SBESekStruktur.HOMODIMER:
+            case CleavableSekStruktur.HOMODIMER:
                 clazz+="homodimer, ";
                 break;
-            case SBESekStruktur.CROSSDIMER:
+            case CleavableSekStruktur.CROSSDIMER:
                 clazz+="crossdimer with ID ";
             	clazz+=s.getCrossDimerPrimer().getId()+", ";
                 break;
@@ -250,7 +250,31 @@ public class SBEPrimer extends Primer{
         return positions+sep+nucl+sep+clazz+sep+irrel;
     }
 
-
+    protected boolean passtMitSekStrucs(Primer other) {
+        //Inkompatible Sekundärstrukturen?
+        String snp1=getSNP();
+        String snp2=other.getSNP();
+        for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
+            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
+            if(s.isVerhindert())
+                continue;
+            if(-1 != snp2.indexOf(s.bautEin())){
+                edgecol.add(new SecStructureEdge(this,other, s));
+                return false;
+            }
+        }
+        for (Iterator it = other.getSecStrucs().iterator(); it.hasNext();) {
+            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
+            if(s.isVerhindert())
+                continue;
+            if(snp1.indexOf(s.bautEin()) != -1){
+                edgecol.add(new SecStructureEdge(other,this, s));
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public String getCompletePrimerSeq() {
         String seq=super.getPrimerSeq();
         return Helper.replaceWithPL(seq,pl);

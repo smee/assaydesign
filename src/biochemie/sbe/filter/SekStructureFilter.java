@@ -10,8 +10,9 @@ import java.util.List;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 
+import biochemie.domspec.CleavableSekStruktur;
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.SekStruktur;
 import biochemie.sbe.SBEOptions;
 
 /**
@@ -60,7 +61,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
      */
     private void appendAsciiArt(StringBuffer sb, Primer p) {
         for (Iterator iter = p.getSecStrucs().iterator(); iter.hasNext();) {
-            SBESekStruktur s = (SBESekStruktur) iter.next();
+            SekStruktur s = (SekStruktur) iter.next();
             sb.append(s.getAsciiArt()).append("\n");
         }
     }
@@ -80,7 +81,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
     private boolean hatMehrereInkompatibleHairpins(Primer p) {
         Integer count=(Integer)Algorithms.inject(p.getSecStrucs().iterator(),new Integer(0),new BinaryFunction() {
             public Object evaluate(Object left, Object right) {
-                int inc= ((SBESekStruktur)right).isIncompatible()?1:0;
+                int inc= ((SekStruktur)right).isIncompatible()?1:0;
                 return new Integer(((Integer)left).intValue() + inc);
             }            
         });
@@ -89,7 +90,9 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
     private boolean hatNichtVerhinderbareSekStruks(Primer p) {
         Integer count=(Integer)Algorithms.inject(p.getSecStrucs().iterator(),new Integer(0),new BinaryFunction() {
             public Object evaluate(Object left, Object right) {
-                int inc= ((SBESekStruktur)right).isIncompatible() && !((SBESekStruktur)right).isVerhindert() ? 1 : 0;
+                int inc=0;
+                if(right instanceof CleavableSekStruktur)
+                    inc= ((CleavableSekStruktur)right).isIncompatible() && !((CleavableSekStruktur)right).isVerhindert() ? 1 : 0;
                 return new Integer(((Integer)left).intValue() + inc);
             }            
         });

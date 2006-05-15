@@ -93,7 +93,7 @@ public class SBEPrimerReader {
 	public static List collapseMultiplexes(List sbec, SBEOptions cfg) {
 		Collections.sort(sbec,new Comparator() {
             public int compare(Object arg0, Object arg1) {
-                return ((PrimerFactory)arg0).getGivenMultiplexID().compareTo(((CleavablePrimerFactory)arg1).getGivenMultiplexID());
+                return ((PrimerFactory)arg0).getGivenMultiplexID().compareTo(((PrimerFactory)arg1).getGivenMultiplexID());
             }
         });
         List l=new ArrayList();
@@ -133,7 +133,7 @@ public class SBEPrimerReader {
     public static void writeSBEResults(String filename, List sbec) {
         if(sbec.size()==0)
             return;
-        String[] header=((PrimerFactory)sbec.get(0)).getCsvheader();
+        String[] header=((PrimerFactory)sbec.get(0)).getCsvheader().split(";");
         StringBuffer sb=new StringBuffer(StringUtils.join(header,';') +"\n");
 
         for (int i= 0; i < sbec.size(); i++) {

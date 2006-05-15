@@ -37,7 +37,7 @@ public class CDConfig implements Serializable{
  
     private CDConfig() {
 		singleton=this;
-		cdcpanel=new CDConfigPanel();
+		cdcpanel=new CDConfigPanel(true);
         massPanel=new CDMassesConfigPanel(CDMassesConfigPanel.getDefaultPrimermassMap(),CDMassesConfigPanel.getDefaultAddonMassMap(),18.02);
         calcTimePanel=new CalcTimePanel();
 	}

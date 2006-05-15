@@ -1,5 +1,7 @@
 package biochemie.domspec;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import biochemie.calcdalton.CalcDalton;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.multiplex.Multiplexable;
@@ -32,7 +34,7 @@ public class PinpointPrimer extends Primer{
 
 
     private boolean passtMitTTail(PinpointPrimer o) {
-        if( o.tTail.length()== tTail.length()){
+        if( o.tTail.length()!= tTail.length()){
             edgecol.add(new SameTTailEdge(this,o));
             return false;
         }
@@ -48,7 +50,7 @@ public class PinpointPrimer extends Primer{
         return true;
     }
     public String getCompletePrimerSeq() {
-        return super.getPrimerSeq()+tTail;
+        return tTail+super.getPrimerSeq();
     }
 
     public String getTTail() {
@@ -58,10 +60,26 @@ public class PinpointPrimer extends Primer{
     public String getFilter() {
         return getType()+"_"+getPrimerSeq().length()+"_"+tTail.length();
     }
-
-    public String getCSVSekStructuresSeparatedBy(String sep) {
-        // TODO Auto-generated method stub
-        return "";
+    public String toString() {
+        StringBuffer sb=new StringBuffer();
+        sb.append(getId()).append(":").append(getCompletePrimerSeq()).append(", ").append(getType()).append(", T lenght=").append(getTTail().length());
+        sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
+        sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
+        return sb.toString();
     }
-
+    public boolean equals(Object o){
+        if ( !(o instanceof PinpointPrimer) ) {
+            return false;
+        }else {
+            PinpointPrimer other = (PinpointPrimer)o;
+            return getTTail().equals(other.getTTail()) && super.equals(other);
+        }
+    }
+    public int hashCode() {
+        return new HashCodeBuilder(14107, 27431).
+           append(getId()).
+           append(getCompletePrimerSeq()).
+           append(getTTail()).
+           toHashCode();
+}
 }

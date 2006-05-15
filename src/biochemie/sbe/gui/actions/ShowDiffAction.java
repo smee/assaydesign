@@ -36,7 +36,6 @@ import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
-import biochemie.domspec.Primer;
 import biochemie.gui.ColumnResizer;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.PrimerFactory;
@@ -79,7 +78,7 @@ public class ShowDiffAction extends MyAction {
         //suche alle vorhandenen Multiplexids
         Algorithms.foreach(sbecfilt.iterator(),new UnaryProcedure() {
             public void run(Object obj) {
-                mids.add(((CleavablePrimerFactory)obj).getMultiplexId());
+                mids.add(((PrimerFactory)obj).getMultiplexId());
             }
         });
         System.out.println(sbecfilt);
@@ -112,7 +111,7 @@ public class ShowDiffAction extends MyAction {
      * @return
      */
     private TableModel generateCDModelFor(String id, List sbec) {
-        if(id == null)
+        if(id == null || sbec.size()==0)
             return new DefaultTableModel(0,0);
 
         List mysbec = getFilteredList(id, sbec);
@@ -123,25 +122,29 @@ public class ShowDiffAction extends MyAction {
 
         int i=0;
         for (Iterator it = mysbec.iterator(); it.hasNext();i++) {
-            CleavablePrimerFactory s = (CleavablePrimerFactory) it.next();
+            PrimerFactory s = (PrimerFactory) it.next();
             names[i]=s.getId();
             paneldata[i]=createAnhangsData(s);
-            fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),s.getBruchstelle());
+            if(s instanceof CleavablePrimerFactory)
+                fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),((CleavablePrimerFactory)s).getBruchstelle());
 //            System.out.print(ArrayUtils.toString(paneldata[i]));
 //            System.out.println(" "+fest[i]);
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
 
         CalcDalton cd = Helper.getCalcDalton(cfg);
-        cd.calc(paneldata,sbetable,fest);
+        if(sbec.get(0) instanceof CleavablePrimerFactory)
+            cd.calc(paneldata,sbetable,fest);
+        else
+            cd.calc(paneldata,sbetable);
         return sbetable;
     }
 
-    private String[] createAnhangsData(CleavablePrimerFactory s) {
+    private String[] createAnhangsData(PrimerFactory s) {
 //        if(cfg.getCalcDaltonAllExtensions()) {
 //            return new String[]{s.getFavSeq(),"A","C","G","T"};
 //        }else {
-            String[] arr=Primer.getCDParamLine(s.getFavPrimer());
+            String[] arr=s.getFavPrimer().getCDParamLine();
             return arr;
 //        }
     }
@@ -152,6 +155,8 @@ public class ShowDiffAction extends MyAction {
      * @return
      */
     private TableModel generateDiffTableModelFor(final String id, List sbec) {
+        if(sbec.size()==0)
+            return new DiffTableModel(new String[0],new double[0][]);
         List mysbec = getFilteredList(id, sbec);
         CalcDalton cd=Helper.getCalcDalton(cfg);
         String[][] params=new String[mysbec.size()][];
@@ -161,18 +166,22 @@ public class ShowDiffAction extends MyAction {
         int i=0;
         SBETable table=new SBETable(getNames(mysbec),br);
         for (Iterator iter = mysbec.iterator(); iter.hasNext();i++) {
-            CleavablePrimerFactory  s = (CleavablePrimerFactory ) iter.next();
-            params[i]=Primer.getCDParamLine(s.getFavPrimer());
-            fest[i]=ArrayUtils.indexOf(br,s.getBruchstelle());
+            PrimerFactory  s = (PrimerFactory ) iter.next();
+            params[i]=s.getFavPrimer().getCDParamLine();
+            if(s instanceof CleavablePrimerFactory)
+                fest[i]=ArrayUtils.indexOf(br,((CleavablePrimerFactory)s).getBruchstelle());
         }
-        cd.calc(params,table,fest);
+        if(sbec.get(0) instanceof CleavablePrimerFactory)
+            cd.calc(params,table,fest);
+        else
+            cd.calc(params,table);
         return  new DiffTableModel(table,cfg.getCalcDaltonAllExtensions());
     }
     private String[] getNames(List sbec) {
         String[] sbenames = new String[sbec.size()];
         int i=0;
         for (Iterator iter = sbec.iterator(); iter.hasNext();i++) {
-            CleavablePrimerFactory  s = (CleavablePrimerFactory ) iter.next();
+            PrimerFactory  s = (PrimerFactory ) iter.next();
             sbenames[i]=s.getId();
         }
         return sbenames;
@@ -188,7 +197,7 @@ public class ShowDiffAction extends MyAction {
             public boolean test(Object obj) {
                 if(multiplexid == null)
                     return true;
-                return ((CleavablePrimerFactory)obj).getMultiplexId().equals(multiplexid);
+                return ((PrimerFactory)obj).getMultiplexId().equals(multiplexid);
             }
         }), new ArrayList());
         return mysbec;

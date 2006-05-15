@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
@@ -74,8 +76,9 @@ import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.lang.ArrayUtils;
 
 import biochemie.calcdalton.JTableEx;
-import biochemie.domspec.SBEPrimer;
-import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.CleavablePrimer;
+import biochemie.domspec.CleavableSekStruktur;
+import biochemie.domspec.SekStruktur;
 import biochemie.gui.InfiniteProgressPanel;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.MiniSBE;
@@ -129,7 +132,7 @@ public class OptimizePLAction extends MyAction {
                 if(cand.hasValidPrimer()) {
                     Set s=cand.getFavPrimer().getSecStrucs();
                     for (Iterator it = s.iterator(); it.hasNext();) {
-                        SBESekStruktur struc = (SBESekStruktur) it.next();
+                        CleavableSekStruktur struc = (CleavableSekStruktur) it.next();
                         filter.add(new SecStructureEdge(null,null,struc).matchString());
                     }
                 }
@@ -179,7 +182,7 @@ public class OptimizePLAction extends MyAction {
         private void enterInGUI(CleavablePrimerFactory cand, SBECandidatePanel panel, boolean setPL) {
             if(cand.hasValidPrimer() == false)
                 return;
-            if(cand.getType().equals(SBEPrimer._5_)) {
+            if(cand.getType().equals(CleavablePrimer._5_)) {
                 panel.getSeq3tf().setText("");
                 if(setPL)
                     panel.getPlpanel5().setSelectedPL(cand.getBruchstelle());
@@ -190,10 +193,10 @@ public class OptimizePLAction extends MyAction {
             }
         }
 
-        private SBESekStruktur hatVerhinderteSekStruc(CleavablePrimerFactory cand) {
+        private CleavableSekStruktur hatVerhinderteSekStruc(CleavablePrimerFactory cand) {
             Set sec=cand.getSekStrucs();
             for (Iterator it = sec.iterator(); it.hasNext();) {
-                SBESekStruktur struc = (SBESekStruktur) it.next();
+                CleavableSekStruktur struc = (CleavableSekStruktur) it.next();
                 if(struc.isVerhindert())
                     return struc;
             }
@@ -457,7 +460,7 @@ public class OptimizePLAction extends MyAction {
 
                     Set sek=s.getSekStrucs();
                     for (Iterator it = sek.iterator(); it.hasNext();) {
-                        SBESekStruktur struk = (SBESekStruktur) it.next();
+                        SekStruktur struk = (SekStruktur) it.next();
                         sb.append(struk.toString().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
                         sb.append("<br>");
                         sb.append(struk.getAsciiArt().replaceAll("\n","<br>").replaceAll(" ","&nbsp;"));
@@ -512,10 +515,10 @@ public class OptimizePLAction extends MyAction {
                     Boolean filter = (Boolean) model.getValueAt(row, column);
                     String id = (String) model.getValueAt(row,1);
                     String filterstring;
-                    if(column == 20)
+                    if(column == 16)
                         filterstring=((MiniSBEResultTableModel)model).getFilterFor(id);
                     else
-                        filterstring=((MiniSBEResultTableModel)model).getPLFilterFor(id);
+                        filterstring=((MiniSBEResultTableModel)model).getPrimerFilterFor(id);
                     modifyUserFilterFor(id,filterstring,filter.booleanValue());
                 } 
             });
@@ -523,29 +526,25 @@ public class OptimizePLAction extends MyAction {
         }
 
     }
-    private final class PreferencesAction extends MyAction {
+    private final class PreferencesAction extends MyAction implements Observer{
+        private File saveFile;
         public PreferencesAction() {
             super("Settings", "change settings for the assay design"
                     ,PreferencesAction.class.getClassLoader().getResource("images/properti.gif")
                     ,KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+            getConfigDialog().getObservable().addObserver(this);
         }
         public void actionPerformed(ActionEvent e) {
-        	SBEConfigDialog dia=getConfigDialog();
-        	dia.setVisible(true);
-            File f = null;
             try {
-                f = File.createTempFile("__set",".csv");
+                saveFile = File.createTempFile("__set",".csv");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        	getSavePrimerAction().saveToFile(f);
-            for (Iterator it = sbepanels.iterator(); it.hasNext();) {
-                SBECandidatePanel panel = (SBECandidatePanel) it.next();
-                panel.refreshData(dia.getSBEOptionsFromGui());
-            }
-            getLoadPrimerAction().loadFromFile(f);
-            if(f != null)
-                f.delete();
+            getSavePrimerAction().saveToFile(saveFile);
+            getConfigDialog().setVisible(true);
+        }
+        public void update(Observable o, Object arg) {
+            getLoadPrimerAction().loadFromFile(saveFile);
         }
     }
     private class AddPanelAction extends MyAction {
@@ -607,12 +606,17 @@ public class OptimizePLAction extends MyAction {
 	            }
 	        };
 	        File file = FileSelector.getUserSelectedFile(MiniSBEGui.this,"Load sbeprimers...",filter,FileSelector.OPEN_DIALOG);
-            loadFromFile(file);
+            boolean valid=loadFromFile(file);
+            if(!valid)
+                JOptionPane.showMessageDialog(MiniSBEGui.this,"Unable to load file \""+file.toString()+"\"","Unknown assaytype",JOptionPane.ERROR_MESSAGE);
+            
+            getSbepanelsPanel().revalidate();
+            getSbepanelsPanel().repaint();
 	    }
         /**
          * @param file
          */
-        public void loadFromFile(File file) {
+        public boolean loadFromFile(File file) {
             if(file !=null){
 	            getSbepanelsPanel().removeAll();//XXX eigentlich die Aufgabe von newaction
 	            sbepanels.clear();
@@ -622,8 +626,12 @@ public class OptimizePLAction extends MyAction {
 	                String line=br.readLine().trim();//skip header
                     if(line.charAt(0)=='"')
                         line=line.substring(1);
-                    //TODO generisch laden (Format erkennen etc.)
-                    final boolean isInputfile=line.startsWith("SBE-ID");
+                    int assayType=SBECandidatePanel.getAssayTypeFromHeader(line);
+                    boolean isInputfile=SBECandidatePanel.isInputFile(line);
+                    if(assayType==MiniSBE.UNKNOWN)
+                        return false;
+                    MiniSBEGui.this.assayType=assayType;
+                    getConfigDialog().setAssayType(assayType);
 	                while((line=br.readLine())!=null) {
 	                    primerlines.add(Helper.clearEmptyCSVEntries(line));
 	                }
@@ -650,9 +658,8 @@ public class OptimizePLAction extends MyAction {
                             "Invalid inputfile",
                             JOptionPane.ERROR_MESSAGE);
 	            }
-                getSbepanelsPanel().revalidate();
-                getSbepanelsPanel().repaint();
 	        }
+            return true;
         }
 	}
     private class SavePrimerAction extends MyAction {
@@ -709,22 +716,12 @@ public class OptimizePLAction extends MyAction {
          */
         private void writeSBECandidatesFile(List sbec, File file) throws IOException{
             BufferedWriter bw=new BufferedWriter(new FileWriter(file));
-            final String header = "SBE-ID;" +
-                    "5\' Sequenz (in 5\'->3\');" +
-                    "Definitiver Hairpin 5\';" +
-                    "SNP Variante;" +
-                    "3\' Sequenz (in 5\' -> 3\')" +
-                    ";Definitiver Hairpin 3\';" +
-                    "PCR Produkt;" +
-                    "Feste Photolinkerposition (leer, wenn egal);" +
-                    "feste MultiplexID;" +
-                    "Ausgeschlossene Primer;" +
-                    "Primer wird verwendet as-is";
+            final String header = ((SBECandidatePanel)sbec.get(0)).getCSVInputHeader();
             bw.write(header);
             bw.write("\n");
             for (Iterator it = sbec.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
-                bw.write(p.getCSVLine());
+                bw.write(p.getCSVInputLine());
                 p.setUnchanged();
                 bw.write("\n");
             }
@@ -868,7 +865,7 @@ public class OptimizePLAction extends MyAction {
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
         this.setGlassPane(getInfiniteProgressPanel());
-        setTitle("MiniSBE (freeze 1) $$$DATE$$$");//wird von ant durch aktuelles Datum ersetzt.
+        setTitle("PrimExtend $$$DATE$$$");//wird von ant durch aktuelles Datum ersetzt.
 	}
 	private InfiniteProgressPanel getInfiniteProgressPanel() {
 	    if(infinitePP==null) {
@@ -1098,7 +1095,7 @@ public class OptimizePLAction extends MyAction {
 	}
 	private SBEConfigDialog getConfigDialog(){
 		if(dialog == null){
-			dialog= new SBEConfigDialog(MiniSBEGui.this);
+			dialog= new SBEConfigDialog(MiniSBEGui.this,assayType);
 			dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
             //dialog.setUndecorated(true);
 		}

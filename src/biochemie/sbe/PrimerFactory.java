@@ -8,17 +8,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.UnaryPredicate;
 
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBEPrimer;
-import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.SekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.sbe.filter.ForbiddenCDMassFilter;
 import biochemie.sbe.filter.GCFilter;
@@ -32,53 +32,48 @@ import biochemie.sbe.multiplex.MultiplexableFactory;
 import biochemie.util.Helper;
 
 public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, PrimerCreatorCallback{
-    static protected final class TemperatureDistanceAndHairpinComparator implements Comparator {
+    static protected class TemperatureDistanceAndHairpinComparator implements Comparator {
 
-            private final double opt;
-            public TemperatureDistanceAndHairpinComparator(double opt) {
-                this.opt= opt;
-            }
-            public int compare(Object o1, Object o2) {
-                SBEPrimer p1= (SBEPrimer)o1;
-                SBEPrimer p2= (SBEPrimer)o2;
-    
-                int numinc1=0, numinc2=0;       //Anzahl der incimp. SekStruks, ohne die, deren pos==pl ist
-                int numhh1=0, numhh2=0;         //Anzahl der SekStruks, ohne die, deren pos==pl ist
-    
-                for (Iterator it = p1.getSecStrucs().iterator(); it.hasNext();) {
-                    SBESekStruktur s = (SBESekStruktur) it.next();
-                    if(p1.getBruchstelle() - s.getPosFrom3() != 1) {//wenn kein gegenpl eingebaut wuerde
-                        numhh1++;
-                        if(s.isIncompatible())
-                            numinc1++;
-                    }
-                }
-                for (Iterator it = p2.getSecStrucs().iterator(); it.hasNext();) {
-                    SBESekStruktur s = (SBESekStruktur) it.next();
-                    if(p2.getBruchstelle() - s.getPosFrom3() != 1) {
-                        numhh2++;
-                        if(s.isIncompatible())
-                            numinc2++;
-                    }
-                }
-                // Sortieren nach kompatiblen vor inkomp. SekStrukturen
-                if(numinc2 > numinc1)
-                    return -1;
-                if(numinc2 < numinc1)
-                    return 1;
-                //wenn gleich: Sortieren nach der Anzahl von Sekstruk
-                if(numhh2 > numhh1)
-                    return -1;
-                if(numhh2 < numhh1)
-                    return 1;
-                //ansonsten zortieren nach Abstand von der optimalen Temperatur
-                double t1= Math.abs(opt - p1.getTemperature());
-                double t2= Math.abs(opt - p2.getTemperature());
-    
-                return (t1 < t2 ? -1 : (t1 == t2 ? 0 : 1));
-            }
+        private final double opt;
+        public TemperatureDistanceAndHairpinComparator(double opt) {
+            this.opt= opt;
         }
+        public int compare(Object o1, Object o2) {
+            Primer p1= (Primer)o1;
+            Primer p2= (Primer)o2;
 
+            int numinc1=0, numinc2=0;       //Anzahl der incimp. SekStruks, ohne die, deren pos==pl ist
+            int numhh1=0, numhh2=0;         //Anzahl der SekStruks, ohne die, deren pos==pl ist
+
+            for (Iterator it = p1.getSecStrucs().iterator(); it.hasNext();) {
+                SekStruktur s = (SekStruktur) it.next();
+                numhh1++;
+                if(s.isIncompatible())
+                    numinc1++;
+            }
+            for (Iterator it = p2.getSecStrucs().iterator(); it.hasNext();) {
+                SekStruktur s = (SekStruktur) it.next();
+                numhh2++;
+                if(s.isIncompatible())
+                    numinc2++;
+            }
+            // Sortieren nach kompatiblen vor inkomp. SekStrukturen
+            if(numinc2 > numinc1)
+                return -1;
+            if(numinc2 < numinc1)
+                return 1;
+            //wenn gleich: Sortieren nach der Anzahl von Sekstruk
+            if(numhh2 > numhh1)
+                return -1;
+            if(numhh2 < numhh1)
+                return 1;
+            //ansonsten zortieren nach Abstand von der optimalen Temperatur
+            double t1= Math.abs(opt - p1.getTemperature());
+            double t2= Math.abs(opt - p2.getTemperature());
+
+            return (t1 < t2 ? -1 : (t1 == t2 ? 0 : 1));
+        }
+    }
     private String writtenoutput=null;
     protected final SBEOptions cfg;
     protected final String id;
@@ -89,7 +84,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
     protected Primer chosen;
     protected String givenMultiplexID;
     private final String unwanted;
-    protected String invalidreason3="",invalidreason5="",usedreason="";
+    protected StringBuffer invalidreason3,invalidreason5;
     protected final List primercandidates;
     private boolean rememberOutput;
     private boolean userGiven;
@@ -261,7 +256,10 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
      */
     protected List filterPrimerList(ArrayList liste, boolean sec, String type) {
         int allcount = liste.size();
-        
+        if(type.equals(Primer._5_))
+            invalidreason5=new StringBuffer();
+        else
+            invalidreason3=new StringBuffer();
         List kf=new ArrayList();
         
         kf.add(new LaengenFilter(cfg));
@@ -288,28 +286,45 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
                 String r=filt.rejectReason()+actcount+"/"+(allcount-filtcount)+", ";
                 filtcount += actcount;
                 if(type.equals(Primer._5_))
-                    invalidreason5+=r;
+                    invalidreason5.append(r);
                 else
-                    invalidreason3+=r;
+                    invalidreason3.append(r);
             }
         }
         String prefix = "Excluded primers: "+filtcount+"/"+allcount+", ";
         if(type.equals(Primer._5_)) {
-            invalidreason5=prefix+invalidreason5.substring(0,invalidreason5.length());
-            invalidreason5=invalidreason5.substring(0,invalidreason5.length()-2);
+            invalidreason5.insert(0,prefix);
+            invalidreason5.delete(invalidreason5.length()-2,invalidreason5.length());
         }else {
-            invalidreason3=prefix+invalidreason3.substring(0,invalidreason3.length());
-            invalidreason3=invalidreason3.substring(0,invalidreason3.length()-2);
+            invalidreason3.insert(0,prefix);
+            invalidreason3.delete(invalidreason3.length()-2,invalidreason3.length());
         }
         return erg;
     }
 
     /**
      * Filtert eine Liste von Primern, so dass am Ende höchstens zwei Primer übrigbleiben:
-     * Einer aus der 5' und einer aus der 3'Sequenz.
+     * Einer aus der 5' und einer aus der 3'Sequenz. Standardmaessig sind das der jeweils erste Primer in der Liste für jede Seite.
      * @param liste
      */
-    abstract protected List findBestPrimers(List primers);
+    protected List findBestPrimers(List primers){
+        List result=new LinkedList();
+        if(primers.size()==0)
+            return result;
+        result.add(Algorithms.detect(primers.iterator(),new UnaryPredicate() {
+            public boolean test(Object obj) {
+                Primer p=((Primer)obj);
+                return p.getType().equals(Primer._5_);
+            }
+        },null));
+        result.add(Algorithms.detect(primers.iterator(),new UnaryPredicate() {
+            public boolean test(Object obj) {
+                Primer p=((Primer)obj);
+                return p.getType().equals(Primer._3_);
+            }
+        },null));
+        return result;
+    }
 
     /**
      * Entscheidet, welche Ausprägung (Primer+Bruchstelle) verwendet wird.
@@ -334,7 +349,8 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
                 l.add(chosen);
             return l;
         }
-        createPrimers();
+        if(primercandidates.size()==0)
+            createPrimers();
         l.addAll(primercandidates);
         return l;
     }
@@ -351,7 +367,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
         assertPrimerChosen();
         Set primers = new HashSet();
         for (Iterator it = sbec.iterator(); it.hasNext();) {
-            CleavablePrimerFactory sc = (CleavablePrimerFactory) it.next();
+            PrimerFactory sc = (PrimerFactory) it.next();
             if(sc.chosen != null)
                 primers.add(sc.chosen);
         }
@@ -375,6 +391,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
     }
     public void update(Observable o, Object arg) {
         if(arg.equals(Primer.PLEXID_CHANGED))
-            choose((SBEPrimer) o);
+            choose((Primer) o);
     }
+    public abstract String getFilter();
 }

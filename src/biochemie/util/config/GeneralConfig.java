@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -19,6 +18,8 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Properties;
 import java.util.Set;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import biochemie.sbe.WrongValueException;
 
@@ -44,19 +45,37 @@ public abstract class GeneralConfig extends Observable{
         }
         this.keys=Collections.unmodifiableSet(keys);
         isUnmodifiable = false;
+        loadDefault();
     }
 
     /**
      * Every subclass needs to provide all valid keys and defaultvalues on instantiation in this method.
      * No keys will be accepted later on if they can't be found in this instance of map.
-     * Needs to hav 2 columns: key and value
+     * Needs to have 2 columns: key and value
      * @return
      */
 	abstract protected String[][] getInitializedProperties();
     public void setUnmodifiable() {
         this.isUnmodifiable=true;        
     }
-    
+    public void makeDefault(){
+        Preferences p=Preferences.userNodeForPackage(this.getClass());
+        for (Iterator it = getKeys().iterator(); it.hasNext();) {
+            String key = (String) it.next();
+            p.put(key,prop.getProperty(key));
+        }
+    }
+    public void loadDefault(){
+        try {
+            Preferences p=Preferences.userNodeForPackage(this.getClass());
+            String[] defkeys = p.keys();
+            for (int i = 0; i < defkeys.length; i++) {
+                setProperty(defkeys[i],p.get(defkeys[i],""));
+            }
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+    }
 	/**
      * Der INputstream wird nicht geschlossen, nachdem er verwendet wurde!
 	 * @param instream
@@ -242,7 +261,7 @@ public abstract class GeneralConfig extends Observable{
     public String toString(){
         return prop.toString();
     }
-    public Collection getKeys() {
+    public Set getKeys() {
         return prop.keySet();
     }
 }

@@ -1,7 +1,14 @@
 package biochemie.domspec;
 
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.multiplex.Multiplexable;
+import biochemie.util.Helper;
 import biochemie.util.edges.DifferentAssayTypeEdge;
 
 public class ProbePrimer extends Primer {
@@ -9,14 +16,14 @@ public class ProbePrimer extends Primer {
     private final int assayType;
     private final String addon;
     
-    public ProbePrimer(String id, String seq, String type, String snp, int assayType, String addon, SecStrucOptions cfg) {
-        super(id, seq, type, snp, cfg);
+    public ProbePrimer(String id, String seq, String type, String snp, int assayType, String addon, int productlen, SecStrucOptions cfg, int mindiff) {
+        super(id, seq, type, snp, productlen, cfg, mindiff);
         this.assayType=assayType;
         p=null;
         this.addon=addon;
     }
     public ProbePrimer(Primer p, int assayType, String addon){//TODO
-        super(p.id,p.getPrimerSeq(),p.getType(),p.getSNP(),p.cfg);
+        super(p.id,p.getCompletePrimerSeq(),p.getType(),p.getSNP(), p.getProductLength(), p.cfg, p.mindiff);
         this.assayType=assayType;
         this.p=p;
         this.addon=addon;
@@ -25,8 +32,9 @@ public class ProbePrimer extends Primer {
         edgecol.clear();
         if(o instanceof ProbePrimer) {
             ProbePrimer other=(ProbePrimer) o;
-            boolean temp=true, flag=true;
-            flag= this.passtMitAssayType(other);
+            boolean flag= this.passtMitAssayType(other);
+            boolean temp=this.passtMitEingeschlossenemPrimer(other);
+            flag=flag&&temp;
             temp=super.passtMit(o);
             flag=flag&&temp;
             return flag;
@@ -36,6 +44,13 @@ public class ProbePrimer extends Primer {
             return ret;
         }
     }
+    private boolean passtMitEingeschlossenemPrimer(ProbePrimer o) {
+        if(p==null || o.p==null)
+            return true;
+        boolean ret=p.passtMit(o);
+        edgecol.addAll(p.getLastEdges());
+        return ret;
+    }
     private boolean passtMitAssayType(ProbePrimer other) {
         if(other.assayType != this.assayType){
             edgecol.add(new DifferentAssayTypeEdge(this,other));
@@ -44,7 +59,10 @@ public class ProbePrimer extends Primer {
         return true;
     }
     public String getCompletePrimerSeq() {
-        return super.getPrimerSeq()+addon;
+        String seq=getPrimerSeq();
+        if(p!=null)
+            seq=p.getCompletePrimerSeq();
+        return seq+addon;
     }
     public int getAssayType(){
         return assayType;
@@ -52,8 +70,31 @@ public class ProbePrimer extends Primer {
     public String getFilter() {
         return getType()+"_"+getPrimerSeq().length()+"_"+getAssayType();
     }
-    public String getCSVSekStructuresSeparatedBy(String sep) {
-        // TODO Auto-generated method stub
-        return "";
+    public String[] getCDParamLine() {
+        String seq=getCompletePrimerSeq();
+        //das letzte nucl. ist ein ddX, alle anderen dX
+        return new String[]{seq.substring(0,seq.length()-1),seq.substring(seq.length()-1)};
     }
+    public String toString() {
+        StringBuffer sb=new StringBuffer();
+        sb.append(getId()).append(":").append(getCompletePrimerSeq()).append(", ").append(getType()).append(", assayType=").append(getAssayType());
+        sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
+        sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
+        return sb.toString();
+    }
+    public boolean equals(Object o){
+        if ( !(o instanceof ProbePrimer) ) {
+            return false;
+        }else {
+            ProbePrimer other = (ProbePrimer)o;
+            return getAssayType()==other.getAssayType() && super.equals(other);
+        }
+    }
+    public int hashCode() {
+        return new HashCodeBuilder(5347, 6043).
+           append(getId()).
+           append(getCompletePrimerSeq()).
+           append(getAssayType()).
+           toHashCode();
+}
 }

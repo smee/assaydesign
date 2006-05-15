@@ -5,7 +5,7 @@ import java.util.List;
 
 import biochemie.calcdalton.CalcDalton;
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
 import biochemie.util.Helper;
 
@@ -34,9 +34,9 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
     }
 
     private double[] getMasses(Primer primer) {
-        String[] params=Primer.getCDParamLine(primer);
-        if (primer instanceof SBEPrimer) {
-            return cd.calcSBEMass(params,((SBEPrimer)primer).getBruchstelle(),true);
+        String[] params=primer.getCDParamLine();
+        if (primer instanceof CleavablePrimer) {
+            return cd.calcSBEMass(params,((CleavablePrimer)primer).getBruchstelle(),true);
         }else
             return cd.calcSBEMass(params,true);
     }

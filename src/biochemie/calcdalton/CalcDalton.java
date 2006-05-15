@@ -332,7 +332,11 @@ public class CalcDalton implements Interruptible{
         }
         return sbeTable;   
     }
-    
+    public void calc(String[][] sbeData, SBETable sbetable) {
+        int[] fest=new int[sbeData.length];
+        Arrays.fill(fest,-1);
+        calc(sbeData,sbetable,fest);
+    }
     public int[][] calc(String[][] sbeData) {
         int[] fest=new int[sbeData.length];
         Arrays.fill(fest,-1);
@@ -345,7 +349,7 @@ public class CalcDalton implements Interruptible{
      * @param fest array mit indizes der festen bruchstellen, wenn egal, dann -1
 	 */
     public int[][] calc(String[][] sbeData, int[] fest) {
-        if(sbeData.length == 0 || fest.length != brlen)
+        if(sbeData.length == 0 || fest.length != sbeData.length)
             return new int[0][];
         calcThread = Thread.currentThread();
         

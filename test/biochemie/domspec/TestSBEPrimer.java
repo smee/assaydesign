@@ -31,9 +31,9 @@ public class TestSBEPrimer extends TestCase {
 
     public void testCrossDimer() {
         //pl==9
-        SBEPrimer p1= new SBEPrimer(cfg,"197","GGACCAGAGATTCTTTLTTGCACAT","AG",SBEPrimer._5_,"",0,true);
+        CleavablePrimer p1= new CleavablePrimer(cfg,"197","GGACCAGAGATTCTTTLTTGCACAT","AG",CleavablePrimer._5_,"",0,true);
         //pl==9
-        SBEPrimer p2= new SBEPrimer(cfg,"165","TGAGGAAATTGTAGTTAAATALTTAGAAAG","AG",SBEPrimer._5_,"",0,true);
+        CleavablePrimer p2= new CleavablePrimer(cfg,"165","TGAGGAAATTGTAGTTAAATALTTAGAAAG","AG",CleavablePrimer._5_,"",0,true);
         Set cd=SekStrukturFactory.getCrossdimer(p1,p2,cfg.getSecStrucOptions());
 
         /*
@@ -43,14 +43,14 @@ public class TestSBEPrimer extends TestCase {
     }
     public void testAnotherSNP() {
         //pl jeweils 9
-        SBEPrimer p1= new SBEPrimer(cfg,"197","GGACCAGAGATTCTTTLTTGCACAT","AG",SBEPrimer._5_,"",0,true);
-        SBEPrimer p2= new SBEPrimer(cfg,"165","TGAGGAAATTGTAGTTAAATALTAAGAAAG","AG",SBEPrimer._5_,"",0,true);
+        CleavablePrimer p1= new CleavablePrimer(cfg,"197","GGACCAGAGATTCTTTLTTGCACAT","AG",CleavablePrimer._5_,"",0,true);
+        CleavablePrimer p2= new CleavablePrimer(cfg,"165","TGAGGAAATTGTAGTTAAATALTAAGAAAG","AG",CleavablePrimer._5_,"",0,true);
         Set cd=SekStrukturFactory.getCrossdimer(p2,p1,cfg.getSecStrucOptions());
 
         //genau ein crossdimer muss gefunden werden
         assertEquals(1,cd.size());
 
-        SBESekStruktur s=(SBESekStruktur) cd.iterator().next();
+        CleavableSekStruktur s=(CleavableSekStruktur) cd.iterator().next();
         //muss ein crossdimer
         assertEquals(SekStruktur.CROSSDIMER,s.getType());
 
@@ -63,10 +63,10 @@ public class TestSBEPrimer extends TestCase {
 
     }
     public void testCorrectSNPs() {
-        SBEPrimer p = new SBEPrimer(cfg,"id","LAAAA","AC",SBEPrimer._5_,"",0,false);
+        CleavablePrimer p = new CleavablePrimer(cfg,"id","LAAAA","AC",CleavablePrimer._5_,"",0,false);
         assertEquals("AC",p.getSNP());
 
-        SBEPrimer p2 = new SBEPrimer(cfg,"id","LAAAA","AC",SBEPrimer._3_,"",0,false);
+        CleavablePrimer p2 = new CleavablePrimer(cfg,"id","LAAAA","AC",CleavablePrimer._3_,"",0,false);
         assertEquals("TG",p2.getSNP());
 
     }
@@ -76,8 +76,8 @@ public class TestSBEPrimer extends TestCase {
         cfg.getSecStrucOptions().setCrossdimerMinbinds("5");
         cfg.getSecStrucOptions().setCrossimerWindowsizes("6");
         //pl jeweils 12
-        SBEPrimer p1= new SBEPrimer(cfg,"330ctla4","agctagctagctagctLgctaaaaaggt","AG",SBEPrimer._5_,"",0,true);
-        SBEPrimer p2= new SBEPrimer(cfg,"331ctla4","ttggttggttggtLggttggttttt","CT",SBEPrimer._5_,"",0,true);
+        CleavablePrimer p1= new CleavablePrimer(cfg,"330ctla4","agctagctagctagctLgctaaaaaggt","AG",CleavablePrimer._5_,"",0,true);
+        CleavablePrimer p2= new CleavablePrimer(cfg,"331ctla4","ttggttggttggtLggttggttttt","CT",CleavablePrimer._5_,"",0,true);
 
         assertTrue(p1.passtMitCrossdimern(p2,false));
         //TODO an neue Funktionalitaet von allCDAreEvil anpassen! --------------------------------------------------
@@ -92,8 +92,8 @@ public class TestSBEPrimer extends TestCase {
         cfg.setCalcDaltonFrom(new double[] {-152.0, -116.0, 0});
         cfg.setCalcDaltonTo(new double[] {-150, -114, 50});
         //pl jeweils 8
-        SBEPrimer p1= new SBEPrimer(cfg,"328ctla4","AACCAGAGGCAGCLTCTTTTC","AG",SBEPrimer._5_,"",0,true);
-        SBEPrimer p2= new SBEPrimer(cfg,"329ctla4","CTATCATGATCATGGGLTTAGCTG","CT",SBEPrimer._5_,"",0,true);
+        CleavablePrimer p1= new CleavablePrimer(cfg,"328ctla4","AACCAGAGGCAGCLTCTTTTC","AG",CleavablePrimer._5_,"",0,true);
+        CleavablePrimer p2= new CleavablePrimer(cfg,"329ctla4","CTATCATGATCATGGGLTTAGCTG","CT",CleavablePrimer._5_,"",0,true);
 
         assertFalse(p1.passtMitCalcDalton(p2));
     }
@@ -105,9 +105,9 @@ public class TestSBEPrimer extends TestCase {
     	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
     	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl==9
-    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
+    	CleavablePrimer primerA = new CleavablePrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",CleavablePrimer._5_,"",0,true);
         //pl==10
-        SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);//soll auch L erkennen und PL setzen!
+        CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAAAC","TG",CleavablePrimer._5_,"",0,true);//soll auch L erkennen und PL setzen!
 
     	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg.getSecStrucOptions());
     	assertTrue(cross2.size()==0);
@@ -115,7 +115,7 @@ public class TestSBEPrimer extends TestCase {
     	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(1, cross1.size());
 
-    	SBESekStruktur sek = (SBESekStruktur) cross1.iterator().next();
+    	CleavableSekStruktur sek = (CleavableSekStruktur) cross1.iterator().next();
 
     	assertEquals(SekStruktur.CROSSDIMER, sek.getType());
     	assertEquals(8, sek.getPosFrom3()); //pos. 8 am 3'-ende von primerA
@@ -131,13 +131,13 @@ public class TestSBEPrimer extends TestCase {
     	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
     	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl==9
-    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
+    	CleavablePrimer primerA = new CleavablePrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",CleavablePrimer._5_,"",0,true);
         //pl==10
-        SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAACT","TG",SBEPrimer._5_,"",0,true);
+        CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATTAGGACCALTTGAGAACT","TG",CleavablePrimer._5_,"",0,true);
 
     	Set cross2=SekStrukturFactory.getCrossdimer(primerB,primerA,cfg.getSecStrucOptions());
     	assertEquals(1,cross2.size());
-    	SBESekStruktur sek2 = (SBESekStruktur) cross2.iterator().next();
+    	CleavableSekStruktur sek2 = (CleavableSekStruktur) cross2.iterator().next();
     	assertEquals(1, cross2.size());
     	assertEquals(SekStruktur.CROSSDIMER, sek2.getType());
     	assertEquals(8, sek2.getPosFrom3()); //pos. 8 am 3'-ende von primerA
@@ -147,7 +147,7 @@ public class TestSBEPrimer extends TestCase {
 
     	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(1,cross1.size());
-    	SBESekStruktur sek1 = (SBESekStruktur) cross1.iterator().next();
+    	CleavableSekStruktur sek1 = (CleavableSekStruktur) cross1.iterator().next();
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
     	assertEquals('A',sek1.bautEin());
@@ -162,22 +162,22 @@ public class TestSBEPrimer extends TestCase {
     	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
     	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl==9
-    	SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
+    	CleavablePrimer primerA = new CleavablePrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",CleavablePrimer._5_,"",0,true);
         //pl == 10
-        SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATTAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","TG",SBEPrimer._5_,"",0,true);
+        CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATTAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","TG",CleavablePrimer._5_,"",0,true);
 
     	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 
-    	SBESekStruktur sek1 = (SBESekStruktur) it.next();
+    	CleavableSekStruktur sek1 = (CleavableSekStruktur) it.next();
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
     	assertEquals('A',sek1.bautEin());
     	assertFalse(sek1.isVerhindert());
     	assertTrue(sek1.isIncompatible());//ist inkompatibel
 
-    	SBESekStruktur sek2 = (SBESekStruktur) it.next();
+    	CleavableSekStruktur sek2 = (CleavableSekStruktur) it.next();
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(35, sek2.getPosFrom3()); //pos. 8 am 3'-ende von primerA
     	assertEquals('A',sek2.bautEin());
@@ -193,15 +193,15 @@ public class TestSBEPrimer extends TestCase {
     	cfg.getSecStrucOptions().setCrossdimerMinbinds("6");
     	cfg.getSecStrucOptions().setCrossimerWindowsizes("7");
         //pl ==  9
-        SBEPrimer primerA = new SBEPrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",SBEPrimer._5_,"",0,true);
+        CleavablePrimer primerA = new CleavablePrimer(cfg,"primera","TTACAATTCTTCTTGTLAGTTCTCA","AC",CleavablePrimer._5_,"",0,true);
     	//pl == 10
-        SBEPrimer primerB = new SBEPrimer(cfg,"primerb","CTGTAAAATAAGGACCAATGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","CG",SBEPrimer._5_,"",0,true);
+        CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATAAGGACCAATGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","CG",CleavablePrimer._5_,"",0,true);
 
     	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 
-    	SBESekStruktur sek1 = (SBESekStruktur) it.next();
+    	CleavableSekStruktur sek1 = (CleavableSekStruktur) it.next();
         //System.out.println("testCrossdimer4 sek1:"+sek1);
         //System.out.println(sek1.getAsciiArt());
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
@@ -210,7 +210,7 @@ public class TestSBEPrimer extends TestCase {
     	assertFalse(sek1.isVerhindert());
     	assertTrue(sek1.isIncompatible());//ist inkompatibel
 
-    	SBESekStruktur sek2 = (SBESekStruktur) it.next();
+    	CleavableSekStruktur sek2 = (CleavableSekStruktur) it.next();
         //System.out.println("testCrossdimer4 sek2:"+sek1);
         //System.out.println(sek2.getAsciiArt());
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());

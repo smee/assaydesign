@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 import biochemie.domspec.PinpointPrimer;
 import biochemie.domspec.Primer;
 import biochemie.domspec.ProbePrimer;
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
 
 /**
@@ -67,7 +67,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
             for (int i = 0; i < type.length; i++) {
                 if((p.getType().equals(type[i]) || type[i].equals("*")) &&
                    (p.getPrimerSeq().length() == len[i] || len[i] < 0)){
-                    if((p instanceof SBEPrimer && (((SBEPrimer)p).getBruchstelle() == pl[i] || pl[i] < 0))
+                    if((p instanceof CleavablePrimer && (((CleavablePrimer)p).getBruchstelle() == pl[i] || pl[i] < 0))
                             || (p instanceof PinpointPrimer && (((PinpointPrimer)p).getTTail().length()==pl[i] || pl[i] < 0))
                             || (p instanceof ProbePrimer && (((ProbePrimer)p).getAssayType()==pl[i] || pl[i] < 0))){
                     it.remove();

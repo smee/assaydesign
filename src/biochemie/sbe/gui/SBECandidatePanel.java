@@ -17,10 +17,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.sun.java_cup.internal.production;
-
 import biochemie.calcdalton.gui.PBSequenceField;
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.CleavablePrimer;
 import biochemie.gui.MyPanel;
 import biochemie.gui.NuklSelectorPanel;
 import biochemie.gui.PLSelectorPanel;
@@ -37,26 +35,63 @@ import biochemie.util.Helper;
  *
  */
 public class SBECandidatePanel extends MyPanel {
+    private static final String CLEAVABLE_HEADER = "CLEAVABLE SBE-ID;" +
+    "5\' Sequenz (in 5\'->3\');" +
+    "Feste Photolinkerposition 5\' (leer, wenn egal);" +
+    "Definitiver Hairpin 5\';" +
+    "SNP Variante;" +
+    "3\' Sequenz (in 5\' -> 3\')" +
+    "Feste Photolinkerposition 3\' (leer, wenn egal);" +
+    "Definitiver Hairpin 3\';" +
+    "PCR Produkt;" +
+    "feste MultiplexID;" +
+    "Ausgeschlossene Primer;" +
+    "Primer wird verwendet as-is";
+    private static final String PINPOINT_HEADER="PINPOINT SBE-ID;" +
+    "5\' Sequenz (in 5\'->3\');" +
+    "T count 5' (leer, wenn egal);" +
+    "Definitiver Hairpin 5\';" +
+    "SNP Variante;" +
+    "3\' Sequenz (in 5\' -> 3\')" +
+    "T count 3\';" +
+    "Definitiver Hairpin 3\';" +
+    "PCR Produkt;" +
+    "feste MultiplexID;" +
+    "Ausgeschlossene Primer;" +
+    "Primer wird verwendet as-is";
+    private static final String PROBE_HEADER="PROBE SBE-ID;" +
+    "5\' Sequenz (in 5\'->3\');" +
+    "Probe type 5' (leer, wenn egal);" +
+    "Definitiver Hairpin 5\';" +
+    "SNP Variante;" +
+    "3\' Sequenz (in 5\' -> 3\')" +
+    "Probe type 3\';" +
+    "Definitiver Hairpin 3\';" +
+    "PCR Produkt;" +
+    "feste MultiplexID;" +
+    "Ausgeschlossene Primer;" +
+    "Primer wird verwendet as-is";
+    
     private final int assayType;
-	private JLabel jLabel = null;
-	private JLabel jLabel1 = null;
-	private SBESequenceTextField seq5tf = null;
-	private SBESequenceTextField seq3tf = null;
-	private NuklSelectorPanel nuklSelectorPanel = null;
-	private JTextField tfId = null;
-	private PLSelectorPanel plpanel5 = null;
-	private JLabel jLabel2 = null;
-	private JTextField tfplexid = null;
-	private PBSequenceField pcrlenTf = null;
-	private HairpinSelectionPanel hairpin5SelectionPanel = null;
-	private HairpinSelectionPanel hairpin3SelectionPanel = null;
-	private StringEntryPanel multiplexidPanel = null;
-	private StringEntryPanel pcrLenPanel = null;
+    private JLabel jLabel = null;
+    private JLabel jLabel1 = null;
+    private SBESequenceTextField seq5tf = null;
+    private SBESequenceTextField seq3tf = null;
+    private NuklSelectorPanel nuklSelectorPanel = null;
+    private JTextField tfId = null;
+    private PLSelectorPanel plpanel5 = null;
+    private JLabel jLabel2 = null;
+    private JTextField tfplexid = null;
+    private PBSequenceField pcrlenTf = null;
+    private HairpinSelectionPanel hairpin5SelectionPanel = null;
+    private HairpinSelectionPanel hairpin3SelectionPanel = null;
+    private StringEntryPanel multiplexidPanel = null;
+    private StringEntryPanel pcrLenPanel = null;
     private SBESeqInputController inputcontrollerL = null;
-
+    
     private boolean isExpertMode;
-	private StringEntryPanel filtersPanel = null;
-	private JCheckBox fixedPrimerCB = null;
+    private StringEntryPanel filtersPanel = null;
+    private JCheckBox fixedPrimerCB = null;
     public class MyChangeListener implements DocumentListener, ChangeListener{
         public void changedUpdate(DocumentEvent e) {
             dirty();
@@ -74,121 +109,121 @@ public class SBECandidatePanel extends MyPanel {
     private MyChangeListener cl=new MyChangeListener();
     private SBESeqInputController inputcontrollerR;
     
-	private PLSelectorPanel plpanel3 = null;
+    private PLSelectorPanel plpanel3 = null;
     private StringEntryPanel pinpoint5;
     private StringEntryPanel pinpoint3;
     private ProbeTypeSelectorPanel probePanel5;
     private ProbeTypeSelectorPanel probePanel3;
-	/**
-	 * This is the default constructor
-	 * @param
-	 */
-	public SBECandidatePanel(String id, int maxlen, int num, int assayType) {
-		super();
+    /**
+     * This is the default constructor
+     * @param
+     */
+    public SBECandidatePanel(String id, int maxlen, int num, int assayType) {
+        super();
         this.assayType=assayType;
-		initialize(maxlen, num);
+        initialize(maxlen, num);
         getTfId().setText(id);
-	}
-
-	/**
-	 * This method initializes this
-	 * @param num 
-	 *
-	 * @return void
-	 */
-	private  void initialize(int minlen, int num) {
-		GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-		jLabel2 = new JLabel();
-		GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-		jLabel1 = new JLabel();
-		jLabel = new JLabel();
-		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-		this.setLayout(new GridBagLayout());
-		//this.setSize(864, 198);
-		this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "SBE-Primer "+num, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
-		jLabel.setText("ID");
-		gridBagConstraints1.gridx = 0;
-		gridBagConstraints1.gridy = 0;
-		gridBagConstraints1.insets = new java.awt.Insets(10,10,10,5);
-		gridBagConstraints31.gridx = 0;
-		gridBagConstraints31.gridy = 1;
-		gridBagConstraints31.weightx = 0.0D;
-		gridBagConstraints31.fill = java.awt.GridBagConstraints.NONE;
-		gridBagConstraints31.insets = new java.awt.Insets(0,10,5,10);
-		gridBagConstraints31.anchor = java.awt.GridBagConstraints.CENTER;
-		gridBagConstraints7.gridx = 5;
-		gridBagConstraints7.gridy = 0;
-		gridBagConstraints7.gridheight = 2;
-		gridBagConstraints7.weightx=1;
-		gridBagConstraints7.insets = new java.awt.Insets(5,10,5,0);
-		gridBagConstraints4.gridx = 2;
-		gridBagConstraints4.gridy = 0;
-		gridBagConstraints4.insets = new java.awt.Insets(10,0,10,0);
-		gridBagConstraints4.anchor = java.awt.GridBagConstraints.EAST;
-		gridBagConstraints4.gridwidth = 2;
-		jLabel1.setText("5'-Sequence");
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-		gridBagConstraints5.gridx = 3;
-		gridBagConstraints5.gridy = 1;
-		gridBagConstraints5.weightx = 1.0;
-		gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints5.gridwidth = 2;
-		gridBagConstraints5.insets = new java.awt.Insets(0,0,5,0);
-		gridBagConstraints11.gridx = 7;
-		gridBagConstraints11.gridy = 0;
-		gridBagConstraints11.gridheight = 2;
-		gridBagConstraints11.insets = new java.awt.Insets(5,10,5,0);
-		gridBagConstraints10.gridx = 9;
-		gridBagConstraints10.gridy = 0;
-		gridBagConstraints10.insets = new java.awt.Insets(10,10,10,0);
-		gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
-		jLabel2.setText("3'-Sequence");
-		gridBagConstraints12.gridx = 9;
-		gridBagConstraints12.gridy = 1;
-		gridBagConstraints12.weightx = 2.0;
-		gridBagConstraints12.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints12.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints14.gridx = 10;
-		gridBagConstraints14.gridy = 0;
-		gridBagConstraints14.insets = new java.awt.Insets(10,10,10,0);
-
-		gridBagConstraints2.gridx = 11;
-		gridBagConstraints2.gridy = 0;
-		gridBagConstraints2.insets = new java.awt.Insets(10,10,10,0);
-
-		gridBagConstraints41.gridx = 6;
-		gridBagConstraints41.gridy = 0;
-		gridBagConstraints41.gridheight = 2;
-		gridBagConstraints41.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints42.gridx = 11;
-		gridBagConstraints42.gridy = 0;
-		gridBagConstraints42.gridheight = 2;
-		gridBagConstraints42.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints51.gridx = 12;
-		gridBagConstraints51.gridy = 0;
-		gridBagConstraints51.gridheight = 2;
-		gridBagConstraints51.insets = new java.awt.Insets(0,10,0,0);
-		gridBagConstraints6.gridx = 13;
-		gridBagConstraints6.gridy = 0;
-		gridBagConstraints6.gridheight = 2;
-		gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
-		this.add(getTfId(), gridBagConstraints31);
-		this.add(jLabel, gridBagConstraints1);
+    }
+    
+    /**
+     * This method initializes this
+     * @param num 
+     *
+     * @return void
+     */
+    private  void initialize(int minlen, int num) {
+        GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+        jLabel2 = new JLabel();
+        GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+        jLabel1 = new JLabel();
+        jLabel = new JLabel();
+        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+        this.setLayout(new GridBagLayout());
+        //this.setSize(864, 198);
+        this.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "SBE-Primer "+num, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+        jLabel.setText("ID");
+        gridBagConstraints1.gridx = 0;
+        gridBagConstraints1.gridy = 0;
+        gridBagConstraints1.insets = new java.awt.Insets(10,10,10,5);
+        gridBagConstraints31.gridx = 0;
+        gridBagConstraints31.gridy = 1;
+        gridBagConstraints31.weightx = 0.0D;
+        gridBagConstraints31.fill = java.awt.GridBagConstraints.NONE;
+        gridBagConstraints31.insets = new java.awt.Insets(0,10,5,10);
+        gridBagConstraints31.anchor = java.awt.GridBagConstraints.CENTER;
+        gridBagConstraints7.gridx = 5;
+        gridBagConstraints7.gridy = 0;
+        gridBagConstraints7.gridheight = 2;
+        gridBagConstraints7.weightx=1;
+        gridBagConstraints7.insets = new java.awt.Insets(5,10,5,0);
+        gridBagConstraints4.gridx = 2;
+        gridBagConstraints4.gridy = 0;
+        gridBagConstraints4.insets = new java.awt.Insets(10,0,10,0);
+        gridBagConstraints4.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints4.gridwidth = 2;
+        jLabel1.setText("5'-Sequence");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        gridBagConstraints5.gridx = 3;
+        gridBagConstraints5.gridy = 1;
+        gridBagConstraints5.weightx = 1.0;
+        gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints5.gridwidth = 2;
+        gridBagConstraints5.insets = new java.awt.Insets(0,0,5,0);
+        gridBagConstraints11.gridx = 7;
+        gridBagConstraints11.gridy = 0;
+        gridBagConstraints11.gridheight = 2;
+        gridBagConstraints11.insets = new java.awt.Insets(5,10,5,0);
+        gridBagConstraints10.gridx = 9;
+        gridBagConstraints10.gridy = 0;
+        gridBagConstraints10.insets = new java.awt.Insets(10,10,10,0);
+        gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
+        jLabel2.setText("3'-Sequence");
+        gridBagConstraints12.gridx = 9;
+        gridBagConstraints12.gridy = 1;
+        gridBagConstraints12.weightx = 2.0;
+        gridBagConstraints12.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints12.insets = new java.awt.Insets(0,10,0,0);
+        gridBagConstraints14.gridx = 10;
+        gridBagConstraints14.gridy = 0;
+        gridBagConstraints14.insets = new java.awt.Insets(10,10,10,0);
+        
+        gridBagConstraints2.gridx = 11;
+        gridBagConstraints2.gridy = 0;
+        gridBagConstraints2.insets = new java.awt.Insets(10,10,10,0);
+        
+        gridBagConstraints41.gridx = 6;
+        gridBagConstraints41.gridy = 0;
+        gridBagConstraints41.gridheight = 2;
+        gridBagConstraints41.insets = new java.awt.Insets(0,10,0,0);
+        gridBagConstraints42.gridx = 11;
+        gridBagConstraints42.gridy = 0;
+        gridBagConstraints42.gridheight = 2;
+        gridBagConstraints42.insets = new java.awt.Insets(0,10,0,0);
+        gridBagConstraints51.gridx = 12;
+        gridBagConstraints51.gridy = 0;
+        gridBagConstraints51.gridheight = 2;
+        gridBagConstraints51.insets = new java.awt.Insets(0,10,0,0);
+        gridBagConstraints6.gridx = 13;
+        gridBagConstraints6.gridy = 0;
+        gridBagConstraints6.gridheight = 2;
+        gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
+        this.add(getTfId(), gridBagConstraints31);
+        this.add(jLabel, gridBagConstraints1);
         inputcontrollerL = new SBESeqInputController(this,minlen,true);
         inputcontrollerR = new SBESeqInputController(this,minlen,false);
         inputcontrollerL.setOtherController(inputcontrollerR);
@@ -221,8 +256,8 @@ public class SBECandidatePanel extends MyPanel {
         this.add(getSeq5tf(), gridBagConstraints5);
         this.add(getFixedPrimerCB(), gridBagConstraints15);
         setUnchanged();
-	}
-	private Component getSeq5AssayDataComponent() {
+    }
+    private Component getSeq5AssayDataComponent() {
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
             return getPlpanel5();
@@ -234,7 +269,7 @@ public class SBECandidatePanel extends MyPanel {
             throw new IllegalArgumentException("Unknown assaytype "+assayType+", don't know how to create gui.");
         }
     }
-
+    
     private Component getSeq3AssayDataComponent() {
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
@@ -247,55 +282,55 @@ public class SBECandidatePanel extends MyPanel {
             throw new IllegalArgumentException("Unknown assaytype "+assayType+", don't know how to create gui.");
         }
     }
-
+    
     /**
-	 * This method initializes PBSequenceField
-	 *
-	 * @return biochemie.calcdalton.gui.PBSequenceField
-	 */
+     * This method initializes PBSequenceField
+     *
+     * @return biochemie.calcdalton.gui.PBSequenceField
+     */
     protected SBESequenceTextField getSeq5tf() {
-		if (seq5tf == null) {
-			seq5tf = new SBESequenceTextField();
-			seq5tf.setMaxLen(100);
-			seq5tf.setUpper(true);
-			seq5tf.setColumns(15);
+        if (seq5tf == null) {
+            seq5tf = new SBESequenceTextField();
+            seq5tf.setMaxLen(100);
+            seq5tf.setUpper(true);
+            seq5tf.setColumns(15);
             seq5tf.cutFront(true);
             seq5tf.getDocument().addDocumentListener(cl);
-		}
-		return seq5tf;
-	}
-	/**
-	 * This method initializes nuklSelectorPanel
-	 *
-	 * @return biochemie.gui.NuklSelectorPanel
-	 */
+        }
+        return seq5tf;
+    }
+    /**
+     * This method initializes nuklSelectorPanel
+     *
+     * @return biochemie.gui.NuklSelectorPanel
+     */
     protected NuklSelectorPanel getSNPSelectorPanel() {
-		if (nuklSelectorPanel == null) {
-			nuklSelectorPanel = new NuklSelectorPanel();
-			nuklSelectorPanel.setRekTooltip("Define SNP alleles");
-		}
-		return nuklSelectorPanel;
-	}
-	/**
-	 * This method initializes jTextField
-	 *
-	 * @return javax.swing.JTextField
-	 */
+        if (nuklSelectorPanel == null) {
+            nuklSelectorPanel = new NuklSelectorPanel();
+            nuklSelectorPanel.setRekTooltip("Define SNP alleles");
+        }
+        return nuklSelectorPanel;
+    }
+    /**
+     * This method initializes jTextField
+     *
+     * @return javax.swing.JTextField
+     */
     protected JTextField getTfId() {
-		if (tfId == null) {
-			tfId = new JTextField();
-			tfId.setPreferredSize(new java.awt.Dimension(80,20));
-			tfId.setColumns(4);
+        if (tfId == null) {
+            tfId = new JTextField();
+            tfId.setPreferredSize(new java.awt.Dimension(80,20));
+            tfId.setColumns(4);
             tfId.getDocument().addDocumentListener(new DocumentListener() {
-
+                
                 public void insertUpdate(DocumentEvent e) {
                     updateTooltip();
                 }
-
+                
                 public void removeUpdate(DocumentEvent e) {
                     updateTooltip();
                 }
-
+                
                 public void changedUpdate(DocumentEvent e) {
                     updateTooltip();
                 }
@@ -306,32 +341,33 @@ public class SBECandidatePanel extends MyPanel {
                     else
                         tfId.setToolTipText(tfId.getText());
                 }
-
+                
             });
-			tfId.setToolTipText("Input SB-Primer Identification");
-		}
-		return tfId;
-	}
+            tfId.setToolTipText("Input SB-Primer Identification");
+        }
+        return tfId;
+    }
     public String getId() {
         return getTfId().getText().trim();
     }
-	/**
-	 * This method initializes plpanel5
-	 *
-	 * @return biochemie.gui.plpanel5
-	 */
+    /**
+     * This method initializes plpanel5
+     *
+     * @return biochemie.gui.plpanel5
+     */
     protected PLSelectorPanel getPlpanel5() {
-		if (plpanel5 == null) {
-			plpanel5 = new PLSelectorPanel();
+        if (plpanel5 == null) {
+            plpanel5 = new PLSelectorPanel();
             plpanel5.setTitle("Linker 5'");
-			plpanel5.setPreferredSize(new java.awt.Dimension(90,56));
-		}
-		return plpanel5;
-	}
+            plpanel5.setPreferredSize(new java.awt.Dimension(90,56));
+        }
+        return plpanel5;
+    }
     protected StringEntryPanel getPinpointAddonPanel5() {
         if (pinpoint5 == null) {
             pinpoint5 = new StringEntryPanel("Length of dT 3'");
-            pinpoint5.setValidChars(PBSequenceField.NUMBERS);
+            pinpoint5.setValidChars("0123456789");
+            pinpoint5.setColumns(5);
             pinpoint5.setPreferredSize(new java.awt.Dimension(90,56));
         }
         return pinpoint5;
@@ -339,7 +375,8 @@ public class SBECandidatePanel extends MyPanel {
     protected StringEntryPanel getPinpointAddonPanel3() {
         if (pinpoint3 == null) {
             pinpoint3 = new StringEntryPanel("Length of dT 3'");
-            pinpoint3.setValidChars(PBSequenceField.NUMBERS);
+            pinpoint3.setValidChars("0123456789");
+            pinpoint3.setColumns(5);
             pinpoint3.setPreferredSize(new java.awt.Dimension(90,56));
         }
         return pinpoint3;
@@ -360,121 +397,215 @@ public class SBECandidatePanel extends MyPanel {
         }
         return probePanel3;
     }
-	/**
-	 * This method initializes PBSequenceField
-	 *
-	 * @return biochemie.calcdalton.gui.PBSequenceField
-	 */
+    /**
+     * This method initializes PBSequenceField
+     *
+     * @return biochemie.calcdalton.gui.PBSequenceField
+     */
     protected SBESequenceTextField getSeq3tf() {
-		if (seq3tf == null) {
-			seq3tf = new SBESequenceTextField(100,true,"ACGTacgt");
-			seq3tf.setColumns(15);
+        if (seq3tf == null) {
+            seq3tf = new SBESequenceTextField(100,true,"ACGTacgt");
+            seq3tf.setColumns(15);
             seq3tf.cutFront(false);
             seq3tf.getDocument().addDocumentListener(cl);
-		}
-		return seq3tf;
-	}
-	/**
-	 * This method initializes hairpinSelectionPanel
-	 *
-	 * @return biochemie.sbe.gui.HairpinSelectionPanel
-	 */
+        }
+        return seq3tf;
+    }
+    /**
+     * This method initializes hairpinSelectionPanel
+     *
+     * @return biochemie.sbe.gui.HairpinSelectionPanel
+     */
     protected HairpinSelectionPanel getHairpin5SelectionPanel() {
-		if (hairpin5SelectionPanel == null) {
-			hairpin5SelectionPanel = new HairpinSelectionPanel();
-			hairpin5SelectionPanel.setTitle("Def. Hairpin 5'");
-		}
-		return hairpin5SelectionPanel;
-	}
-	public void setExpertMode(boolean expert){
+        if (hairpin5SelectionPanel == null) {
+            hairpin5SelectionPanel = new HairpinSelectionPanel();
+            hairpin5SelectionPanel.setTitle("Def. Hairpin 5'");
+        }
+        return hairpin5SelectionPanel;
+    }
+    public void setExpertMode(boolean expert){
         this.isExpertMode=expert;
-		getHairpin5SelectionPanel().setVisible(expert);
-		getHairpin3SelectionPanel().setVisible(expert);
-		getPcrLenPanel().setVisible(expert);
-		getMultiplexidPanel().setVisible(expert);
-		getFiltersPanel().setVisible(expert);
-
-	}
-	/**
-	 * This method initializes hairpinSelectionPanel1
-	 *
-	 * @return biochemie.sbe.gui.HairpinSelectionPanel
-	 */
+        getHairpin5SelectionPanel().setVisible(expert);
+        getHairpin3SelectionPanel().setVisible(expert);
+        getPcrLenPanel().setVisible(expert);
+        getMultiplexidPanel().setVisible(expert);
+        getFiltersPanel().setVisible(expert);
+        
+    }
+    /**
+     * This method initializes hairpinSelectionPanel1
+     *
+     * @return biochemie.sbe.gui.HairpinSelectionPanel
+     */
     protected HairpinSelectionPanel getHairpin3SelectionPanel() {
-		if (hairpin3SelectionPanel == null) {
-			hairpin3SelectionPanel = new HairpinSelectionPanel();
-			hairpin3SelectionPanel.setTitle("Def. Hairpin 3'");
-		}
-		return hairpin3SelectionPanel;
-	}
-	/**
-	 * This method initializes stringEntryPanel
-	 *
-	 * @return biochemie.gui.StringEntryPanel
-	 */
+        if (hairpin3SelectionPanel == null) {
+            hairpin3SelectionPanel = new HairpinSelectionPanel();
+            hairpin3SelectionPanel.setTitle("Def. Hairpin 3'");
+        }
+        return hairpin3SelectionPanel;
+    }
+    /**
+     * This method initializes stringEntryPanel
+     *
+     * @return biochemie.gui.StringEntryPanel
+     */
     protected StringEntryPanel getMultiplexidPanel() {
-		if (multiplexidPanel == null) {
-			multiplexidPanel = new StringEntryPanel();
-			multiplexidPanel.setLabel("MultiplexID");
-			multiplexidPanel.setColumns(8);
-			multiplexidPanel.setResizeToStringLen(true);
-			multiplexidPanel.setRekTooltip("<html>Please insert the Multiplex ID of Primers <br>" +
-											"belonging to the same Multiplex by default. <br>" +
-											"(auto=best Multiplex IDs are selected by the program)</html>");
-		}
-		return multiplexidPanel;
-	}
-	/**
-	 * This method initializes stringEntryPanel1
-	 *
-	 * @return biochemie.gui.StringEntryPanel
-	 */
+        if (multiplexidPanel == null) {
+            multiplexidPanel = new StringEntryPanel();
+            multiplexidPanel.setLabel("MultiplexID");
+            multiplexidPanel.setColumns(8);
+            multiplexidPanel.setResizeToStringLen(true);
+            multiplexidPanel.setRekTooltip("<html>Please insert the Multiplex ID of Primers <br>" +
+                    "belonging to the same Multiplex by default. <br>" +
+            "(auto=best Multiplex IDs are selected by the program)</html>");
+        }
+        return multiplexidPanel;
+    }
+    /**
+     * This method initializes stringEntryPanel1
+     *
+     * @return biochemie.gui.StringEntryPanel
+     */
     protected StringEntryPanel getPcrLenPanel() {
-		if (pcrLenPanel == null) {
-			pcrLenPanel = new StringEntryPanel();
-			pcrLenPanel.setLabel("PCR-product length");
-			pcrLenPanel.setColumns(4);
-			pcrLenPanel.setRekTooltip("Enter the length of the pcr product.");
-			pcrLenPanel.setText("0");
-		}
-		return pcrLenPanel;
-	}
-
-    public String getCSVLine() {//TODO beide pl speichern!
+        if (pcrLenPanel == null) {
+            pcrLenPanel = new StringEntryPanel();
+            pcrLenPanel.setLabel("PCR-product length");
+            pcrLenPanel.setColumns(4);
+            pcrLenPanel.setRekTooltip("Enter the length of the pcr product.");
+            pcrLenPanel.setText("0");
+        }
+        return pcrLenPanel;
+    }
+    public String getCSVInputHeader(){
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            return CLEAVABLE_HEADER;
+        case MiniSBE.PROBE:
+            return PROBE_HEADER;
+        case MiniSBE.PINPOINT:
+            return PINPOINT_HEADER;
+        default:
+            throw new IllegalArgumentException("unknown assaytype '"+assayType+"', don't know how to save it!");
+        }
+    }
+    public String getCSVInputLine() {
         String id=getTfId().getText();
-        String l=inputcontrollerL.getSequenceWOL();
-        String r=inputcontrollerR.getSequenceWOL();
+        String seq5=getSeq5tf().getText();
+        String seq3=getSeq3tf().getText();
         String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
         String multiplexid = getMultiplexidPanel().getText();
         String filters = getFiltersPanel().getText();
         String productlen=getPcrLenPanel().getText();
         String snp=getSNPSelectorPanel().getSelectedNukleotides();
-        int festerpl=getPlpanel5().getSelectedPL();
-        if(festerpl==-1)
-            festerpl=getPlpanel3().getSelectedPL();
+        boolean isFixed=getFixedPrimerCB().isSelected();
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            return getCleavableCSVLine(id,seq5,seq3,snp,bautein5,bautein3,multiplexid,filters,productlen,isFixed);
+        case MiniSBE.PROBE:
+            return getProbeCSVLine(id,seq5,seq3,snp,bautein5,bautein3,multiplexid,filters,productlen,isFixed);
+        case MiniSBE.PINPOINT:
+            return getPinpointCSVLine(id,seq5,seq3,snp,bautein5,bautein3,multiplexid,filters,productlen,isFixed);
+        default:
+            throw new IllegalArgumentException("unknown assaytype '"+assayType+"', don't know how to save it!");
+        }
+        
+    }
+    public String getProbeCSVLine(String id,String seq5, String seq3, String snp, String bautein5, String bautein3, String multiplexid, String filters, String productlen, boolean isFixed) {
+        int assay5=getProbePanel5().getSelectedType();
+        int assay3=getProbePanel3().getSelectedType();
         StringBuffer sb=new StringBuffer();
         sb.append(id);
         sb.append(';');
-        sb.append(l);
+        sb.append(seq5);
+        sb.append(';');
+        sb.append(assay5);
         sb.append(';');
         sb.append(bautein5);
         sb.append(';');
         sb.append(snp);
         sb.append(';');
-        sb.append(r);
+        sb.append(seq3);
+        sb.append(';');
+        sb.append(assay3);
         sb.append(';');
         sb.append(bautein3);
         sb.append(';');
         sb.append(productlen);
         sb.append(';');
-        sb.append(Integer.toString(festerpl));
+        sb.append(multiplexid);
+        sb.append(';');
+        sb.append(filters);
+        sb.append(';');
+        sb.append(isFixed);
+        
+        return sb.toString();
+    }
+    public String getPinpointCSVLine(String id,String seq5, String seq3, String snp, String bautein5, String bautein3, String multiplexid, String filters, String productlen, boolean isFixed) {
+        int assay5=-1;
+        int assay3=-1;
+        try{
+            assay5=Integer.parseInt(getPinpointAddonPanel5().getText());
+        }catch(NumberFormatException e){}
+        try{
+            assay3=Integer.parseInt(getPinpointAddonPanel3().getText());
+        }catch(NumberFormatException e){}
+        StringBuffer sb=new StringBuffer();
+        sb.append(id);
+        sb.append(';');
+        sb.append(seq5);
+        sb.append(';');
+        sb.append(assay5);
+        sb.append(';');
+        sb.append(bautein5);
+        sb.append(';');
+        sb.append(snp);
+        sb.append(';');
+        sb.append(seq3);
+        sb.append(';');
+        sb.append(assay3);
+        sb.append(';');
+        sb.append(bautein3);
+        sb.append(';');
+        sb.append(productlen);
         sb.append(';');
         sb.append(multiplexid);
         sb.append(';');
         sb.append(filters);
         sb.append(';');
-        sb.append(getFixedPrimerCB().isSelected());
+        sb.append(isFixed);
+        
+        return sb.toString();
+    }
+    public String getCleavableCSVLine(String id,String seq5, String seq3, String snp, String bautein5, String bautein3, String multiplexid, String filters, String productlen, boolean isFixed) {//TODO beide pl speichern!
+        seq5=inputcontrollerL.getSequenceWOL();
+        seq3=inputcontrollerR.getSequenceWOL();
+        int festerpl5=getPlpanel5().getSelectedPL();
+        int festerpl3=getPlpanel3().getSelectedPL();
+        StringBuffer sb=new StringBuffer();
+        sb.append(id);
+        sb.append(';');
+        sb.append(seq5);
+        sb.append(';');
+        sb.append(Integer.toString(festerpl5));
+        sb.append(';');
+        sb.append(bautein5);
+        sb.append(';');
+        sb.append(snp);
+        sb.append(';');
+        sb.append(seq3);
+        sb.append(';');
+        sb.append(Integer.toString(festerpl3));
+        sb.append(';');
+        sb.append(bautein3);
+        sb.append(';');
+        sb.append(productlen);
+        sb.append(';');
+        sb.append(multiplexid);
+        sb.append(';');
+        sb.append(filters);
+        sb.append(';');
+        sb.append(isFixed);
         return new String(sb);
     }
     private CleavablePrimerFactory getCleavablePrimerFactory(SBEOptions cfg, boolean rememberoutput, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven){
@@ -487,7 +618,7 @@ public class SBECandidatePanel extends MyPanel {
         int pl3=getPlpanel3().getSelectedPL();
         if(seq5.length() == 0 && seq3.length()==0) //keine primer da
             return null;
-
+        
         CleavablePrimerFactory s=new CleavablePrimerFactory(cfg,id,seq5,pl5,seq3,pl3,snp,pcrlen,bautein5,bautein3,multiplexid,unwanted,userGiven,rememberoutput);
         return s;
     }
@@ -502,9 +633,9 @@ public class SBECandidatePanel extends MyPanel {
             tCount3=Integer.parseInt(getPinpointAddonPanel3().getText());
         }catch (NumberFormatException e) {
         }
-        return new PinpointPrimerFactory(cfg,id,seq5,snp,seq3,bautein5,bautein5,tCount5,tCount3,pcrlen,multiplexid,unwanted,userGiven,b);
+        return new PinpointPrimerFactory(cfg,id,seq5,snp,seq3,bautein5,bautein3,tCount5,tCount3,pcrlen,multiplexid,unwanted,userGiven,b);
     }
-
+    
     private PrimerFactory getProbePrimerFactory(SBEOptions cfg, boolean b, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven) {
         int probeType5=getProbePanel5().getSelectedType();
         int probeType3=getProbePanel3().getSelectedType();
@@ -515,10 +646,20 @@ public class SBECandidatePanel extends MyPanel {
      * @param optionsFromGui
      */
     public void refreshData(SBEOptions cfg) {
-        getPlpanel5().setPLPositions(cfg.getPhotolinkerPositions());
-        getPlpanel3().setPLPositions(cfg.getPhotolinkerPositions());
+        switch (assayType) {
+            case MiniSBE.CLEAVABLE:
+                getPlpanel5().setPLPositions(cfg.getPhotolinkerPositions());
+                getPlpanel3().setPLPositions(cfg.getPhotolinkerPositions());
+            break;
+            case MiniSBE.PINPOINT:
+                break;
+            case MiniSBE.PROBE:
+                break;
+        default:
+            break;
+        }
     }
-
+    
     /**
      * TODO auch Ausgabedateien lesen!!!
      * @param id
@@ -528,27 +669,29 @@ public class SBECandidatePanel extends MyPanel {
         StringTokenizer stok = new StringTokenizer(line,";\"");
         String id = stok.nextToken().trim();
         String l = stok.nextToken().trim();
+        int assay5=-1;
+        try{
+            assay5=Integer.parseInt(stok.nextToken().trim());
+        }catch(NumberFormatException e){}
         String bautein5 = stok.nextToken();
         String snp = stok.nextToken();
         String r = stok.nextToken();
+        int assay3=-1;
+        try{
+            assay3=Integer.parseInt(stok.nextToken().trim());
+        }catch(NumberFormatException e){}
         String bautein3 = stok.nextToken();
         int productlen=0;
         String temp=stok.nextToken();
         try{
-    		productlen=Integer.parseInt(temp);
+            productlen=Integer.parseInt(temp);
         }catch (NumberFormatException e) {
-    		productlen=temp.length() ;//PCR-Produktlaenge
-    	}
-        int pl;
-        try {
-            pl = Integer.parseInt(stok.nextToken());
-        } catch (NumberFormatException e) {
-            pl = -1;
+            productlen=temp.length() ;//PCR-Produktlaenge
         }
         String multiplexid = stok.hasMoreTokens()?stok.nextToken():"";
         String filters = stok.hasMoreTokens()?stok.nextToken():"";
         String fixed = stok.hasMoreTokens()?stok.nextToken():"";
-
+        
         getTfId().setText(id);
         getSeq5tf().setText(l);
         getHairpin5SelectionPanel().setSelectedNukleotides(bautein5);
@@ -556,10 +699,22 @@ public class SBECandidatePanel extends MyPanel {
         getSeq3tf().setText(r);
         getHairpin3SelectionPanel().setSelectedNukleotides(bautein3);
         getPcrLenPanel().setText(Integer.toString(productlen));
-        if(l.length()>0)
-            getPlpanel5().setSelectedPL(pl);
-        else
-            getPlpanel3().setSelectedPL(pl);
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            getPlpanel5().setSelectedPL(assay5);
+            getPlpanel3().setSelectedPL(assay3);
+            break;
+        case MiniSBE.PROBE:
+            getProbePanel5().setSelectedType(assay5);
+            getProbePanel3().setSelectedType(assay3);
+            break;
+        case MiniSBE.PINPOINT:
+            getPinpointAddonPanel5().setText(Integer.toString(assay5));
+            getPinpointAddonPanel3().setText(Integer.toString(assay3));
+            break;
+        default:
+            break;
+        }
         getMultiplexidPanel().setText(multiplexid);
         getFiltersPanel().setText(filters);
         getFixedPrimerCB().setSelected(Boolean.valueOf(fixed).booleanValue());
@@ -571,27 +726,49 @@ public class SBECandidatePanel extends MyPanel {
         String id=st.nextToken();
         st.nextToken();//seq. bio....
         String snp=st.nextToken();
-        int pl=-1;
+        int assay=-1;
         try {
-            pl=Integer.parseInt(st.nextToken());
+            assay=Integer.parseInt(st.nextToken());
         }catch (NumberFormatException e) {
         }
-        for(int i=0;i<9;i++)
+        for(int i=0;i<5;i++)
             st.nextToken();
-        boolean is5Seq=st.nextToken().trim().equals(SBEPrimer._5_);
-        st.nextToken();
-        st.nextToken();
-        String prodlen=st.nextToken();
+        boolean is5Seq=st.nextToken().trim().equals(CleavablePrimer._5_);
         String seq=st.nextToken();
+        String prodlen=st.nextToken();
         
         getTfId().setText(id);
         if(is5Seq) {
             getSeq5tf().setText(seq);
-            getPlpanel5().setSelectedPL(pl);
+            switch (assayType) {
+            case MiniSBE.CLEAVABLE:
+                getPlpanel5().setSelectedPL(assay);
+                break;
+            case MiniSBE.PINPOINT:
+                getPinpointAddonPanel5().setText(Integer.toString(assay));
+                break;
+            case MiniSBE.PROBE:
+                getProbePanel5().setSelectedType(assay);
+                break;
+            default:
+                break;
+            }
         }else {
             getSeq3tf().setText(Helper.revcomplPrimer(seq));
-            snp=Helper.complPrimer(snp);//TODO ???
-            getPlpanel3().setSelectedPL(pl);
+            snp=Helper.complPrimer(snp);
+            switch (assayType) {
+            case MiniSBE.CLEAVABLE:
+                getPlpanel3().setSelectedPL(assay);
+                break;
+            case MiniSBE.PINPOINT:
+                getPinpointAddonPanel3().setText(Integer.toString(assay));
+                break;
+            case MiniSBE.PROBE:
+                getProbePanel3().setSelectedType(assay);
+                break;
+            default:
+                break;
+            }
         }
         getSNPSelectorPanel().setSelectedNukleotides(snp);
         getPcrLenPanel().setText(prodlen);
@@ -599,30 +776,30 @@ public class SBECandidatePanel extends MyPanel {
         getFiltersPanel().setText("");
         getFixedPrimerCB().setSelected(true);
     }
-	/**
-	 * This method initializes stringEntryPanel
-	 *
-	 * @return biochemie.gui.StringEntryPanel
-	 */
-	protected StringEntryPanel getFiltersPanel() {
-		if (filtersPanel == null) {
-			filtersPanel = new StringEntryPanel();
+    /**
+     * This method initializes stringEntryPanel
+     *
+     * @return biochemie.gui.StringEntryPanel
+     */
+    protected StringEntryPanel getFiltersPanel() {
+        if (filtersPanel == null) {
+            filtersPanel = new StringEntryPanel();
             filtersPanel.setLabel("Excluded primers");
             filtersPanel.setColumns(20);
             filtersPanel.setMaxLen(Integer.MAX_VALUE);
             filtersPanel.setResizeToStringLen(false);
             filtersPanel.setRekTooltip("Unpleasant primers. Not considered.");
-		}
-		return filtersPanel;
-	}
-
+        }
+        return filtersPanel;
+    }
+    
     /**
      * @return
      */
     public String getFilters() {
         return getFiltersPanel().getText();
     }
-
+    
     /**
      * @param oldfilters
      */
@@ -630,21 +807,21 @@ public class SBECandidatePanel extends MyPanel {
         dirty();
         getFiltersPanel().setText(f);
     }
-	/**
-	 * This method initializes fixedPrimerCB
-	 *
-	 * @return javax.swing.JCheckBox
-	 */
+    /**
+     * This method initializes fixedPrimerCB
+     *
+     * @return javax.swing.JCheckBox
+     */
     protected JCheckBox getFixedPrimerCB() {
-		if (fixedPrimerCB == null) {
-			fixedPrimerCB = new JCheckBox();
-			fixedPrimerCB.setText("Fix");
-			fixedPrimerCB.setToolTipText("If checked, length of 5' sequence will not be adjusted to the specified temperature and it will be used as is for multiplexing");
+        if (fixedPrimerCB == null) {
+            fixedPrimerCB = new JCheckBox();
+            fixedPrimerCB.setText("Fix");
+            fixedPrimerCB.setToolTipText("If checked, length of 5' sequence will not be adjusted to the specified temperature and it will be used as is for multiplexing");
             fixedPrimerCB.addChangeListener((ChangeListener) cl);
-		}
-		return fixedPrimerCB;
-	}
-
+        }
+        return fixedPrimerCB;
+    }
+    
     /* (non-Javadoc)
      * @see biochemie.gui.MyPanel#setUnchanged()
      */
@@ -656,7 +833,7 @@ public class SBECandidatePanel extends MyPanel {
         getSNPSelectorPanel().setUnchanged();
         getPcrLenPanel().setUnchanged();
     }
-
+    
     /* (non-Javadoc)
      * @see biochemie.gui.MyPanel#hasChanged()
      */
@@ -669,19 +846,19 @@ public class SBECandidatePanel extends MyPanel {
         getPcrLenPanel().hasChanged();
     }
     
-	/**
-	 * This method initializes PLSelectorPanel	
-	 * 	
-	 * @return biochemie.gui.PLSelectorPanel	
-	 */    
-	protected PLSelectorPanel getPlpanel3() {
-		if (plpanel3 == null) {
-			plpanel3 = new PLSelectorPanel();
-			plpanel3.setTitle("Linker 3'");
-		}
-		return plpanel3;
-	}
-
+    /**
+     * This method initializes PLSelectorPanel	
+     * 	
+     * @return biochemie.gui.PLSelectorPanel	
+     */    
+    protected PLSelectorPanel getPlpanel3() {
+        if (plpanel3 == null) {
+            plpanel3 = new PLSelectorPanel();
+            plpanel3.setTitle("Linker 3'");
+        }
+        return plpanel3;
+    }
+    
     public PrimerFactory createPrimerFactory(SBEOptions cfg, boolean b) {
         String seq5=getSeq5tf().getText();
         String seq3=getSeq3tf().getText();
@@ -707,11 +884,24 @@ public class SBECandidatePanel extends MyPanel {
             return getProbePrimerFactory(cfg,b,id,seq5,seq3,snp,bautein5,bautein3,pcrlen,multiplexid,unwanted,userGiven);
         case MiniSBE.PINPOINT:
             return getPinpointPrimerFactory(cfg,b,id,seq5,seq3,snp,bautein5,bautein3,pcrlen,multiplexid,unwanted,userGiven);
-
+            
         default:
             break;
         }
         return null;
     }
+    public static int getAssayTypeFromHeader(String header){
+        if(header.equals(CLEAVABLE_HEADER) || header.equals(CleavablePrimerFactory.CSVHEADER))
+            return MiniSBE.CLEAVABLE;
+        if(header.equals(PINPOINT_HEADER) || header.equals(PinpointPrimerFactory.CSVHEADER))
+            return MiniSBE.PINPOINT;
+        if(header.equals(PROBE_HEADER) || header.equals(ProbePrimerFactory.CSVHEADER))
+            return MiniSBE.PROBE;
+        return MiniSBE.UNKNOWN;   
+    }
 
-      }  //  @jve:decl-index=0:visual-constraint="65,28"
+    public static boolean isInputFile(String header) {
+        return header.equals(CLEAVABLE_HEADER) || header.equals(PINPOINT_HEADER) ||header.equals(PROBE_HEADER);
+    }
+    
+}  //  @jve:decl-index=0:visual-constraint="65,28"

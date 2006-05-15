@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 
@@ -27,10 +27,10 @@ public class TestUnwantedPrimers extends TestCase {
         cfg.setPhotolinkerPositions(new int[] {9,8,10,11,12,13,14,15});
         sbec = new LinkedList();
         //pl == 9
-        SBEPrimer p = new SBEPrimer(cfg,"20","AAAAAAAAAAALAAAAAAAA","AC",SBEPrimer._5_,"",0,true);
+        CleavablePrimer p = new CleavablePrimer(cfg,"20","AAAAAAAAAAALAAAAAAAA","AC",CleavablePrimer._5_,"",0,true);
         sbec.add(p);
         //pl == 10
-        p = new SBEPrimer(cfg,"22","TTTTTTTTTTTTTTLTTTTTTTTT","AC",SBEPrimer._3_,"",0,true);
+        p = new CleavablePrimer(cfg,"22","TTTTTTTTTTTTTTLTTTTTTTTT","AC",CleavablePrimer._3_,"",0,true);
         sbec.add(p);
     }
 

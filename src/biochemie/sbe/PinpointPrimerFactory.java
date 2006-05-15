@@ -1,7 +1,10 @@
 package biochemie.sbe;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +15,24 @@ import biochemie.domspec.Primer;
 import biochemie.util.Helper;
 
 public class PinpointPrimerFactory extends PrimerFactory {
-
+    static public final String CSVHEADER = 
+                    "PINPOINT Multiplex ID;"
+                    +"SBE-Primer ID;"
+                    +"Sequence incl. 5’tag;"
+                    +"SNP allele;"
+                    +"Number of dT;"
+                    +"Primerlength incl 5’ tag;"
+                    +"GC contents excl 5’tag;"
+                    +"Tm excl. 5’ tag;"
+                    +"Excluded 5\' Primers;"
+                    +"Excluded 3\' Primers;"
+                    +"Primer from 3' or 5';"
+                    +"PCR-Product-length;"
+                    +"Actual sequence excl. 5’ tag;"
+                    +"Sec.struc.: position (3\');"
+                    +"Sec.struc.: incorporated nucleotide;"
+                    +"Sec.struc.: class";
+    
     private final double maxMass;
     private final int tCount5;
     private final int tCount3;
@@ -29,15 +49,15 @@ public class PinpointPrimerFactory extends PrimerFactory {
 
 
     protected List findBestPrimers(List primers) {
-        // TODO Auto-generated method stub
+        List result=new LinkedList();
+        if(primers.size()==0)
+            return result;
+        Collections.sort(primers,new PrimerFactory.TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
+        result.add(primers.get(0));
         return primers;
     }
 
 
-    public String getCSVRow() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 
 
@@ -72,10 +92,53 @@ public class PinpointPrimerFactory extends PrimerFactory {
         return result;
     }
 
+    public String getCSVRow() {
+        if(chosen == null && primercandidates.size()==0)
+            return ";"+getId()+";;;;;;;" +invalidreason5
+                    + ";" + invalidreason3
+                    + ";;;;;;;;;;";
 
-    public String[] getCsvheader() {
-        // TODO Auto-generated method stub
-        return null;
+        assertPrimerChosen();
+        StringBuffer sb=new StringBuffer();
+        DecimalFormat df= new DecimalFormat("0.00");
+        sb.append(chosen.getPlexID());
+        sb.append(';');
+        sb.append(getId());
+        sb.append(';');
+        sb.append(chosen.getCompletePrimerSeq());
+        sb.append(';');
+        sb.append(chosen.getSNP());
+        sb.append(';');
+        sb.append(((PinpointPrimer)chosen).getTTail().length());
+        sb.append(';');
+        sb.append(getFavSeq().length());
+        sb.append(';');
+        sb.append(df.format(chosen.getGCGehalt()));
+        sb.append(';');
+        sb.append(df.format(chosen.getTemperature()));
+        sb.append(';');
+        sb.append(invalidreason5);
+        sb.append(';');
+        sb.append(invalidreason3);
+        sb.append(';');
+        sb.append(getType());
+        sb.append(';');
+        sb.append(getProductLength());
+        sb.append(';');
+        sb.append(chosen.getPrimerSeq());
+        sb.append(';');
+        sb.append(chosen.getCSVSekStructuresSeparatedBy(";"));
+        return sb.toString();
+    }
+
+    public String getCsvheader() {
+        return CSVHEADER;
+    }
+
+
+    public String getFilter() {
+        assertPrimerChosen();
+        return chosen.getType()+"_*_"+((PinpointPrimer)chosen).getTTail().length();
     }
 
 

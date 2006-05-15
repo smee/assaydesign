@@ -20,8 +20,8 @@ import biochemie.util.config.GeneralConfig;
  *
  */
 public class SBEConfig extends GeneralConfig implements SBEOptions{
-    CalcDaltonOptions cdopt;
-    SecStrucOptions secopt;
+    private CalcDaltonOptions cdopt;
+    private SecStrucOptions secopt;
     /**
 	 * Returns defaultvalues
 	 */
@@ -53,8 +53,6 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ,{"sbe.pinpoint.maxmass","1000000"}
             ,{"misc.drawgraph","false"}};
     }
-
-
 
     //MiniSBE parameter:
     //--------------------------------------------------------------
@@ -254,10 +252,38 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
     }
 
     public double getMaxMass() {
-        return getDouble("sbe.pinpoint.maxmass",1000000d);
+        return getDouble("sbe.pinpoint.maxmass",10000d);
     }
 
     public void setMaxMass(double m) {
         setProperty("sbe.pinpoint.maxmass",Double.toString(m));
+    }
+
+    public void makeDefault() {
+        super.makeDefault();
+        if(cdopt instanceof GeneralConfig)
+            ((GeneralConfig)cdopt).makeDefault();
+        else
+            throw new RuntimeException("Can't save default values for calcdalton options!");
+        if(secopt instanceof GeneralConfig)
+            ((GeneralConfig)secopt).makeDefault();
+        else
+            throw new RuntimeException("Can't save default values for secstruc options!");
+    }
+    public void loadDefault(){
+        super.loadDefault();
+        if(cdopt==null)
+            cdopt=new CDOptionsImpl();
+        if(secopt==null)
+            secopt=new SecStrucConfig();
+        if(cdopt instanceof GeneralConfig)
+            ((GeneralConfig)cdopt).loadDefault();
+        else
+            throw new RuntimeException("Can't load default values for calcdalton options!");
+        if(secopt instanceof GeneralConfig)
+            ((GeneralConfig)secopt).loadDefault();
+        else
+            throw new RuntimeException("Can't load default values for secstruc options!");
+        
     }
  }

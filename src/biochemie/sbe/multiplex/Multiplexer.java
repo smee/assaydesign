@@ -14,11 +14,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org._3pq.jgrapht.Edge;
 import org._3pq.jgrapht.UndirectedGraph;
 
-import biochemie.domspec.SBEPrimer;
-import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.Primer;
+import biochemie.domspec.SekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.sbe.MiniSBE;
@@ -95,7 +94,7 @@ public abstract class Multiplexer {
 				
 				Set kompchars=new HashSet();
 				for (Iterator it = sekstruks.iterator(); it.hasNext();) {
-					SBESekStruktur cd = (SBESekStruktur) it.next();
+					SekStruktur cd = (SekStruktur) it.next();
 					if(!cd.isIncompatible())
 						kompchars.add(new Character(cd.bautEin()));
 				}
@@ -120,7 +119,7 @@ public abstract class Multiplexer {
         queue.add(m);
         while(!queue.isEmpty()) {
             Multiplexable mult = (Multiplexable) queue.removeFirst();
-            if(mult instanceof SBEPrimer)
+            if(mult instanceof Primer)
                 result.add(mult);
             else
                 queue.addAll(mult.getIncludedElements());
@@ -131,9 +130,9 @@ public abstract class Multiplexer {
         List crossdimers=new ArrayList();
         
         for(int i=0; i < p1.size(); i++) {
-            SBEPrimer p=(SBEPrimer)p1.get(i);
+            Primer p=(Primer)p1.get(i);
             for(int j=0; j < p2.size(); j++) {
-                SBEPrimer q=(SBEPrimer)p2.get(j);
+                Primer q=(Primer)p2.get(j);
                 crossdimers.addAll(SekStrukturFactory.getCrossdimer(p,q,cda));
                 crossdimers.addAll(SekStrukturFactory.getCrossdimer(q,p,cda));
             }
@@ -142,9 +141,9 @@ public abstract class Multiplexer {
     }
     private static boolean passtMitKompatiblenCD(List p1, List p2) {
         for(int i=0; i < p1.size(); i++) {
-            SBEPrimer p=(SBEPrimer)p1.get(i);
+            Primer p=(Primer)p1.get(i);
             for(int j=0; j < p2.size(); j++) {
-                SBEPrimer q=(SBEPrimer)p2.get(j);
+                Primer q=(Primer)p2.get(j);
                 if(!p.passtMitKompCD(q))
                     return false;
             }
@@ -199,7 +198,7 @@ public abstract class Multiplexer {
             edgecol.clear();
             List othermultis=getAllPrimers(other);
             for (Iterator it = othermultis.iterator(); it.hasNext();) {
-                SBEPrimer primer = (SBEPrimer) it.next();
+                Primer primer = (Primer) it.next();
                 if(!passenWirMit(primer)) {
                     edgecol.clear();
                     edgecol.add(new IncompCDEinbauEdge(this,other));
@@ -213,18 +212,18 @@ public abstract class Multiplexer {
          * @param other
          * @return
          */
-        private boolean passenWirMit(SBEPrimer other) {
+        private boolean passenWirMit(Primer other) {
             if(passenEinbautenMit(other)==false)
                 return false;
             for (Iterator it = p1.iterator(); it.hasNext();) {
-                SBEPrimer p = (SBEPrimer) it.next();
+                Primer p = (Primer) it.next();
                 if(!p.passtMit(other)){
                     edgecol.addAll(p.getLastEdges());
                     return false;
                 }
             }
             for (Iterator it = p2.iterator(); it.hasNext();) {
-                SBEPrimer p = (SBEPrimer) it.next();
+                Primer p = (Primer) it.next();
                 if(!p.passtMit(other)){
                     edgecol.addAll(p.getLastEdges());
                     return false;
@@ -236,7 +235,7 @@ public abstract class Multiplexer {
          * @param other
          * @return
          */
-        private boolean passenEinbautenMit(SBEPrimer p) {
+        private boolean passenEinbautenMit(Primer p) {
             String snp=p.getSNP();
             for (int i = 0; i < einbau.length(); i++) {
                 if(snp.indexOf(einbau.charAt(i))!=-1){//inkompatibel mit diesem Primer

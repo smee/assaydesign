@@ -10,7 +10,6 @@ import java.util.StringTokenizer;
 
 import javax.swing.table.AbstractTableModel;
 
-import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.PrimerFactory;
 import biochemie.util.Helper;
 
@@ -31,11 +30,11 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
             header=new String[0];
             return;
         }
-        String[] origheader = ((PrimerFactory)sb.get(0)).getCsvheader();
+        String[] origheader = ((PrimerFactory)sb.get(0)).getCsvheader().split(";");
         header  = new String[origheader.length + 2];
         System.arraycopy(origheader,0,header,0,origheader.length);
         header[header.length-2] = "Exclude primer";
-        header[header.length-1] = "Exclude pl";
+        header[header.length-1] = "Exclude complete";
         data = new Object[sbec.size()][];
         int i=0;
         for (Iterator it = sbec.iterator(); it.hasNext();i++) {
@@ -99,11 +98,11 @@ public class MiniSBEResultTableModel extends AbstractTableModel {
         }
         return "";
     }
-    public String getPLFilterFor(String id) {
+    public String getPrimerFilterFor(String id) {
         for (Iterator it = sbec.iterator(); it.hasNext();) {
-            CleavablePrimerFactory p = (CleavablePrimerFactory) it.next();
+            PrimerFactory p = (PrimerFactory) it.next();
             if(p.getId().equals(id)) {
-                return p.getType()+"_*_"+p.getBruchstelle();
+                return p.getFilter();
             }
         }
         return "";

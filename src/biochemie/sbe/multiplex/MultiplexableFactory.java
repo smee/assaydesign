@@ -21,5 +21,5 @@ public interface MultiplexableFactory {
     /**
      * @return Returns the csvheader.
      */
-    public String[] getCsvheader() ;
+    public String getCsvheader() ;
 }

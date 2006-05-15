@@ -42,7 +42,7 @@ import biochemie.calcdalton.CalcDaltonOptions;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class Helper {
+public class  Helper{
     private static final DecimalFormat df=new DecimalFormat("#.##",new DecimalFormatSymbols(Locale.US));
     /**
      * Formats a double as #.##
@@ -736,6 +736,8 @@ public class Helper {
             oldindex=index+1;
         }
         sb.append(string.substring(oldindex));
+        if(sb.charAt(sb.length()-1)==';')
+            sb.append(' ');
         return sb.toString();
     }
 
@@ -908,5 +910,26 @@ public class Helper {
         else
             return NoOfBases > 100 ? 12.300000000000001D : 0.0D;
     }
-
+    public static int indexOfContains(String[] array, String objectToFind, int startIdx){
+            if (array == null) {
+                return -1;
+            }
+            if(startIdx<0)
+                startIdx=0;
+            
+            if (objectToFind == null) {
+                for (int i = startIdx; i < array.length; i++) {
+                    if (array[i] == null) {
+                        return i;
+                    }
+                }
+            } else {
+                for (int i = startIdx; i < array.length; i++) {
+                    if (array[i].indexOf(objectToFind)>-1) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+    }
 }

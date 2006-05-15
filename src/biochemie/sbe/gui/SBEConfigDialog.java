@@ -5,7 +5,6 @@
 package biochemie.sbe.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -16,8 +15,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -45,6 +45,7 @@ import biochemie.calcdalton.gui.CDMassesConfigPanel;
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.gui.CalcTimePanel;
 import biochemie.gui.IntegerValueIntervallPanel;
+import biochemie.sbe.MiniSBE;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.io.SBEConfig;
@@ -56,8 +57,7 @@ import biochemie.util.MyAction;
  *
  */
 public class SBEConfigDialog extends JDialog {
-
-	private javax.swing.JPanel jContentPane = null;
+    private javax.swing.JPanel jContentPane = null;
 
 	private JTabbedPane jTabbedPane = null;
 	private JPanel jPanel = null;
@@ -91,21 +91,37 @@ public class SBEConfigDialog extends JDialog {
     private Action loadaction;
 
     private CDMassesConfigPanel cdmasspanel;
+
+    private int assayType;
+
+    private JButton makeDefaultButton = null;
+
+    private final Observable observable=new Observable();
     /**
 	 * @param gui
 	 */
-	public SBEConfigDialog(JFrame parent) {
+	public SBEConfigDialog(JFrame parent,int assayType) {
 		super(parent,true);
+        this.assayType=assayType;
 		initialize();
 
 	}
+
+    public Observable getObservable(){
+        return observable;
+    }
+    public void setAssayType(int at){
+        this.assayType=at;
+        getCdPanel().setShowCL(assayType==MiniSBE.CLEAVABLE);
+        getSbePanel().getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT);
+    }
 	/**
 	 * This method initializes this
 	 *
 	 * @return void
 	 */
 	private void initialize() {
-        SBEOptions c = new SBEConfig();
+        SBEConfig c = new SBEConfig();
         setPropertiesFrom(c);
 
 		this.setTitle("Preferences");
@@ -181,6 +197,7 @@ public class SBEConfigDialog extends JDialog {
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					SBEConfigDialog.this.setVisible(false);
+                    getObservable().notifyObservers();
 				}
 			});            
 		}
@@ -200,6 +217,12 @@ public class SBEConfigDialog extends JDialog {
         sec.setHairpinWindowsizes(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getFrom()),' '));
         sec.setHomodimerMinbinds(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getTo()),' '));
         sec.setHomodimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getFrom()),' '));
+        double mass=Double.MAX_VALUE;
+        try{
+            mass=Double.parseDouble(getSbePanel().getMaxMassPanel().getText());
+        }catch (NumberFormatException e) {
+        }
+        sbeconfig.setMaxMass(mass);
 	    sbeconfig.setMaxGC(((Number)getSbePanel().getMaxgcSpinner().getValue()).intValue());
 	    sbeconfig.setMinGC(((Number)getSbePanel().getMingcSpinner().getValue()).intValue());
 	    sbeconfig.setMaxPlex(((Number)getSbePanel().getMaxplexSpinner().getValue()).intValue());
@@ -221,7 +244,7 @@ public class SBEConfigDialog extends JDialog {
 	 */
 	private CDConfigPanel getCdPanel() {
 		if (cdPanel == null) {
-			cdPanel = new CDConfigPanel();
+			cdPanel = new CDConfigPanel(assayType==MiniSBE.CLEAVABLE);
 		}
 		return cdPanel;
 	}
@@ -233,6 +256,7 @@ public class SBEConfigDialog extends JDialog {
 	private MiniSBEConfigPanel getSbePanel() {
 		if (sbePanel == null) {
 			sbePanel = new MiniSBEConfigPanel();
+            sbePanel.getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT);
 		}
 		return sbePanel;
 	}
@@ -268,6 +292,11 @@ public class SBEConfigDialog extends JDialog {
 	 */
 	private JPanel getSavePanel() {
 		if (savePanel == null) {
+			GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			gridBagConstraints.gridx = 0;
+			gridBagConstraints.insets = new java.awt.Insets(20,20,20,0);
+			gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
+			gridBagConstraints.gridy = 3;
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
@@ -285,6 +314,7 @@ public class SBEConfigDialog extends JDialog {
 			savePanel.add(getLoadButton(), gridBagConstraints8);
 			savePanel.add(getSaveButton(), gridBagConstraints9);
 			savePanel.add(getResetButton(), gridBagConstraints10);
+			savePanel.add(getMakeDefaultButton(), gridBagConstraints);
 		}
 		return savePanel;
 	}
@@ -537,6 +567,8 @@ public class SBEConfigDialog extends JDialog {
         mp.getPolyxSpinner().setValue(new Integer(c.getPolyX()));
         mp.getMaxplexSpinner().setValue(new Integer(c.getMaxPlex()));
         mp.getPcrpdiffSpinner().setValue(new Integer(c.getMinProductLenDiff()));
+        mp.getMaxMassPanel().setText(Double.toString(c.getMaxMass()));
+        mp.getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT);
         //setze expertenoptionen
         IntegerValueIntervallPanel ip=getHairpinValuePanel();
         SecStrucOptions sec=c.getSecStrucOptions();
@@ -642,7 +674,18 @@ public class SBEConfigDialog extends JDialog {
 
         }
     }
+    protected class SetDefaultAction extends MyAction{
 
+        public SetDefaultAction() {
+            super("Set default","Sets current settings as default",null,null);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            SBEConfig cfg=(SBEConfig) getSBEOptionsFromGui();
+            cfg.makeDefault();
+        }
+        
+    }
 	/**
 	 * This method initializes drawGraphesCheckbox
 	 *
@@ -682,5 +725,17 @@ public class SBEConfigDialog extends JDialog {
         if(loadaction == null)
             loadaction = new LoadAction();
         return loadaction;
+    }
+    /**
+     * This method initializes makeDefaultButton	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getMakeDefaultButton() {
+        if (makeDefaultButton == null) {
+            makeDefaultButton = new JButton();
+            makeDefaultButton.setAction(new SetDefaultAction());
+        }
+        return makeDefaultButton;
     }
   }  //  @jve:decl-index=0:visual-constraint="10,10"

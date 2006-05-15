@@ -2,8 +2,7 @@ package biochemie.util.edges;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import biochemie.domspec.SBEPrimer;
-import biochemie.domspec.SBESekStruktur;
+import biochemie.domspec.Primer;
 import biochemie.domspec.SekStruktur;
 
 public class SecStructureEdge extends MyUndirectedEdge {
@@ -18,8 +17,8 @@ public class SecStructureEdge extends MyUndirectedEdge {
         return s;
     }
     public String toString() {
-        if(s instanceof SBESekStruktur)            
-            return (((SBESekStruktur)s).isIncompatible()?"incomp. ":"")+"Sekstructure: "+s.toString();
+        if(s instanceof SekStruktur)            
+            return (((SekStruktur)s).isIncompatible()?"incomp. ":"")+"Sekstructure: "+s.toString();
         else 
             return "Sekstructure: "+s.toString();
     }
@@ -33,19 +32,21 @@ public class SecStructureEdge extends MyUndirectedEdge {
             return false;
     }
     public int hashCode() {
-        return new HashCodeBuilder(77,33).
+        HashCodeBuilder hcb= new HashCodeBuilder(77,33).
             append(s.getPrimer().getId()).
             append(s.getPosFrom3()).
             append(s.bautEin()).
-            append(s.getType()==SBESekStruktur.CROSSDIMER).
-            append(((SBEPrimer)s.getPrimer()).getType()).toHashCode();
+            append(s.getType()==SekStruktur.CROSSDIMER);
+        if(s.getPrimer() instanceof Primer)
+            hcb.append(((Primer)s.getPrimer()).getType());
+        return hcb.toHashCode();
     }
     public String matchString() {
         StringBuffer sb=new StringBuffer("SecEdge ");
         sb.append(s.getPrimer().getId()).append(" ").
         append(s.getPosFrom3()).append(" ").
-        append(((SBEPrimer)s.getPrimer()).getType()).append(" ");
-        if(s.getType()==SBESekStruktur.CROSSDIMER) {
+        append(((Primer)s.getPrimer()).getType()).append(" ");
+        if(s.getType()==SekStruktur.CROSSDIMER) {
             sb.append(s.getCrossDimerPrimer().getId()).append(" ");
         }
         return new String(sb);

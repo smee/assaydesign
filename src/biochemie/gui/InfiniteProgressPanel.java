@@ -74,7 +74,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
     /** Amount of bars composing the circular shape. */
     protected int     barsCount  = 14;
     /** Amount of frames per seconde. Lowers this to save CPU. */
-    protected float   fps        = 15.0f;
+    protected float   fps        = 1.0f;
     /** Rendering hints to set anti aliasing. */
     protected RenderingHints hints = null;
 

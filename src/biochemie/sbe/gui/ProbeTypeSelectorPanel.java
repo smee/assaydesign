@@ -17,7 +17,7 @@ import biochemie.sbe.ProbePrimerFactory;
 public class ProbeTypeSelectorPanel extends MyPanel {
 
     private JComboBox comboProbetype = null;
-    private String title="Cleavable linker at";
+    private String title="Probe type";
     Object[] values;
 
     /**
@@ -33,7 +33,7 @@ public class ProbeTypeSelectorPanel extends MyPanel {
      * @return
      */
     public int getSelectedType(){
-        return getComboProbetype().getSelectedIndex()-1;
+        return getComboProbetype().getSelectedIndex();
     }
 
     public void setSelectedType(int type){

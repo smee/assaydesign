@@ -5,7 +5,7 @@
 package biochemie.sbe.filter;
 
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBEPrimer;
+import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
 import biochemie.util.Helper;
 
@@ -24,8 +24,8 @@ public abstract class AbstractKandidatenFilter implements KandidatenFilter{
     protected static String getPrimerDescription(Primer p) {
         StringBuffer sb=new StringBuffer();
         sb.append(p.getCompletePrimerSeq());
-        if(p instanceof SBEPrimer)
-            sb.append(", PL=").append(((SBEPrimer)p).getBruchstelle());
+        if(p instanceof CleavablePrimer)
+            sb.append(", PL=").append(((CleavablePrimer)p).getBruchstelle());
         sb.append(", length=").append(p.getCompletePrimerSeq().length()).
         append(", GC=").append(Helper.format(p.getGCGehalt())).append('%').
         append(", Tm=").append(Helper.format(p.getTemperature())).append('°');

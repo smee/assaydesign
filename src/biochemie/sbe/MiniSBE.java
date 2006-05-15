@@ -37,6 +37,8 @@ public class MiniSBE {
     public static final int PROBE=2;
     public static final int PINPOINT=1;
     public static final int CLEAVABLE=0;
+    public static final int UNKNOWN=-1;
+    
     public static String[] assayTypes=new String[]{"Cleavable linker","Pinpoint","Probe"};
 
     public MiniSBE(String optname, String primername) {
@@ -118,9 +120,9 @@ public class MiniSBE {
         }else {
             System.out.println("Creating graph with "+structs.size()+" vertices...");
             g=GraphHelper.createIncompGraph(structs,drawGraph, 0,filter);
-            System.out.println("Graph has "+g.edgeSet().size()+" edges.");
-            System.out.println("Graph creation took "+(System.currentTimeMillis()-t)+"ms");
         }
+        System.out.println("Graph has "+g.edgeSet().size()+" edges.");
+        System.out.println("Graph creation took "+(System.currentTimeMillis()-t)+"ms");
         m.findMultiplexes(g);
         return g;
     }

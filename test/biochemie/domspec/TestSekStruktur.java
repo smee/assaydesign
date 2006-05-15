@@ -29,14 +29,14 @@ public class TestSekStruktur extends TestCase {
     public void testEnthalpiesHairpin() {
         SBEConfig cfg=new SBEConfig();
         cfg.getSecStrucOptions().setHairpinMinbinds("3");
-        Primer p=new SBEPrimer(cfg,"p1","AAAAAACCCCCLAAAAAGGCGGG","AT",SBEPrimer._5_,"",0,false);
+        Primer p=new CleavablePrimer(cfg,"p1","AAAAAACCCCCLAAAAAGGCGGG","AT",CleavablePrimer._5_,"",0,false);
         SekStruktur s=new SekStruktur(p,SekStruktur.HAIRPIN,17);
         assertEquals(-2.63,s.getEnthalpy(),1e-2);
     }
     public void testEnthalpiesHomodimer() {
         SBEConfig cfg=new SBEConfig();
         cfg.getSecStrucOptions().setHairpinMinbinds("3");
-        Primer p=new SBEPrimer(cfg,"p1","AAAAAACCCCCLAAAAAGGCGGG","AT",SBEPrimer._5_,"",0,false);
+        Primer p=new CleavablePrimer(cfg,"p1","AAAAAACCCCCLAAAAAGGCGGG","AT",CleavablePrimer._5_,"",0,false);
         SekStruktur h = new SekStruktur(p,SekStruktur.HOMODIMER,17);
         assertEquals(-7.14,h.getEnthalpy(),1e-2);
     }
@@ -44,8 +44,8 @@ public class TestSekStruktur extends TestCase {
         SBEConfig cfg=new SBEConfig();
         cfg.getSecStrucOptions().setCrossdimerMinbinds("4");
         cfg.getSecStrucOptions().setCrossimerWindowsizes("6");
-        Primer p1=new SBEPrimer(cfg,"p1","AAAAAACCCCCLAAAAAGGCGGG","AT",SBEPrimer._5_,"",0,false);
-        Primer p2=new SBEPrimer(cfg,"p1","CAGGTACCGTLTACGTGTTCCCACTGAATCCCGAT","AT",SBEPrimer._5_,"",0,false);
+        Primer p1=new CleavablePrimer(cfg,"p1","AAAAAACCCCCLAAAAAGGCGGG","AT",CleavablePrimer._5_,"",0,false);
+        Primer p2=new CleavablePrimer(cfg,"p1","CAGGTACCGTLTACGTGTTCCCACTGAATCCCGAT","AT",CleavablePrimer._5_,"",0,false);
         SekStruktur h = new SekStruktur(p1,p2,6);
 
         assertEquals(-10.75,h.getEnthalpy(),1e-2);
@@ -54,8 +54,8 @@ public class TestSekStruktur extends TestCase {
         SBEConfig cfg=new SBEConfig();
         cfg.getSecStrucOptions().setCrossdimerMinbinds("4");
         cfg.getSecStrucOptions().setCrossimerWindowsizes("6");
-        Primer p1=new SBEPrimer(cfg,"p1","ATCAGAGCTTAALACTGGGAAGCTGGTGGTAGGAACTGTAAAATTAGGACCACTTGAGAAAC","AT",SBEPrimer._5_,"",0,false);
-        Primer p2=new SBEPrimer(cfg,"p1","TCATTTTACCACLAGAGGGTAAAAATTCAACACAGATTGCTATTGTTCTGGGACAGTGTTT","AT",SBEPrimer._5_,"",0,false);
+        Primer p1=new CleavablePrimer(cfg,"p1","ATCAGAGCTTAALACTGGGAAGCTGGTGGTAGGAACTGTAAAATTAGGACCACTTGAGAAAC","AT",CleavablePrimer._5_,"",0,false);
+        Primer p2=new CleavablePrimer(cfg,"p1","TCATTTTACCACLAGAGGGTAAAAATTCAACACAGATTGCTATTGTTCTGGGACAGTGTTT","AT",CleavablePrimer._5_,"",0,false);
         
         SekStruktur h = new SekStruktur(p1,p2,4);        
         assertEquals(-6.23,h.getEnthalpy(),1e-2);

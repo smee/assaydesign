@@ -3,9 +3,9 @@ package biochemie.sbe;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -13,9 +13,9 @@ import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.IsNull;
 
+import biochemie.domspec.CleavablePrimer;
+import biochemie.domspec.CleavableSekStruktur;
 import biochemie.domspec.Primer;
-import biochemie.domspec.SBEPrimer;
-import biochemie.domspec.SBESekStruktur;
 import biochemie.util.Helper;
 
 /*
@@ -33,7 +33,74 @@ import biochemie.util.Helper;
  */
 public class CleavablePrimerFactory extends PrimerFactory {
 
+    public static final String CSVHEADER = 
+                    "CLEAVABLE Multiplex ID;"
+                    +"SBE-Primer ID;"
+                    +"Sequence incl. L;"
+                    +"SNP allele;"
+                    +"Linker (=L): position;"
+                    +"Primerlength;"
+                    +"GC contents incl L;"
+                    +"Tm incl L;"
+                    +"Excluded 5\' Primers;"
+                    +"Excluded 3\' Primers;"
+                    +"Primer from 3' or 5';"
+                    +"PCR-Product-length;"
+                    +"Actual sequence;"
+                    +"Fragment: T-Content;"
+                    +"Fragment: G-content;"
+                    +"Sec.struc.: position (3\');"
+                    +"Sec.struc.: incorporated nucleotide;"
+                    +"Sec.struc.: class;"
+                    +"Sec.struc.: irrelevant due to L;"
+                    +"Comment";
 
+    static protected class TemperatureDistanceAndHairpinComparator implements Comparator {
+
+        private final double opt;
+        public TemperatureDistanceAndHairpinComparator(double opt) {
+            this.opt= opt;
+        }
+        public int compare(Object o1, Object o2) {
+            CleavablePrimer p1= (CleavablePrimer)o1;
+            CleavablePrimer p2= (CleavablePrimer)o2;
+
+            int numinc1=0, numinc2=0;       //Anzahl der incimp. SekStruks, ohne die, deren pos==pl ist
+            int numhh1=0, numhh2=0;         //Anzahl der SekStruks, ohne die, deren pos==pl ist
+
+            for (Iterator it = p1.getSecStrucs().iterator(); it.hasNext();) {
+                CleavableSekStruktur s = (CleavableSekStruktur) it.next();
+                if(p1.getBruchstelle() - s.getPosFrom3() != 1) {//wenn kein gegenpl eingebaut wuerde
+                    numhh1++;
+                    if(s.isIncompatible())
+                        numinc1++;
+                }
+            }
+            for (Iterator it = p2.getSecStrucs().iterator(); it.hasNext();) {
+                CleavableSekStruktur s = (CleavableSekStruktur) it.next();
+                if(p2.getBruchstelle() - s.getPosFrom3() != 1) {
+                    numhh2++;
+                    if(s.isIncompatible())
+                        numinc2++;
+                }
+            }
+            // Sortieren nach kompatiblen vor inkomp. SekStrukturen
+            if(numinc2 > numinc1)
+                return -1;
+            if(numinc2 < numinc1)
+                return 1;
+            //wenn gleich: Sortieren nach der Anzahl von Sekstruk
+            if(numhh2 > numhh1)
+                return -1;
+            if(numhh2 < numhh1)
+                return 1;
+            //ansonsten zortieren nach Abstand von der optimalen Temperatur
+            double t1= Math.abs(opt - p1.getTemperature());
+            double t2= Math.abs(opt - p2.getTemperature());
+
+            return (t1 < t2 ? -1 : (t1 == t2 ? 0 : 1));
+        }
+    }
 
     private static final String PL = "pl key";
     private final int pl5;
@@ -91,14 +158,14 @@ public class CleavablePrimerFactory extends PrimerFactory {
             final int b=br[i];
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
-                        SBEPrimer p=((SBEPrimer)obj);
-                        return p.getBruchstelle()== b && p.getType().equals(SBEPrimer._5_);
+                        CleavablePrimer p=((CleavablePrimer)obj);
+                        return p.getBruchstelle()== b && p.getType().equals(CleavablePrimer._5_);
                     }
                 },null));
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
-                        SBEPrimer p=((SBEPrimer)obj);
-                        return p.getBruchstelle()== b && p.getType().equals(SBEPrimer._3_);
+                        CleavablePrimer p=((CleavablePrimer)obj);
+                        return p.getBruchstelle()== b && p.getType().equals(CleavablePrimer._3_);
                     }
                 },null));
         }
@@ -109,7 +176,7 @@ public class CleavablePrimerFactory extends PrimerFactory {
     }
     public int getBruchstelle() {
         assertPrimerChosen();
-        return ((SBEPrimer)chosen).getBruchstelle();
+        return ((CleavablePrimer)chosen).getBruchstelle();
     }
 
 
@@ -139,7 +206,7 @@ public class CleavablePrimerFactory extends PrimerFactory {
         return sb.toString();
     }
     public boolean hasValidPrimer() {
-        return super.hasValidPrimer() && -1 != ((SBEPrimer)chosen).getBruchstelle();
+        return super.hasValidPrimer() && -1 != ((CleavablePrimer)chosen).getBruchstelle();
    }
     /**
      * Der Photolinker wird rausgeschnitten, d.h. es rücken zwei Basen zusammen,
@@ -149,11 +216,11 @@ public class CleavablePrimerFactory extends PrimerFactory {
     double getTMMitPhotolinker() {
         assertPrimerChosen();
 
-        if (-1 == ((SBEPrimer)chosen).getBruchstelle()) {
+        if (-1 == ((CleavablePrimer)chosen).getBruchstelle()) {
             return 0;
         }
         StringBuffer sb= new StringBuffer(chosen.getCompletePrimerSeq());
-        sb.deleteCharAt(sb.length() - ((SBEPrimer)chosen).getBruchstelle());
+        sb.deleteCharAt(sb.length() - ((CleavablePrimer)chosen).getBruchstelle());
         return Helper.calcTM(sb.toString());
     }
 
@@ -161,17 +228,17 @@ public class CleavablePrimerFactory extends PrimerFactory {
         assertPrimerChosen();
 
         StringBuffer sb= new StringBuffer(chosen.getCompletePrimerSeq());
-        if (-1 == ((SBEPrimer)chosen).getBruchstelle()) {
+        if (-1 == ((CleavablePrimer)chosen).getBruchstelle()) {
             return 0;
         }
-        int pos= sb.length() - ((SBEPrimer)chosen).getBruchstelle();
+        int pos= sb.length() - ((CleavablePrimer)chosen).getBruchstelle();
         sb.replace(pos, pos + 1, "X");
         //System.out.println("replacing "+chosen.getPrimer()+" at pos="+pos+", pl="+chosen.getBruchstelle()+" ==> "+sb.toString());
         return Helper.getXGehalt(sb.toString(), "cCgG");
     }
     private double getXGehaltBruchStueck(String nukl) {
         assertPrimerChosen();
-        int bruch= ((SBEPrimer)chosen).getBruchstelle();
+        int bruch= ((CleavablePrimer)chosen).getBruchstelle();
         if (-1 == bruch)
             return 0;
 
@@ -193,26 +260,26 @@ public class CleavablePrimerFactory extends PrimerFactory {
      */
     public String getCSVRow() {
         /*
-            "Multiplex ID"
-            ,"SBE-ID"
-            ,"Sequence incl. PL"
-            ,"SNP allele"
-            ,"Photolinker (=PL): position"
-            ,"Primerlength"
-            ,"GC contents incl PL"
-            ,"Tm incl PL"
-            ,"Excluded 5\' Primers"
-            ,"Excluded 3\' Primers"
-            ,"Sec.struc.: position (3\')"
-            ,"Sec.struc.: incorporated nucleotide"
-            ,"Sec.struc.: class"
-            ,"Sec.struc.: irrelevant due to PL"
-            ,"Primer from 3' or 5'"
-            ,"Fragment: T-Content"
-            ,"Fragment: G-content"
-            ,"PCR-Product-length"
-            ,"Sequence excl.PL"
-            ,"Comment"};
+                    "CLEAVABLE Multiplex ID;"
+                    +"SBE-Primer ID;"
+                    +"Sequence incl. L;"
+                    +"SNP allele;"
+                    +"Linker (=L): position;"
+                    +"Primerlength;"
+                    +"GC contents incl L;"
+                    +"Tm incl L;"
+                    +"Excluded 5\' Primers;"
+                    +"Excluded 3\' Primers;"
+                    +"Primer from 3' or 5';"
+                    +"PCR-Product-length;"
+                    +"Actual sequence;"
+                    +"Fragment: T-Content;"
+                    +"Fragment: G-content;"
+                    +"Sec.struc.: position (3\');"
+                    +"Sec.struc.: incorporated nucleotide;"
+                    +"Sec.struc.: class;"
+                    +"Sec.struc.: irrelevant due to L;"
+                    +"Comment";
          */
         if(chosen == null && primercandidates.size()==0)
             return ";"+getId()+";;;;;;;" +invalidreason5
@@ -242,17 +309,17 @@ public class CleavablePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(invalidreason3);
         sb.append(';');
-        sb.append(((SBEPrimer)chosen).getCSVSekStructuresSeparatedBy(";"));
-        sb.append(';');
         sb.append(getType());
+        sb.append(';');
+        sb.append(getProductLength());
+        sb.append(';');
+        sb.append(chosen.getPrimerSeq());
         sb.append(';');
         sb.append(df.format(getXGehaltBruchStueck("tT")));
         sb.append(';');
         sb.append(df.format(getXGehaltBruchStueck("gG")));
         sb.append(';');
-        sb.append(getProductLength());
-        sb.append(';');
-        sb.append(chosen.getPrimerSeq());
+        sb.append(((CleavablePrimer)chosen).getCSVSekStructuresSeparatedBy(";"));
         sb.append(';');
         sb.append(getReason());
         return sb.toString();
@@ -261,28 +328,26 @@ public class CleavablePrimerFactory extends PrimerFactory {
         if(!isFoundValidSeq()) {
             return "no valid primer found!";
         }
-        if(usedreason.length() != 0)
-            return usedreason;
-        String ret="ok, "+(getType().equals(SBEPrimer._5_)?"5'":"3'")+" Primer used, ";
+        String ret="ok, "+(getType().equals(CleavablePrimer._5_)?"5'":"3'")+" Primer used, ";
         //ret+=(getType().equals(Primer._5_)?optimaltempreason5:optimaltempreason3)+", ";
         Set s=chosen.getSecStrucs();
         int chp=0,ichp=0,chd=0,ichd=0,ccd=0,iccd=0;
         for (Iterator it = s.iterator(); it.hasNext();) {
-            SBESekStruktur sek = (SBESekStruktur) it.next();
+            CleavableSekStruktur sek = (CleavableSekStruktur) it.next();
             switch (sek.getType()) {
-                case SBESekStruktur.HAIRPIN :
+                case CleavableSekStruktur.HAIRPIN :
                     if(sek.isIncompatible())
                         ichp++;
                     else
                         chp++;
                     break;
-                case SBESekStruktur.HOMODIMER :
+                case CleavableSekStruktur.HOMODIMER :
                     if(sek.isIncompatible())
                         ichd++;
                     else
                         chd++;
                     break;
-                case SBESekStruktur.CROSSDIMER :
+                case CleavableSekStruktur.CROSSDIMER :
                     if(sek.isIncompatible())
                         iccd++;
                     else
@@ -390,7 +455,7 @@ public class CleavablePrimerFactory extends PrimerFactory {
 
 
     protected void assertPrimerChosen() {
-        if(null == chosen || -1 == ((SBEPrimer)chosen).getBruchstelle())
+        if(null == chosen || -1 == ((CleavablePrimer)chosen).getBruchstelle())
             throw new IllegalStateException("no Primer chosen yet!");
     }
 
@@ -398,7 +463,7 @@ public class CleavablePrimerFactory extends PrimerFactory {
     protected void createGivenPrimers() {
         if(pl5 > 0) {
             System.out.println("Using given 5' primer.");
-            SBEPrimer primer = new SBEPrimer(cfg, id, seq5, pl5,snp, Primer._5_,bautEin5, productlen, true);
+            CleavablePrimer primer = new CleavablePrimer(cfg, id, seq5, pl5,snp, Primer._5_,bautEin5, productlen, true);
             primer.addObserver(this);
             primercandidates.add(primer);
         }
@@ -406,7 +471,7 @@ public class CleavablePrimerFactory extends PrimerFactory {
             System.out.println("Using given 3' primer.");
             String rstring=Helper.revcomplPrimer(seq3);
             String rsnp=Helper.revcomplPrimer(snp);
-            SBEPrimer primer = new SBEPrimer(cfg, id, rstring, pl3,
+            CleavablePrimer primer = new CleavablePrimer(cfg, id, rstring, pl3,
                     rsnp, Primer._3_,bautEin3, productlen, true);
             primer.addObserver(this);
             primercandidates.add(primer);
@@ -435,34 +500,19 @@ public class CleavablePrimerFactory extends PrimerFactory {
                  * Ich kann den Primer nicht einfach clonen, weil sonst die Sekundaerstrukturen immer noch auf den originalen Primer verweisen,
                  * so dass eine gesetzte Bruchstelle keine Wirkung haette.
                  */
-                SBEPrimer p=new SBEPrimer(cfg,id,seq,br[j],snp,type,bautEin,getProductLength(),false);
+                CleavablePrimer p=new CleavablePrimer(cfg,id,seq,br[j],snp,type,bautEin,getProductLength(),false);
                 result.add(p);
             }
         }
         return result;
     }
         
-    public String[] getCsvheader() {
-        return new String[] {
-                "Multiplex ID"
-                ,"SBE-Primer ID"
-                ,"Sequence incl. L"
-                ,"SNP allele"
-                ,"Linker (=L): position"
-                ,"Primerlength"
-                ,"GC contents incl L"
-                ,"Tm incl L"
-                ,"Excluded 5\' Primers"
-                ,"Excluded 3\' Primers"
-                ,"Sec.struc.: position (3\')"
-                ,"Sec.struc.: incorporated nucleotide"
-                ,"Sec.struc.: class"
-                ,"Sec.struc.: irrelevant due to PL"
-                ,"Primer from 3' or 5'"
-                ,"Fragment: T-Content"
-                ,"Fragment: G-content"
-                ,"PCR-Product-length"
-                ,"Actual sequence"
-                ,"Comment"};
+    public String getCsvheader() {
+        return CSVHEADER;
+    }
+
+    public String getFilter() {
+        assertPrimerChosen();
+        return chosen.getType()+"_*_"+((CleavablePrimer)chosen).getBruchstelle();
     }
 }

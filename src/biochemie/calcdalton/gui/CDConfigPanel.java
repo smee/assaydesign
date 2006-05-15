@@ -10,39 +10,26 @@ import info.clearthought.layout.TableLayoutConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileFilter;
-
-import org.jfree.ui.FilesystemFilter;
 
 import biochemie.calcdalton.CDOptionsImpl;
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.gui.DoubleValueIntervallPanel;
-import biochemie.util.FileSelector;
-import biochemie.util.config.GeneralConfig;
 
 /**
  * @author Steffen Dienst
@@ -182,12 +169,13 @@ public class CDConfigPanel extends JPanel{
 	final Vector bruchstelleVector;
     private JCheckBox cbCalcdaltonAnhaenge;
     private JCheckBox cbShowIons;
+    private JPanel bruchStellenPanel;
 
-    public CDConfigPanel(){
+    public CDConfigPanel(boolean showCL){
         bruchstelleVector = new Vector();
         abstandPanel = new DoubleValueIntervallPanel("Excluded peak distances (D)","No primer or product will have a mass distance of this range.",new double[]{20.0,36.0},new double[]{24.0, 39.9});
 		verbMassePanel=new DoubleValueIntervallPanel("Excluded mass ranges (D)","No Primer or product will have a size of this mass range.",new double[0],new double[0]);
-		initialize();
+		initialize(showCL);
         setValuesFrom(new CDOptionsImpl());
     }
 
@@ -239,7 +227,7 @@ public class CDConfigPanel extends JPanel{
         return max;
     }
 
-    private void initialize(){
+    private void initialize(boolean showCL){
         JButton btDelspalt;
         JButton btJb_up;
         JButton btJb_down;
@@ -252,12 +240,13 @@ public class CDConfigPanel extends JPanel{
         double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p}};
 
         setLayout(new TableLayout(settingsSize));
-        JPanel bruchStellenPanel=new JPanel();
-        add(bruchStellenPanel,"1,1");
+        bruchStellenPanel = new JPanel();
+        if(showCL)
+            add(bruchStellenPanel,"1,1");
 		double text=28;
         double[][] bruchSizes={{b,80,60,p,b},{b,text,b,text,b,text,2*b,text,b}};
         bruchStellenPanel.setLayout(new TableLayout(bruchSizes));
-        bruchStellenPanel.setBorder( BorderFactory.createTitledBorder( "Preferred usage order of cleavable linkers" ) );
+        bruchStellenPanel.setBorder( BorderFactory.createTitledBorder( "Positions of cleavable linkers (from 3’)" ) );
         bruchStellenPanel.setToolTipText("Preferred usage order of cleavable linkers (from 3´)");
         bruchList = new JList( bruchstelleVector );
         bruchList.setVisibleRowCount(5);
@@ -319,6 +308,12 @@ public class CDConfigPanel extends JPanel{
         }
             public int getSize() { return listData.size(); }
             public Object getElementAt(int i) { return listData.elementAt(i); }
+    }
+
+    public void setShowCL(boolean b) {
+        bruchStellenPanel.setVisible(b);
+        remove(bruchStellenPanel);
+        invalidate();
     }
 
 }

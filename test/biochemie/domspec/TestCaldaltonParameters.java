@@ -13,8 +13,8 @@ public class TestCaldaltonParameters extends TestCase{
     
     public void testNurSNPAnhaenge() {
         cfg.setCalcDaltonAllExtensions(true);
-        SBEPrimer p=new SBEPrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", SBEPrimer._5_,"",100,true);
-        String[] arr=Primer.getCDParamLine(p);
+        CleavablePrimer p=new CleavablePrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", CleavablePrimer._5_,"",100,true);
+        String[] arr=p.getCDParamLine();
         
         assertEquals(3,arr.length);
         String[] exp=new String[] {"foobar","A","G"};
@@ -24,8 +24,8 @@ public class TestCaldaltonParameters extends TestCase{
     }
     public void testNurSNPAnhaenge2() {
         cfg.setCalcDaltonAllExtensions(true);
-        SBEPrimer p=new SBEPrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", SBEPrimer._5_,"none",100,true);
-        String[] arr=Primer.getCDParamLine(p);
+        CleavablePrimer p=new CleavablePrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", CleavablePrimer._5_,"none",100,true);
+        String[] arr=p.getCDParamLine();
         
         assertEquals(3,arr.length);
         String[] exp=new String[] {"foobar","A","G"};
@@ -36,8 +36,8 @@ public class TestCaldaltonParameters extends TestCase{
     
     public void testSNPUndHairpinAnhaenge() {
         cfg.setCalcDaltonAllExtensions(true);
-        SBEPrimer p=new SBEPrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", SBEPrimer._5_,"T",100,true);
-        String[] arr=Primer.getCDParamLine(p);
+        CleavablePrimer p=new CleavablePrimer(cfg,"primer1","AAAAAAAALAAAAAAAAA","AG", CleavablePrimer._5_,"T",100,true);
+        String[] arr=p.getCDParamLine();
         
         assertEquals(4,arr.length);
         String[] exp=new String[] {"foobar","A","G","T"};
@@ -49,8 +49,8 @@ public class TestCaldaltonParameters extends TestCase{
         cfg.setCalcDaltonAllExtensions(true);
         cfg.getSecStrucOptions().setHairpinWindowsizes("4");
         cfg.getSecStrucOptions().setHairpinMinbinds("4");
-        SBEPrimer p=new SBEPrimer(cfg,"primer1","GTTTTAAAALAAAAAAAAA","AG", SBEPrimer._5_,"",100,false);
-        String[] arr=Primer.getCDParamLine(p);
+        CleavablePrimer p=new CleavablePrimer(cfg,"primer1","GTTTTAAAALAAAAAAAAA","AG", CleavablePrimer._5_,"",100,false);
+        String[] arr=p.getCDParamLine();
         
         assertEquals(4,arr.length);
         String[] exp=new String[] {"foobar","A","C","G"};
