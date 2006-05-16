@@ -311,6 +311,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
         List result=new LinkedList();
         if(primers.size()==0)
             return result;
+        Collections.sort(primers,new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
         result.add(Algorithms.detect(primers.iterator(),new UnaryPredicate() {
             public boolean test(Object obj) {
                 Primer p=((Primer)obj);

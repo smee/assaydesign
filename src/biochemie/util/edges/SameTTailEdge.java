@@ -1,8 +1,7 @@
 package biochemie.util.edges;
 
-import org._3pq.jgrapht.edge.UndirectedEdge;
 
-public class SameTTailEdge extends UndirectedEdge{
+public class SameTTailEdge extends MyUndirectedEdge{
 
     public SameTTailEdge(Object sourceVertex, Object targetVertex) {
         super(sourceVertex, targetVertex);

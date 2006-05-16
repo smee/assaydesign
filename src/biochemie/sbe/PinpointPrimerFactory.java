@@ -7,11 +7,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.calcdalton.CalcDalton;
 import biochemie.domspec.PinpointPrimer;
 import biochemie.domspec.Primer;
+import biochemie.sbe.PrimerFactory.TemperatureDistanceAndHairpinComparator;
 import biochemie.util.Helper;
 
 public class PinpointPrimerFactory extends PrimerFactory {
@@ -49,12 +52,30 @@ public class PinpointPrimerFactory extends PrimerFactory {
 
 
     protected List findBestPrimers(List primers) {
-        List result=new LinkedList();
+        List result=new ArrayList();
         if(primers.size()==0)
             return result;
-        Collections.sort(primers,new PrimerFactory.TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
-        result.add(primers.get(0));
-        return primers;
+        Collections.sort(primers,new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
+        final PinpointPrimer p5=(PinpointPrimer) Algorithms.detect(primers.iterator(),new UnaryPredicate() {
+            public boolean test(Object obj) {
+                Primer p=((Primer)obj);
+                return p.getType().equals(Primer._5_);
+            }
+        },null);
+        final PinpointPrimer p3=(PinpointPrimer) Algorithms.detect(primers.iterator(),new UnaryPredicate() {
+            public boolean test(Object obj) {
+                Primer p=((Primer)obj);
+                return p.getType().equals(Primer._3_);
+            }
+        },null);
+        Algorithms.collect(Algorithms.select(primers.iterator(),new UnaryPredicate() {
+            public boolean test(Object obj) {
+                PinpointPrimer p=((PinpointPrimer)obj);
+                return p5.getPrimerSeq().equals(p.getPrimerSeq()) || p3.getPrimerSeq().equals(p.getPrimerSeq());
+            }
+        }),result);
+        
+        return result;
     }
 
 
@@ -86,7 +107,7 @@ public class PinpointPrimerFactory extends PrimerFactory {
         double mass=cd.calcPrimerMasse(seq);
         String addOn="";
         while(cd.calcPrimerAddonMasse(mass,addOn)<maxMass){
-            result.add(new PinpointPrimer(getId(),type,seq,snp,addOn,cfg));
+            result.add(new PinpointPrimer(getId(),seq,type,snp,addOn,cfg));
             addOn+="T";
         }
         return result;
