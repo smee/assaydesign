@@ -20,6 +20,7 @@ public class PolyXFilter extends AbstractKandidatenFilter {
     public PolyXFilter(SBEOptions cfg){
     	super(cfg);
         this.polyX=cfg.getPolyX();
+        reason="out of PolyX: ";
     }
     /**
      * Filtert alle Seq., in denen ein Nukleotid mehr als <code>polyX</code>-mal 
@@ -57,15 +58,5 @@ public class PolyXFilter extends AbstractKandidatenFilter {
             }              
         }
         System.out.println(sb);
-    }
-    private int count=0;
-    private final String reason="out of PolyX: ";
-
-    public int rejectedCount() {
-        return count;
-    }
-
-    public String rejectReason() {
-        return reason;
     }
 }

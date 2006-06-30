@@ -22,6 +22,7 @@ public class LaengenFilter extends AbstractKandidatenFilter {
     public LaengenFilter(SBEOptions cfg){
     	super(cfg);
         this.len=cfg.getMinCandidateLen();
+        reason="primer too short: ";
     }
     /**
      * Filtert alle Seq., deren Laenge kleiner einer Laenge len ist.
@@ -39,15 +40,5 @@ public class LaengenFilter extends AbstractKandidatenFilter {
             }
         }
         System.out.println(sb);
-    }
-    private int count=0;
-    private final String reason="primer too short: ";
-
-    public int rejectedCount() {
-        return count;
-    }
-
-    public String rejectReason() {
-        return reason;
     }
 }

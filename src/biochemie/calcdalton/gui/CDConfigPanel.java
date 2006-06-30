@@ -20,6 +20,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,7 +38,9 @@ import biochemie.gui.DoubleValueIntervallPanel;
  * TODO umbauen, dass der eine Instanz von Calcdaltonoptionimpl verwendet, macht alles leichter, wegen der persistenz und so
  */
 public class CDConfigPanel extends JPanel{
-
+    private final static double p=TableLayoutConstants.PREFERRED;
+    private final static double f=TableLayoutConstants.FILL;
+    private final static double b=5;
 
 	//actions
     private final class DeleteSpaltStelleAction extends AbstractAction{
@@ -161,7 +164,6 @@ public class CDConfigPanel extends JPanel{
     private AddSpaltStelleAction addSpaltAction;
     JList bruchList;
     JTextField tf_spalt;
-    PBSequenceField tfPeaks;
     JCheckBox cbAllowOverlap;
     DoubleValueIntervallPanel abstandPanel;
 	DoubleValueIntervallPanel verbMassePanel;
@@ -170,6 +172,8 @@ public class CDConfigPanel extends JPanel{
     private JCheckBox cbCalcdaltonAnhaenge;
     private JCheckBox cbShowIons;
     private JPanel bruchStellenPanel;
+    private PeakInputPanel assayPeakPanel;
+    private PeakInputPanel productPeakPanel;
 
     public CDConfigPanel(boolean showCL){
         bruchstelleVector = new Vector();
@@ -191,7 +195,10 @@ public class CDConfigPanel extends JPanel{
         for(int i=0;i<br.length;i++)
         	bruchstelleVector.add(Integer.toString(br[i]));
         bruchList.setModel(new MyListModel(bruchstelleVector));
-        tfPeaks.setText(""+cfg.getCalcDaltonPeaks());
+        
+        assayPeakPanel.setPeakValues(cfg.getCalcDaltonAssayPeaks());
+        productPeakPanel.setPeakValues(cfg.getCalcDaltonProductPeaks());
+        
         cbAllowOverlap.setSelected(cfg.getCalcDaltonAllowOverlap());
         if(null != abstandPanel)
 			abstandPanel.reset(cfg.getCalcDaltonFrom(),cfg.getCalcDaltonTo());
@@ -202,7 +209,8 @@ public class CDConfigPanel extends JPanel{
         delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
     }
     public void saveToConfig(CalcDaltonOptions cfg) {
-        cfg.setCalcDaltonPeaks(Double.parseDouble(tfPeaks.getText()));
+        cfg.setCalcDaltonAssayPeaks(assayPeakPanel.getPeakValues());
+        cfg.setCalcDaltonProductPeaks(productPeakPanel.getPeakValues());
         int[] br=new int[bruchstelleVector.size()];
         for (int i = 0; i < br.length; i++) {
             br[i]=Integer.parseInt((String) bruchstelleVector.get(i));
@@ -234,9 +242,7 @@ public class CDConfigPanel extends JPanel{
         JButton btAddspalt;
 
 
-        double p=TableLayoutConstants.PREFERRED;
-        double f=TableLayoutConstants.FILL;
-        double b=5;
+
         double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p}};
 
         setLayout(new TableLayout(settingsSize));
@@ -279,14 +285,7 @@ public class CDConfigPanel extends JPanel{
         add(abstandPanel,"1,3");
 		add(verbMassePanel,"1,5");
 
-        JPanel peakPanel = new JPanel();
-        double[][] peakSizes={{b,f,b},{b,p,b}};
-        peakPanel.setLayout(new TableLayout(peakSizes));
-        peakPanel.setBorder( BorderFactory.createTitledBorder( "Minimum peak distance (D):" ) );
-        peakPanel.setToolTipText("Minimum peak distance (D)");
-        tfPeaks=new PBSequenceField(5,false,PBSequenceField.NUMBERS);
-        tfPeaks.setToolTipText("Minimum peak distance (D)");
-        peakPanel.add(tfPeaks,"1,1");
+        JPanel peakPanel = createPeakPanel();
         add(peakPanel,"1,7");
         cbAllowOverlap=new JCheckBox("Allow unextended Primer overlap",false);
         cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>complexes as specified in \"Excluded peak distances\"</html>");
@@ -301,6 +300,27 @@ public class CDConfigPanel extends JPanel{
         add(cbShowIons,"1,13");
     }
 
+    /**
+     * @param p
+     * @param f
+     * @param b
+     * @return
+     */
+    private JPanel createPeakPanel() {
+        JPanel peakPanel = new JPanel();
+        double[][] peakSizes={{b,p,b},{b,p,b,p,b}};
+        peakPanel.setLayout(new TableLayout(peakSizes));
+        peakPanel.setBorder( BorderFactory.createTitledBorder( "Minimum peak distance (D):" ) );
+        peakPanel.setToolTipText("Minimum peak distance in D");
+        assayPeakPanel=new PeakInputPanel();
+        assayPeakPanel.setLabel("...between assays");
+        peakPanel.add(assayPeakPanel,"1,1");
+        productPeakPanel=new PeakInputPanel();
+        productPeakPanel.setLabel("...between products");
+        peakPanel.add(productPeakPanel,"1,3");
+        return peakPanel;
+    }
+
     private class MyListModel extends AbstractListModel{
         private Vector listData;
         public MyListModel(Vector coll) {
@@ -310,10 +330,16 @@ public class CDConfigPanel extends JPanel{
             public Object getElementAt(int i) { return listData.elementAt(i); }
     }
 
-    public void setShowCL(boolean b) {
+    public void showCL(boolean b) {
         bruchStellenPanel.setVisible(b);
-        remove(bruchStellenPanel);
+        if(!b)
+            remove(bruchStellenPanel);
+        else
+            add(bruchStellenPanel,"1,1");
         invalidate();
+    }
+    public void showProductPeaks(boolean b){
+        productPeakPanel.setVisible(b);
     }
 
 }

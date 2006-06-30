@@ -50,8 +50,10 @@ public interface CalcDaltonOptions extends GeneralOptions{
      * Get minimum weight distance.
      * @return
      */
-    public double getCalcDaltonPeaks();
-    public void setCalcDaltonPeaks(double val);
+    public double[] getCalcDaltonAssayPeaks();
+    public void   setCalcDaltonAssayPeaks(double[] vals);
+    public double[] getCalcDaltonProductPeaks();
+    public void   setCalcDaltonProductPeaks(double[] vals);
     /**
      * Get minimum meltingtemperature.
      * @return
@@ -90,4 +92,7 @@ public interface CalcDaltonOptions extends GeneralOptions{
     public void setCalcDaltonSelectedPLMass(int val);
     public boolean getCalcDaltonShowIons();
     public void setCalcDaltonShowIons(boolean val);
+    
+    public String getBiotinString();
+    public void setBiotinString(String biotin);
 }

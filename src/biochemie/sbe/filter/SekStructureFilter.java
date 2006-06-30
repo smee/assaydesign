@@ -26,6 +26,7 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
     
     public SekStructureFilter(SBEOptions cfg){
     	super(cfg);
+        reason="unavoidable incomp. sec.struks: ";
     }
    
     public void filter(List cand) {
@@ -97,15 +98,5 @@ public class SekStructureFilter extends AbstractKandidatenFilter  {
             }            
         });
         return count.intValue() >= 1;
-    }
-    private int count=0;
-    private final String reason="unavoidable incomp. sec.struks: ";
-
-    public int rejectedCount() {
-        return count;
-    }
-
-    public String rejectReason() {
-        return reason;
     }
 }

@@ -172,10 +172,14 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonVerbTo();
     }    public void setCalcDaltonVerbTo(double[] arg0) {
         cdopt.setCalcDaltonVerbTo(arg0);
-    }    public double getCalcDaltonPeaks() {
-        return cdopt.getCalcDaltonPeaks();
-    }    public void setCalcDaltonPeaks(double arg0) {
-        cdopt.setCalcDaltonPeaks(arg0);
+    }    public double[] getCalcDaltonAssayPeaks() {
+        return cdopt.getCalcDaltonAssayPeaks();
+    }    public void setCalcDaltonAssayPeaks(double[] arg0) {
+        cdopt.setCalcDaltonAssayPeaks(arg0);
+    }    public double[] getCalcDaltonProductPeaks() {
+        return cdopt.getCalcDaltonProductPeaks();
+    }    public void setCalcDaltonProductPeaks(double[] arg0) {
+        cdopt.setCalcDaltonProductPeaks(arg0);
     }    public boolean getCalcDaltonAllowOverlap() {
         return cdopt.getCalcDaltonAllowOverlap();
     }    public void setCalcDaltonAllowOverlap(boolean arg0) {

@@ -24,12 +24,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import biochemie.domspec.CleavablePrimer;
+import biochemie.domspec.Primer;
 import biochemie.sbe.calculators.Interruptible;
 import biochemie.util.Helper;
 public class CalcDalton implements Interruptible{
 	protected int solutionSize;
     protected final boolean overlap;
-    protected double peaks;
+    protected double[] assaypeaks;
+    protected double[] productpeaks;
     protected double[] to;
     protected double[] from;
 	protected double[] toAbs;
@@ -54,7 +57,8 @@ public class CalcDalton implements Interruptible{
     final private boolean allExtension;    
 
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
-					, double peaks
+					, double[] assaypeaks
+					, double[] productpeaks
 					, double[] verbMasseFrom, double[] verbMasseTo
 					, boolean overlap
                     , boolean allExtensions
@@ -84,7 +88,8 @@ public class CalcDalton implements Interruptible{
 		}
 		this.verbMasseFrom=Helper.clone(verbMasseFrom);
 		this.verbMasseTo=Helper.clone(verbMasseTo);		
-		this.peaks=peaks;
+		this.assaypeaks=assaypeaks;
+		this.productpeaks=productpeaks;
 		this.overlap=overlap;
         this.allExtension=allExtensions;
 		solutionSize=Integer.MAX_VALUE;
@@ -98,7 +103,8 @@ public class CalcDalton implements Interruptible{
         this(c.getPhotolinkerPositions()
                 ,c.getCalcDaltonFrom()
                 ,c.getCalcDaltonTo()
-                ,c.getCalcDaltonPeaks()
+                ,c.getCalcDaltonAssayPeaks()
+                ,c.getCalcDaltonProductPeaks()
                 ,c.getCalcDaltonVerbFrom()
                 ,c.getCalcDaltonVerbTo()
                 ,c.getCalcDaltonAllowOverlap()
@@ -109,7 +115,8 @@ public class CalcDalton implements Interruptible{
     }
     public void outputState(){
        System.out.println("CalcDalton-State:\n-----------------");
-       System.out.println("Peaks: "+peaks);
+       System.out.println("Peaks between assays: "+assaypeaks);
+       System.out.println("Peaks between products: "+productpeaks);
        System.out.println("Abstaende from: "+biochemie.util.Helper.toString(from));
        System.out.println("Abstaende to: "+biochemie.util.Helper.toString(to));
 	   System.out.println("Verbotene Massen From: "+biochemie.util.Helper.toString(verbMasseFrom));
@@ -117,6 +124,13 @@ public class CalcDalton implements Interruptible{
        System.out.println("Bruchstellen: "+biochemie.util.Helper.toString(br));
        System.out.println();
     }    
+    public double[] getMasses(Primer primer) {
+        String[] params=primer.getCDParamLine();
+        if (primer instanceof CleavablePrimer) {
+            return this.calcSBEMass(params,((CleavablePrimer)primer).getBruchstelle(),true);
+        }else
+            return this.calcSBEMass(params,true);
+    }
 	/**
 	 * Berechnung der Masse einer einzelnen Sequenz.
 	 * @param seq
@@ -194,6 +208,17 @@ public class CalcDalton implements Interruptible{
 		}
 		return false;
 	}
+    public boolean invalidPeakDiffIn(double[] massen){
+        double peak;
+        for (int i = 0; i < massen.length; i++) {
+            for (int j = i+1; j < massen.length; j++) {
+                peak = getCurrentPeak(massen[i],massen[j],assaypeaks);
+                if(Math.abs(massen[i]-massen[j])<=peak)
+                    return true;
+            }
+        }
+        return false;
+    }
 	/**
 	 * Test, ob berechnete SBEGewichte nach allen geforderten Kriterien unterschiedlich sind.
 	 * Testet, ob keine in Config verlangten Abstände verletzt sind.
@@ -202,13 +227,14 @@ public class CalcDalton implements Interruptible{
 	 * @return
 	 */
     protected boolean isDiffOkay(double[] p1_massen,double[] p2_massen) {
-        double temp;
+        double temp,peak;
         if(invalidMassesIn(p1_massen)||invalidMassesIn(p2_massen))
         	return false;
         for (int i= 0; i < p1_massen.length; i++) {
             for (int j= 0; j < p2_massen.length; j++) {
+                peak = getCurrentPeak(p2_massen[j],p1_massen[i],assaypeaks);
                 temp=Math.abs(p1_massen[i] - p2_massen[j]);
-                if(temp<peaks){
+                if(temp<peak){//wann welche???
                     return false;
                 }
                 for(int k=0;k<from.length;k++) {
@@ -232,9 +258,12 @@ public class CalcDalton implements Interruptible{
 //        }
 //fällt weg wegen is nich
          //vgl. sbe1 ohne anhang mit allen sbe2 mit anhang
+         double peak;
          for (int i= 1; i < p2_massen.length; i++) {
+             peak = getCurrentPeak(p2_massen[i],p1_massen[0],assaypeaks);
              temp=p2_massen[i] - p1_massen[0];
-             if(Math.abs(temp)<peaks)
+             
+             if(Math.abs(temp)<peak)
                  return false;
              for(int k=0;k<from.length;k++) {
                  if(temp>=from[k] && temp<=to[k]) 
@@ -243,8 +272,9 @@ public class CalcDalton implements Interruptible{
          }
         //vgl. sbe2 ohne anhang mit allen sbe1 mit anhang
          for (int i= 1; i < p1_massen.length; i++) {
+             peak = getCurrentPeak(p1_massen[i],p2_massen[0],assaypeaks);
              temp=p1_massen[i] - p2_massen[0];
-             if(Math.abs(temp)<peaks)
+             if(Math.abs(temp)<peak)
                  return false;
              for(int k=0;k<from.length;k++) {
                  if(temp>=from[k] && temp<=to[k]) 
@@ -254,8 +284,9 @@ public class CalcDalton implements Interruptible{
         //vgl. den rest miteinander
         for (int i= 1; i < p1_massen.length; i++) {
              for (int j= 1; j < p2_massen.length; j++) {
+                 peak = getCurrentPeak(p1_massen[i],p2_massen[j],assaypeaks);
                  temp=Math.abs(p1_massen[i] - p2_massen[j]);
-                 if(temp<peaks)
+                 if(temp<peak)
                      return false;
                  for(int k=0;k<from.length;k++) {
                      if(temp>=fromAbs[k] && temp<=toAbs[k]) 
@@ -264,6 +295,14 @@ public class CalcDalton implements Interruptible{
              }
          }
         return true;
+    }
+    /**
+     * @param p2_massen
+     * @param i
+     * @return
+     */
+    private double getCurrentPeak(double m1,double m2, double[] peakSizes) {
+        return (m1<peakSizes[1] || m2<peakSizes[1])?peakSizes[0]:peakSizes[2];
     }
 	/**
 	 * Gibt String[] zurück, der in einer Spalte alle Werte einer SBE enthält.

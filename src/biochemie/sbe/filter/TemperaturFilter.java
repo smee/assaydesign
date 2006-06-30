@@ -22,6 +22,7 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
     	super(cfg);
         this.minT= cfg.getMinTemperature();
         this.maxT= cfg.getMaxTemperature();
+        reason="out of TM: ";
     }
     /**
      * Filtere alle Sequenzen, deren Temperatur ausserhalb des zulaessigen Bereiches liegt.
@@ -42,15 +43,5 @@ public class TemperaturFilter extends AbstractKandidatenFilter {
             }
         }
         System.out.println(sb);
-    }
-    private int count=0;
-    private final String reason="out of TM: ";
-
-    public int rejectedCount() {
-        return count;
-    }
-
-    public String rejectReason() {
-        return reason;
     }
 }

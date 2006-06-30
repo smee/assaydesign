@@ -35,7 +35,7 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
     public UnwantedPrimerFilter(SBEOptions cfg, String unwanted) {
         super(cfg);
         count =0;
-
+        reason="Excluded by the user: ";
         if(unwanted == null || unwanted.length() == 0)
             return;
 
@@ -82,14 +82,6 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
             }
         }
         System.out.println(sb);
-    }
-
-    public int rejectedCount() {
-        return count;
-    }
-
-    public String rejectReason() {
-        return "Excluded by the user: ";
     }
 
 }

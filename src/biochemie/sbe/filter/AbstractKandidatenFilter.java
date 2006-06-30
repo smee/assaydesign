@@ -16,10 +16,13 @@ import biochemie.util.Helper;
 public abstract class AbstractKandidatenFilter implements KandidatenFilter{
 	protected SBEOptions cfg;
 	protected final boolean debug;
-
+	protected int count;
+    protected String reason;
+    
 	public AbstractKandidatenFilter(SBEOptions cfg){
 		this.cfg = cfg;
-        this.debug=cfg.isDebug();;
+        this.debug=cfg.isDebug();
+        count=0;
 	}
     protected static String getPrimerDescription(Primer p) {
         StringBuffer sb=new StringBuffer();
@@ -33,5 +36,11 @@ public abstract class AbstractKandidatenFilter implements KandidatenFilter{
     }
     protected static String markRed(String string) {
         return "<FONT COLOR=\"FF0000\">"+string+"</FONT>";
+    }
+    public int rejectedCount() {
+        return count;
+    }
+    public String rejectReason() {
+        return reason;
     }
 }

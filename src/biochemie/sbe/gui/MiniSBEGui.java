@@ -80,6 +80,7 @@ import biochemie.domspec.CleavablePrimer;
 import biochemie.domspec.CleavableSekStruktur;
 import biochemie.domspec.SekStruktur;
 import biochemie.gui.InfiniteProgressPanel;
+import biochemie.gui.MyPanel;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.PrimerFactory;
@@ -740,7 +741,7 @@ public class OptimizePLAction extends MyAction {
         }
 
     }
-    private class ScrollablePanel extends JPanel implements Scrollable{
+    private class ScrollablePanel extends MyPanel implements Scrollable{
 
         public boolean getScrollableTracksViewportHeight() {return false;}
         public boolean getScrollableTracksViewportWidth() {return false;}//true, dann passt sich das an

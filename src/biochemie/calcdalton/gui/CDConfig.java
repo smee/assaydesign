@@ -110,8 +110,11 @@ public class CDConfig implements Serializable{
     /**
      * @return
      */
-    public double getPeaks() {
-        return cdcpanel.getCalcDaltonOptionsProvider().getCalcDaltonPeaks();
+    public double[] getAssayPeaks() {
+        return cdcpanel.getCalcDaltonOptionsProvider().getCalcDaltonAssayPeaks();
+    }
+    public double[] getProductPeaks() {
+        return cdcpanel.getCalcDaltonOptionsProvider().getCalcDaltonProductPeaks();
     }
 
     /**

@@ -8,20 +8,21 @@ import biochemie.domspec.Primer;
 import biochemie.sbe.SBEOptions;
 import biochemie.util.Helper;
 
-public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
-    CalcDalton cd;
-    public ForbiddenCDMassFilter(SBEOptions cfg) {
+public class ForbiddenPeakDistanceFilter extends AbstractKandidatenFilter {
+
+    private CalcDalton cd;
+
+    public ForbiddenPeakDistanceFilter(SBEOptions cfg) {
         super(cfg);
         cd=Helper.getCalcDalton(cfg);
-        reason="primer or product is within prohibited mass range: ";
     }
 
     public void filter(List cand) {
-        StringBuffer sb=new StringBuffer("Assay has invalid mass peak differences:\n");
+        StringBuffer sb=new StringBuffer("Primer or product is within prohibited mass range:\n");
         for (Iterator it = cand.iterator(); it.hasNext();) {
             Primer primer = (Primer) it.next();
             double[] masses=cd.getMasses(primer);
-            if(cd.invalidPeakDiffIn(masses)) {
+            if(cd.invalidMassesIn(masses)) {
                 it.remove();
                 count++;
                 sb.append(getPrimerDescription(primer));
@@ -31,8 +32,8 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
             }
         }
         System.out.println(sb);
+    
+
     }
-
-
 
 }

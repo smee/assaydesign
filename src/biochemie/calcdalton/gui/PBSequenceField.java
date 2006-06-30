@@ -142,6 +142,18 @@ public class PBSequenceField extends JTextField
     {
         return new CharacterDocument();
     }
+    public double getAsDouble(double dflt){
+        try{
+            dflt=Double.parseDouble(getText());
+        }catch(NumberFormatException e){}
+        return dflt;
+    }
+    public int getAsInt(int dflt){
+        try{
+            dflt=Integer.parseInt(getText());
+        }catch(NumberFormatException e){}
+        return dflt;
+    }
 
 
 }

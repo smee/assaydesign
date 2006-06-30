@@ -25,6 +25,7 @@ public class GCFilter extends AbstractKandidatenFilter {
     	super(cfg);
         this.gcMin=cfg.getMinGC();
         this.gcMax=cfg.getMaxGC();
+        reason="out of GC: ";
     }
     /**
      * Filtert alle Sequenzen, deren GC-Gehalt ausserhalb von <code>gcMin</code> und <code>gcMax</code> liegt.
@@ -44,15 +45,5 @@ public class GCFilter extends AbstractKandidatenFilter {
             }
         }
         System.out.println(sb);
-    }
-    private int count=0;
-    private final String reason="out of GC: ";
-
-    public int rejectedCount() {
-        return count;
-    }
-
-    public String rejectReason() {
-        return reason;
     }
 }

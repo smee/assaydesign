@@ -32,7 +32,8 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.verbfrom","2070.0 2162.0 2248.0 2385.0 2425.0 5000.0"}
            ,{"calcdalton.verbto","2080.0 2172.0 2258.0 2395.0 2435.0 9.99999999E8"}
            ,{"calcdalton.allowoverlap","true"}
-           ,{"calcdalton.peaks","10.0"}
+           ,{"calcdalton.assaypeaks","10.0 2000 10"}
+           ,{"calcdalton.productpeaks","10.0 2000 10"}
            ,{"calcdalton.extension","false"}
            ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
            ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
@@ -41,6 +42,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.showions","true"}
            ,{"misc.maxcalctime","10"}
            ,{"misc.debug","false"}
+           ,{"misc.biotin","bio"}
            };
     }
     public int[] getPhotolinkerPositions(){
@@ -91,11 +93,21 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public void setCalcDaltonVerbTo(double[] arr) {
         setProperty("calcdalton.verbto",StringUtils.join(ArrayUtils.toObject(arr),' '));
     }
-    public double getCalcDaltonPeaks() {
-        return getDouble("calcdalton.peaks",4.0);
+    public double[] getCalcDaltonAssayPeaks() {
+        String pl = getString("calcdalton.assaypeaks");
+        double[] peaks=Helper.tokenizeToDouble(pl);
+        return peaks;
     }
-    public void setCalcDaltonPeaks(double val) {
-        setProperty("calcdalton.peaks",Double.toString(val));
+    public void setCalcDaltonAssayPeaks(double[] vals) {
+        setProperty("calcdalton.assaypeaks",StringUtils.join(ArrayUtils.toObject(vals),' '));
+    }
+    public double[] getCalcDaltonProductPeaks() {
+        String pl = getString("calcdalton.productpeaks");
+        double[] peaks=Helper.tokenizeToDouble(pl);
+        return peaks;
+    }
+    public void setCalcDaltonProductPeaks(double[] vals) {
+        setProperty("calcdalton.productpeaks",StringUtils.join(ArrayUtils.toObject(vals),' '));
     }
 
     public boolean getCalcDaltonAllowOverlap() {
@@ -189,5 +201,11 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public void setCalcDaltonSelectedPLMass(int val) {
         setProperty("calcdalton.plmassidx",Integer.toString(val));
     }
+    public String getBiotinString() {
+        return this.getString("misc.biotin","bio");
+    }
 
+    public void setBiotinString(String biotin) {
+        setProperty("misc.biotin",biotin);
+    }
 }
