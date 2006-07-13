@@ -35,9 +35,9 @@ import biochemie.util.Helper;
 public class SBEPrimerReader {
 	private static final String CLEAVABLE_HEADER_1 = "Feste Photolinkerposition 5\' (leer, wenn egal);";
     private static final String CLEAVABLE_HEADER_2 = "Feste Photolinkerposition 3\' (leer, wenn egal);";
-    private static final String HEADER_TEMPLATE_1 = "SBE-ID;" + "5\' Sequenz (in 5\'->3\');";
-    private static final String HEADER_TEMPLATE_2 = "Definitiver Hairpin 5\';" + "SNP Variante;" + "3\' Sequenz (in 5\' -> 3\');";
-    private static final String HEADER_TEMPLATE_3 = "Definitiver Hairpin 3\';" + "PCR Produkt;" + "feste MultiplexID;" + "Ausgeschlossene Primer;" + "Primer wird verwendet as-is";
+    private static final String HEADER_TEMPLATE_1 = "SBE-ID;5\' Sequenz (in 5\'->3\');";
+    private static final String HEADER_TEMPLATE_2 = "Definitiver Hairpin 5\';SNP Variante;3\' Sequenz (in 5\' -> 3\');";
+    private static final String HEADER_TEMPLATE_3 = "Definitiver Hairpin 3\';PCR Produkt;feste MultiplexID;Ausgeschlossene Primer;Primer wird verwendet as-is";
     private static final String PINPOINT_HEADER_1 = "T count 5' (leer, wenn egal);";
     private static final String PINPOINT_HEADER_2 = "T count 3' (leer, wenn egal);";
     private static final String PROBE_HEADER_1 = "Probe type 5' (leer, wenn egal);";
@@ -80,6 +80,7 @@ public class SBEPrimerReader {
     /**
      * Erzeuge Liste mit Kandidaten. Funktioniert nur einmal, da die originale Liste intern gehalten wird, damit beim Speichern spaeter
      * keine verloren gehen.
+     * FIXME not working atm
      * @throws WrongValueException
      * @see CleavablePrimerFactory
      */

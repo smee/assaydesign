@@ -93,28 +93,64 @@ public class ProbePrimerFactory extends PrimerFactory {
 
     protected void createGivenPrimers() {
         System.out.println("Creating given probeprimers...");
-        if(givenAssay5>=0  && givenAssay5 <PROBEASSAYTYPES.length){
+        Collection otherPrimers=Collections.EMPTY_LIST;
+        if(otherFactory!=null){
+            otherFactory.createGivenPrimers();
+            otherPrimers=otherFactory.getMultiplexables();
+        }
+        if(givenAssay5>=0  && givenAssay5 <PROBEASSAYTYPES.length && seq5!=null && seq5.length()!=-1){
             System.out.println("Using given 5' primer.");
             List addons=generateAddons(Primer._5_,givenAssay5);
+            Collection other5Primers=Algorithms.collect(Algorithms.select(otherPrimers.iterator(),new UnaryPredicate(){
+                public boolean test(Object obj) {
+                    return ((Primer)obj).getType().equals(Primer._5_);
+                }
+                
+            }));
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                ProbePrimer primer=new ProbePrimer(getId(),seq5,Primer._5_,snp,givenAssay5,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
-                primer.addObserver(this);
-                primercandidates.add(primer);
+                if(other5Primers.size()>0){
+                    for (Iterator it2 = other5Primers.iterator(); it2.hasNext();) {
+                        Primer p = (Primer) it2.next();
+                        ProbePrimer pp=new ProbePrimer(p,givenAssay5,addon);
+                        pp.addObserver(this);
+                        primercandidates.add(pp);
+                    }
+                }else{
+                    ProbePrimer primer=new ProbePrimer(getId(),seq5,Primer._5_,snp,givenAssay5,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
+                    primer.addObserver(this);
+                    primercandidates.add(primer);
+                }
             }
         }
-        if(givenAssay3>=0 && givenAssay3 <PROBEASSAYTYPES.length){
+        if(givenAssay3>=0 && givenAssay3 <PROBEASSAYTYPES.length && seq3!=null && seq3.length()!=-1){
             System.out.println("Using given 3' primer.");
             String rseq=Helper.revcomplPrimer(seq3);
             String rsnp=Helper.revcomplPrimer(snp);
-            List addons=generateAddons(Primer._3_,givenAssay5);
+            List addons=generateAddons(Primer._5_,givenAssay5);
+            Collection other3Primers=Algorithms.collect(Algorithms.select(otherPrimers.iterator(),new UnaryPredicate(){
+                public boolean test(Object obj) {
+                    return ((Primer)obj).getType().equals(Primer._3_);
+                }
+                
+            }));
             for (Iterator it = addons.iterator(); it.hasNext();) {
                 String addon = (String ) it.next();
-                ProbePrimer primer=new ProbePrimer(getId(),rseq,Primer._3_,rsnp,givenAssay3,addon,productlen, cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
-                primer.addObserver(this);
-                primercandidates.add(primer);
+                if(other3Primers.size()>0){
+                    for (Iterator it2 = other3Primers.iterator(); it2.hasNext();) {
+                        Primer p = (Primer) it2.next();
+                        ProbePrimer pp=new ProbePrimer(p,givenAssay5,addon);
+                        pp.addObserver(this);
+                        primercandidates.add(pp);
+                    }
+                }else{
+                    ProbePrimer primer=new ProbePrimer(getId(),rseq,Primer._3_,rsnp,givenAssay5,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
+                    primer.addObserver(this);
+                    primercandidates.add(primer);
+                }
             }
         }
+            
     }
 
     protected List findBestPrimers(List liste) {
