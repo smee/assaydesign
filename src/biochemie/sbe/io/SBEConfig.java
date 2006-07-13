@@ -220,6 +220,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getBiotinString();
     }    public void setBiotinString(String biotin) {
         cdopt.setBiotinString(biotin);
+    }    public double getCalcDaltonMaxMass() {
+        return cdopt.getCalcDaltonMaxMass();
+    }    public void setCalcDaltonMaxMass(double mass) {
+        cdopt.setCalcDaltonMaxMass(mass);
     }
     //proxy end -----------------------------------------------------------------------------------------
 
@@ -290,4 +294,5 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             throw new RuntimeException("Can't load default values for secstruc options!");
         
     }
+
  }

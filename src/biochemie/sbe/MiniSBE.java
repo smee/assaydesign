@@ -2,7 +2,6 @@ package biochemie.sbe;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import org._3pq.jgrapht.UndirectedGraph;
-
 
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SBEPrimerReader;
@@ -34,12 +32,14 @@ import biochemie.util.LogStdStreams;
  */
 public class MiniSBE {
     SBEPrimerReader sbpr = null;
-    public static final int PROBE=2;
-    public static final int PINPOINT=1;
-    public static final int CLEAVABLE=0;
     public static final int UNKNOWN=-1;
+    public static final int CLEAVABLE=0;
+    public static final int PINPOINT=1;
+    public static final int PROBE=2;
+    public static final int PROBE_CLEAVABLE=3;
+    public static final int PROBE_PINPOINT=4;
     
-    public static String[] assayTypes=new String[]{"Cleavable linker","Pinpoint","Probe"};
+    public static String[] assayTypes=new String[]{"Cleavable linker","Pinpoint","Probe","Probe+Cleavable","Probe+Pinpoint"};
 
     public MiniSBE(String optname, String primername) {
         List sbec=null;
@@ -150,7 +150,7 @@ public class MiniSBE {
     public static void initLogfile(String path) {
         try {
             String startstring="---------Program started: " + new Date()+" -----------\n";
-            startstring+="\tVersion: $20-May-2005, 08:54$";
+            startstring+="\tVersion: $$$DATE$$$";
             if(!Boolean.getBoolean("DEBUG"))
                 LogStdStreams.initializeErrorLogging(path+File.separatorChar+"minisbe.log",startstring, true, false);
         } catch (RuntimeException e) {

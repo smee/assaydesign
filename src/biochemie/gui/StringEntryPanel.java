@@ -121,6 +121,12 @@ public class StringEntryPanel extends MyPanel {
 	public String getText(){
 		return getPBSequenceField().getText();
 	}
+    public int getTextAsInt(int dflt){
+        return getPBSequenceField().getAsInt(dflt);
+    }
+    public double getTextAsDouble(double dflt){
+        return getPBSequenceField().getAsDouble(dflt);
+    }
 	/**
 	 * @param string
 	 */

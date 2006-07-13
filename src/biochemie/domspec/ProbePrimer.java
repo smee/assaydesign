@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import biochemie.sbe.ProbePrimerFactory;
 import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
@@ -22,7 +23,7 @@ public class ProbePrimer extends Primer {
         p=null;
         this.addon=addon;
     }
-    public ProbePrimer(Primer p, int assayType, String addon){//TODO
+    public ProbePrimer(Primer p, int assayType, String addon){
         super(p.id,p.getCompletePrimerSeq(),p.getType(),p.getSNP(), p.getProductLength(), p.cfg, p.mindiff);
         this.assayType=assayType;
         this.p=p;
@@ -77,9 +78,12 @@ public class ProbePrimer extends Primer {
     }
     public String toString() {
         StringBuffer sb=new StringBuffer();
-        sb.append(getId()).append(":").append(getCompletePrimerSeq()).append(", ").append(getType()).append(", assayType=").append(getAssayType());
-        sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
-        sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
+        if(p!=null){
+            sb.append(p.toString()).append(", assayType=");
+        }else{
+            sb.append(super.toString());
+        }
+        sb.append(getAssayType());
         return sb.toString();
     }
     public boolean equals(Object o){
@@ -97,4 +101,7 @@ public class ProbePrimer extends Primer {
            append(getAssayType()).
            toHashCode();
 }
+    public Primer getIncludedPrimer() {
+        return p;
+    }
 }

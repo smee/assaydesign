@@ -50,7 +50,7 @@ public class PeakInputPanel extends JPanel {
             throw new IllegalArgumentException("call with 3 double values!");
         lowPeakTf.setText(Double.toString(vals[0]));
         mediumMassTf.setText(Double.toString(vals[1]));
-        highPeakTf.setText(Double.toString(vals[1]));
+        highPeakTf.setText(Double.toString(vals[2]));
         
     }
     public double[] getPeakValues(){

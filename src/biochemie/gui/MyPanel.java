@@ -14,7 +14,7 @@ import javax.swing.JPanel;
  * @author sdienst
  *
  */
-public abstract class MyPanel extends JPanel implements ChangeWatcher{
+public class MyPanel extends JPanel implements ChangeWatcher{
     private boolean dirtyFlag=false;
     /**
      * @param layout

@@ -31,6 +31,7 @@ import javax.swing.SwingConstants;
 import biochemie.calcdalton.CDOptionsImpl;
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.gui.DoubleValueIntervallPanel;
+import biochemie.gui.StringEntryPanel;
 
 /**
  * @author Steffen Dienst
@@ -167,7 +168,7 @@ public class CDConfigPanel extends JPanel{
     JCheckBox cbAllowOverlap;
     DoubleValueIntervallPanel abstandPanel;
 	DoubleValueIntervallPanel verbMassePanel;
-
+	StringEntryPanel maxMassPanel; 
 	final Vector bruchstelleVector;
     private JCheckBox cbCalcdaltonAnhaenge;
     private JCheckBox cbShowIons;
@@ -207,6 +208,7 @@ public class CDConfigPanel extends JPanel{
         cbCalcdaltonAnhaenge.setSelected(cfg.getCalcDaltonAllExtensions());
         cbShowIons.setSelected(cfg.getCalcDaltonShowIons());
         delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
+        maxMassPanel.setText(Double.toString(cfg.getCalcDaltonMaxMass()));
     }
     public void saveToConfig(CalcDaltonOptions cfg) {
         cfg.setCalcDaltonAssayPeaks(assayPeakPanel.getPeakValues());
@@ -223,6 +225,7 @@ public class CDConfigPanel extends JPanel{
         cfg.setCalcDaltonVerbFrom(verbMassePanel.getFrom());
         cfg.setCalcDaltonVerbTo(verbMassePanel.getTo());
         cfg.setCalcDaltonShowIons(cbShowIons.isSelected());
+        cfg.setCalcDaltonMaxMass(maxMassPanel.getTextAsDouble(30000));
     }
 
     public int getMaxBruchstelle(){
@@ -243,7 +246,7 @@ public class CDConfigPanel extends JPanel{
 
 
 
-        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p}};
+        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,p,b}};
 
         setLayout(new TableLayout(settingsSize));
         bruchStellenPanel = new JPanel();
@@ -285,19 +288,24 @@ public class CDConfigPanel extends JPanel{
         add(abstandPanel,"1,3");
 		add(verbMassePanel,"1,5");
 
+        maxMassPanel=new StringEntryPanel("Upper mass limit (D)");
+        maxMassPanel.setColumns(9);
+        maxMassPanel.setValidChars(PBSequenceField.NUMBERS);
+        add(maxMassPanel,"1,7");
+        
         JPanel peakPanel = createPeakPanel();
-        add(peakPanel,"1,7");
+        add(peakPanel,"1,9");
         cbAllowOverlap=new JCheckBox("Allow unextended Primer overlap",false);
         cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>complexes as specified in \"Excluded peak distances\"</html>");
-        add(cbAllowOverlap,"1,9");
+        add(cbAllowOverlap,"1,11");
         cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);
         cbCalcdaltonAnhaenge.setToolTipText("<html>If checked, the program reserves the appropriate mass range for all<br>" +
                 " possible extension products A, C, G and T of every primer.<br>" +
                 "Otherwise the mass range is reserved for the expected products only.</html>");
-        add(cbCalcdaltonAnhaenge,"1,11");
+        add(cbCalcdaltonAnhaenge,"1,13");
         cbShowIons=new JCheckBox("Draw peaks of cationic adducts");
         cbShowIons.setToolTipText("<html>Cationic side products of each primer and product <br>will be shown in the MALDI-Preview.</html>");
-        add(cbShowIons,"1,13");
+        add(cbShowIons,"1,15");
     }
 
     /**
@@ -340,6 +348,9 @@ public class CDConfigPanel extends JPanel{
     }
     public void showProductPeaks(boolean b){
         productPeakPanel.setVisible(b);
+    }
+    public void showMaxMass(boolean b){
+        maxMassPanel.setVisible(b);
     }
 
 }

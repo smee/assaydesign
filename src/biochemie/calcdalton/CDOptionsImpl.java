@@ -31,9 +31,10 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.to","-150.0 -134.0 -110.0 50.0"}
            ,{"calcdalton.verbfrom","2070.0 2162.0 2248.0 2385.0 2425.0 5000.0"}
            ,{"calcdalton.verbto","2080.0 2172.0 2258.0 2395.0 2435.0 9.99999999E8"}
+           ,{"calcdalton.maxmass","30000"}
            ,{"calcdalton.allowoverlap","true"}
-           ,{"calcdalton.assaypeaks","10.0 2000 10"}
-           ,{"calcdalton.productpeaks","10.0 2000 10"}
+           ,{"calcdalton.assaypeaks","10.0 2000 10.0"}
+           ,{"calcdalton.productpeaks","10.0 2000 10.0"}
            ,{"calcdalton.extension","false"}
            ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
            ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
@@ -207,5 +208,13 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
 
     public void setBiotinString(String biotin) {
         setProperty("misc.biotin",biotin);
+    }
+
+    public double getCalcDaltonMaxMass() {
+        return getDouble("calcdalton.maxmass",30000);
+    }
+
+    public void setCalcDaltonMaxMass(double mass) {
+        setProperty("calcdalton.maxmass",Double.toString(mass));
     }
 }

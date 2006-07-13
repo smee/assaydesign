@@ -18,7 +18,7 @@ import biochemie.sbe.PrimerFactory.TemperatureDistanceAndHairpinComparator;
 import biochemie.util.Helper;
 
 public class PinpointPrimerFactory extends PrimerFactory {
-    static public final String CSVHEADER = 
+    static public final String CSV_OUTPUT_HEADER = 
                     "PINPOINT Multiplex ID;"
                     +"SBE-Primer ID;"
                     +"Sequence incl. 5’tag;"
@@ -152,15 +152,14 @@ public class PinpointPrimerFactory extends PrimerFactory {
         return sb.toString();
     }
 
-    public String getCsvheader() {
-        return CSVHEADER;
-    }
-
-
     public String getFilter() {
         assertPrimerChosen();
         return chosen.getType()+"_*_"+((PinpointPrimer)chosen).getTTail().length();
     }
 
+
+    public String getCsvheader() {
+        return CSV_OUTPUT_HEADER;
+    }
 
 }

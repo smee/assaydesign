@@ -61,11 +61,7 @@ public class PinpointPrimer extends Primer{
         return getType()+"_"+getPrimerSeq().length()+"_"+tTail.length();
     }
     public String toString() {
-        StringBuffer sb=new StringBuffer();
-        sb.append(getId()).append(":").append(getCompletePrimerSeq()).append(", ").append(getType()).append(", T lenght=").append(getTTail().length());
-        sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
-        sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
-        return sb.toString();
+        return new StringBuffer(super.toString()).append(", T lenght=").append(getTTail().length()).toString();
     }
     public boolean equals(Object o){
         if ( !(o instanceof PinpointPrimer) ) {

@@ -16,25 +16,7 @@ import biochemie.domspec.ProbePrimer;
 import biochemie.util.Helper;
 
 public class ProbePrimerFactory extends PrimerFactory {
-    static public final String CSVHEADER =
-                    "PROBE Multiplex ID;"
-                    +"SBE-Primer ID;"
-                    +"Sequence;"
-                    +"SNP allele;"
-                    +"Probe assay type;"
-                    +"Primerlength;"
-                    +"GC contents;"
-                    +"Tm;"
-                    +"Excluded 5\' Primers;"
-                    +"Excluded 3\' Primers;"
-                    +"Primer from 3' or 5';"
-                    +"PCR-Product-length;"
-                    +"Actual sequence;"
-                    +"Sec.struc.: position (3\');"
-                    +"Sec.struc.: incorporated nucleotide;"
-                    +"Sec.struc.: class";
-    
-    public static final boolean[][] ASSAYTYPES={
+    public static final boolean[][] PROBEASSAYTYPES={
         {true,true,true,true},
         {false,true,true,true},
         {true,false,true,true},
@@ -88,30 +70,30 @@ public class ProbePrimerFactory extends PrimerFactory {
     }
     private final int givenAssay5;
     private final int givenAssay3;
-    private final Collection otherPrimers;
+    final PrimerFactory otherFactory;
     
     public ProbePrimerFactory(SBEOptions cfg, String id, String seq5,
             String snp, String seq3, String bautEin5, String bautEin3,
             int productlen, String givenMultiplexid, int givenAssay5, int givenAssay3, boolean userGiven,
             String unwanted, boolean rememberOutput){
-        this(cfg,id,seq5,snp,seq3,bautEin5,bautEin3,productlen,givenMultiplexid,givenAssay5,givenAssay3,userGiven,unwanted,rememberOutput,Collections.EMPTY_LIST);
+        this(cfg,id,seq5,snp,seq3,bautEin5,bautEin3,productlen,givenMultiplexid,givenAssay5,givenAssay3,userGiven,unwanted,rememberOutput,null);
     }
     
     public ProbePrimerFactory(SBEOptions cfg, String id, String seq5,
             String snp, String seq3, String bautEin5, String bautEin3,
             int productlen, String givenMultiplexid, int givenAssay5, int givenAssay3, boolean userGiven,
-            String unwanted, boolean rememberOutput, Collection otherprimers) {
+            String unwanted, boolean rememberOutput, PrimerFactory otherFactory) {
         super(cfg, id, seq5, snp, seq3, bautEin5, bautEin3, productlen,
                 givenMultiplexid, userGiven, unwanted, rememberOutput);
         this.givenAssay5=givenAssay5;
         this.givenAssay3=givenAssay3;
-        this.otherPrimers=otherprimers;
+        this.otherFactory=otherFactory;
     }
 
 
     protected void createGivenPrimers() {
         System.out.println("Creating given probeprimers...");
-        if(givenAssay5>=0  && givenAssay5 <ASSAYTYPES.length){
+        if(givenAssay5>=0  && givenAssay5 <PROBEASSAYTYPES.length){
             System.out.println("Using given 5' primer.");
             List addons=generateAddons(Primer._5_,givenAssay5);
             for (Iterator it = addons.iterator(); it.hasNext();) {
@@ -121,7 +103,7 @@ public class ProbePrimerFactory extends PrimerFactory {
                 primercandidates.add(primer);
             }
         }
-        if(givenAssay3>=0 && givenAssay3 <ASSAYTYPES.length){
+        if(givenAssay3>=0 && givenAssay3 <PROBEASSAYTYPES.length){
             System.out.println("Using given 3' primer.");
             String rseq=Helper.revcomplPrimer(seq3);
             String rsnp=Helper.revcomplPrimer(snp);
@@ -138,7 +120,7 @@ public class ProbePrimerFactory extends PrimerFactory {
     protected List findBestPrimers(List liste) {
 
         List l=new ArrayList();
-        for (int i = 0; i < ASSAYTYPES.length; i++) {
+        for (int i = 0; i < PROBEASSAYTYPES.length; i++) {
            final int var=i;
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
@@ -165,13 +147,26 @@ public class ProbePrimerFactory extends PrimerFactory {
         String snp=this.snp;
         if(type.equals(Primer._3_))
             snp=Helper.complPrimer(snp);
-        for (int i = 0; i < ASSAYTYPES.length; i++) {
-            List addons=generateAddons(type,i);
-            for (Iterator it = addons.iterator(); it.hasNext();) {
-                String addon = (String ) it.next();
-                result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff()));
+        if(otherFactory!=null){
+            Collection otherPrimers=otherFactory.createPossiblePrimers(seq,type);
+            for (int i = 0; i < PROBEASSAYTYPES.length; i++) {
+                List addons=generateAddons(type,i);
+                for (Iterator it = otherPrimers.iterator(); it.hasNext();) {
+                    Primer primer = (Primer) it.next();                    
+                    for (Iterator itaddon = addons.iterator(); itaddon.hasNext();) {
+                        String addon = (String ) itaddon.next();
+                        result.add(new ProbePrimer(primer,i,addon));
+                    }
+                }
             }
-        }
+        }else
+            for (int i = 0; i < PROBEASSAYTYPES.length; i++) {
+                List addons=generateAddons(type,i);
+                for (Iterator it = addons.iterator(); it.hasNext();) {
+                    String addon = (String ) it.next();
+                    result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff()));
+                }
+            }
         return result;
     }
 
@@ -187,14 +182,14 @@ public class ProbePrimerFactory extends PrimerFactory {
         for(int i=0;i<snp.length();i++){
             StringBuffer sb=new StringBuffer();
             sb.append(snp.charAt(i));
-            if(ASSAYTYPES[assay][getPos(snp.charAt(i))]){//ist ein dd-Nukleotid
+            if(PROBEASSAYTYPES[assay][getPos(snp.charAt(i))]){//ist ein dd-Nukleotid
                 result.add(sb.toString());
                 continue;
             }
             int j=0;
             while(j<right.length()){
                 sb.append(right.charAt(j));
-                if(ASSAYTYPES[assay][getPos(right.charAt(j))]){//ist ein dd-Nukleotid
+                if(PROBEASSAYTYPES[assay][getPos(right.charAt(j))]){//ist ein dd-Nukleotid
                     result.add(sb.toString());
                     break;
                 }
@@ -223,6 +218,10 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(((ProbePrimer)chosen).getAssayType());
         sb.append(';');
+        if(otherFactory!=null){
+            sb.append(otherFactory.getCSVRow().split(";")[4]);
+            sb.append(';');
+        }
         sb.append(getFavSeq().length());
         sb.append(';');
         sb.append(df.format(chosen.getGCGehalt()));
@@ -242,13 +241,42 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(chosen.getCSVSekStructuresSeparatedBy(";"));
         return sb.toString();
     }
-    public String getCsvheader() {
-        return CSVHEADER;
-    }
-
     public String getFilter() {
         assertPrimerChosen();
         return chosen.getType()+"_*_"+((ProbePrimer)chosen).getAssayType();
     }
 
+    protected static final String CSV_OUTPUT_HEADER1 = 
+        "PROBE Multiplex ID;"
+        +"SBE-Primer ID;"
+        +"Sequence;"
+        +"SNP allele;"
+        +"Probe assay type;";
+protected static final String CSV_OUTPUT_HEADER2 = 
+        "Primerlength;"
+        +"GC contents;"
+        +"Tm;"
+        +"Excluded 5\' Primers;"
+        +"Excluded 3\' Primers;"
+        +"Primer from 3' or 5';"
+        +"PCR-Product-length;"
+        +"Actual sequence;"
+        +"Sec.struc.: position (3\');"
+        +"Sec.struc.: incorporated nucleotide;"
+        +"Sec.struc.: class";
+
+    public String getCsvheader() {
+        String header=CSV_OUTPUT_HEADER1;
+        if(otherFactory!=null){
+            header += otherFactory.getCsvheader().split(";")[4]+";";//XXX dirty, uses knowledge of header
+        }
+        return header+CSV_OUTPUT_HEADER2;
+    }
+
+    protected void choose(Primer struct) {
+        super.choose(struct);
+        if(otherFactory!=null){
+            otherFactory.choose(((ProbePrimer)struct).getIncludedPrimer());
+        }
+    }
 }

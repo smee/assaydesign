@@ -67,6 +67,7 @@ public class CleavablePrimer extends Primer{
         super(id,seq, type,snp,prodlen, cfg.getSecStrucOptions(),cfg.getMinProductLenDiff());
         this.cfg = cfg;
         this.pl=pl;
+        assert ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),pl)!=-1;
         if(pl == -1)
             throw new IllegalArgumentException("Sequence of primer "+id+" has no L within sequence!");
         init(bautein);
@@ -173,8 +174,8 @@ public class CleavablePrimer extends Primer{
     protected boolean passtMitCDRec(Primer me, Primer other, boolean evilcd) {
         Set cross=SekStrukturFactory.getCrossdimer(me,other,cfg.getSecStrucOptions());
         for (Iterator it = cross.iterator(); it.hasNext();) {
-            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
-            if(s.isVerhindert())
+            SekStruktur s = (SekStruktur) it.next();
+            if(s instanceof CleavableSekStruktur && ((CleavableSekStruktur)s).isVerhindert())
                 continue;
             if(!evilcd) {
                 if(s.isIncompatible()) {
@@ -193,11 +194,7 @@ public class CleavablePrimer extends Primer{
         return getId()+'_'+getBruchstelle()+'_'+getType();
     }
     public String toString() {
-        StringBuffer sb=new StringBuffer();
-        sb.append(getId()).append(":").append(getCompletePrimerSeq()).append(", ").append(getType()).append(", PL=").append(getBruchstelle());
-        sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
-        sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
-        return sb.toString();
+        return new StringBuffer(super.toString()).append(", PL=").append(getBruchstelle()).toString();
     }
     public String getCSVSekStructuresSeparatedBy(String sep) {
         List l=new ArrayList(getSecStrucs());
@@ -255,8 +252,8 @@ public class CleavablePrimer extends Primer{
         String snp1=getSNP();
         String snp2=other.getSNP();
         for (Iterator it = getSecStrucs().iterator(); it.hasNext();) {
-            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
-            if(s.isVerhindert())
+            SekStruktur s = (SekStruktur) it.next();
+            if(s instanceof CleavableSekStruktur && ((CleavableSekStruktur)s).isVerhindert())
                 continue;
             if(-1 != snp2.indexOf(s.bautEin())){
                 edgecol.add(new SecStructureEdge(this,other, s));
@@ -264,8 +261,8 @@ public class CleavablePrimer extends Primer{
             }
         }
         for (Iterator it = other.getSecStrucs().iterator(); it.hasNext();) {
-            CleavableSekStruktur s = (CleavableSekStruktur) it.next();
-            if(s.isVerhindert())
+            SekStruktur s = (SekStruktur) it.next();
+            if(s instanceof CleavableSekStruktur && ((CleavableSekStruktur)s).isVerhindert())
                 continue;
             if(snp1.indexOf(s.bautEin()) != -1){
                 edgecol.add(new SecStructureEdge(other,this, s));

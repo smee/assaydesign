@@ -33,7 +33,7 @@ import biochemie.util.Helper;
  */
 public class CleavablePrimerFactory extends PrimerFactory {
 
-    public static final String CSVHEADER = 
+    public static final String CSV_OUTPUT_HEADER = 
                     "CLEAVABLE Multiplex ID;"
                     +"SBE-Primer ID;"
                     +"Sequence incl. L;"
@@ -259,28 +259,6 @@ public class CleavablePrimerFactory extends PrimerFactory {
      * @return
      */
     public String getCSVRow() {
-        /*
-                    "CLEAVABLE Multiplex ID;"
-                    +"SBE-Primer ID;"
-                    +"Sequence incl. L;"
-                    +"SNP allele;"
-                    +"Linker (=L): position;"
-                    +"Primerlength;"
-                    +"GC contents incl L;"
-                    +"Tm incl L;"
-                    +"Excluded 5\' Primers;"
-                    +"Excluded 3\' Primers;"
-                    +"Primer from 3' or 5';"
-                    +"PCR-Product-length;"
-                    +"Actual sequence;"
-                    +"Fragment: T-Content;"
-                    +"Fragment: G-content;"
-                    +"Sec.struc.: position (3\');"
-                    +"Sec.struc.: incorporated nucleotide;"
-                    +"Sec.struc.: class;"
-                    +"Sec.struc.: irrelevant due to L;"
-                    +"Comment";
-         */
         if(chosen == null && primercandidates.size()==0)
             return ";"+getId()+";;;;;;;" +invalidreason5
                     + ";" + invalidreason3
@@ -507,12 +485,12 @@ public class CleavablePrimerFactory extends PrimerFactory {
         return result;
     }
         
-    public String getCsvheader() {
-        return CSVHEADER;
-    }
-
     public String getFilter() {
         assertPrimerChosen();
         return chosen.getType()+"_*_"+((CleavablePrimer)chosen).getBruchstelle();
+    }
+
+    public String getCsvheader() {
+        return CSV_OUTPUT_HEADER;
     }
 }

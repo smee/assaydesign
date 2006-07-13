@@ -65,6 +65,8 @@ import javax.swing.Scrollable;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
@@ -81,6 +83,7 @@ import biochemie.domspec.CleavableSekStruktur;
 import biochemie.domspec.SekStruktur;
 import biochemie.gui.InfiniteProgressPanel;
 import biochemie.gui.MyPanel;
+import biochemie.gui.NuklSelectorPanel;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.MiniSBE;
 import biochemie.sbe.PrimerFactory;
@@ -271,8 +274,8 @@ public class OptimizePLAction extends MyAction {
                     (KeyStroke)null);
         }
         public void actionPerformed(ActionEvent e) {
-            if(verifyUserFilters()==false) {
-                JOptionPane.showMessageDialog(MiniSBEGui.this,"Invalid primerfilters. Please review the marked fields!");
+            if(verifyUserInput()==false) {
+                JOptionPane.showMessageDialog(MiniSBEGui.this,"Invalid input. Please review the marked fields!");
                 return;
             }
             SwingWorker sw=new SwingWorker() {
@@ -293,11 +296,20 @@ public class OptimizePLAction extends MyAction {
          * Tests, if the format of the filters entered by the user are correct.
          * @return
          */
-        private boolean verifyUserFilters() {
+        private boolean verifyUserInput() {
             Pattern re=Pattern.compile("(3|5|\\\\*)_(\\d+|\\*)_(\\d+|\\*)");
             boolean flag=true;
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
+                NuklSelectorPanel nuklPanel=p.getSNPSelectorPanel();
+                Border b=nuklPanel.getBorder();
+                if(b instanceof CompoundBorder){
+                    nuklPanel.setBorder(((CompoundBorder)b).getInsideBorder());
+                }
+                if(nuklPanel.getSelectedNukleotides().length()==0){
+                    nuklPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),nuklPanel.getBorder()));
+                    flag=false;
+                }
                 String filter=p.getFiltersPanel().getText();
                 StringTokenizer st=new StringTokenizer(filter);
                 p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.black,1));
@@ -312,8 +324,26 @@ public class OptimizePLAction extends MyAction {
                     }
                 }
             }
+            //TODO uppermass limit überprüfen
+//            if(assayType==MiniSBE.PINPOINT || assayType==MiniSBE.PROBE_PINPOINT){
+//                for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+//                    SBECandidatePanel p = (SBECandidatePanel) it.next();
+//                    flag=flag && validateProbePrimer(p);
+//                }
+//            }
             return flag;
         }
+//        private boolean validateProbePrimer(SBECandidatePanel p){
+//            p.getPinpointAddonPanel5().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+//            p.getPinpointAddonPanel5().setToolTipText(null);
+//            p.getPinpointAddonPanel3().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+//            p.getPinpointAddonPanel3().setToolTipText(null);
+//            String addon=p.getPinpointAddonPanel5().getText();
+//            if(addon!=null && addon.length()>0){
+//                p.getPinpointAddonPanel5().setToolTipText("Primer exceeds upper mass limit.");
+//                
+//            }
+//        }
         public List getCompactedSBECandidates(SBEOptions cfg) {
             List sbec= new ArrayList(sbepanels.size());
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
@@ -578,6 +608,7 @@ public class OptimizePLAction extends MyAction {
             sbepanels.clear();
             getSbepanelsPanel().revalidate();
             getSbepanelsPanel().repaint();
+            askForAssayType();
         }
     }
 	private class LoadPrimerAction extends MyAction {
@@ -627,8 +658,8 @@ public class OptimizePLAction extends MyAction {
 	                String line=br.readLine().trim();//skip header
                     if(line.charAt(0)=='"')
                         line=line.substring(1);
-                    int assayType=SBECandidatePanel.getAssayTypeFromHeader(line);
-                    boolean isInputfile=SBECandidatePanel.isInputFile(line);
+                    int assayType=SBEPrimerReader.getAssayTypeFromHeader(line);
+                    boolean isInputfile=SBEPrimerReader.isInputFile(line);
                     if(assayType==MiniSBE.UNKNOWN)
                         return false;
                     MiniSBEGui.this.assayType=assayType;
@@ -690,7 +721,7 @@ public class OptimizePLAction extends MyAction {
          * @param file
          */
         public void saveToFile(File file) {
-            if(file != null){
+            if(file != null && sbepanels.size()>0){
                 String path=file.getAbsolutePath();
                 if(!path.endsWith(".csv") && !path.endsWith(".CSV"))
                     path += ".csv";
@@ -841,6 +872,7 @@ public class OptimizePLAction extends MyAction {
 	private void askForAssayType() {
 	    String selected=(String) JOptionPane.showInputDialog(this,"Please choose the assay type:","Assay type",JOptionPane.QUESTION_MESSAGE,null,MiniSBE.assayTypes,MiniSBE.assayTypes[0]);
         this.assayType=ArrayUtils.indexOf(MiniSBE.assayTypes,selected);
+        getConfigDialog().setAssayType(assayType);
     }
     private void exitApp() {
 //		 Save the state of the window as preferences

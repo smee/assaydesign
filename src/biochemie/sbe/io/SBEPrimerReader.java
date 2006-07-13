@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import biochemie.sbe.CleavablePrimerFactory;
+import biochemie.sbe.MiniSBE;
 import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.WrongValueException;
@@ -32,7 +33,20 @@ import biochemie.util.Helper;
  *
  */
 public class SBEPrimerReader {
-	protected List list;
+	private static final String CLEAVABLE_HEADER_1 = "Feste Photolinkerposition 5\' (leer, wenn egal);";
+    private static final String CLEAVABLE_HEADER_2 = "Feste Photolinkerposition 3\' (leer, wenn egal);";
+    private static final String HEADER_TEMPLATE_1 = "SBE-ID;" + "5\' Sequenz (in 5\'->3\');";
+    private static final String HEADER_TEMPLATE_2 = "Definitiver Hairpin 5\';" + "SNP Variante;" + "3\' Sequenz (in 5\' -> 3\');";
+    private static final String HEADER_TEMPLATE_3 = "Definitiver Hairpin 3\';" + "PCR Produkt;" + "feste MultiplexID;" + "Ausgeschlossene Primer;" + "Primer wird verwendet as-is";
+    private static final String PINPOINT_HEADER_1 = "T count 5' (leer, wenn egal);";
+    private static final String PINPOINT_HEADER_2 = "T count 3' (leer, wenn egal);";
+    private static final String PROBE_HEADER_1 = "Probe type 5' (leer, wenn egal);";
+    private static final String PROBE_HEADER_2 = "Probe type 3' (leer, wenn egal);";
+    private static final String PROBE_CLEAVABLE_HEADER_1 = PROBE_HEADER_1 + CLEAVABLE_HEADER_1;
+    private static final String PROBE_CLEAVABLE_HEADER_2 = PROBE_HEADER_2 + CLEAVABLE_HEADER_2;
+    private static final String PROBE_PINPOINT_HEADER_1 = PROBE_HEADER_1 + PINPOINT_HEADER_1;
+    private static final String PROBE_PINPOINT_HEADER_2 = PROBE_HEADER_2 + PINPOINT_HEADER_2;
+    protected List list;
     protected List sbec;
     protected SBEOptions cfg;
 
@@ -128,6 +142,41 @@ public class SBEPrimerReader {
      */
     public void writeSBEResults(String outname) {
         writeSBEResults(outname,sbec);
+    }
+
+    public static int getAssayTypeFromHeader(String header){
+        for (int i = 0; i < MiniSBE.assayTypes.length; i++) {
+            if(header.equals(getCSVInputHeader(i)) || header.equals(getCSVOutputHeader(i)))
+                return i;
+        }
+        return MiniSBE.UNKNOWN;   
+    }
+    public static String getCSVOutputHeader(int i) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public static String getCSVInputHeader(int assayType){
+        switch (assayType) {
+        case MiniSBE.CLEAVABLE:
+            return HEADER_TEMPLATE_1+CLEAVABLE_HEADER_1+HEADER_TEMPLATE_2+CLEAVABLE_HEADER_2+HEADER_TEMPLATE_3;
+        case MiniSBE.PROBE:
+            return HEADER_TEMPLATE_1+PROBE_HEADER_1+HEADER_TEMPLATE_2+PROBE_HEADER_2+HEADER_TEMPLATE_3;
+        case MiniSBE.PINPOINT:
+            return HEADER_TEMPLATE_1+PINPOINT_HEADER_1+HEADER_TEMPLATE_2+PINPOINT_HEADER_2+HEADER_TEMPLATE_3;
+        case MiniSBE.PROBE_CLEAVABLE:
+            return HEADER_TEMPLATE_1+PROBE_CLEAVABLE_HEADER_1+HEADER_TEMPLATE_2+PROBE_CLEAVABLE_HEADER_2+HEADER_TEMPLATE_3;
+        case MiniSBE.PROBE_PINPOINT:
+            return HEADER_TEMPLATE_1+PROBE_PINPOINT_HEADER_1+HEADER_TEMPLATE_2+PROBE_PINPOINT_HEADER_2+HEADER_TEMPLATE_3;
+        default:
+            throw new IllegalArgumentException("unknown assaytype '"+assayType+"', don't know how to save it!");
+        }
+    }
+    public static boolean isInputFile(String header) {
+        for (int i = 0; i < MiniSBE.assayTypes.length; i++) {
+            if(header.equals(getCSVInputHeader(i)))
+                return true;
+        }
+        return false;   
     }
 
     public static void writeSBEResults(String filename, List sbec) {

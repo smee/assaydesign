@@ -46,6 +46,9 @@ public interface CalcDaltonOptions extends GeneralOptions{
     public double[] getCalcDaltonVerbTo();
     public void setCalcDaltonVerbTo(double[] arr);
 
+    public double getCalcDaltonMaxMass();
+    public void setCalcDaltonMaxMass(double mass);
+    
     /**
      * Get minimum weight distance.
      * @return

@@ -74,6 +74,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
             return (t1 < t2 ? -1 : (t1 == t2 ? 0 : 1));
         }
     }
+
     private String writtenoutput=null;
     protected final SBEOptions cfg;
     protected final String id;
@@ -147,10 +148,14 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
     protected List createSortedCandidateList(String left, String bautEin5, String right, String bautEin3, PrimerCreatorCallback cb) {
         System.out.println("\nDetailed report for choice of possible 5' primer for " + id +
          "\n-----------------------------------------------------------------");
-        List liste= generateFilteredPrimerList(left, Primer._5_,bautEin5,cb);
+        List liste= filterPrimerList(generatePrimerList(left, Primer._5_,bautEin5,cb),
+                                    !bautEin5.equalsIgnoreCase("none") && 0 == bautEin5.length(),
+                                    Primer._5_);
         System.out.println("\nDetailed report for choice of possible 3' primer for " + id +
          "\n-----------------------------------------------------------------");
-        liste.addAll(generateFilteredPrimerList(right, Primer._3_,bautEin3,cb));
+        liste.addAll(filterPrimerList(generatePrimerList(right, Primer._3_,bautEin3,cb),
+                                      !bautEin3.equalsIgnoreCase("none") && 0 == bautEin3.length(),
+                                      Primer._3_));
         Collections.sort(liste, new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
 
         System.out.println("\nOrdered list of possible primer according to your preferences for "+id+":\n" +
@@ -165,14 +170,13 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
      * hh Schalter für Hairpin/Homodimer, bei true werden sie verwendet
      * @return
      */
-    protected List generateFilteredPrimerList(String primer, String type,String bautein, PrimerCreatorCallback cb) {
+    protected List generatePrimerList(String primer, String type,String bautein, PrimerCreatorCallback cb) {
         String snp=this.snp;
         if(type.equals(Primer._3_)) {
             primer=Helper.revcomplPrimer(primer);
             snp=Helper.complPrimer(snp);
         }
         ArrayList liste= new ArrayList();
-        boolean hh=!bautein.equalsIgnoreCase("none") && 0 == bautein.length(); //in diesen beiden Fällen werden die H-Filter nicht verwendet
         /*
          * lege Liste an mit allen Sequenzen, die aus Primer entstehen, indem Basen am 5'-Ende abgeschnitten werden.
          */
@@ -186,7 +190,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
                 
             }
         }
-        return filterPrimerList(liste, hh, type);
+        return liste;
 
     }
 
@@ -254,7 +258,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
      * @param type
      * @return
      */
-    protected List filterPrimerList(ArrayList liste, boolean sec, String type) {
+    protected List filterPrimerList(List liste, boolean sec, String type) {
         int allcount = liste.size();
         if(type.equals(Primer._5_))
             invalidreason5=new StringBuffer();
@@ -395,4 +399,5 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
             choose((Primer) o);
     }
     public abstract String getFilter();
+
 }
