@@ -228,26 +228,30 @@ public class CalcDalton implements Interruptible{
 	 */
     protected boolean isDiffOkay(double[] p1_massen,double[] p2_massen) {
         double temp,peak;
-        if(invalidMassesIn(p1_massen)||invalidMassesIn(p2_massen))
-        	return false;
         for (int i= 0; i < p1_massen.length; i++) {
             for (int j= 0; j < p2_massen.length; j++) {
                 peak = getCurrentPeak(p2_massen[j],p1_massen[i],assaypeaks);
                 temp=Math.abs(p1_massen[i] - p2_massen[j]);
-                if(temp<peak){//wann welche???
+                //min. peakdiff
+                if(temp<peak){
                     return false;
                 }
+                //forbidden masses
                 for(int k=0;k<from.length;k++) {
                     if(temp>=fromAbs[k] && temp<=toAbs[k]){
                         return false;
                     }
                 }
+                //peak between mass and halfmass
+                if(Math.abs(p1_massen[i]/2d - p2_massen[j])<peak || 
+                   Math.abs(p1_massen[i] - p2_massen[j]/2d)<peak)
+                    return false;
             }
         }
         return true;
     }
     protected boolean isDiffOverlapOkay(double[] p1_massen,double[] p2_massen) {
-         double temp;
+         double temp;//TODO peak between mass and half mass
          //vgl. sbe ohne anhang miteineander
 //        temp=Math.abs(p1_massen[0] - p2_massen[0]);
 //        if(temp<peaks)
@@ -301,7 +305,7 @@ public class CalcDalton implements Interruptible{
      * @param i
      * @return
      */
-    private double getCurrentPeak(double m1,double m2, double[] peakSizes) {
+    private double getCurrentPeak(double m1,double m2, double[] peakSizes) {//wann welche???
         return (m1<peakSizes[1] || m2<peakSizes[1])?peakSizes[0]:peakSizes[2];
     }
 	/**
@@ -310,7 +314,7 @@ public class CalcDalton implements Interruptible{
 	 * @param bruch berechnete Bruchstelle
 	 * @return Tabellenspalte
 	 */
-    protected String[] makeColumn(String[] sbe, int ptr,int i,int bruch) {
+    protected String[] makeColumn(String[] sbe,int bruch) {
 		String[] Tabellendaten= new String[] {"","","","","","","",""};
 		DecimalFormat df= new DecimalFormat("0.00",new DecimalFormatSymbols(Locale.US));
         double[] sbe_massen=calcSBEMass(sbe,bruch,true);
@@ -365,7 +369,7 @@ public class CalcDalton implements Interruptible{
             int[] line=erg[i];
             String[][] temptable=new String[sbeData.length][];
             for(int k=0;k<sbeData.length;k++) {
-                temptable[k]=makeColumn(sbeData[k],k,line[k],br[line[k]]);
+                temptable[k]=makeColumn(sbeData[k],br[line[k]]);
             }
             sbeTable.addTabelle(temptable);
         }
