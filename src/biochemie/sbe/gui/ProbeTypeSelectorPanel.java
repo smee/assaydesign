@@ -33,7 +33,7 @@ public class ProbeTypeSelectorPanel extends MyPanel {
      * @return
      */
     public int getSelectedType(){
-        return getComboProbetype().getSelectedIndex();
+        return getComboProbetype().getSelectedIndex() - 1;
     }
 
     public void setSelectedType(int type){

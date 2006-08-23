@@ -178,14 +178,14 @@ public class ProbePrimerFactory extends PrimerFactory {
     }
 
     public Collection createPossiblePrimers(String seq, String type) {
-        //TODO kombination mit entweder cleavable oder pinpoint
         Collection result=new ArrayList();
         String snp=this.snp;
         if(type.equals(Primer._3_))
             snp=Helper.complPrimer(snp);
+        int start = getStartAssayType(type);
         if(otherFactory!=null){
             Collection otherPrimers=otherFactory.createPossiblePrimers(seq,type);
-            for (int i = 0; i < PROBEASSAYTYPES.length; i++) {
+            for (int i=start+1; i < PROBEASSAYTYPES.length; i++) {
                 List addons=generateAddons(type,i);
                 for (Iterator it = otherPrimers.iterator(); it.hasNext();) {
                     Primer primer = (Primer) it.next();                    
@@ -194,18 +194,29 @@ public class ProbePrimerFactory extends PrimerFactory {
                         result.add(new ProbePrimer(primer,i,addon));
                     }
                 }
+                if(start!=-1)
+                    break;
             }
         }else
-            for (int i = 0; i < PROBEASSAYTYPES.length; i++) {
+            for (int i = start+1; i < PROBEASSAYTYPES.length; i++) {
                 List addons=generateAddons(type,i);
                 for (Iterator it = addons.iterator(); it.hasNext();) {
                     String addon = (String ) it.next();
                     result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff()));
                 }
+                if(start!=-1)
+                    break;
             }
         return result;
     }
 
+
+    private int getStartAssayType(String type) {
+        if(type.equals(Primer._3_))
+            return givenAssay3;
+        else
+            return givenAssay5;
+    }
 
     List generateAddons(String type, int assay) {
         List result=new ArrayList(4);
