@@ -249,7 +249,7 @@ public class CDConfigPanel extends JPanel{
 
 
 
-        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,p,b,p,b}};
+        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,b}};
 
         setLayout(new TableLayout(settingsSize));
         bruchStellenPanel = new JPanel();

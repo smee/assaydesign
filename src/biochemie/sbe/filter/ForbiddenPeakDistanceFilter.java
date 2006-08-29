@@ -15,6 +15,7 @@ public class ForbiddenPeakDistanceFilter extends AbstractKandidatenFilter {
     public ForbiddenPeakDistanceFilter(SBEOptions cfg) {
         super(cfg);
         cd=Helper.getCalcDalton(cfg);
+        reason="invalid peak mass diff :";
     }
 
     public void filter(List cand) {
