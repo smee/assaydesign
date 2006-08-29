@@ -405,7 +405,7 @@ public class  Helper{
         StringBuffer sb= new StringBuffer(array.length * 2);
         sb.append('[');
         for (int i= 0; i < array.length; i++) {
-            sb.append(array[i] + ";");
+            sb.append(df.format(array[i]) + ";");
         }
         sb.deleteCharAt(sb.length()-1);
         sb.append(']');

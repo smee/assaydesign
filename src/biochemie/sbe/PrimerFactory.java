@@ -21,6 +21,7 @@ import biochemie.domspec.Primer;
 import biochemie.domspec.SekStruktur;
 import biochemie.domspec.SekStrukturFactory;
 import biochemie.sbe.filter.ForbiddenCDMassFilter;
+import biochemie.sbe.filter.ForbiddenPeakDistanceFilter;
 import biochemie.sbe.filter.GCFilter;
 import biochemie.sbe.filter.KandidatenFilter;
 import biochemie.sbe.filter.LaengenFilter;
@@ -272,6 +273,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
         kf.add(new GCFilter(cfg));
         kf.add(new UnwantedPrimerFilter(cfg, unwanted));
         kf.add(new ForbiddenCDMassFilter(cfg));
+        kf.add(new ForbiddenPeakDistanceFilter(cfg));
         if(sec){
             kf.add(new SekStructureFilter(cfg));
         }

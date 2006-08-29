@@ -17,11 +17,11 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
     }
 
     public void filter(List cand) {
-        StringBuffer sb=new StringBuffer("Assay has invalid mass peak differences:\n");
+        StringBuffer sb=new StringBuffer("Primer or product is within prohibited mass range:\n");
         for (Iterator it = cand.iterator(); it.hasNext();) {
             Primer primer = (Primer) it.next();
             double[] masses=cd.getMasses(primer);
-            if(cd.invalidPeakDiffIn(masses)) {
+            if(cd.invalidMassesIn(masses)) {
                 it.remove();
                 count++;
                 sb.append(getPrimerDescription(primer));

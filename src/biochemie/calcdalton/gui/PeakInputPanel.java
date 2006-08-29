@@ -34,9 +34,9 @@ public class PeakInputPanel extends JPanel {
         add(label,"1,1");
         add(lowPeakTf,"3,1");
         add(new JLabel("under"),"5,1");
-        add(highPeakTf,"7,1");
+        add(highPeakTf,"11,1");
         add(new JLabel("D and"),"9,1");
-        add(mediumMassTf,"11,1");
+        add(mediumMassTf,"7,1");
         add(new JLabel("above it"),"13,1");
     }
     public void setLabel(String l){
