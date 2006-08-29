@@ -180,8 +180,8 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonProductPeaks();
     }    public void setCalcDaltonProductPeaks(double[] arg0) {
         cdopt.setCalcDaltonProductPeaks(arg0);
-    }    public boolean getCalcDaltonAllowOverlap() {
-        return cdopt.getCalcDaltonAllowOverlap();
+    }    public boolean isCalcDaltonAllowOverlap() {
+        return cdopt.isCalcDaltonAllowOverlap();
     }    public void setCalcDaltonAllowOverlap(boolean arg0) {
         cdopt.setCalcDaltonAllowOverlap(arg0);
     }    public Map getCalcDaltonPrimerMassesMap() {
@@ -196,8 +196,8 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.isDebug();
     }    public void setDebug(boolean b) {
         cdopt.setDebug(b);
-    }    public boolean getCalcDaltonAllExtensions() {
-        return cdopt.getCalcDaltonAllExtensions();
+    }    public boolean isCalcDaltonAllExtensions() {
+        return cdopt.isCalcDaltonAllExtensions();
     }    public void setCalcDaltonAllExtensions(boolean val) {
         cdopt.setCalcDaltonAllExtensions(val);
     }    public double getCalcDaltonPLMass() {
@@ -208,8 +208,8 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcTime();
     }    public void setCalcTime(int val) {
         cdopt.setCalcTime(val);
-    }    public boolean getCalcDaltonShowIons() {
-        return cdopt.getCalcDaltonShowIons();
+    }    public boolean isCalcDaltonShowIons() {
+        return cdopt.isCalcDaltonShowIons();
     }    public void setCalcDaltonShowIons(boolean val) {
         cdopt.setCalcDaltonShowIons(val);        
     }    public int getCalcDaltonSelectedPLMass() {
@@ -224,6 +224,10 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         return cdopt.getCalcDaltonMaxMass();
     }    public void setCalcDaltonMaxMass(double mass) {
         cdopt.setCalcDaltonMaxMass(mass);
+    }    public boolean isCalcDaltonForbidHalfMasses() {
+        return cdopt.isCalcDaltonForbidHalfMasses();
+    }    public void setCalcDaltonForbidHalfMasses(boolean val) {
+        cdopt.setCalcDaltonForbidHalfMasses(val);
     }
     //proxy end -----------------------------------------------------------------------------------------
 

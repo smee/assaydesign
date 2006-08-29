@@ -113,7 +113,7 @@ public class SpektrometerPreviewFrame extends JFrame{
             double[] m = table.getMassenOfColumn(i);
             String[] dataline=table.getAddonNamesOfColumn(i);
             String snp = table.getAnbauOfColumn(i);
-            addDataset(m,dataline,id,snp,collection,cfg.getCalcDaltonShowIons());
+            addDataset(m,dataline,id,snp,collection,cfg.isCalcDaltonShowIons());
         }
         return collection;
     }
@@ -127,7 +127,7 @@ public class SpektrometerPreviewFrame extends JFrame{
             double[] m = cd.calcSBEMass(dataline,true);
             String id = s.getId();
             String snp = s.getFavPrimer().getSNP();            
-            addDataset(m,dataline,id,snp,collection,cfg.getCalcDaltonShowIons());
+            addDataset(m,dataline,id,snp,collection,cfg.isCalcDaltonShowIons());
         }
         return collection;
     }

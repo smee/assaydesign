@@ -175,7 +175,7 @@ public class ShowDiffAction extends MyAction {
             cd.calc(params,table,fest);
         else
             cd.calc(params,table);
-        return  new DiffTableModel(table,cfg.getCalcDaltonAllExtensions());
+        return  new DiffTableModel(table,cfg.isCalcDaltonAllExtensions());
     }
     private String[] getNames(List sbec) {
         String[] sbenames = new String[sbec.size()];

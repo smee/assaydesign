@@ -175,6 +175,7 @@ public class CDConfigPanel extends JPanel{
     private JPanel bruchStellenPanel;
     private PeakInputPanel assayPeakPanel;
     private PeakInputPanel productPeakPanel;
+    private JCheckBox cbForbiddenHalfMasses;
 
     public CDConfigPanel(boolean showCL){
         bruchstelleVector = new Vector();
@@ -200,13 +201,14 @@ public class CDConfigPanel extends JPanel{
         assayPeakPanel.setPeakValues(cfg.getCalcDaltonAssayPeaks());
         productPeakPanel.setPeakValues(cfg.getCalcDaltonProductPeaks());
         
-        cbAllowOverlap.setSelected(cfg.getCalcDaltonAllowOverlap());
+        cbAllowOverlap.setSelected(cfg.isCalcDaltonAllowOverlap());
+        cbForbiddenHalfMasses.setSelected(cfg.isCalcDaltonForbidHalfMasses());
         if(null != abstandPanel)
 			abstandPanel.reset(cfg.getCalcDaltonFrom(),cfg.getCalcDaltonTo());
         if(null != verbMassePanel)
             verbMassePanel.reset(cfg.getCalcDaltonVerbFrom(),cfg.getCalcDaltonVerbTo());
-        cbCalcdaltonAnhaenge.setSelected(cfg.getCalcDaltonAllExtensions());
-        cbShowIons.setSelected(cfg.getCalcDaltonShowIons());
+        cbCalcdaltonAnhaenge.setSelected(cfg.isCalcDaltonAllExtensions());
+        cbShowIons.setSelected(cfg.isCalcDaltonShowIons());
         delSpaltAction.setEnabled(0 < bruchstelleVector.size()?true:false);
         maxMassPanel.setText(Double.toString(cfg.getCalcDaltonMaxMass()));
     }
@@ -220,6 +222,7 @@ public class CDConfigPanel extends JPanel{
         cfg.setPhotolinkerPositions(br);
         cfg.setCalcDaltonAllowOverlap(cbAllowOverlap.isSelected());
         cfg.setCalcDaltonAllExtensions(cbCalcdaltonAnhaenge.isSelected());
+        cfg.setCalcDaltonForbidHalfMasses(cbForbiddenHalfMasses.isSelected());
         cfg.setCalcDaltonFrom(abstandPanel.getFrom());
         cfg.setCalcDaltonTo(abstandPanel.getTo());
         cfg.setCalcDaltonVerbFrom(verbMassePanel.getFrom());
@@ -246,7 +249,7 @@ public class CDConfigPanel extends JPanel{
 
 
 
-        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,p,b}};
+        double[][] settingsSize={{b,p,b},{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,p,b,p,b}};
 
         setLayout(new TableLayout(settingsSize));
         bruchStellenPanel = new JPanel();
@@ -295,17 +298,24 @@ public class CDConfigPanel extends JPanel{
         
         JPanel peakPanel = createPeakPanel();
         add(peakPanel,"1,9");
+        
         cbAllowOverlap=new JCheckBox("Allow unextended Primer overlap",false);
         cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>complexes as specified in \"Excluded peak distances\"</html>");
         add(cbAllowOverlap,"1,11");
+        
         cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);
         cbCalcdaltonAnhaenge.setToolTipText("<html>If checked, the program reserves the appropriate mass range for all<br>" +
                 " possible extension products A, C, G and T of every primer.<br>" +
                 "Otherwise the mass range is reserved for the expected products only.</html>");
         add(cbCalcdaltonAnhaenge,"1,13");
+        
         cbShowIons=new JCheckBox("Draw peaks of cationic adducts");
         cbShowIons.setToolTipText("<html>Cationic side products of each primer and product <br>will be shown in the MALDI-Preview.</html>");
         add(cbShowIons,"1,15");
+        
+        cbForbiddenHalfMasses=new JCheckBox("Use half of primer masses as peaks");
+        cbForbiddenHalfMasses.setToolTipText("mmh, was soll hier stehen?");
+        add(cbForbiddenHalfMasses,"1,17");
     }
 
     /**

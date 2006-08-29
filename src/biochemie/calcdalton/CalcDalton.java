@@ -54,7 +54,8 @@ public class CalcDalton implements Interruptible{
     final private Map primerMasses;
     final private Map addonMasses;
     final private double plMass;
-    final private boolean allExtension;    
+    final private boolean allExtension;
+    final private boolean halfMassForbidden;    
 
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
 					, double[] assaypeaks
@@ -62,6 +63,7 @@ public class CalcDalton implements Interruptible{
 					, double[] verbMasseFrom, double[] verbMasseTo
 					, boolean overlap
                     , boolean allExtensions
+                    , boolean halfMassForbidden
                     , Map primerMasses
                     , Map addonMasses
                     , double plMass){
@@ -91,6 +93,7 @@ public class CalcDalton implements Interruptible{
 		this.assaypeaks=assaypeaks;
 		this.productpeaks=productpeaks;
 		this.overlap=overlap;
+		this.halfMassForbidden=halfMassForbidden;
         this.allExtension=allExtensions;
 		solutionSize=Integer.MAX_VALUE;
 		assert verbMasseFrom.length==verbMasseTo.length;
@@ -107,23 +110,14 @@ public class CalcDalton implements Interruptible{
                 ,c.getCalcDaltonProductPeaks()
                 ,c.getCalcDaltonVerbFrom()
                 ,c.getCalcDaltonVerbTo()
-                ,c.getCalcDaltonAllowOverlap()
-                ,c.getCalcDaltonAllExtensions()
+                ,c.isCalcDaltonAllowOverlap()
+                ,c.isCalcDaltonAllExtensions()
+                ,c.isCalcDaltonForbidHalfMasses()
                 ,c.getCalcDaltonPrimerMassesMap()
                 ,c.getCalcDaltonAddonMassesMap()
                 ,c.getCalcDaltonPLMass());
     }
-    public void outputState(){
-       System.out.println("CalcDalton-State:\n-----------------");
-       System.out.println("Peaks between assays: "+assaypeaks);
-       System.out.println("Peaks between products: "+productpeaks);
-       System.out.println("Abstaende from: "+biochemie.util.Helper.toString(from));
-       System.out.println("Abstaende to: "+biochemie.util.Helper.toString(to));
-	   System.out.println("Verbotene Massen From: "+biochemie.util.Helper.toString(verbMasseFrom));
-	   System.out.println("Verbotene Massen To: "+biochemie.util.Helper.toString(verbMasseTo));
-       System.out.println("Bruchstellen: "+biochemie.util.Helper.toString(br));
-       System.out.println();
-    }    
+
     public double[] getMasses(Primer primer) {
         String[] params=primer.getCDParamLine();
         if (primer instanceof CleavablePrimer) {
@@ -199,15 +193,24 @@ public class CalcDalton implements Interruptible{
         }
         return ergebnis;
     }
-	public boolean invalidMassesIn(double[] massen){
-		for (int i = 0; i < verbMasseFrom.length; i++) {
-			for (int j = 0; j < massen.length; j++) {
-				if(massen[j]>=verbMasseFrom[i] && massen[j]<=verbMasseTo[i])
-					return true;
-			}
-		}
-		return false;
-	}
+    private boolean isMassForbidden(double m){
+        for (int i = 0; i < verbMasseFrom.length; i++) {
+            if(m>=verbMasseFrom[i] && m<=verbMasseTo[i])
+                return true;
+        }
+        return false;
+        
+    }
+    public boolean invalidMassesIn(double[] massen){
+        for (int j = 0; j < massen.length; j++) {
+            if(isMassForbidden(massen[j]))
+                return true;
+            if(halfMassForbidden)
+                if(isMassForbidden(massen[j]/2.0d))
+                    return true;                    
+        }
+        return false;
+    }
     public boolean invalidPeakDiffIn(double[] massen){
         double peak;
         for (int i = 0; i < massen.length; i++) {
@@ -219,6 +222,27 @@ public class CalcDalton implements Interruptible{
         }
         return false;
     }
+    
+    private boolean fitsAllPeakRules(double m1,double m2, double[] massesFrom, double[] massesTo){
+        double peak = getCurrentPeak(m1,m2,assaypeaks);
+        double temp=Math.abs(m1 - m2);
+        //min. peakdiff
+        if(temp<peak){
+            return false;
+        }
+        //forbidden peakdiffs
+        for(int k=0;k<massesFrom.length;k++)
+            if(temp>=massesFrom[k] && temp<=massesTo[k])
+                return false;
+        
+        if(halfMassForbidden){
+            if(Math.abs(m1/2d - m2)<getCurrentPeak(m1/2.0d,m2,assaypeaks) 
+                    || Math.abs(m2/2.0d - m1)<getCurrentPeak(m1,m2/2.0d,assaypeaks))
+                return false;
+        }
+        return true;
+    }
+    
 	/**
 	 * Test, ob berechnete SBEGewichte nach allen geforderten Kriterien unterschiedlich sind.
 	 * Testet, ob keine in Config verlangten Abstände verletzt sind.
@@ -227,75 +251,32 @@ public class CalcDalton implements Interruptible{
 	 * @return
 	 */
     protected boolean isDiffOkay(double[] p1_massen,double[] p2_massen) {
-        double temp,peak;
         for (int i= 0; i < p1_massen.length; i++) {
             for (int j= 0; j < p2_massen.length; j++) {
-                peak = getCurrentPeak(p2_massen[j],p1_massen[i],assaypeaks);
-                temp=Math.abs(p1_massen[i] - p2_massen[j]);
-                //min. peakdiff
-                if(temp<peak){
-                    return false;
-                }
-                //forbidden masses
-                for(int k=0;k<from.length;k++) {
-                    if(temp>=fromAbs[k] && temp<=toAbs[k]){
-                        return false;
-                    }
-                }
-                //peak between mass and halfmass
-                if(Math.abs(p1_massen[i]/2d - p2_massen[j])<peak || 
-                   Math.abs(p1_massen[i] - p2_massen[j]/2d)<peak)
+                if(!fitsAllPeakRules(p1_massen[i],p1_massen[j],fromAbs,toAbs))
                     return false;
             }
         }
         return true;
     }
-    protected boolean isDiffOverlapOkay(double[] p1_massen,double[] p2_massen) {
-         double temp;//TODO peak between mass and half mass
+    protected boolean isDiffOverlapOkay(double[] masses1,double[] masses2) {
          //vgl. sbe ohne anhang miteineander
-//        temp=Math.abs(p1_massen[0] - p2_massen[0]);
-//        if(temp<peaks)
-//            return false;
-//        for(int k=0;k<from.length;k++) {
-//            if(temp>=from[k] && temp<=to[k]) 
-//                return false;
-//        }
-//fällt weg wegen is nich
+         // -> fällt weg wegen is nich
          //vgl. sbe1 ohne anhang mit allen sbe2 mit anhang
-         double peak;
-         for (int i= 1; i < p2_massen.length; i++) {
-             peak = getCurrentPeak(p2_massen[i],p1_massen[0],assaypeaks);
-             temp=p2_massen[i] - p1_massen[0];
-             
-             if(Math.abs(temp)<peak)
+         for (int i= 1; i < masses2.length; i++) {
+             if(!fitsAllPeakRules(masses1[0],masses2[i],from,to))
                  return false;
-             for(int k=0;k<from.length;k++) {
-                 if(temp>=from[k] && temp<=to[k]) 
-                     return false;
-             }
          }
         //vgl. sbe2 ohne anhang mit allen sbe1 mit anhang
-         for (int i= 1; i < p1_massen.length; i++) {
-             peak = getCurrentPeak(p1_massen[i],p2_massen[0],assaypeaks);
-             temp=p1_massen[i] - p2_massen[0];
-             if(Math.abs(temp)<peak)
+         for (int i= 1; i < masses1.length; i++) {
+             if(!fitsAllPeakRules(masses1[i],masses2[0],from,to))
                  return false;
-             for(int k=0;k<from.length;k++) {
-                 if(temp>=from[k] && temp<=to[k]) 
-                     return false;
-             }
-        }
+         }
         //vgl. den rest miteinander
-        for (int i= 1; i < p1_massen.length; i++) {
-             for (int j= 1; j < p2_massen.length; j++) {
-                 peak = getCurrentPeak(p1_massen[i],p2_massen[j],assaypeaks);
-                 temp=Math.abs(p1_massen[i] - p2_massen[j]);
-                 if(temp<peak)
+        for (int i= 1; i < masses1.length; i++) {
+             for (int j= 1; j < masses2.length; j++) {
+                 if(!fitsAllPeakRules(masses1[i],masses2[j],fromAbs,toAbs))
                      return false;
-                 for(int k=0;k<from.length;k++) {
-                     if(temp>=fromAbs[k] && temp<=toAbs[k]) 
-                         return false;
-                 }
              }
          }
         return true;

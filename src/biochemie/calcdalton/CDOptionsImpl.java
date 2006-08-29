@@ -41,6 +41,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
            ,{"calcdalton.plmass","18.02"}
            ,{"calcdalton.plmassidx","3"}
            ,{"calcdalton.showions","true"}
+           ,{"calcdalton.halfmass","true"}
            ,{"misc.maxcalctime","10"}
            ,{"misc.debug","false"}
            ,{"misc.biotin","bio"}
@@ -111,7 +112,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         setProperty("calcdalton.productpeaks",StringUtils.join(ArrayUtils.toObject(vals),' '));
     }
 
-    public boolean getCalcDaltonAllowOverlap() {
+    public boolean isCalcDaltonAllowOverlap() {
         return getBoolean("calcdalton.allowoverlap",false);
     }
 
@@ -131,7 +132,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         setProperty("misc.debug",Boolean.toString(b));
     }
 
-    public boolean getCalcDaltonAllExtensions() {
+    public boolean isCalcDaltonAllExtensions() {
         return getBoolean("calcdalton.extension",true);
     }
 
@@ -187,7 +188,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         setProperty("calcdalton.plmass",Double.toString(val));
     }
 
-    public boolean getCalcDaltonShowIons() {
+    public boolean isCalcDaltonShowIons() {
         return getBoolean("calcdalton.showions",true);
     }
 
@@ -216,5 +217,13 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
 
     public void setCalcDaltonMaxMass(double mass) {
         setProperty("calcdalton.maxmass",Double.toString(mass));
+    }
+
+    public boolean isCalcDaltonForbidHalfMasses() {
+        return getBoolean("calcdalton.halfmass",true);
+    }
+
+    public void setCalcDaltonForbidHalfMasses(boolean val) {
+        setProperty("calcdalton.halfmass",Boolean.toString(val));
     }
 }

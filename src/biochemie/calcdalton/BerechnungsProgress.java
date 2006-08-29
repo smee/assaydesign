@@ -217,7 +217,7 @@ public class BerechnungsProgress extends JFrame{
         showDiffs.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 JFrame f=new JFrame("Diffs for result "+(sbetable.getIndex()+1));
-                DiffTableModel dtm=new DiffTableModel(sbetable,CDConfig.getInstance().getConfiguration().getCalcDaltonAllExtensions());
+                DiffTableModel dtm=new DiffTableModel(sbetable,CDConfig.getInstance().getConfiguration().isCalcDaltonAllExtensions());
                 JTable t=new JTable(dtm);
                 JScrollPane sp=new JScrollPane(t);
                 f.getContentPane().add(sp);
@@ -559,8 +559,10 @@ public class BerechnungsProgress extends JFrame{
             return null;
         }
 
-        public Edge getLastEdge() {
-            return edge;
+        public Collection getLastEdges() {
+            List l=new ArrayList(1);
+            l.add(edge);
+            return l;
         }
     }
 

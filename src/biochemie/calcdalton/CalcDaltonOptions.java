@@ -57,12 +57,12 @@ public interface CalcDaltonOptions extends GeneralOptions{
     public void   setCalcDaltonAssayPeaks(double[] vals);
     public double[] getCalcDaltonProductPeaks();
     public void   setCalcDaltonProductPeaks(double[] vals);
-    /**
-     * Get minimum meltingtemperature.
-     * @return
-     */
-    public boolean getCalcDaltonAllowOverlap();
+
+    public boolean isCalcDaltonAllowOverlap();
     public void setCalcDaltonAllowOverlap(boolean val);
+    
+    public boolean isCalcDaltonForbidHalfMasses();
+    public void setCalcDaltonForbidHalfMasses(boolean val);
     
     /**
      * If checked, the program reserves the appropriate mass range for all possible extension products A, C, G and T of every primer.
@@ -70,7 +70,7 @@ public interface CalcDaltonOptions extends GeneralOptions{
      * 
      * @return
      */
-    public boolean getCalcDaltonAllExtensions();
+    public boolean isCalcDaltonAllExtensions();
     public void setCalcDaltonAllExtensions(boolean val);
     
     public Map getCalcDaltonPrimerMassesMap();
@@ -93,7 +93,8 @@ public interface CalcDaltonOptions extends GeneralOptions{
      * @param val
      */
     public void setCalcDaltonSelectedPLMass(int val);
-    public boolean getCalcDaltonShowIons();
+    
+    public boolean isCalcDaltonShowIons();
     public void setCalcDaltonShowIons(boolean val);
     
     public String getBiotinString();

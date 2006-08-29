@@ -127,7 +127,7 @@ public class CDConfig implements Serializable{
      * @return
      */
     public boolean allowOverlap() {
-        return cdcpanel.getCalcDaltonOptionsProvider().getCalcDaltonAllowOverlap();
+        return cdcpanel.getCalcDaltonOptionsProvider().isCalcDaltonAllowOverlap();
     }
     public CalcDaltonOptions getConfiguration() {
         CalcDaltonOptions c=cdcpanel.getCalcDaltonOptionsProvider();
