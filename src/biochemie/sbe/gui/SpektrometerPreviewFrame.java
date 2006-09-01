@@ -120,7 +120,7 @@ public class SpektrometerPreviewFrame extends JFrame{
     private IntervalXYDataset createDataset(List sbec, CalcDaltonOptions cfg)
     {
         XYSeriesCollection collection = new XYSeriesCollection();
-        CalcDalton cd=Helper.getCalcDalton(cfg);
+        CalcDalton cd=new CalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             PrimerFactory s = (PrimerFactory) it.next();
             String[] dataline=s.getFavPrimer().getCDParamLine();

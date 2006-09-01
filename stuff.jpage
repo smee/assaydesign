@@ -1,0 +1,1 @@
+new com.Ostermiller.util.StringTokenizer("M150406-4;ID3;GCATGCGTCAGTCAACGCATC;AG;8;21;61.11;58.56;Excluded primers: 766/810, primer too short: 510/810, out of TM: 240/300, unavoidable incomp. sec.struks: 16/60;Excluded primers: 1126/1230, primer too short: 510/1230, out of TM: 570/720, unavoidable incomp. sec.struks: 46/150;5;0;GCATGCGTCAGTCAACGC; ; ; ",";").countTokens()(int) 16

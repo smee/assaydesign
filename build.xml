@@ -51,7 +51,7 @@
     <tstamp>
     	<format property="CURRENTDATE" pattern="dd-MMMM-yyyy, hh:mm" locale="en"/>
   	</tstamp>
-<echo file="__tmp__" append="false"  message="date=${CURRENTDATE}"/>
+	<echo file="__tmp__" append="false"  message="date=${CURRENTDATE}"/>
   	
   	<replace dir = "${src}/biochemie/sbe" 
   				propertyfile="__tmp__">

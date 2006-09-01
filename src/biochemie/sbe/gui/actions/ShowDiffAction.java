@@ -81,7 +81,6 @@ public class ShowDiffAction extends MyAction {
                 mids.add(((PrimerFactory)obj).getMultiplexId());
             }
         });
-        System.out.println(sbecfilt);
         diffmodels=new TableModel[mids.size()+1];
         cdmodels = new TableModel[mids.size()+1];
         restables = new JTable[mids.size()+1];
@@ -127,12 +126,10 @@ public class ShowDiffAction extends MyAction {
             paneldata[i]=createAnhangsData(s);
             if(s instanceof CleavablePrimerFactory)
                 fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),((CleavablePrimerFactory)s).getBruchstelle());
-//            System.out.print(ArrayUtils.toString(paneldata[i]));
-//            System.out.println(" "+fest[i]);
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
 
-        CalcDalton cd = Helper.getCalcDalton(cfg);
+        CalcDalton cd = new CalcDalton(cfg);
         if(sbec.get(0) instanceof CleavablePrimerFactory)
             cd.calc(paneldata,sbetable,fest);
         else
@@ -158,7 +155,7 @@ public class ShowDiffAction extends MyAction {
         if(sbec.size()==0)
             return new DiffTableModel(new String[0],new double[0][]);
         List mysbec = getFilteredList(id, sbec);
-        CalcDalton cd=Helper.getCalcDalton(cfg);
+        CalcDalton cd=new CalcDalton(cfg);
         String[][] params=new String[mysbec.size()][];
         int[] br=cfg.getPhotolinkerPositions();
         int[] fest=new int[mysbec.size()];

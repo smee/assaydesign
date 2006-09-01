@@ -202,12 +202,13 @@ public class CalcDalton implements Interruptible{
         
     }
     public boolean invalidMassesIn(double[] massen){
-        for (int j = 0; j < massen.length; j++) {
+        int start=overlap?1:0;//wenn overlap an ist darf der primer in die verbotenen massebereiche fallen
+        for (int j = start; j < massen.length; j++) {
             if(isMassForbidden(massen[j]))
                 return true;
-            if(halfMassForbidden)
-                if(isMassForbidden(massen[j]/2.0d))
-                    return true;                    
+//            if(halfMassForbidden) //halbe massen fallen nicht in die verbotenen massebereiche
+//                if(isMassForbidden(massen[j]/2.0d))
+//                    return true;                    
         }
         return false;
     }
@@ -338,7 +339,7 @@ public class CalcDalton implements Interruptible{
 		return Tabellendaten;
 	}
 
-    public SBETable calc(String[][] sbeData,SBETable sbeTable, int[] fest) {
+    public SBETable calc(String[][] sbeData,SBETable sbeTable, int[] fest) {//TODO verbotene massebereiche ausschaltbar!
 //        System.out.println("------------------");
 //        for (int i = 0; i < fest.length; i++) {
 //          System.out.print(ArrayUtils.toString(sbeData[i]));
@@ -506,8 +507,9 @@ public class CalcDalton implements Interruptible{
                     massenArray=calcSBEMass(sbedata[i],this.allExtension);
                 else
                     massenArray=calcSBEMass(sbedata[i],br[j],this.allExtension);
-                if(invalidMassesIn(massenArray))
+                if(invalidMassesIn(massenArray)){
                     massenArray=null;
+                }
                 massenList[i][j]=massenArray;
             }
         }   

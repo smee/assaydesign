@@ -12,7 +12,7 @@ public class ForbiddenCDMassFilter extends AbstractKandidatenFilter{
     CalcDalton cd;
     public ForbiddenCDMassFilter(SBEOptions cfg) {
         super(cfg);
-        cd=Helper.getCalcDalton(cfg);
+        cd=new CalcDalton(cfg);
         reason="primer or product is within prohibited mass range: ";
     }
 

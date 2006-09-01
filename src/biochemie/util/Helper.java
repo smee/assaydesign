@@ -752,14 +752,7 @@ public class  Helper{
             return false;
         return true;
     }
-    /**
-     * Helpermethode.
-     * @param cfg
-     * @return
-     */
-    public static CalcDalton getCalcDalton(CalcDaltonOptions cfg) {
-    	return new CalcDalton(cfg);
-    }
+
     public static CalcDalton getCalcDalton() {
         return cd;
     }

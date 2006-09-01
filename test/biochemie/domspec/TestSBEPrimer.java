@@ -88,7 +88,8 @@ public class TestSBEPrimer extends TestCase {
 
     public void testCalcDaltonPasst() {
         cfg.setCalcDaltonAllowOverlap(true);
-        cfg.setCalcDaltonPeaks(10.0);
+        cfg.setCalcDaltonAssayPeaks(new double[]{10.0});
+        cfg.setCalcDaltonProductPeaks(new double[]{10.0});
         cfg.setCalcDaltonFrom(new double[] {-152.0, -116.0, 0});
         cfg.setCalcDaltonTo(new double[] {-150, -114, 50});
         //pl jeweils 8
