@@ -300,21 +300,25 @@ public class CDConfigPanel extends JPanel{
         add(peakPanel,"1,9");
         
         cbAllowOverlap=new JCheckBox("Allow unextended Primer overlap",false);
-        cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>complexes as specified in \"Excluded peak distances\"</html>");
+        cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>" +
+                "complexes as specified in \"Excluded peak distances\"</html>");
         add(cbAllowOverlap,"1,11");
         
         cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);
-        cbCalcdaltonAnhaenge.setToolTipText("<html>If checked, the program reserves the appropriate mass range for all<br>" +
-                " possible extension products A, C, G and T of every primer.<br>" +
-                "Otherwise the mass range is reserved for the expected products only.</html>");
+        cbCalcdaltonAnhaenge.setToolTipText("<html>The mass of the primers are allowed to overlap with the mass of<br>" +
+                "product-ion complexes as specified in \"Excluded peak distances\"<br>" +
+                "and with signals from double charged molecules</html>");
         add(cbCalcdaltonAnhaenge,"1,13");
         
         cbShowIons=new JCheckBox("Draw peaks of cationic adducts");
         cbShowIons.setToolTipText("<html>Cationic side products of each primer and product <br>will be shown in the MALDI-Preview.</html>");
         add(cbShowIons,"1,15");
         
-        cbForbiddenHalfMasses=new JCheckBox("Use half of primer masses as peaks");
-        cbForbiddenHalfMasses.setToolTipText("mmh, was soll hier stehen?");
+        cbForbiddenHalfMasses=new JCheckBox("Account for double charged molecules");
+        cbForbiddenHalfMasses.setToolTipText("<html>If checked, double charged molecules<br>" +
+                "with mass signals at the half of<br>" +
+                "the m/z value of the respective single<br>" +
+                "charged molecule are considered in assay design.</html>");
         add(cbForbiddenHalfMasses,"1,17");
     }
 

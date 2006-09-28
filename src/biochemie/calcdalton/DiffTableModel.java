@@ -48,11 +48,11 @@ public DiffTableModel(String[] names, double[][] weights) {
 private void initTable(String[] names, double[][] weights) {
     hm=new HashMap();
     if(names.length == 1) {
-        hm.put(names[0],Double.toString(weights[0][0]));
-        hm.put("+A",Double.toString(weights[0][1]));
-        hm.put("+C",Double.toString(weights[0][2]));
-        hm.put("+G",Double.toString(weights[0][3]));
-        hm.put("+T",Double.toString(weights[0][4]));
+        hm.put(names[0],Double.toString(Math.abs(weights[0][0])));
+        hm.put("+A",format(weights[0][1]));
+        hm.put("+C",format(weights[0][2]));
+        hm.put("+G",format(weights[0][3]));
+        hm.put("+T",format(weights[0][4]));
         firstcolumn=new ArrayList();
         firstcolumn.add(names[0]);
         firstcolumn.add("+A");
@@ -96,6 +96,13 @@ private void initTable(String[] names, double[][] weights) {
         });
 }
 
+    private Object format(double d) {
+        String res=Helper.format(Math.abs(d));
+        if(d<0)
+            return "["+res+"]";
+        else
+            return res;
+    }
     private String getNameFor(int i, int j, int k,int l,String[] names) {
 		StringBuffer name=new StringBuffer(names[i]);
 		switch (k) {

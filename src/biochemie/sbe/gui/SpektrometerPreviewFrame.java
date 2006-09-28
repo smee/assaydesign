@@ -80,7 +80,7 @@ public class SpektrometerPreviewFrame extends JFrame{
 
     private JFreeChart createChart(IntervalXYDataset intervalxydataset,String subtitle,XYToolTipGenerator ttgen, CalcDaltonOptions cfg)
     {
-        JFreeChart jfreechart = ChartFactory.createXYBarChart("MALDI Preview", "Calcdaltonmasses", false, "rel. units", intervalxydataset, PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart jfreechart = ChartFactory.createXYBarChart("MALDI Preview", "m/z (D)", false, "rel. units", intervalxydataset, PlotOrientation.VERTICAL, true, true, false);
         jfreechart.addSubtitle(new TextTitle(subtitle));
         jfreechart.setBackgroundPaint(Color.white);
         XYPlot xyplot = jfreechart.getXYPlot();
@@ -123,10 +123,10 @@ public class SpektrometerPreviewFrame extends JFrame{
         CalcDalton cd=new CalcDalton(cfg);
         for (Iterator it = sbec.iterator(); it.hasNext();) {
             PrimerFactory s = (PrimerFactory) it.next();
-            String[] dataline=s.getFavPrimer().getCDParamLine();
-            double[] m = cd.calcSBEMass(dataline,true);
+            double[] m = cd.getMasses(s.getFavPrimer());
             String id = s.getId();
             String snp = s.getFavPrimer().getSNP();            
+            String[] dataline=s.getFavPrimer().getCDParamLine();
             addDataset(m,dataline,id,snp,collection,cfg.isCalcDaltonShowIons());
         }
         return collection;

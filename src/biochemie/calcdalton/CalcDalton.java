@@ -139,11 +139,11 @@ public class CalcDalton implements Interruptible{
             if(primerMasses.keySet().contains(c))
                 summe+=((Double)primerMasses.get(c)).doubleValue();
         }
-        return summe + plMass;//masse des pl
+        return summe;
     }
     
     public double calcPrimerMasseWithPL(String seq) {
-        return calcPrimerMasse(seq)+plMass;
+        return calcPrimerMasse(seq)+plMass;//masse des pl
     }
 	/**
 	 * Berechnung der Masse einer Sequenz mit angehängtem Nukleotid.
