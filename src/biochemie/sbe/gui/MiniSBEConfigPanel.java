@@ -276,7 +276,7 @@ public class MiniSBEConfigPanel extends JPanel {
 			gridBagConstraints24.gridx = 0;
 			gridBagConstraints24.gridy = 0;
 			gridBagConstraints24.insets = new java.awt.Insets(10,10,10,0);
-			jLabel5.setText("PolyX");
+			jLabel5.setText("    PolyX     ");
 			gridBagConstraints25.gridx = 2;
 			gridBagConstraints25.gridy = 0;
 			gridBagConstraints25.insets = new java.awt.Insets(10,10,10,10);

@@ -114,7 +114,7 @@ public class SBEConfigDialog extends JDialog {
         this.assayType=at;
         getCdPanel().showCL(assayType==MiniSBE.CLEAVABLE || assayType==MiniSBE.PROBE_CLEAVABLE);
         getCdPanel().showProductPeaks(assayType==MiniSBE.PROBE || assayType==MiniSBE.PROBE_CLEAVABLE || assayType==MiniSBE.PROBE_PINPOINT);
-        getCdPanel().showMaxMass(assayType==MiniSBE.PINPOINT || assayType==MiniSBE.PROBE_PINPOINT);
+        //getCdPanel().showMaxMass(assayType==MiniSBE.PINPOINT || assayType==MiniSBE.PROBE_PINPOINT);
         getSbePanel().getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT);
     }
 	/**
@@ -224,7 +224,7 @@ public class SBEConfigDialog extends JDialog {
             mass=Double.parseDouble(getSbePanel().getMaxMassPanel().getText());
         }catch (NumberFormatException e) {
         }
-        sbeconfig.setMaxMass(mass);
+        sbeconfig.setCalcDaltonMaxMass(mass);
 	    sbeconfig.setMaxGC(((Number)getSbePanel().getMaxgcSpinner().getValue()).intValue());
 	    sbeconfig.setMinGC(((Number)getSbePanel().getMingcSpinner().getValue()).intValue());
 	    sbeconfig.setMaxPlex(((Number)getSbePanel().getMaxplexSpinner().getValue()).intValue());
@@ -569,7 +569,7 @@ public class SBEConfigDialog extends JDialog {
         mp.getPolyxSpinner().setValue(new Integer(c.getPolyX()));
         mp.getMaxplexSpinner().setValue(new Integer(c.getMaxPlex()));
         mp.getPcrpdiffSpinner().setValue(new Integer(c.getMinProductLenDiff()));
-        mp.getMaxMassPanel().setText(Double.toString(c.getMaxMass()));
+        mp.getMaxMassPanel().setText(Double.toString(c.getCalcDaltonMaxMass()));
         mp.getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT);
         //setze expertenoptionen
         IntegerValueIntervallPanel ip=getHairpinValuePanel();

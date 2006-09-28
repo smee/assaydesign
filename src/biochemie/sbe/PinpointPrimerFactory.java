@@ -45,7 +45,7 @@ public class PinpointPrimerFactory extends PrimerFactory {
             int productlen, String givenMultiplexID, String unwanted, 
             boolean userGiven, boolean rememberOutput) {
         super(cfg, id, seq5, snp, seq3, bautEin5, bautEin3, productlen,givenMultiplexID,userGiven, unwanted, rememberOutput);
-        this.maxMass=cfg.getMaxMass();
+        this.maxMass=cfg.getCalcDaltonMaxMass();
         this.tCount5=tCount5;
         this.tCount3=tCount3;
     }

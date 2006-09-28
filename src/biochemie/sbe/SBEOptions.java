@@ -70,8 +70,6 @@ public interface SBEOptions extends CalcDaltonOptions {
 	public int getMinProductLenDiff();
 	public void setMinProductLenDiff(int len);
 
-    public double getMaxMass();
-    public void setMaxMass(double m);
     
     /**
      * True, wenn dateien mit den nichtvertraeglichkeitsgraphen ausgegeben werden sollen.

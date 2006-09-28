@@ -50,7 +50,6 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ,{"sbe.maxplex","6"}
             ,{"sbe.mincandlen","18"}
             ,{"sbe.prodlendiff","0"}
-            ,{"sbe.pinpoint.maxmass","1000000"}
             ,{"misc.drawgraph","false"}};
     }
 
@@ -263,13 +262,6 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         this.secopt=opt;
     }
 
-    public double getMaxMass() {
-        return getDouble("sbe.pinpoint.maxmass",10000d);
-    }
-
-    public void setMaxMass(double m) {
-        setProperty("sbe.pinpoint.maxmass",Double.toString(m));
-    }
 
     public void makeDefault() {
         super.makeDefault();
