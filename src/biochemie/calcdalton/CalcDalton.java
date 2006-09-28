@@ -31,7 +31,7 @@ import biochemie.util.Helper;
 public class CalcDalton implements Interruptible{
 	protected int solutionSize;
     protected final boolean overlap;
-    protected double[] assaypeaks;
+    protected final double[] assaypeaks;
     protected double[] productpeaks;
     protected double[] to;
     protected double[] from;
@@ -90,7 +90,9 @@ public class CalcDalton implements Interruptible{
 		}
 		this.verbMasseFrom=Helper.clone(verbMasseFrom);
 		this.verbMasseTo=Helper.clone(verbMasseTo);		
-		this.assaypeaks=assaypeaks;
+		if(assaypeaks==null || assaypeaks.length<3)
+            throw new IllegalArgumentException("array for assaypeaks needs to have exactly 3 values!");
+        this.assaypeaks=assaypeaks;
 		this.productpeaks=productpeaks;
 		this.overlap=overlap;
 		this.halfMassForbidden=halfMassForbidden;
@@ -216,7 +218,7 @@ public class CalcDalton implements Interruptible{
         double peak;
         for (int i = 0; i < massen.length; i++) {
             for (int j = i+1; j < massen.length; j++) {
-                peak = getCurrentPeak(massen[i],massen[j],assaypeaks);
+                peak = getCurrentPeak(massen[i],massen[j],productpeaks);
                 if(Math.abs(massen[i]-massen[j])<=peak)
                     return true;
             }

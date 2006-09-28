@@ -27,7 +27,6 @@ public class UnwantedPrimerFilter extends AbstractKandidatenFilter {
      * pinpint   -  laenge des T-Schwanzes
      */
     int[] pl = new int[0];
-    private int count = 0;
     /**
      * @param cfg
      * @param unwanted

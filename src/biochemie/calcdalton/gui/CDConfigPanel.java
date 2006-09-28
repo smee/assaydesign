@@ -360,9 +360,6 @@ public class CDConfigPanel extends JPanel{
             add(bruchStellenPanel,"1,1");
         invalidate();
     }
-    public void showProductPeaks(boolean b){
-        productPeakPanel.setVisible(b);
-    }
     public void showMaxMass(boolean b){
         maxMassPanel.setVisible(b);
     }
