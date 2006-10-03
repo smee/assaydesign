@@ -25,10 +25,13 @@ public class PeakInputPanel extends JPanel {
         setLayout(new TableLayout(peakSizes));
         label=new JLabel("...between Foobar");
         lowPeakTf=new PBSequenceField(6,false,PBSequenceField.NUMBERS);
+        lowPeakTf.setColumns(6);
         lowPeakTf.setUniqueChars(".");
         highPeakTf=new PBSequenceField(6,false,PBSequenceField.NUMBERS);
+        highPeakTf.setColumns(6);
         highPeakTf.setUniqueChars(".");
         mediumMassTf=new PBSequenceField(9,false,PBSequenceField.NUMBERS);
+        mediumMassTf.setColumns(9);
         mediumMassTf.setUniqueChars(".");
         
         add(label,"1,1");

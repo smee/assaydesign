@@ -300,14 +300,13 @@ public class CDConfigPanel extends JPanel{
         add(peakPanel,"1,9");
         
         cbAllowOverlap=new JCheckBox("Allow unextended Primer overlap",false);
-        cbAllowOverlap.setToolTipText("<html>The mass of the primes is allowed to overlap with the mass of product-ion <br>" +
-                "complexes as specified in \"Excluded peak distances\"</html>");
+        cbAllowOverlap.setToolTipText("<html>The mass of the primers are allowed to overlap with the mass of<br>" +
+                "product-ion complexes as specified in \"Excluded peak distances\"<br>" +
+                "and with signals from double charged molecules</html>");
         add(cbAllowOverlap,"1,11");
         
         cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);
-        cbCalcdaltonAnhaenge.setToolTipText("<html>The mass of the primers are allowed to overlap with the mass of<br>" +
-                "product-ion complexes as specified in \"Excluded peak distances\"<br>" +
-                "and with signals from double charged molecules</html>");
+        cbCalcdaltonAnhaenge.setToolTipText(null);//TODO
         add(cbCalcdaltonAnhaenge,"1,13");
         
         cbShowIons=new JCheckBox("Draw peaks of cationic adducts");

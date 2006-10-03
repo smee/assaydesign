@@ -263,7 +263,7 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(chosen.getSNP());
         sb.append(';');
-        sb.append(((ProbePrimer)chosen).getAssayType());
+        sb.append(ASSAYTYPES_DESC[((ProbePrimer)chosen).getAssayType()]);
         sb.append(';');
         if(otherFactory!=null){
             sb.append(otherFactory.getCSVRow().split(";")[4]);

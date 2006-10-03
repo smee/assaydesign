@@ -10,4 +10,7 @@ public class DifferentAssayTypeEdge extends MyUndirectedEdge {
     public String matchString() {
         return getSource()+"-different assay-"+getTarget();
     }
+    public String toString(){
+    	return "diff. Assaytype";
+    }
 }

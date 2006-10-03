@@ -33,10 +33,10 @@ public class ProbePrimer extends Primer {
         edgecol.clear();
         if(o instanceof ProbePrimer) {
             ProbePrimer other=(ProbePrimer) o;
-            boolean flag= this.passtMitAssayType(other);
+            boolean flag=super.passtMit(o);
             boolean temp=this.passtMitEingeschlossenemPrimer(other);
             flag=flag&&temp;
-            temp=super.passtMit(o);
+            temp=this.passtMitAssayType(other);
             flag=flag&&temp;
             return flag;
         }else{
@@ -83,7 +83,7 @@ public class ProbePrimer extends Primer {
         }else{
             sb.append(super.toString());
         }
-        sb.append(getAssayType());
+        sb.append(", assayType=").append(getAssayType());
         return sb.toString();
     }
     public boolean equals(Object o){

@@ -47,23 +47,25 @@ public DiffTableModel(String[] names, double[][] weights) {
  */
 private void initTable(String[] names, double[][] weights) {
     hm=new HashMap();
-    if(names.length == 1) {
-        hm.put(names[0],Double.toString(Math.abs(weights[0][0])));
-        hm.put("+A",format(weights[0][1]));
-        hm.put("+C",format(weights[0][2]));
-        hm.put("+G",format(weights[0][3]));
-        hm.put("+T",format(weights[0][4]));
-        firstcolumn=new ArrayList();
-        firstcolumn.add(names[0]);
-        firstcolumn.add("+A");
-        firstcolumn.add("+C");
-        firstcolumn.add("+G");
-        firstcolumn.add("+T");
-    }
+//    if(names.length == 1) {
+//        hm.put(names[0],Double.toString(Math.abs(weights[0][0])));
+//        hm.put("+A",format(weights[0][1]));
+//        hm.put("+C",format(weights[0][2]));
+//        hm.put("+G",format(weights[0][3]));
+//        hm.put("+T",format(weights[0][4]));
+//        firstcolumn=new ArrayList();
+//        firstcolumn.add(names[0]);
+//        firstcolumn.add("+A");
+//        firstcolumn.add("+C");
+//        firstcolumn.add("+G");
+//        firstcolumn.add("+T");
+//    }
         for (int i = 0; i < weights.length; i++) {
-            for (int j = i + 1; j < weights.length; j++) {
+            for (int j = i; j < weights.length; j++) {
                 for (int k = 0; k < weights[i].length; k++) {
                     for (int l = 0; l < weights[j].length; l++) {
+                    	if(i==j && k==l)//primer mit sich selbst verglichen
+                    		continue;
                         double d1 = weights[i][k];
                         double d2 = weights[j][l];
                         if (0 < d1 && 0 < d2)
@@ -193,7 +195,14 @@ private void initTable(String[] names, double[][] weights) {
 			return hm.get(firstcolumn.get(rowIndex));
 	}
 	public String getColumnName(int columnIndex) {
-		return null;
+		switch (columnIndex) {
+		case 0:
+			return "Oligonucleotides";
+		case 1:
+			return "Mass difference (D)";
+		default:
+			return null;
+		}
 	}
 
 

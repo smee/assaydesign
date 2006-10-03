@@ -694,7 +694,7 @@ public class SBECandidatePanel extends MyPanel {
         }
         if(assayType==MiniSBE.PROBE || assayType==MiniSBE.PROBE_CLEAVABLE ||assayType==MiniSBE.PROBE_PINPOINT)
             try {
-                assay2=Integer.parseInt(st.nextToken());
+                assay2=Integer.parseInt(st.nextToken());//FIXME ist jetzt ein string mit den nukl.!
             }catch (NumberFormatException e) {
             }
             

@@ -123,7 +123,7 @@ public class CalcDalton implements Interruptible{
     public double[] getMasses(Primer primer) {
         String[] params=primer.getCDParamLine();
         if (primer instanceof CleavablePrimer) {
-            return this.calcSBEMass(params,((CleavablePrimer)primer).getBruchstelle(),true);
+            return this.calcSBEMass(params,((CleavablePrimer)primer).getBruchstelle(),allExtension);
         }else
             return this.calcSBEMass(params,true);
     }

@@ -136,7 +136,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
      */
     public InfiniteProgressPanel(String text, int barsCount, float shield)
     {
-        this(text, barsCount, shield, 15.0f);
+        this(text, barsCount, shield, 2.0f);
     }
 
     /**
