@@ -126,10 +126,22 @@ public class SpektrometerPreviewFrame extends JFrame{
             double[] m = cd.getMasses(s.getFavPrimer());
             String id = s.getId();
             String snp = s.getFavPrimer().getSNP();            
-            String[] dataline=s.getFavPrimer().getCDParamLine();
+            String[] dataline=getReallyUsedNucl(s.getFavPrimer().getCDParamLine(false));
             addDataset(m,dataline,id,snp,collection,cfg.isCalcDaltonShowIons());
         }
         return collection;
+    }
+    private String[] getReallyUsedNucl(String[] arr) {
+        int cnt=0;
+        for (int i = 0; i < arr.length; i++)
+            if(arr[i].charAt(0)!='>')
+                cnt++;
+        String[] res=new String[cnt];
+        cnt=0;
+        for (int i = 0; i < arr.length; i++)
+            if(arr[i].charAt(0)!='>')
+                res[cnt++]=arr[i];
+        return res;
     }
     /**
      * m muss aus 5 Massen bestehen, der Masse des Primers und die vier Massen, die entstehen, wenn ACGT angehaengt werden.
@@ -162,7 +174,8 @@ public class SpektrometerPreviewFrame extends JFrame{
                 System.err.println("invalid nucleotide in snp!");
                 continue;
             }
-            int idx=Math.max(Helper.indexOfContains(dataline,snp.substring(i,i+1),1),Helper.indexOfContains(dataline,">"+snp.substring(i,i+1),1));
+            int idx=Math.max(Helper.indexOfContains(dataline,snp.substring(i,i+1),1)
+                            ,Helper.indexOfContains(dataline,">"+snp.substring(i,i+1),1));
             if(idx==-1 || m[idx]==0) {
                 continue;
             }

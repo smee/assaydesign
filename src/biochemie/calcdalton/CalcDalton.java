@@ -256,7 +256,7 @@ public class CalcDalton implements Interruptible{
     protected boolean isDiffOkay(double[] p1_massen,double[] p2_massen) {
         for (int i= 0; i < p1_massen.length; i++) {
             for (int j= 0; j < p2_massen.length; j++) {
-                if(!fitsAllPeakRules(p1_massen[i],p1_massen[j],fromAbs,toAbs))
+                if(!fitsAllPeakRules(p1_massen[i],p2_massen[j],fromAbs,toAbs))
                     return false;
             }
         }

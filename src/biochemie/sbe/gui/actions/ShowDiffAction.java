@@ -100,6 +100,7 @@ public class ShowDiffAction extends MyAction {
        };
        if(cdmodels.length>1){
            TableModel[] m=new TableModel[cdmodels.length-1];
+           System.arraycopy(cdmodels,1,m,0,m.length);
            cdmodels[0]=new CombinedTableModel(m);
        }
        for (int j = 0; j < restables.length; j++) {
@@ -205,13 +206,13 @@ public class ShowDiffAction extends MyAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-       index=1;
+       index=0;
         frame = new JFrame("Detailed results");
         frame.getContentPane().setLayout(new BorderLayout());
         restable = restables[index];
         difftable = new JTableEx(diffmodels[index]);
         ColumnResizer.adjustColumnPreferredWidths(difftable);
-        cdtable = new JTableEx(cdmodels[index-1]);
+        cdtable = new JTableEx(cdmodels[index]);
         ColumnResizer.adjustColumnPreferredWidths(cdtable);
         difftable.setPreferredScrollableViewportSize(TABLE_DIM);
         cdtable.setPreferredScrollableViewportSize(TABLE_DIM);

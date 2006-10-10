@@ -231,12 +231,12 @@ public class SBECandidatePanel extends MyPanel {
         case MiniSBE.PROBE:
             return getProbePanel5();
         case MiniSBE.PROBE_CLEAVABLE:
-            JPanel p=new JPanel();
+            MyPanel p=new MyPanel();
             p.add(getPlpanel5());
             p.add(getProbePanel5());
             return p;
         case MiniSBE.PROBE_PINPOINT:
-            JPanel pp=new JPanel();
+            MyPanel pp=new MyPanel();
             pp.add(getPinpointAddonPanel5());
             pp.add(getProbePanel5());
             return pp;

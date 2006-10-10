@@ -158,17 +158,20 @@ public class CleavablePrimer extends Primer{
      * @param other
      * @return
      */
-    protected boolean passtMitCalcDalton(CleavablePrimer other) {
-        CalcDalton cd=Helper.getCalcDalton();
-        String[][] sbedata= createCDParameters(this, other);
-        int[] br = cfg.getPhotolinkerPositions();
-		int[] fest=new int[] {ArrayUtils.indexOf(br,this.getBruchstelle())
-                			 ,ArrayUtils.indexOf(br,other.getBruchstelle())};
-        if(0 == cd.calc(sbedata, fest).length) {
-            edgecol.add(new CalcDaltonEdge(this,other));
-            return false;
-        }
-        return true;
+    protected boolean passtMitCalcDalton(Primer other) {
+        if(other instanceof CleavablePrimer){
+            CalcDalton cd=Helper.getCalcDalton();
+            String[][] sbedata= createCDParameters(this, other);
+            int[] br = cfg.getPhotolinkerPositions();
+            int[] fest=new int[] {ArrayUtils.indexOf(br,this.getBruchstelle())
+                    ,ArrayUtils.indexOf(br,((CleavablePrimer)other).getBruchstelle())};
+            if(0 == cd.calc(sbedata, fest).length) {
+                edgecol.add(new CalcDaltonEdge(this,other));
+                return false;
+            }
+            return true;
+        }else
+            return super.passtMitCalcDalton(other);
     }
     
     protected boolean passtMitCDRec(Primer me, Primer other, boolean evilcd) {

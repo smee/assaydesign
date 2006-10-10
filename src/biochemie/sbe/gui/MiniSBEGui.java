@@ -331,7 +331,25 @@ public class OptimizePLAction extends MyAction {
 //                    flag=flag && validateProbePrimer(p);
 //                }
 //            }
+            if(assayType==MiniSBE.PROBE || assayType==MiniSBE.PROBE_CLEAVABLE || assayType==MiniSBE.PROBE_PINPOINT){
+                for (Iterator it = sbepanels.iterator(); it.hasNext();) {
+                    SBECandidatePanel p = (SBECandidatePanel) it.next();
+                    flag=flag && validateProbeType(p);
+                }
+            }
             return flag;
+        }
+        private boolean validateProbeType(SBECandidatePanel p) {
+            boolean flag=true;
+            p.getSeq3tf().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+            p.getSeq3tf().setToolTipText(null);
+            if(p.getSeq5tf().getText().length()>0 && p.getSeq3tf().getText().length()==0){
+                p.getSeq3tf().setBorder(BorderFactory.createLineBorder(Color.red,2));
+                p.getSeq3tf().setToolTipText("Please provide a 3' sequence for this probe primer!");
+                flag=false;
+            }
+            return flag;
+            
         }
 //        private boolean validateProbePrimer(SBECandidatePanel p){
 //            p.getPinpointAddonPanel5().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
