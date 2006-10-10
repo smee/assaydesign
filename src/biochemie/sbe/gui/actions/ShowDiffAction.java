@@ -37,6 +37,7 @@ import biochemie.calcdalton.DiffTableModel;
 import biochemie.calcdalton.JTableEx;
 import biochemie.calcdalton.SBETable;
 import biochemie.gui.ColumnResizer;
+import biochemie.gui.CombinedTableModel;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.SBEOptions;
@@ -87,7 +88,6 @@ public class ShowDiffAction extends MyAction {
 
         mid=new String[mids.size()+1];
        diffmodels[0]=generateDiffTableModelFor(null,sbecfilt);
-       cdmodels[0]=generateCDModelFor(null,sbecfilt);
        restables[0]=calcaction.createResultTable(sbecfilt);
        mid[0]="All multiplexes";
         int i=1;
@@ -97,6 +97,10 @@ public class ShowDiffAction extends MyAction {
            cdmodels[i]=generateCDModelFor(id,sbecfilt);
            restables[i]=calcaction.createResultTable(getFilteredList(id, sbecfilt));
            mid[i]=id;
+       };
+       if(cdmodels.length>1){
+           TableModel[] m=new TableModel[cdmodels.length-1];
+           cdmodels[0]=new CombinedTableModel(m);
        }
        for (int j = 0; j < restables.length; j++) {
         restables[j].setPreferredScrollableViewportSize(TABLE_DIM);
@@ -237,7 +241,6 @@ public class ShowDiffAction extends MyAction {
 
             public void valueChanged(ListSelectionEvent e) {
                 int pos = idlist.getSelectedIndex();//XXX sollte da nich drauf zugreifen
-                System.out.println("pos "+pos+" selected.");
                 index=(pos+mid.length)%mid.length;
                 difftable.setModel(diffmodels[index]);
                 cdtable.setModel(cdmodels[index]);

@@ -341,22 +341,28 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         return new String[][] {p1.getCDParamLine(), p2.getCDParamLine()};
         
 }
-    
+    public String[] getCDParamLine(){
+        return this.getCDParamLine(true);
+    }
     /**
-     * Creates the input for CalcDalton.TODO wie genau soll das laufen???
+     * Creates the input for CalcDalton.
+     * TODO invalid. product peak diffs. sollten ohne die sec.strucs berechnet werden. 
+     * TODO Grund: da sich zwei primer mit incomp. sec.strucs. eh ausschliessen, werden diese einbauten auch nie auftauchen
+     * TODO sec.strucs, die in den verbotenen massebreich fallen wüerden mussu auch ausschliessen, weil gibts ja nu nich 
      * @return
      */
-    public String[] getCDParamLine() {
+    public String[] getCDParamLine(boolean includeHairpins) {
         Set chars=new TreeSet();
         String snp=this.getSNP();
         for(int i=0;i<snp.length();i++)
             chars.add(new Character(snp.charAt(i)));
         Set sekstrucs1=this.getSecStrucs();
-        for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
-            SekStruktur s = (SekStruktur) it.next();
-            if(s.getType()==SekStruktur.HAIRPIN || s.getType()==SekStruktur.HOMODIMER)
-                chars.add(new Character(Character.toUpperCase(s.bautEin())));
-        }
+        if(includeHairpins)
+            for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
+                SekStruktur s = (SekStruktur) it.next();
+                if(s.getType()==SekStruktur.HAIRPIN || s.getType()==SekStruktur.HOMODIMER)
+                    chars.add(new Character(Character.toUpperCase(s.bautEin())));
+            }
         char[] attachments=new char[] {'A','C','G','T'};
         String[] arr=new String[attachments.length+1];
         arr[0]=this.getCompletePrimerSeq();

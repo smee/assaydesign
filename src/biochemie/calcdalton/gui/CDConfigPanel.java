@@ -306,7 +306,13 @@ public class CDConfigPanel extends JPanel{
         add(cbAllowOverlap,"1,11");
         
         cbCalcdaltonAnhaenge=new JCheckBox("Allow for all extension products",true);
-        cbCalcdaltonAnhaenge.setToolTipText(null);//TODO
+        cbCalcdaltonAnhaenge.setToolTipText("<html>The checkbox \"Allow for all extension products\" enables the programm to account for all<br>" + 
+                "possible extension products. In the unchecked state only extension products as specified in the<br>" + 
+                "field \"ddNTPs” (main input screen) are considered. Again, similar to the checkbox \"allow<br>" + 
+                "unextended Primer overlap\" if unchecked, this option can help to combine even more SBE<br>" + 
+                "reactions in the same multiplex. If checked, all restrictions resulting from \"Minimum peak<br>" + 
+                "distance (D):\" \"Excluded mass ranges (D)\" and<br>" + 
+                "\"Excluded peak distances (D)\" apply for all of the four possible extension products.</html>");
         add(cbCalcdaltonAnhaenge,"1,13");
         
         cbShowIons=new JCheckBox("Draw peaks of cationic adducts");
