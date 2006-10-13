@@ -183,9 +183,12 @@ public class ProbePrimerFactory extends PrimerFactory {
         if(type.equals(Primer._3_))
             snp=Helper.complPrimer(snp);
         int start = getStartAssayType(type);
+        boolean singleAssay= start>=0;
+        if(!singleAssay)
+            start=0;
         if(otherFactory!=null){
             Collection otherPrimers=otherFactory.createPossiblePrimers(seq,type);
-            for (int i=start+1; i < PROBEASSAYTYPES.length; i++) {
+            for (int i=start; i < PROBEASSAYTYPES.length; i++) {
                 List addons=generateAddons(type,i);
                 for (Iterator it = otherPrimers.iterator(); it.hasNext();) {
                     Primer primer = (Primer) it.next();                    
@@ -194,17 +197,17 @@ public class ProbePrimerFactory extends PrimerFactory {
                         result.add(new ProbePrimer(primer,i,addon));
                     }
                 }
-                if(start!=-1)
+                if(singleAssay)
                     break;
             }
         }else
-            for (int i = start+1; i < PROBEASSAYTYPES.length; i++) {
+            for (int i = start; i < PROBEASSAYTYPES.length; i++) {
                 List addons=generateAddons(type,i);
                 for (Iterator it = addons.iterator(); it.hasNext();) {
                     String addon = (String ) it.next();
                     result.add(new ProbePrimer(getId(),seq,type,snp,i,addon,productlen,cfg.getSecStrucOptions(),cfg.getMinProductLenDiff()));
                 }
-                if(start!=-1)
+                if(singleAssay)
                     break;
             }
         return result;

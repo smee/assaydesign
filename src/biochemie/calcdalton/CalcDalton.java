@@ -125,7 +125,7 @@ public class CalcDalton implements Interruptible{
         if (primer instanceof CleavablePrimer) {
             return this.calcSBEMass(params,((CleavablePrimer)primer).getBruchstelle(),allExtension);
         }else
-            return this.calcSBEMass(params,true);
+            return this.calcSBEMass(params,allExtension);
     }
 	/**
 	 * Berechnung der Masse einer einzelnen Sequenz.
