@@ -508,7 +508,7 @@ public class OptimizePLAction extends MyAction {
                     Point p= event.getPoint();
                     int row= rowAtPoint(p);
                     int col= columnAtPoint(p);
-                    if(col == 10) {//XXX
+                    if(col == 15) {//XXX
                         return getSekStrukTooltipFor((String) sorter.getValueAt(row,1));
                     }else if(col == 8 || col == 9 ){
                         return splittedHtmlLine(sorter.getValueAt(row,col).toString());
