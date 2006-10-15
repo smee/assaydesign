@@ -78,12 +78,12 @@ public class SekStruktur  implements Cloneable{
         switch (type) {
         case HAIRPIN :
         case HOMODIMER:
-            incomp=Helper.isInkompatibleSekStruktur(p.getCompletePrimerSeq(),getPosFrom3(),p.getSNP());
+            incomp=isInkompatibleSekStruktur(p.getCompletePrimerSeq(),getPosFrom3(),p.getSNP(),bautAn);
             break;
         case CROSSDIMER:
             //es sind zwei SNPs beteiligt, gegen die getestet werden muss.
-            incomp=Helper.isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),p.getSNP())
-                          || Helper.isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),other.getSNP());
+            incomp=isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),p.getSNP(),bautAn)
+                          || isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),other.getSNP(),bautAn);
             break;
         default :
             throw new IllegalArgumentException("invalid secondary strucure type given!");
@@ -248,5 +248,20 @@ public class SekStruktur  implements Cloneable{
         else
             return p.getId()+" with "+other.getId()+": "
                      +(isIncompatible()?"in":"")+"compatible crossdimer";
+    }
+
+    /**
+     * Test, ob das Nukleotid, welches vor dem Hairpin eingebaut wird, in SNP liegt oder nicht
+     * @param primer
+     * @param bautAn 
+     * @param bruchstelle
+     * @return true, wenn das einzubauende Nukleotid im SNP liegt
+     */
+    private boolean isInkompatibleSekStruktur(String primer, int pos, String snp, char bautAn) {
+        char einbau=bautAn;
+        if(bautAn==0 && pos!=-1){
+            einbau= Helper.sekundaerStrukturBautEin(primer, pos);//nimm das Nukleotid VOR der Position!
+        }
+        return -1 != snp.indexOf(einbau);
     }
 }

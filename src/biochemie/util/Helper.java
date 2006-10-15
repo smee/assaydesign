@@ -440,16 +440,6 @@ public class  Helper{
     }
 
     /**
-     * Test, ob das Nukleotid, welches vor dem Hairpin eingebaut wird, in SNP liegt oder nicht
-     * @param primer
-     * @param bruchstelle
-     * @return true, wenn das einzubauende Nukleotid im SNP liegt
-     */
-    public static boolean isInkompatibleSekStruktur(String primer, int pos, String snp) {
-        char einbau= sekundaerStrukturBautEin(primer, pos);//nimm das Nukleotid VOR der Position!
-        return -1 != snp.indexOf(einbau);
-    }
-    /**
      * Liefert das Nukleotid, welches von einer SEkundärstruktur (HAirpin, Homodimer, Crossdimer)
      * eingebaut werden würde.
      * @param primer

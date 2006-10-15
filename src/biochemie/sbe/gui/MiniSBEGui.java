@@ -46,6 +46,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -302,22 +303,19 @@ public class OptimizePLAction extends MyAction {
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
                 NuklSelectorPanel nuklPanel=p.getSNPSelectorPanel();
-                Border b=nuklPanel.getBorder();
-                if(b instanceof CompoundBorder){
-                    nuklPanel.setBorder(((CompoundBorder)b).getInsideBorder());
-                }
+                resetBorder(nuklPanel);
                 if(nuklPanel.getSelectedNukleotides().length()==0){
-                    nuklPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),nuklPanel.getBorder()));
+                    setErrorBorder(nuklPanel);
                     flag=false;
                 }
                 String filter=p.getFiltersPanel().getText();
                 StringTokenizer st=new StringTokenizer(filter);
-                p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.black,1));
+                resetBorder(p.getFiltersPanel().getPBSequenceField());
                 p.getFiltersPanel().getPBSequenceField().setToolTipText(null);
                 while(flag && st.hasMoreTokens()) {
                     String token=st.nextToken();
                     if(!re.matcher(token).matches()) {
-                        p.getFiltersPanel().getPBSequenceField().setBorder(BorderFactory.createLineBorder(Color.red,2));
+                        setErrorBorder(p.getFiltersPanel().getPBSequenceField());
                         p.getFiltersPanel().getPBSequenceField().setToolTipText("Invalid format: "+token);
                         getExpertToggleButton().setSelected(true);
                         flag=false;
@@ -339,13 +337,35 @@ public class OptimizePLAction extends MyAction {
             }
             return flag;
         }
+        /**
+         * @param panel
+         */
+        private void setErrorBorder(JComponent panel) {
+            panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),panel.getBorder()));
+        }
+        /**
+         * @param panel
+         */
+        private void resetBorder(JComponent panel) {
+            Border b=panel.getBorder();
+            if(b instanceof CompoundBorder){
+                panel.setBorder(((CompoundBorder)b).getInsideBorder());
+            }
+        }
         private boolean validateProbeType(SBECandidatePanel p) {
             boolean flag=true;
-            p.getSeq3tf().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+            resetBorder(p.getSeq5tf());
+            resetBorder(p.getSeq3tf());
+            p.getSeq5tf().setToolTipText(null);
             p.getSeq3tf().setToolTipText(null);
             if(p.getSeq5tf().getText().length()>0 && p.getSeq3tf().getText().length()==0){
-                p.getSeq3tf().setBorder(BorderFactory.createLineBorder(Color.red,2));
+                setErrorBorder(p.getSeq3tf());
                 p.getSeq3tf().setToolTipText("Please provide a 3' sequence for this probe primer!");
+                flag=false;
+            }
+            if(p.getSeq3tf().getText().length()>0 && p.getSeq5tf().getText().length()==0){
+                setErrorBorder(p.getSeq5tf());
+                p.getSeq5tf().setToolTipText("Please provide a 5' sequence for this probe primer!");
                 flag=false;
             }
             return flag;
