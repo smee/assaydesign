@@ -138,7 +138,7 @@ public class ShowDiffAction extends MyAction {
         if(sbec.get(0) instanceof CleavablePrimerFactory)
             cd.calc(paneldata,sbetable,fest);
         else
-            cd.calc(paneldata,sbetable);
+            cd.calc(paneldata,sbetable);//TODO Achtung, wenn kein cleavableprimer, dann auch keine cleavable linker setzen!
         return sbetable;
     }
 

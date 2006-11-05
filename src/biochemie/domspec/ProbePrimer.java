@@ -71,11 +71,11 @@ public class ProbePrimer extends Primer {
     public String getFilter() {
         return getType()+"_"+getPrimerSeq().length()+"_"+getAssayType();
     }
-    public String[] getCDParamLine() {
+/*    public String[] getCDParamLine() {
         String seq=getCompletePrimerSeq();
         //das letzte nucl. ist ein ddX, alle anderen dX
-        return new String[]{seq.substring(0,seq.length()-1),seq.substring(seq.length()-1)};
-    }
+        return new String[]{seq.substring(0,seq.length()-1),seq.substring(seq.length()-1)};//TODO probeprimer nicht aufspalten fuer die anhaenge, sondern....?
+    }*/
     public String toString() {
         StringBuffer sb=new StringBuffer();
         if(p!=null){
