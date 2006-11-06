@@ -222,7 +222,7 @@ public class SBECandidatePanel extends MyPanel {
         this.add(getFixedPrimerCB(), gridBagConstraints15);
         setUnchanged();
     }
-    private Component getSeq5AssayDataComponent() {
+    protected Component getSeq5AssayDataComponent() {
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
             return getPlpanel5();
@@ -245,7 +245,7 @@ public class SBECandidatePanel extends MyPanel {
         }
     }
     
-    private Component getSeq3AssayDataComponent() {
+    protected Component getSeq3AssayDataComponent() {
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
             return getPlpanel3();
@@ -892,6 +892,10 @@ public class SBECandidatePanel extends MyPanel {
         int assay3=getProbePanel3().getSelectedType();
         PrimerFactory cleave=getPinpointPrimerFactory(cfg,rememberOutput,id,seq5,seq3,snp,bautein5,bautein3,pcrlen,multiplexid,unwanted,userGiven);
         return new ProbePrimerFactory(cfg,id,seq5,snp,seq3,bautein5,bautein3,pcrlen,multiplexid,assay5,assay3,userGiven,unwanted,rememberOutput,cleave);
+    }
+
+    public int getAssayType() {
+        return assayType;
     }
     
 }  //  @jve:decl-index=0:visual-constraint="65,28"

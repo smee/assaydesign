@@ -21,11 +21,12 @@ import javax.swing.event.ListDataListener;
 
 import biochemie.gui.PLSelectorPanel;
 import biochemie.gui.StringEntryPanel;
+import biochemie.sbe.MiniSBE;
 import biochemie.util.Helper;
 
 /**
  * @author sdienst
- *
+ * TODO muss auch fuer die anderen assaytypen funktionieren!
  */
 public class SBESeqInputController implements DocumentListener, ListDataListener, ItemListener{
     private static final String INSERT_TT = "Insert 5' Sequence of the SNP (A,C,G,T, L) (L=cleavable linker)";
@@ -49,7 +50,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     private StringEntryPanel midtf=null;
     private boolean isRight;
     
-    public SBESeqInputController(SBECandidatePanel panel, int minlen, boolean isLeft) {        
+    public SBESeqInputController(final SBECandidatePanel panel, int minlen, final boolean isLeft) {        
         this(isLeft?panel.getSeq5tf():panel.getSeq3tf(),isLeft?panel.getPlpanel5():panel.getPlpanel3(), panel.getFixedPrimerCB(), minlen, isLeft);
         this.midtf = panel.getMultiplexidPanel();
         if(midtf !=null) {
@@ -59,10 +60,25 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     boolean sel=fixedcb.isSelected();
                     SBESequenceTextField tf = SBESeqInputController.this.left;
                     midtf.setEnabled(sel);
-                    if( sel && Helper.getPosOfPl(left.getText())<0 )//wenn das hier keine fixe seq. ist
-                        sel=false;
+                    if( sel ){
+                        switch (panel.getAssayType()) {
+                        case MiniSBE.CLEAVABLE:
+                        case MiniSBE.PROBE_CLEAVABLE:
+                            sel=Helper.getPosOfPl(left.getText())<0;
+                            if(sel)
+                                plpanel.setEnabled(getReplNucl()!=0);
+                            break;
+
+                        default:
+                            break;
+                        }
+                    }
+                    
                     if(sel == true)//nur dann!
-                        plpanel.setEnabled(false);
+                        if(isLeft) 
+                            panel.getSeq5AssayDataComponent().setEnabled(false);
+                        else
+                            panel.getSeq3AssayDataComponent().setEnabled(false);
                     tf.setEnabled(!sel);
                 }
             });
@@ -158,11 +174,9 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                         return;
                     }
                     char torepl = seq.charAt(seq.length() - pl);
-                    if(isRight)
-                        torepl = seq.charAt(pl - 1);//von links betrachten
                     if(torepl!='L') {
                         replacedNukl=torepl;
-                        newseq=biochemie.util.Helper.replacePL(seq,pl);
+                        newseq=biochemie.util.Helper.replaceWithPL(seq,pl);
                     }
                 }
             }else {//schon vorher was gewaehlt
@@ -181,7 +195,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
                     if(newrepl == 'L')
                         return;
                     newseq = Helper.replaceNukl(seq, pos, replacedNukl);//ersetze alten PL durch gespeichertes Nukl.
-                    newseq = Helper.replacePL(newseq, newpl);
+                    newseq = Helper.replaceWithPL(newseq, newpl);
                     replacedNukl = newrepl;
                 }
             }
@@ -199,7 +213,7 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     public String getSequenceWOL() {
         if(replacedNukl!=0) {
             String seq=left.getText();
-            return Helper.replaceNukl(seq,Helper.getPosOfPl(seq),replacedNukl);
+            return Helper.replacePL(seq,replacedNukl);
         }
         return left.getText();
     }
@@ -256,5 +270,8 @@ public class SBESeqInputController implements DocumentListener, ListDataListener
     public void itemStateChanged(ItemEvent e) {
         if(e.getStateChange() == ItemEvent.SELECTED)
             handlePLPanelChange();
+    }
+    public char getReplNucl() {
+        return replacedNukl;
     }
 }

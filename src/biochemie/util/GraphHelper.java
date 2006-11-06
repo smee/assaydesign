@@ -40,6 +40,7 @@ public class GraphHelper {
         for (int i = 0; i < vert.size(); i++) {
             Object v1=vert.get(i);
 //          System.out.println("v1="+v1);
+//          System.out.println("v2="+v1);
 //          System.out.println("edges for v1: "+g.edgesOf(v1));
             for (int j = i+1; j < vert.size(); j++) {
                 Object v2=vert.get(j);

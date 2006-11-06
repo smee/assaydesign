@@ -1,5 +1,6 @@
 package biochemie.domspec;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,6 +12,7 @@ import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 import biochemie.util.edges.DifferentAssayTypeEdge;
+import biochemie.util.edges.MyUndirectedEdge;
 
 public class ProbePrimer extends Primer {
     private final Primer p;
@@ -49,8 +51,19 @@ public class ProbePrimer extends Primer {
         if(p==null || o.p==null)
             return true;
         boolean ret=p.passtMit(o);
-        edgecol.addAll(p.getLastEdges());
+        edgecol.addAll(modifyEdges(p.getLastEdges()));
         return ret;
+    }
+    private Collection modifyEdges(Collection lastEdges) {
+        for (Iterator it = lastEdges.iterator(); it.hasNext();) {
+            MyUndirectedEdge edge = (MyUndirectedEdge) it.next();
+            if(edge.getSource().equals(this.p))
+                Helper.setField(edge,"m_source",this);//XXX dirty hack, setting private fields
+            else
+                if(edge.getTarget().equals(this.p))
+                    Helper.setField(edge,"m_target",this);
+        }
+        return lastEdges;
     }
     private boolean passtMitAssayType(ProbePrimer other) {
         if(other.assayType != this.assayType){
@@ -74,12 +87,12 @@ public class ProbePrimer extends Primer {
 /*    public String[] getCDParamLine() {
         String seq=getCompletePrimerSeq();
         //das letzte nucl. ist ein ddX, alle anderen dX
-        return new String[]{seq.substring(0,seq.length()-1),seq.substring(seq.length()-1)};//TODO probeprimer nicht aufspalten fuer die anhaenge, sondern....?
+        return new String[]{seq.substring(0,seq.length()-1),seq.substring(seq.length()-1)};
     }*/
     public String toString() {
         StringBuffer sb=new StringBuffer();
         if(p!=null){
-            sb.append(p.toString()).append(", assayType=");
+            sb.append(p.toString());
         }else{
             sb.append(super.toString());
         }
@@ -91,7 +104,9 @@ public class ProbePrimer extends Primer {
             return false;
         }else {
             ProbePrimer other = (ProbePrimer)o;
-            return getAssayType()==other.getAssayType() && super.equals(other);
+            return getAssayType()==other.getAssayType()  
+                    && this.addon.equals(other.addon)
+                    && super.equals(other);
         }
     }
     public int hashCode() {

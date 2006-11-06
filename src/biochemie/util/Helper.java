@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ import org.apache.commons.lang.StringUtils;
 
 import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.CalcDaltonOptions;
+import biochemie.domspec.ProbePrimer;
+import biochemie.util.edges.MyUndirectedEdge;
 
 
 
@@ -914,5 +917,33 @@ public class  Helper{
                 }
             }
             return -1;
+    }
+
+    public static void setField(Object obj, String fieldName, Object value) {
+        try {
+            for (Class c = obj.getClass(); c != null; c = c.getSuperclass()) {
+                Field field=null;
+                try{
+//                    System.out.println(c.getName()+":");
+//                    Field[] fields=c.getDeclaredFields();
+//                    for (int i = 0; i < fields.length; i++) {
+//                        System.out.println(fields[i].getName());
+//                    }
+                    field = c.getDeclaredField(fieldName);
+                }catch (NoSuchFieldException e) {
+                }
+                if(field!=null){
+                    field.setAccessible(true);
+                    field.set(obj,value);
+                    break;
+                }
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -226,24 +226,33 @@ public class CalcDalton implements Interruptible{
         return false;
     }
     
-    private boolean fitsAllPeakRules(double m1,double m2, double[] massesFrom, double[] massesTo){
+    private boolean fitsAllPeakRules(double m1,double m2, double[] massesFrom, double[] massesTo, boolean useAbsDiff){
         double peak = getCurrentPeak(m1,m2,assaypeaks);
-        double temp=Math.abs(m1 - m2);
-        //min. peakdiff
-        if(temp<peak){
-            return false;
-        }
+        double diff=m1 - m2;
+        if(useAbsDiff)
+            diff=Math.abs(diff);
+        
         //forbidden peakdiffs
         for(int k=0;k<massesFrom.length;k++)
-            if(temp>=massesFrom[k] && temp<=massesTo[k])
+            if(diff>=massesFrom[k] && diff<=massesTo[k])
                 return false;
         
-        if(halfMassForbidden){
-            if(Math.abs(m1/2d - m2)<getCurrentPeak(m1/2.0d,m2,assaypeaks) 
-                    || Math.abs(m2/2.0d - m1)<getCurrentPeak(m1,m2/2.0d,assaypeaks))
-                return false;
+        //min. peakdiff
+        if(Math.abs(diff)<peak){
+            return false;
         }
         return true;
+    }
+    /**
+     * @param mass1 half of this mass mustn't fall into peak diff
+     * @param mass2
+     * @return
+     */
+    private boolean fitsHalfMassPeakRules(double mass1, double mass2) {
+        if(halfMassForbidden)
+            return Math.abs(mass1/2d - mass2)>=getCurrentPeak(mass1/2.0d,mass2,assaypeaks);
+        else
+            return true;
     }
     
 	/**
@@ -256,7 +265,9 @@ public class CalcDalton implements Interruptible{
     protected boolean isDiffOkay(double[] p1_massen,double[] p2_massen) {
         for (int i= 0; i < p1_massen.length; i++) {
             for (int j= 0; j < p2_massen.length; j++) {
-                if(!fitsAllPeakRules(p1_massen[i],p2_massen[j],fromAbs,toAbs))
+                if(!fitsAllPeakRules(p1_massen[i],p2_massen[j],fromAbs,toAbs,true) ||
+                   !fitsHalfMassPeakRules(p1_massen[i],p2_massen[j]) ||
+                   !fitsHalfMassPeakRules(p2_massen[j],p1_massen[i]))
                     return false;
             }
         }
@@ -267,18 +278,22 @@ public class CalcDalton implements Interruptible{
          // -> fällt weg wegen is nich
          //vgl. sbe1 ohne anhang mit allen sbe2 mit anhang
          for (int i= 1; i < masses2.length; i++) {
-             if(!fitsAllPeakRules(masses1[0],masses2[i],from,to))
+             if(!fitsAllPeakRules(masses1[0],masses2[i],from,to,false) ||
+                !fitsHalfMassPeakRules(masses1[0],masses2[i]))
                  return false;
          }
         //vgl. sbe2 ohne anhang mit allen sbe1 mit anhang
          for (int i= 1; i < masses1.length; i++) {
-             if(!fitsAllPeakRules(masses1[i],masses2[0],from,to))
+             if(!fitsAllPeakRules(masses1[i],masses2[0],from,to,false) ||
+                     !fitsHalfMassPeakRules(masses1[i],masses2[0]))
                  return false;
          }
         //vgl. den rest miteinander
         for (int i= 1; i < masses1.length; i++) {
              for (int j= 1; j < masses2.length; j++) {
-                 if(!fitsAllPeakRules(masses1[i],masses2[j],fromAbs,toAbs))
+                 if(!fitsAllPeakRules(masses1[i],masses2[j],fromAbs,toAbs,false) ||
+                    !fitsHalfMassPeakRules(masses1[i],masses2[j]) ||
+                    !fitsHalfMassPeakRules(masses2[j],masses1[i]))
                      return false;
              }
          }
