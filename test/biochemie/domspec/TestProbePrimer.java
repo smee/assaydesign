@@ -11,7 +11,7 @@ public class TestProbePrimer extends TestCase {
      */
     public void testGetCDParamLine() {
         ProbePrimer p=new ProbePrimer("test1","acccgggtttaa",Primer._5_,"ag",13,"attccg",0,new SBEConfig().getSecStrucOptions(),0);
-        MyAssert.assertEquals(p.getCDParamLine(),new String[]{"acccgggtttaaattcc","g"});
+        MyAssert.assertEquals(p.getCDParamLine(),new String[]{"acccgggtttaa","a",">c","g",">t"});
     }
     public void testCombinationCleavable(){
         CleavablePrimer cleav=new CleavablePrimer(new SBEConfig(),"cleav","acccgggtttaa",9,"ag",Primer._5_,"",0,true);

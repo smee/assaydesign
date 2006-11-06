@@ -5,6 +5,7 @@
 package biochemie.sbe.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -237,7 +238,20 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ((GeneralConfig)secopt).readConfigFile(f);
         super.readConfigFile(f);
     }
-
+    public synchronized void readConfig(InputStream f) throws IOException{
+        if(cdopt instanceof GeneralConfig){
+            f.mark(100000);
+            ((GeneralConfig)cdopt).readConfig(f);
+            f.reset();
+        }
+        if(secopt instanceof GeneralConfig){
+            f.mark(100000);
+            ((GeneralConfig)secopt).readConfig(f);
+            f.reset();
+        }
+        super.readConfig(f);
+        
+    }
     public void updateConfigFile(String filename) throws IOException {
         super.updateConfigFile(filename);
         if(cdopt instanceof GeneralConfig)

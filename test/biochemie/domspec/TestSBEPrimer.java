@@ -4,7 +4,12 @@
  */
 package biochemie.domspec;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -12,13 +17,14 @@ import biochemie.sbe.SBEOptions;
 import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.io.SecStrucConfig;
+import biochemie.util.Helper;
 
 /**
  * @author Steffen Dienst
  * 18.10.2004
  */
 public class TestSBEPrimer extends TestCase {
-    SBEOptions cfg;
+    SBEConfig cfg;
 
     public void setUp() {
         cfg= new SBEConfig();
@@ -67,7 +73,7 @@ public class TestSBEPrimer extends TestCase {
         assertEquals("AC",p.getSNP());
 
         CleavablePrimer p2 = new CleavablePrimer(cfg,"id","LAAAA","AC",CleavablePrimer._3_,"",0,false);
-        assertEquals("TG",p2.getSNP());
+        assertEquals("AC",p2.getSNP());
 
     }
 
@@ -88,10 +94,11 @@ public class TestSBEPrimer extends TestCase {
 
     public void testCalcDaltonPasst() {
         cfg.setCalcDaltonAllowOverlap(true);
-        cfg.setCalcDaltonAssayPeaks(new double[]{10.0});
-        cfg.setCalcDaltonProductPeaks(new double[]{10.0});
+        cfg.setCalcDaltonAssayPeaks(new double[]{10.0,2000,10});
+        cfg.setCalcDaltonProductPeaks(new double[]{10.0,2000,10});
         cfg.setCalcDaltonFrom(new double[] {-152.0, -116.0, 0});
         cfg.setCalcDaltonTo(new double[] {-150, -114, 50});
+        Helper.createAndRememberCalcDaltonFrom(cfg);
         //pl jeweils 8
         CleavablePrimer p1= new CleavablePrimer(cfg,"328ctla4","AACCAGAGGCAGCLTCTTTTC","AG",CleavablePrimer._5_,"",0,true);
         CleavablePrimer p2= new CleavablePrimer(cfg,"329ctla4","CTATCATGATCATGGGLTTAGCTG","CT",CleavablePrimer._5_,"",0,true);
@@ -167,11 +174,13 @@ public class TestSBEPrimer extends TestCase {
         //pl == 10
         CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATTAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","TG",CleavablePrimer._5_,"",0,true);
 
-    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
+    	List cross1=createdSortedCrossdimerList(SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions()));
+
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 
     	CleavableSekStruktur sek1 = (CleavableSekStruktur) it.next();
+        System.out.println(sek1.getAsciiArt());
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
     	assertEquals('A',sek1.bautEin());
@@ -186,6 +195,19 @@ public class TestSBEPrimer extends TestCase {
     	assertTrue(sek2.isIncompatible());//ist inkompatibel
 
     }
+    private List createdSortedCrossdimerList(Collection coll) {
+        List cross1=new ArrayList(coll);
+        Collections.sort(cross1,new Comparator(){
+            public int compare(Object arg0, Object arg1) {
+                CleavableSekStruktur s1= (CleavableSekStruktur)arg0;
+                CleavableSekStruktur s2= (CleavableSekStruktur)arg1;
+                return s1.getPosFrom3()-s2.getPosFrom3();
+            }
+            
+        });
+        return cross1;
+    }
+
     public void testCrossdimer4(){
     	/*
     	 * primerA : beide nicht verhindert, kompatibel und inkompatibel, pos: 8 und 34
@@ -198,7 +220,7 @@ public class TestSBEPrimer extends TestCase {
     	//pl == 10
         CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATAAGGACCAATGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","CG",CleavablePrimer._5_,"",0,true);
 
-    	Set cross1=SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions());
+        List cross1=createdSortedCrossdimerList(SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions()));
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 

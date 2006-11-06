@@ -19,6 +19,7 @@ import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEConfig;
 import biochemie.sbe.multiplex.Multiplexer.SBEPrimerProxy;
+import biochemie.util.Helper;
 
 /**
  * @author IBM Anwender
@@ -39,10 +40,11 @@ public class MultiplexerTest extends TestCase {
 		cfg=new SBEConfig();
 		cfg.getSecStrucOptions().setCrossimerWindowsizes("5");
 		cfg.getSecStrucOptions().setCrossdimerMinbinds("5");
+        Helper.createAndRememberCalcDaltonFrom(cfg);
 		//alle passen eigentlich miteinander, aber wenn a und b zusammen sind, bauen sie ein G ein, sind dann also nicht mehr mit c kompatibel
-		primerA=new CleavablePrimer(cfg,"primerA","TGTLGTGTGTGTGT","AT",CleavablePrimer._5_,"",1,true);
-		primerB=new CleavablePrimer(cfg,"primerB","ACALCACACACACA","AT",CleavablePrimer._5_,"",1,true);
-		primerC=new CleavablePrimer(cfg,"primerC","TTTLTTTTTTTTTTTT","CG",CleavablePrimer._5_,"",1,true);
+		primerA=new CleavablePrimer(cfg,"primerA","AAATGTLGTGTGTGTGT","AT",CleavablePrimer._5_,"",1,true);
+		primerB=new CleavablePrimer(cfg,"primerB","AAAACALCACACACACA","AT",CleavablePrimer._5_,"",1,true);
+		primerC=new CleavablePrimer(cfg,"primerC","TTTTTTLTTTTTTTTTTTT","CG",CleavablePrimer._5_,"",1,true);
 		primers=new HashSet();
 		primers.add(primerA);
 		primers.add(primerB);

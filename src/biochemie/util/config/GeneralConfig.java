@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -77,22 +78,25 @@ public abstract class GeneralConfig extends Observable{
         }
     }
 	/**
-     * Der INputstream wird nicht geschlossen, nachdem er verwendet wurde!
+     * Der INputstream wird geschlossen, nachdem er verwendet wurde!
 	 * @param instream
 	 */
 	public synchronized void readConfigFile(String filename)  throws IOException{
 		FileInputStream fin=new FileInputStream(filename);	
-        Properties ptemp = new Properties();
-        ptemp.load( fin );
+		readConfig(fin);
         fin.close();
+	}
+
+    public synchronized void readConfig(InputStream is) throws IOException{
+        Properties ptemp = new Properties();
+        ptemp.load( is );
         Enumeration e = ptemp.propertyNames();
         while(e.hasMoreElements()) {
             String key = (String) e.nextElement();
             if(isValidKey(key))
                 prop.setProperty(key,ptemp.getProperty(key));
         }
-	}
-
+    }
     public void writeConfigTo(String filename) throws IOException {    
         FileOutputStream fos= new FileOutputStream(filename);
         prop.store(fos,null);

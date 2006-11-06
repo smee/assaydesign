@@ -291,7 +291,7 @@ public class CalcDalton implements Interruptible{
         //vgl. den rest miteinander
         for (int i= 1; i < masses1.length; i++) {
              for (int j= 1; j < masses2.length; j++) {
-                 if(!fitsAllPeakRules(masses1[i],masses2[j],fromAbs,toAbs,false) ||
+                 if(!fitsAllPeakRules(masses1[i],masses2[j],fromAbs,toAbs,true) ||
                     !fitsHalfMassPeakRules(masses1[i],masses2[j]) ||
                     !fitsHalfMassPeakRules(masses2[j],masses1[i]))
                      return false;
