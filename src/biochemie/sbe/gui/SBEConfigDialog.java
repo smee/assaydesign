@@ -97,6 +97,8 @@ public class SBEConfigDialog extends JDialog {
     private JButton makeDefaultButton = null;
 
     private final Observable observable=new Observable();
+
+    private JCheckBox jAvoidHairpins = null;
     /**
 	 * @param gui
 	 */
@@ -233,6 +235,7 @@ public class SBEConfigDialog extends JDialog {
 	    sbeconfig.setMinTemperature(((Number)getSbePanel().getMinTspinner().getValue()).intValue());
 	    sbeconfig.setMaxTemperature(((Number)getSbePanel().getMaxTspinner().getValue()).intValue());
 	    sbeconfig.setOptTemperature(((Number)getSbePanel().getOptTspinner().getValue()).intValue());
+        sbeconfig.setSecStrucEdgeCreating( getAvoidHairpinsCB().isSelected() );
 	    sbeconfig.setDrawGraphes(getDrawGraphesCheckbox().isSelected());
 	    sec.setAllCrossdimersAreEvil(getEvilCrossdimerCheckBox().isSelected());
 	    sbeconfig.setPolyX(((Number)getSbePanel().getPolyxSpinner().getValue()).intValue());
@@ -388,6 +391,7 @@ public class SBEConfigDialog extends JDialog {
                     jToggleButton.setText(val?DISABLETEXT:ENABLETEXT);
 				}
 			});
+			jToggleButton.setSelected(false);
 		}
 		return jToggleButton;
 	}
@@ -398,6 +402,14 @@ public class SBEConfigDialog extends JDialog {
 	 */
 	private JPanel getAdvSettingsPanel() {
 		if (advSettingsPanel == null) {
+			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			gridBagConstraints3.gridx = 1;
+			gridBagConstraints3.anchor = java.awt.GridBagConstraints.CENTER;
+			gridBagConstraints3.insets = new java.awt.Insets(10,10,10,10);
+			gridBagConstraints3.fill = java.awt.GridBagConstraints.NONE;
+			gridBagConstraints3.ipadx = 0;
+			gridBagConstraints3.weightx = 0.0;
+			gridBagConstraints3.gridy = 2;
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
@@ -408,27 +420,34 @@ public class SBEConfigDialog extends JDialog {
 			advSettingsPanel = new JPanel();
 			advSettingsPanel.setLayout(new GridBagLayout());
 			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.gridy = 4;
+			gridBagConstraints11.gridy = 5;
 			gridBagConstraints11.gridwidth = 2;
 			gridBagConstraints11.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints11.insets = new java.awt.Insets(20,0,0,0);
 			gridBagConstraints1.gridx = 1;
-			gridBagConstraints1.gridy = 5;
+			gridBagConstraints1.gridy = 6;
 			gridBagConstraints1.insets = new java.awt.Insets(10,0,0,0);
 			gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints2.gridx = 1;
-			gridBagConstraints2.gridy = 6;
+			gridBagConstraints2.gridy = 7;
 			gridBagConstraints2.insets = new java.awt.Insets(10,0,10,0);
 			gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints41.gridx = 1;
 			gridBagConstraints41.gridy = 0;
 			gridBagConstraints91.gridx = 1;
+			gridBagConstraints91.insets = new java.awt.Insets(10,10,10,10);
+			gridBagConstraints91.fill = java.awt.GridBagConstraints.NONE;
+			gridBagConstraints91.weightx = 0.0;
+			gridBagConstraints91.ipadx = 0;
+			gridBagConstraints91.anchor = java.awt.GridBagConstraints.CENTER;
 			gridBagConstraints91.gridy = 1;
-			gridBagConstraints12.insets = new java.awt.Insets(10,10,10,10);
+			gridBagConstraints12.insets = new java.awt.Insets(10,10,9,10);
+			gridBagConstraints12.anchor = java.awt.GridBagConstraints.CENTER;
 			gridBagConstraints12.gridx = 1;
-			gridBagConstraints12.gridy = 2;
+			gridBagConstraints12.gridy = 3;
 			gridBagConstraints13.gridx = 1;
-			gridBagConstraints13.gridy = 3;
+			gridBagConstraints13.anchor = java.awt.GridBagConstraints.CENTER;
+			gridBagConstraints13.gridy = 4;
 			gridBagConstraints13.insets = new java.awt.Insets(10,10,10,10);
 			advSettingsPanel.add(getCandlenpanel(), gridBagConstraints41);
 			advSettingsPanel.add(getEvilCrossdimerCheckBox(), gridBagConstraints91);
@@ -437,6 +456,7 @@ public class SBEConfigDialog extends JDialog {
 			advSettingsPanel.add(getHairpinValuePanel(), gridBagConstraints11);
 			advSettingsPanel.add(getHomodimerValuePanel(), gridBagConstraints1);
 			advSettingsPanel.add(getCrossdimerValuePanel(), gridBagConstraints2);
+			advSettingsPanel.add(getAvoidHairpinsCB(), gridBagConstraints3);
 			advSettingsPanel.setVisible(false);
 		}
 		return advSettingsPanel;
@@ -582,6 +602,7 @@ public class SBEConfigDialog extends JDialog {
         ip.loadFromString(sec.getCrossDimerWindowsizes(),sec.getCrossdimerMinbinds());
         getDrawGraphesCheckbox().setSelected(c.isDrawGraphes());
         getDebugCheckBox().setSelected(c.isDebug());
+        getAvoidHairpinsCB().setSelected(c.isSecStrucEdgeCreating());
     }
 
 
@@ -739,5 +760,24 @@ public class SBEConfigDialog extends JDialog {
             makeDefaultButton.setAction(new SetDefaultAction());
         }
         return makeDefaultButton;
+    }
+
+    /**
+     * This method initializes jAvoidHairpins	
+     * 	
+     * @return javax.swing.JCheckBox	
+     */
+    private JCheckBox getAvoidHairpinsCB() {
+        if (jAvoidHairpins == null) {
+            jAvoidHairpins = new JCheckBox();
+            jAvoidHairpins.setText("avoid compatible sec. structures");
+            jAvoidHairpins.setToolTipText("<html>By checking this option a primer with a predicted hairpin<br>" +
+                                                "of a certain nucleotide will not be combined in the same mutliplex<br>" +
+                                                "with SBE-primers that need this certain nucleotide for SNP detection.<br>" +
+                                                "Consequently, the nucleotide necessary for hairpinformation can be<br>" +
+                                                "dissmissed therefore the hairpin is completely avoided. However,<br>" +
+                                                "this might result in a higher number of multiplexes.</html>");
+        }
+        return jAvoidHairpins;
     }
   }  //  @jve:decl-index=0:visual-constraint="10,10"

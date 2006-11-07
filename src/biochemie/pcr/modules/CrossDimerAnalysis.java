@@ -5,7 +5,9 @@
 package biochemie.pcr.modules;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import biochemie.pcr.PrimerPair;
 import biochemie.pcr.io.PCRConfig;
@@ -66,8 +68,8 @@ public class CrossDimerAnalysis extends SekAnalysis{
         int pos=0;
         int rcIndex=0;
         int j;
-        if(null == liste)
-        	liste=new ArrayList();
+        if(null == posSet)
+        	posSet=new HashSet();
         String rcPrimer=Helper.revcomplPrimer(primer2);
         for(int i=1;i<primer.length();i++) {
             if(primer.charAt(i)==rcPrimer.charAt(0) && Helper.isNukleotid(primer.charAt(i))) {
@@ -82,17 +84,17 @@ public class CrossDimerAnalysis extends SekAnalysis{
                     pos=i;
                 }
                 if(binds>=minbinds[idx]){
-                        liste.add(new Integer(primer.length()-i));
+                        posSet.add(new Integer(primer.length()-i));
 					if(debug)
-						System.out.println(Helper.outputXDimer(primer,primer2,pos,windowsize[idx]));    
+						System.out.println(Helper.outputXDimer(primer,primer2,pos,windowsize[idx],0));    
                 }
             }
         }
         return (maxbind< minbinds[idx]) ? 0 : maxbind;
     }
 	public int analyzeAllCrossDimer(String primer, String primer2){
-        if(null == liste)
-            liste=new ArrayList();
+        if(null == posSet)
+            posSet=new HashSet();
 		int sum=0;
 		for(int j=0;j<windowsize.length;j++) {
 			sum+=analyzeCrossDimer(primer,primer2,j);
@@ -108,10 +110,10 @@ public class CrossDimerAnalysis extends SekAnalysis{
      * alle Crossdimer haben will muss noch getCrossDimerPositions(primer2, primer) aufgerufen werden!
      * @return int[]
      */
-    public List getCrossDimerPositions(String primer, String primer2){
+    public Set getCrossDimerPositions(String primer, String primer2){
         analyzeAllCrossDimer(primer,primer2);
-       	List l=liste;
-       	liste=null;
+        Set l=posSet;
+       	posSet=null;
         return l;
         
     }

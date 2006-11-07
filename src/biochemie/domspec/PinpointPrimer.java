@@ -77,5 +77,6 @@ public class PinpointPrimer extends Primer{
            append(getCompletePrimerSeq()).
            append(getTTail()).
            toHashCode();
-}
+    }
+
 }

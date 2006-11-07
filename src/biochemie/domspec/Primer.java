@@ -356,13 +356,14 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         String snp=this.getSNP();
         for(int i=0;i<snp.length();i++)
             chars.add(new Character(snp.charAt(i)));
-        Set sekstrucs1=this.getSecStrucs();
-        if(includeHairpins)
+        if(includeHairpins){
+            Set sekstrucs1=this.getSecStrucs();
             for (Iterator it = sekstrucs1.iterator(); it.hasNext();) {
                 SekStruktur s = (SekStruktur) it.next();
                 if(s.getType()==SekStruktur.HAIRPIN || s.getType()==SekStruktur.HOMODIMER)
-                    chars.add(new Character(Character.toUpperCase(s.bautEin())));
+                    chars.add(new Character(s.bautEin().toUpperCase().charAt(0)));
             }
+        }
         char[] attachments=new char[] {'A','C','G','T'};
         String[] arr=new String[attachments.length+1];
         arr[0]=this.getCompletePrimerSeq();
@@ -396,10 +397,10 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
                 positions+="unknown";
             else
                 positions+=pos;
-            if(Character.toUpperCase(s.bautEin())=='K')//anti pl
+            if(s.bautEin().toUpperCase().charAt(0)=='K')//anti pl
                 nucl+=" - ";
             else
-                nucl+="dd"+Character.toUpperCase(s.bautEin());
+                nucl+="dd"+s.bautEin().toUpperCase().charAt(0);
             switch (s.getType()) {
             case SekStruktur.HAIRPIN:
                 clazz+="hairpin, ";

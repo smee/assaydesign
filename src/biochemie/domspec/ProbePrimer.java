@@ -1,13 +1,12 @@
 package biochemie.domspec;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import biochemie.sbe.ProbePrimerFactory;
 import biochemie.sbe.SecStrucOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
@@ -17,19 +16,19 @@ import biochemie.util.edges.MyUndirectedEdge;
 public class ProbePrimer extends Primer {
     private final Primer p;
     private final int assayType;
-    private final String addon;
+    private final List addonList;
     
-    public ProbePrimer(String id, String seq, String type, String snp, int assayType, String addon, int productlen, SecStrucOptions cfg, int mindiff) {
+    public ProbePrimer(String id, String seq, String type, String snp, int assayType, List addons, int productlen, SecStrucOptions cfg, int mindiff) {
         super(id, seq, type, snp, productlen, cfg, mindiff);
         this.assayType=assayType;
         p=null;
-        this.addon=addon;
+        this.addonList=addons;
     }
-    public ProbePrimer(Primer p, int assayType, String addon){
+    public ProbePrimer(Primer p, int assayType, List addon){
         super(p.id,p.getCompletePrimerSeq(),p.getType(),p.getSNP(), p.getProductLength(), p.cfg, p.mindiff);
         this.assayType=assayType;
         this.p=p;
-        this.addon=addon;
+        this.addonList=addon;
     }
     public boolean passtMit(Multiplexable o) {
         edgecol.clear();
@@ -76,19 +75,19 @@ public class ProbePrimer extends Primer {
         String seq=getPrimerSeq();
         if(p!=null)
             seq=p.getCompletePrimerSeq();
-        return seq+addon;
+//        return seq+addonList;
+        return seq;
     }
     public int getAssayType(){
         return assayType;
     }
+    public List getAddonList(){
+        return Collections.unmodifiableList(addonList);
+    }
     public String getFilter() {
         return getType()+"_"+getPrimerSeq().length()+"_"+getAssayType();
     }
-/*    public String[] getCDParamLine() {
-        String seq=getCompletePrimerSeq();
-        //das letzte nucl. ist ein ddX, alle anderen dX
-        return new String[]{seq.substring(0,seq.length()-1),seq.substring(seq.length()-1)};
-    }*/
+
     public String toString() {
         StringBuffer sb=new StringBuffer();
         if(p!=null){
@@ -105,7 +104,7 @@ public class ProbePrimer extends Primer {
         }else {
             ProbePrimer other = (ProbePrimer)o;
             return getAssayType()==other.getAssayType()  
-                    && this.addon.equals(other.addon)
+                    && this.addonList.equals(other.addonList)
                     && super.equals(other);
         }
     }
@@ -118,5 +117,13 @@ public class ProbePrimer extends Primer {
 }
     public Primer getIncludedPrimer() {
         return p;
+    }
+    public String[] getCDParamLine(boolean includeHairpins) {
+        String[] res=new String[addonList.size()+1];
+        res[0]=getPrimerSeq();
+        for (int i = 0; i < addonList.size(); i++) {
+            res[i+1]=(String)addonList.get(i);;
+        }
+        return res;
     }
 }

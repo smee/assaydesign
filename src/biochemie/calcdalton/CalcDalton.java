@@ -153,16 +153,20 @@ public class CalcDalton implements Interruptible{
 	 * @param addon
 	 * @return
 	 */
-	public double calcPrimerAddonMasse(double mass, String addon) {
-		if (null == addon)
-			return mass;
-		for (int i= 0; i < addon.length(); i++) {
-            Character c=new Character(Character.toUpperCase(addon.charAt(i)));
-			if(addonMasses.keySet().contains(c))
-                mass+=((Double)addonMasses.get(c)).doubleValue();
-		}
-		return mass;//die 18.02 sind schon drauf von calcPrimerMass!
-	}
+    public double calcPrimerAddonMasse(double mass, String addon) {
+        if (null == addon)
+            return mass;
+        if(addon.length()>1)
+            for (int i= 0; i < addon.length()-1; i++) {
+                Character c=new Character(Character.toUpperCase(addon.charAt(i)));
+                if(primerMasses.keySet().contains(c))
+                    mass+=((Double)primerMasses.get(c)).doubleValue();
+            }
+        Character c=new Character(Character.toUpperCase(addon.charAt(0)));
+        if(addonMasses.keySet().contains(c))
+            mass+=((Double)addonMasses.get(c)).doubleValue();
+        return mass;//die 18.02 sind schon drauf von calcPrimerMass!
+    }
 
 	/**
 	 * Berechnung aller Massen einer SBE. Dabei wird der String von hinten abgeschnitten,

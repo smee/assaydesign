@@ -52,17 +52,18 @@ public class HairpinSelectionPanel extends MyPanel {
 	private JCheckBox cbNone = null;
 	private JCheckBox cbPred = null;
     private ItemListener listener;
+    private final boolean showNucl;
 	/**
 	 * This is the default constructor
 	 */
-	public HairpinSelectionPanel() {
+	public HairpinSelectionPanel(boolean showNucl) {
 		super();
+        this.showNucl=showNucl;
 		initialize();
 	}
-	public HairpinSelectionPanel(String title) {
-		super();
+	public HairpinSelectionPanel(String title,boolean showNucl) {
+		this(showNucl);
 		setTitle(title);
-		initialize();
 	}
 
 	/**
@@ -110,10 +111,12 @@ public class HairpinSelectionPanel extends MyPanel {
 		gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints5.gridx = 3;
 		gridBagConstraints5.gridy = 2;
-		this.add(getCbA(), gridBagConstraints11);
-		this.add(getCbG(), gridBagConstraints12);
-		this.add(getCbC(), gridBagConstraints13);
-		this.add(getCbT(), gridBagConstraints14);
+		if(showNucl){
+		    this.add(getCbA(), gridBagConstraints11);
+		    this.add(getCbG(), gridBagConstraints12);
+		    this.add(getCbC(), gridBagConstraints13);
+		    this.add(getCbT(), gridBagConstraints14);
+		}
 		this.add(getCbNone(), gridBagConstraints1);
 		this.add(getCbPred(), gridBagConstraints5);
 		String t="Define experimentally observed Hairpins";

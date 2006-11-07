@@ -87,7 +87,7 @@ public abstract class GeneralConfig extends Observable{
         fin.close();
 	}
 
-    public synchronized void readConfig(InputStream is) throws IOException{
+    private synchronized void readConfig(InputStream is) throws IOException{
         Properties ptemp = new Properties();
         ptemp.load( is );
         Enumeration e = ptemp.propertyNames();

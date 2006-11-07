@@ -6,7 +6,6 @@ package biochemie.domspec;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import biochemie.pcr.modules.CrossDimerAnalysis;
@@ -25,27 +24,29 @@ public class SekStrukturFactory {
         HomoDimerAnalysis hda= getHomoDimerAnalysisInstance(cfg);
         String seq=p.getCompletePrimerSeq();
         
-        List poshairpins= hpa.getHairpinPositions(seq);
-        List poshomodimer= hda.getHomoDimerPositions(seq);
+        Set poshairpins= hpa.getHairpinPositions(seq);
+        Set poshomodimer= hda.getHomoDimerPositions(seq);
         Set sekstrukts=new HashSet(poshairpins.size()+poshomodimer.size());
         
         for (Iterator it= poshairpins.iterator(); it.hasNext();) {
             Integer pos= (Integer)it.next();
-            if(p instanceof CleavablePrimer)
-            	sekstrukts.add(new CleavableSekStruktur((CleavablePrimer)p,SekStruktur.HAIRPIN,pos.intValue()));
-            else
-            	sekstrukts.add(new SekStruktur(p,SekStruktur.HAIRPIN,pos.intValue()));
+            sekstrukts.add(createSekStruktur(p,SekStruktur.HAIRPIN,pos.intValue()));
         }
         for (Iterator it= poshomodimer.iterator(); it.hasNext();) {
             Integer pos= (Integer)it.next();
-            if(p instanceof CleavablePrimer)
-            	sekstrukts.add(new CleavableSekStruktur((CleavablePrimer)p,SekStruktur.HOMODIMER,pos.intValue()));
-            else
-            	sekstrukts.add(new SekStruktur(p,SekStruktur.HOMODIMER,pos.intValue()));
+            sekstrukts.add(createSekStruktur(p,SekStruktur.HOMODIMER,pos.intValue()));
         }
         return sekstrukts;
 	}
-	public static Set getCrossdimer(Primer p, Primer other, SecStrucOptions cfg){
+	private static SekStruktur createSekStruktur(Primer p, int type, int pos) {
+	    if(p instanceof CleavablePrimer)
+	        return new CleavableSekStruktur((CleavablePrimer)p,type,pos);
+	    else if(p instanceof ProbePrimer)
+	        return new ProbeSekStruktur((ProbePrimer)p,type,pos);
+	    else
+	        return new SekStruktur(p,type,pos);
+	}
+    public static Set getCrossdimer(Primer p, Primer other, SecStrucOptions cfg){
         CrossDimerAnalysis cda = getCrossDimerAnalysisInstance(cfg);
         return getCrossdimer(p,other,cda);
 	}
@@ -69,16 +70,21 @@ public class SekStrukturFactory {
         String pseq = p.getCompletePrimerSeq();
         String oseq =other.getCompletePrimerSeq();
 
-        List positions= cda.getCrossDimerPositions(pseq,oseq);
+        Set positions= cda.getCrossDimerPositions(pseq,oseq);
         Set sek=new HashSet();
         
         for (Iterator it = positions.iterator(); it.hasNext();) {
             Integer pos = (Integer) it.next();
-            if(p instanceof CleavablePrimer && other instanceof CleavablePrimer)
-                sek.add(new CleavableSekStruktur((CleavablePrimer)p,(CleavablePrimer)other,pos.intValue()));
-            else
-                sek.add(new SekStruktur(p,other,pos.intValue()));
+            sek.add(createCrossdimer(p,other,pos.intValue()));
         }
         return sek;
+    }
+    private static SekStruktur createCrossdimer(Primer p, Primer other, int pos) {
+        if(p instanceof CleavablePrimer && other instanceof CleavablePrimer)
+            return new CleavableSekStruktur((CleavablePrimer)p,(CleavablePrimer)other,pos);
+        else if(p instanceof ProbePrimer && other instanceof ProbePrimer)
+            return new ProbeSekStruktur((ProbePrimer)p,(ProbePrimer)other,pos);
+        else
+            return new SekStruktur(p,other,pos);
     }
 }

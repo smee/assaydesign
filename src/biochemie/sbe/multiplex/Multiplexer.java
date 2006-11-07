@@ -93,10 +93,10 @@ public abstract class Multiplexer {
 				Collection sekstruks=getCrossdimersOf(primers1, primers2,SekStrukturFactory.getCrossDimerAnalysisInstance(cfg.getSecStrucOptions()));
 				
 				Set kompchars=new HashSet();
-				for (Iterator it = sekstruks.iterator(); it.hasNext();) {
+				for (Iterator it = sekstruks.iterator(); it.hasNext();) {//TODO what about probeprimers?
 					SekStruktur cd = (SekStruktur) it.next();
 					if(!cd.isIncompatible())
-						kompchars.add(new Character(cd.bautEin()));
+						kompchars.add(new Character(cd.bautEin().charAt(0)));
 				}
 				if(kompchars.size()!=0){
 					String bautein="";

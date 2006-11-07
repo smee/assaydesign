@@ -213,10 +213,10 @@ public class CleavablePrimer extends Primer{
                 positions+="unknown";
             else
                 positions+=pos;
-            if(Character.toUpperCase(s.bautEin())=='K')//anti pl
+            if(s.bautEin().toUpperCase().charAt(0)=='K')//anti pl
                 nucl+=" - ";
             else
-                nucl+="dd"+Character.toUpperCase(s.bautEin());
+                nucl+="dd"+s.bautEin().toUpperCase().charAt(0);
             switch (s.getType()) {
             case CleavableSekStruktur.HAIRPIN:
                 clazz+="hairpin, ";
@@ -251,6 +251,8 @@ public class CleavablePrimer extends Primer{
     }
 
     protected boolean passtMitSekStrucs(Primer other) {
+        if(!cfg.isSecStrucEdgeCreating())
+            return true;
         //Inkompatible Sekundärstrukturen?
         String snp1=getSNP();
         String snp2=other.getSNP();

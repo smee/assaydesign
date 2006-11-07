@@ -311,7 +311,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
     /**
      * Filtert eine Liste von Primern, so dass am Ende höchstens zwei Primer übrigbleiben:
      * Einer aus der 5' und einer aus der 3'Sequenz. Standardmaessig sind das der jeweils erste Primer in der Liste für jede Seite.
-     * @param liste
+     * @param posSet
      */
     protected List findBestPrimers(List primers){
         List result=new LinkedList();

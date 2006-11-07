@@ -51,6 +51,7 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ,{"sbe.maxplex","6"}
             ,{"sbe.mincandlen","18"}
             ,{"sbe.prodlendiff","0"}
+            ,{"sbe.compHAIRP2Edge","true"}
             ,{"misc.drawgraph","false"}};
     }
 
@@ -238,20 +239,19 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ((GeneralConfig)secopt).readConfigFile(f);
         super.readConfigFile(f);
     }
-    public synchronized void readConfig(InputStream f) throws IOException{
-        if(cdopt instanceof GeneralConfig){
-            f.mark(100000);
-            ((GeneralConfig)cdopt).readConfig(f);
-            f.reset();
-        }
-        if(secopt instanceof GeneralConfig){
-            f.mark(100000);
-            ((GeneralConfig)secopt).readConfig(f);
-            f.reset();
-        }
-        super.readConfig(f);
-        
-    }
+//    public synchronized void readConfig(InputStream f) throws IOException{
+//        if(cdopt instanceof GeneralConfig){
+//            f.mark(100000);
+//            ((GeneralConfig)cdopt).readConfig(f);
+//            f.reset();
+//        }
+//        if(secopt instanceof GeneralConfig){
+//            f.mark(100000);
+//            ((GeneralConfig)secopt).readConfig(f);
+//            f.reset();
+//        }
+//        super.readConfig(f);        
+//    }
     public void updateConfigFile(String filename) throws IOException {
         super.updateConfigFile(filename);
         if(cdopt instanceof GeneralConfig)
@@ -303,6 +303,14 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         else
             throw new RuntimeException("Can't load default values for secstruc options!");
         
+    }
+
+    public boolean isSecStrucEdgeCreating() {
+        return getBoolean("sbe.compHAIRP2Edge",true);
+    }
+
+    public void setSecStrucEdgeCreating(boolean val) {
+        setProperty("sbe.compHAIRP2Edge",Boolean.toString(val));
     }
 
  }

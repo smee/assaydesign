@@ -77,7 +77,6 @@ public class CleavableSekStruktur extends SekStruktur{
         else
             return p.getId()+"(PL="+((CleavablePrimer)p).getBruchstelle()+") with "+other.getId()+"(PL="+((CleavablePrimer)other).getBruchstelle()+"): "
                      +(isIncompatible()?"in":"")+"compatible crossdimer, "+(verh?"ir":"")+"relevant";
-            //return other.getId()+": "+other.getSeq()+",PL= "+((SBEPrimer)other).getBruchstelle()+", "+(isIncompatible()?"in":"")+"compatible crossdimer with ID "+p.getId()+": "+p.getSeq()+",PL= "+((SBEPrimer)p).getBruchstelle();
     }
 
 }

@@ -4,8 +4,8 @@
  */
 package biochemie.pcr.modules;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import biochemie.pcr.PrimerPair;
 import biochemie.pcr.io.PCRConfig;
@@ -60,8 +60,8 @@ public class HomoDimerAnalysis extends SekAnalysis{
         int pos=0;
         int rcIndex=0;
         int j;
-        if(null == liste)
-        	liste=new ArrayList();
+        if(null == posSet)
+        	posSet=new HashSet();
         String rcPrimer=Helper.revcomplPrimer(primer);
         for(int i=1;i<primer.length();i++) {
             if(primer.charAt(i)==rcPrimer.charAt(0)) {
@@ -76,9 +76,9 @@ public class HomoDimerAnalysis extends SekAnalysis{
                     pos=i;
                 }
                 if(binds>=minbinds[idx]){
-                    liste.add(new Integer(primer.length()-i));
+                    posSet.add(new Integer(primer.length()-i));
 					if(debug)
-						System.out.println(Helper.outputXDimer(primer,primer,pos,windowsize[idx]));
+						System.out.println(Helper.outputXDimer(primer,primer,pos,windowsize[idx],0));
                 }
             }
         }
@@ -99,10 +99,10 @@ public class HomoDimerAnalysis extends SekAnalysis{
      * primer.length() zurückgegeben werden
      * @return int[]
      */
-    public List getHomoDimerPositions(String primer){
+    public Set getHomoDimerPositions(String primer){
         analyzeAllHomoDimer(primer);
-		List l=liste;
-		liste=null;
+        Set l=posSet;
+		posSet=null;
         return l;
     }
 }

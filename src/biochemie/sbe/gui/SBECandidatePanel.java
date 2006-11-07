@@ -403,7 +403,7 @@ public class SBECandidatePanel extends MyPanel {
      */
     protected HairpinSelectionPanel getHairpin5SelectionPanel() {
         if (hairpin5SelectionPanel == null) {
-            hairpin5SelectionPanel = new HairpinSelectionPanel();
+            hairpin5SelectionPanel = new HairpinSelectionPanel(assayType!=MiniSBE.PROBE && assayType!=MiniSBE.PROBE_CLEAVABLE && assayType!=MiniSBE.PROBE_PINPOINT);
             hairpin5SelectionPanel.setTitle("Def. Hairpin 5'");
         }
         return hairpin5SelectionPanel;
@@ -424,7 +424,7 @@ public class SBECandidatePanel extends MyPanel {
      */
     protected HairpinSelectionPanel getHairpin3SelectionPanel() {
         if (hairpin3SelectionPanel == null) {
-            hairpin3SelectionPanel = new HairpinSelectionPanel();
+            hairpin3SelectionPanel = new HairpinSelectionPanel(assayType!=MiniSBE.PROBE && assayType!=MiniSBE.PROBE_CLEAVABLE && assayType!=MiniSBE.PROBE_PINPOINT);
             hairpin3SelectionPanel.setTitle("Def. Hairpin 3'");
         }
         return hairpin3SelectionPanel;

@@ -1,7 +1,7 @@
 package biochemie.pcr.modules;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import biochemie.pcr.PrimerPair;
 import biochemie.pcr.io.PCRConfig;
@@ -66,11 +66,11 @@ public class HairpinAnalysis extends SekAnalysis{
     	int pos=0;
     	int maxmatchlength=minbinds[idx];	
         maxbind=Integer.MIN_VALUE;
-        if(null == liste)
-        	liste=new ArrayList();
+        if(null == posSet)
+        	posSet=new HashSet();
     	String rcPrimer= Helper.revcomplPrimer(primer);
     	
-    	for (int i= 2*minbinds[idx]+1; i < plength-1; i++) {
+    	for (int i= 2*minbinds[idx]+2; i < plength-1; i++) {
     		/* Im revcompl-Primer muss die Sequenz von minbinding+2 bis max. länge-1 liegen.
     		 * minbind+2 wegen min. 2 Basen Abstand zwischen bindenden 3'-Ende und 
     		 * Match und länge-1 wegen kein Hairpin der Enden (steht in Holgers Anforderung) 
@@ -88,9 +88,9 @@ public class HairpinAnalysis extends SekAnalysis{
                     pos=i;
     			}
                 if(binds>=minbinds[idx]){
-                    liste.add(new Integer(i+1));
+                    posSet.add(new Integer(i+1));
 					if(debug)
-						System.out.println(Helper.outputHairpin(primer,pos,windowsize[idx]));
+						System.out.println(Helper.outputHairpin(primer,pos,windowsize[idx],0));
                 }				
     		}
     	}
@@ -135,10 +135,10 @@ public class HairpinAnalysis extends SekAnalysis{
      * primer.length() zurückgegeben werden
      * @return int[]
      */
-    public List getHairpinPositions(String primer){
+    public Set getHairpinPositions(String primer){
     	analyzeAllPrimerHairpin(primer);
-		List l=liste;
-		liste=null;
+        Set l=posSet;
+		posSet=null;
 		return l;
     }
 }

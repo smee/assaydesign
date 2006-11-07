@@ -107,14 +107,14 @@ public class SekStruktur  implements Cloneable{
         return type;
     }
 
-    public char bautEin() {
+    public String bautEin() {
         if(0 == this.bautAn) {
             String seq=p.getCompletePrimerSeq();
             if(getType()==CROSSDIMER)
                 seq=other.getCompletePrimerSeq();
             bautAn = Helper.sekundaerStrukturBautEin(seq,getPosFrom3());
         }
-        return bautAn;
+        return Character.toString(bautAn);
     }
 
     public Primer getPrimer() {

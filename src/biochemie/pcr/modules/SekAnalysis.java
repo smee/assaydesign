@@ -7,7 +7,9 @@
 package biochemie.pcr.modules;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import biochemie.pcr.io.PCRConfig;
@@ -28,7 +30,7 @@ public abstract class SekAnalysis extends AnalyseModul {
 	int[] windowsize;
     int[] minbinds;
     int maxbind=Integer.MIN_VALUE;              //temp. VAr. für momentane anzahl maximaler binds
-    List liste=new ArrayList();
+    Set posSet=new HashSet();
 	
 	public SekAnalysis(String windowsizes, String minbinds, String debug, int type) {
 		super(null,Boolean.valueOf(debug).booleanValue());
