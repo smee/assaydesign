@@ -6,15 +6,22 @@
  */
 package biochemie.pcr.modules;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import junit.framework.TestCase;
+import biochemie.domspec.SekStruktur;
+import biochemie.domspec.TestCaldaltonParameters;
+import biochemie.domspec.TestSBEPrimer;
 import biochemie.pcr.PCR;
 import biochemie.pcr.PrimerPair;
 import biochemie.pcr.io.PCRConfig;
 import biochemie.pcr.modules.CrossDimerAnalysis;
 import biochemie.pcr.modules.HairpinAnalysis;
 import biochemie.pcr.modules.HomoDimerAnalysis;
+import biochemie.util.Helper;
 
 /**
  * @author Steffen
@@ -44,9 +51,9 @@ public class TestSekAnalysis extends TestCase {
 		pps[2]=new PrimerPair("AAAA","AAAAAA",0,0,0,0,0,0);
 		pps[3]=new PrimerPair("AAAAAAA","AAAAAAAA",0,0,0,0,0,0);
 		pps[4]=new PrimerPair("AGGT","AAAAATT",0,0,0,0,0,0);
-		pps[5]=new PrimerPair("AAAAAAATTTT","AAATGATCCCATCAT",0,0,0,0,0,0);
-		pps[6]=new PrimerPair("AAAACCTTTT","AAAAACCTTTT",0,0,0,0,0,0);
-		pps[7]=new PrimerPair("AGTTCCTGATGGAAGGTTCC","AGTTCCTGATGGAACGAACGTTCC",0,0,0,0,0,0);
+		pps[5]=new PrimerPair("AAAAAAAATTTT","AAATGATCCCATCAT",0,0,0,0,0,0);
+		pps[6]=new PrimerPair("AAAACCTTTT","AAAAACCCTTTT",0,0,0,0,0,0);
+		pps[7]=new PrimerPair("AGTTCCTGATGGAAGGGTTCC","AGTTCCTGATGGAACGAACGTTCC",0,0,0,0,0,0);
 		pps[8]=new PrimerPair("ATTAGGAACATCAT","AATTAGGAACATCAT",0,0,0,0,0,0);
 	}
 
@@ -65,7 +72,7 @@ public class TestSekAnalysis extends TestCase {
 		cfg.setProperty("PARAM_HAIRPIN_WINDOW_SIZE","40");
 		cfg.setProperty("PARAM_HAIRPIN_MIN_BINDING","2");
 		sek=new HairpinAnalysis(cfg,false);
-		int[] erg={0,0,0,0,5,23,18,25,18};
+		int[] erg={0,0,0,0,0,23,18,25,18};
 		
 		sek.calcScores(pps);
 		for (int i= 0; i < pps.length; i++) {
@@ -114,11 +121,17 @@ public class TestSekAnalysis extends TestCase {
     }
     public void testHomodimer(){
         hom=new HomoDimerAnalysis(4,2,false);
-        List erg=hom.getHomoDimerPositions("AAATT");
+        List erg=new ArrayList(hom.getHomoDimerPositions("AAATT"));
+        Collections.sort(erg,new Comparator(){
+            public int compare(Object arg0, Object arg1) {
+                return ((Integer)arg1).intValue() - ((Integer)arg0).intValue();
+            }
+        });
         assertEquals(2,erg.size());
         assertEquals(4,((Integer)erg.get(0)).intValue());
         assertEquals(3,((Integer)erg.get(1)).intValue());
         hom=new HomoDimerAnalysis(6,4,true);
         //TODO mehr Tests!
     }
+
 }

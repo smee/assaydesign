@@ -162,7 +162,7 @@ public class CalcDalton implements Interruptible{
                 if(primerMasses.keySet().contains(c))
                     mass+=((Double)primerMasses.get(c)).doubleValue();
             }
-        Character c=new Character(Character.toUpperCase(addon.charAt(0)));
+        Character c=new Character(Character.toUpperCase(addon.charAt(addon.length()-1)));
         if(addonMasses.keySet().contains(c))
             mass+=((Double)addonMasses.get(c)).doubleValue();
         return mass;//die 18.02 sind schon drauf von calcPrimerMass!

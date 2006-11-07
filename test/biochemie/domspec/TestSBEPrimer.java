@@ -60,7 +60,7 @@ public class TestSBEPrimer extends TestCase {
         //muss ein crossdimer
         assertEquals(SekStruktur.CROSSDIMER,s.getType());
 
-        assertEquals("Sollte ein A einbauen!",'A',s.bautEin());
+        assertEquals("Sollte ein A einbauen!","A",s.bautEin());
         assertEquals("165 bindet an 197 an der Pos. 13",13, s.getPosFrom3());
         assertTrue("Ein A wird eingebaut, ist im SNP enthalten, also inkompatibel.",s.isIncompatible());//nicht kompatibel, weil 165 AG snp ist.
         assertFalse("Der Photolinker kann den Crossdimer nicht verhindern.",s.isVerhindert());
@@ -127,7 +127,7 @@ public class TestSBEPrimer extends TestCase {
 
     	assertEquals(SekStruktur.CROSSDIMER, sek.getType());
     	assertEquals(8, sek.getPosFrom3()); //pos. 8 am 3'-ende von primerA
-    	assertEquals('A',sek.bautEin());
+    	assertEquals("A",sek.bautEin());
     	assertFalse(sek.isVerhindert());
     	assertTrue(sek.isIncompatible());//ist inkompatibel
     }
@@ -149,7 +149,7 @@ public class TestSBEPrimer extends TestCase {
     	assertEquals(1, cross2.size());
     	assertEquals(SekStruktur.CROSSDIMER, sek2.getType());
     	assertEquals(8, sek2.getPosFrom3()); //pos. 8 am 3'-ende von primerA
-    	assertEquals('L',sek2.bautEin());//liegt gegenueber dem PL, baut also "Anti-PL" ein, der einfachheithalber auch L
+    	assertEquals("L",sek2.bautEin());//liegt gegenueber dem PL, baut also "Anti-PL" ein, der einfachheithalber auch L
     	assertTrue(sek2.isVerhindert());
     	assertFalse(sek2.isIncompatible());//ist kompatibel
 
@@ -158,7 +158,7 @@ public class TestSBEPrimer extends TestCase {
     	CleavableSekStruktur sek1 = (CleavableSekStruktur) cross1.iterator().next();
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
-    	assertEquals('A',sek1.bautEin());
+    	assertEquals("A",sek1.bautEin());
     	assertFalse(sek1.isVerhindert());
     	assertTrue(sek1.isIncompatible());//ist inkompatibel
     }
@@ -174,7 +174,7 @@ public class TestSBEPrimer extends TestCase {
         //pl == 10
         CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATTAGGACCATTGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","TG",CleavablePrimer._5_,"",0,true);
 
-    	List cross1=createdSortedCrossdimerList(SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions()));
+    	List cross1=createdSortedSecStrucList(SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions()));
 
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
@@ -183,24 +183,24 @@ public class TestSBEPrimer extends TestCase {
         System.out.println(sek1.getAsciiArt());
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
-    	assertEquals('A',sek1.bautEin());
+    	assertEquals("A",sek1.bautEin());
     	assertFalse(sek1.isVerhindert());
     	assertTrue(sek1.isIncompatible());//ist inkompatibel
 
     	CleavableSekStruktur sek2 = (CleavableSekStruktur) it.next();
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(35, sek2.getPosFrom3()); //pos. 8 am 3'-ende von primerA
-    	assertEquals('A',sek2.bautEin());
+    	assertEquals("A",sek2.bautEin());
     	assertFalse(sek2.isVerhindert());
     	assertTrue(sek2.isIncompatible());//ist inkompatibel
 
     }
-    private List createdSortedCrossdimerList(Collection coll) {
+    public static List createdSortedSecStrucList(Collection coll) {
         List cross1=new ArrayList(coll);
         Collections.sort(cross1,new Comparator(){
             public int compare(Object arg0, Object arg1) {
-                CleavableSekStruktur s1= (CleavableSekStruktur)arg0;
-                CleavableSekStruktur s2= (CleavableSekStruktur)arg1;
+                SekStruktur s1= (SekStruktur)arg0;
+                SekStruktur s2= (SekStruktur)arg1;
                 return s1.getPosFrom3()-s2.getPosFrom3();
             }
             
@@ -220,7 +220,7 @@ public class TestSBEPrimer extends TestCase {
     	//pl == 10
         CleavablePrimer primerB = new CleavablePrimer(cfg,"primerb","CTGTAAAATAAGGACCAATGAGAAACCTGTAAAATTAGGACCALTTGAGAAAC","CG",CleavablePrimer._5_,"",0,true);
 
-        List cross1=createdSortedCrossdimerList(SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions()));
+        List cross1=createdSortedSecStrucList(SekStrukturFactory.getCrossdimer(primerA,primerB,cfg.getSecStrucOptions()));
     	assertEquals(2,cross1.size());
     	Iterator it = cross1.iterator();
 
@@ -229,7 +229,7 @@ public class TestSBEPrimer extends TestCase {
         //System.out.println(sek1.getAsciiArt());
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(8, sek1.getPosFrom3()); //pos. 8 am 3'-ende von primerA
-    	assertEquals('A',sek1.bautEin());
+    	assertEquals("A",sek1.bautEin());
     	assertFalse(sek1.isVerhindert());
     	assertTrue(sek1.isIncompatible());//ist inkompatibel
 
@@ -238,7 +238,7 @@ public class TestSBEPrimer extends TestCase {
         //System.out.println(sek2.getAsciiArt());
     	assertEquals(SekStruktur.CROSSDIMER, sek1.getType());
     	assertEquals(35, sek2.getPosFrom3()); //pos. 35 vom 3'-ende von primerB
-    	assertEquals('T',sek2.bautEin());
+    	assertEquals("T",sek2.bautEin());
     	assertFalse(sek2.isVerhindert());
     	assertFalse(sek2.isIncompatible());//ist kompatibel
 

@@ -25,7 +25,8 @@ import biochemie.util.Helper;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class DiffTableModel implements TableModel{
-	ArrayList firstcolumn;
+	private static final int NONEXISTENT_MASS = 9999999;
+    ArrayList firstcolumn;
 	HashMap hm;
 	
 public DiffTableModel(SBETable sbetable,boolean allExtensions) {
@@ -68,6 +69,8 @@ private void initTable(String[] names, double[][] weights) {
                     		continue;
                         double d1 = weights[i][k];
                         double d2 = weights[j][l];
+                        if(((int)Math.abs(d1))==NONEXISTENT_MASS || ((int)Math.abs(d2))==NONEXISTENT_MASS)
+                            continue;
                         if (0 < d1 && 0 < d2)
                             hm.put(getNameFor(i, j, k, l, names), Helper.format(d1 - d2));
                         else {
@@ -154,7 +157,7 @@ private void initTable(String[] names, double[][] weights) {
 		for (int j = 0; j < cc; j++) {
 			Object entry=sbetable.getValueAt(2,j+1);
 			if(null == entry)
-				erg[j][0]=0;
+				erg[j][0]=NONEXISTENT_MASS;
 			else
 				erg[j][0]=Double.parseDouble(entry.toString());
 		}
@@ -162,7 +165,7 @@ private void initTable(String[] names, double[][] weights) {
 			for (int i = 1; i < erg[j].length; i++) {
 				String entry=(String)sbetable.getValueAt(i+4,j+1);
 				if(null == entry || entry.length()==0)
-					erg[j][i]=0;
+					erg[j][i]=NONEXISTENT_MASS;
 				else {
 				    if(entry.charAt(0)=='[' && entry.charAt(entry.length()-1)==']') {
 				        entry=entry.substring(1,entry.length()-1);

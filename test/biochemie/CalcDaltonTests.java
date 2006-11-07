@@ -1,35 +1,41 @@
 package biochemie;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
+
+import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import junit.framework.TestCase;
 import biochemie.calcdalton.CalcDalton;
 import biochemie.domspec.CleavablePrimer;
 import biochemie.domspec.Primer;
 import biochemie.sbe.io.SBEConfig;
 
 public class CalcDaltonTests extends TestCase {
-    SBEConfig cfg;
+    protected SBEConfig cfg;
     CleavablePrimer p1,p2;
     
     protected void setUp() throws Exception {
         cfg=new SBEConfig();
     }
     
-    private void loadConfigFromString(String s){
-        InputStream is=new ByteArrayInputStream(s.getBytes());
+    public static void loadConfigFromString(String s, SBEConfig cfg){
+        File tempfile;
         try {
-            cfg.readConfig(is);
+            tempfile = File.createTempFile("primextend","tmp");
+            BufferedWriter bw=new BufferedWriter(new FileWriter(tempfile));
+            bw.write(s);
+            bw.close();
+            cfg.readConfigFile(tempfile.getPath());
         } catch (IOException e) {
             fail();
         }
     }
     private void assertFitsWithCalcdalton(String cfgString,boolean fits) {
-        loadConfigFromString(cfgString);
+        loadConfigFromString(cfgString,cfg);
         initPrimers();
         CalcDalton cd=new CalcDalton(cfg);
         String[][] params=new String[][]{p1.getCDParamLine(),p2.getCDParamLine()};
