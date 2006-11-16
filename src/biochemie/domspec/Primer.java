@@ -114,7 +114,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
     protected boolean passtMitCalcDalton(Primer other) {
         CalcDalton cd=Helper.getCalcDalton();
         String[][] sbedata= createCDParameters(this, other);
-        if(0 == cd.calc(sbedata).length) {
+        if(0 == cd.calc(sbedata,false).length) {
             edgecol.add(new CalcDaltonEdge(this,other));
             return false;
         }

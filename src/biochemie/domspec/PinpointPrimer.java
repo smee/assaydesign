@@ -43,7 +43,7 @@ public class PinpointPrimer extends Primer{
     private boolean passtMitCalcDalton(PinpointPrimer other) {
         CalcDalton cd=Helper.getCalcDalton();
         String[][] sbedata= createCDParameters(this, other);
-        if(0 == cd.calc(sbedata).length) {
+        if(0 == cd.calc(sbedata,false).length) {
             edgecol.add(new CalcDaltonEdge(this,other));
             return false;
         }

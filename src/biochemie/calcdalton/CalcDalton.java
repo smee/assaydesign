@@ -55,7 +55,8 @@ public class CalcDalton implements Interruptible{
     final private Map addonMasses;
     final private double plMass;
     final private boolean allExtension;
-    final private boolean halfMassForbidden;    
+    final private boolean halfMassForbidden;
+    private boolean findBr;    
 
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
 					, double[] assaypeaks
@@ -75,6 +76,7 @@ public class CalcDalton implements Interruptible{
             this.brlen=1;
         else
             this.brlen=br.length;
+        this.findBr=brlen>1;
 		this.from=Helper.clone(abstaendeFrom);
 		this.to=Helper.clone(abstaendeTo);
 		this.fromAbs=Helper.clone(abstaendeFrom);
@@ -378,14 +380,17 @@ public class CalcDalton implements Interruptible{
         }
         return sbeTable;   
     }
-    public void calc(String[][] sbeData, SBETable sbetable) {
+    public void calc(String[][] sbeData, SBETable sbetable, boolean findCleavableLinker) {
         int[] fest=new int[sbeData.length];
         Arrays.fill(fest,-1);
+        this.findBr=findCleavableLinker;
         calc(sbeData,sbetable,fest);
     }
-    public int[][] calc(String[][] sbeData) {
+    public int[][] calc(String[][] sbeData, boolean findCleavableLinker) {
         int[] fest=new int[sbeData.length];
         Arrays.fill(fest,-1);
+        if(!findCleavableLinker)
+            findBr=false;
         return calc(sbeData,fest);
     }
     /**
@@ -524,7 +529,7 @@ public class CalcDalton implements Interruptible{
         for(int i=0;i<sbedata.length;i++){
             for(int j=0;j<brlen;j++){
                 double[] massenArray=null;
-                if(br == null || br.length == 0)
+                if(!findBr)
                     massenArray=calcSBEMass(sbedata[i],this.allExtension);
                 else
                     massenArray=calcSBEMass(sbedata[i],br[j],this.allExtension);

@@ -680,8 +680,7 @@ public class OptimizePLAction extends MyAction {
             if(!valid)
                 JOptionPane.showMessageDialog(MiniSBEGui.this,"Unable to load file \""+file.toString()+"\"","Unknown assaytype",JOptionPane.ERROR_MESSAGE);
             
-            getSbepanelsPanel().revalidate();
-            getSbepanelsPanel().repaint();
+
 	    }
         /**
          * @param file
@@ -729,6 +728,8 @@ public class OptimizePLAction extends MyAction {
                             JOptionPane.ERROR_MESSAGE);
 	            }
 	        }
+            getSbepanelsPanel().revalidate();
+            getSbepanelsPanel().repaint();
             return true;
         }
 	}

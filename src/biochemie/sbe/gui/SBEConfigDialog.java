@@ -96,7 +96,12 @@ public class SBEConfigDialog extends JDialog {
 
     private JButton makeDefaultButton = null;
 
-    private final Observable observable=new Observable();
+    private final Observable observable=new Observable(){
+        public void notifyObservers() {
+            setChanged();
+            super.notifyObservers();
+        }
+    };
 
     private JCheckBox jAvoidHairpins = null;
     /**

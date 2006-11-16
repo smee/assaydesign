@@ -34,21 +34,21 @@ public class ProbePrimerFactory extends PrimerFactory {
         {false,false,false,true},
     };
     public final static String[] ASSAYTYPES_DESC=new String[]{
-        "ddA,ddC,ddG,ddT",
-        "dA,ddC,ddG,ddT",
-        "ddA,dC,ddG,ddT",
-        "ddA,ddC,dG,ddT",
-        "ddA,ddC,ddG,dT",
-        "ddA,ddC,dG,dT",
-        "ddA,dC,ddG,dT",
-        "ddA,dC,dG,ddT",
-        "dA,ddC,ddG,dT",
-        "dA,ddC,dG,ddT",
-        "dA,dC,ddG,ddT",
-        "ddA,dC,dG,dT",
-        "dA,ddC,dG,dT",
-        "dA,dC,ddG,dT",
-        "dA,dC,dG,ddT"
+        "ddA,ddC,ddG,ddT", //0
+        "dA,ddC,ddG,ddT",//1
+        "ddA,dC,ddG,ddT",//2
+        "ddA,ddC,dG,ddT",//3
+        "ddA,ddC,ddG,dT",//4
+        "ddA,ddC,dG,dT",//5
+        "ddA,dC,ddG,dT",//6
+        "ddA,dC,dG,ddT",//7
+        "dA,ddC,ddG,dT",//8
+        "dA,ddC,dG,ddT",//9
+        "dA,dC,ddG,ddT",//10
+        "ddA,dC,dG,dT",//11
+        "dA,ddC,dG,dT",//12
+        "dA,dC,ddG,dT",//13
+        "dA,dC,dG,ddT"//14
     };
     public static int getPos(char c){
         switch (c) {

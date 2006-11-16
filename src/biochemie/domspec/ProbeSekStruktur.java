@@ -36,10 +36,10 @@ public class ProbeSekStruktur extends SekStruktur {
             String seq=p.getPrimerSeq()+addon;
             params[1][0]=seq.substring(0,seq.length()-1);
             params[1][1]=seq.substring(seq.length()-1);
-            if(cd.calc(params).length==0)
-                return true;
+            if(cd.calc(params,false).length==0)
+                return false;
         }
-        return false;
+        return true;
     }
 
     public String getAsciiArt() {

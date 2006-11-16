@@ -129,8 +129,9 @@ public class ShowDiffAction extends MyAction {
             PrimerFactory s = (PrimerFactory) it.next();
             names[i]=s.getId();
             paneldata[i]=createAnhangsData(s);
-            if(s instanceof CleavablePrimerFactory)
+            if(s instanceof CleavablePrimerFactory){
                 fest[i]=ArrayUtils.indexOf(cfg.getPhotolinkerPositions(),((CleavablePrimerFactory)s).getBruchstelle());
+            }
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
 
@@ -138,7 +139,7 @@ public class ShowDiffAction extends MyAction {
         if(sbec.get(0) instanceof CleavablePrimerFactory)
             cd.calc(paneldata,sbetable,fest);
         else
-            cd.calc(paneldata,sbetable);//TODO Achtung, wenn kein cleavableprimer, dann auch keine cleavable linker setzen!
+            cd.calc(paneldata,sbetable,false);//TODO Achtung, wenn kein cleavableprimer, dann auch keine cleavable linker setzen!
         return sbetable;
     }
 
@@ -176,7 +177,7 @@ public class ShowDiffAction extends MyAction {
         if(sbec.get(0) instanceof CleavablePrimerFactory)
             cd.calc(params,table,fest);
         else
-            cd.calc(params,table);
+            cd.calc(params,table,false);
         return  new DiffTableModel(table,cfg.isCalcDaltonAllExtensions());
     }
     private String[] getNames(List sbec) {
