@@ -65,7 +65,7 @@ public class TestProbePrimer extends TestCase {
         MyAssert.assertEquals(p.getCDParamLine(),new String[]{"AGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGGACTTTTAGAGAGAAAA","AAC","GAC"});
     }
     public void testIncompHairpins(){
-        ProbePrimer p=new ProbePrimer("ID1","AGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGGACTTTTAGAGAGAAAA",Primer._5_,"AG",12,ProbePrimerFactory.generateAddons(11,"ACCAGAGAGAGAGAGAGAGAGAG","AG"),0,cfg.getSecStrucOptions(),0);
+        ProbePrimer p=new ProbePrimer("ID1","AGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGGACTTTTAGAGAGAAAA",Primer._5_,"AG",12,ProbePrimerFactory.generateAddons(12,"ACCAGAGAGAGAGAGAGAGAGAG","AG"),0,cfg.getSecStrucOptions(),0);
         List seclist=TestSBEPrimer.createdSortedSecStrucList(p.getSecStrucs());
         Iterator it = seclist.iterator();
         ProbeSekStruktur sek = (ProbeSekStruktur) it.next();
@@ -74,7 +74,7 @@ public class TestProbePrimer extends TestCase {
     }
     public void testCompHairpins(){
         SecStrucOptions ssc=new SecStrucConfig();
-        ProbePrimer p=new ProbePrimer("ID1","AGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGGACTTTTAGAGAGAAAA",Primer._5_,"CT",12,ProbePrimerFactory.generateAddons(11,"CCCAGAGAGAGAGAGAGAGAGAG","CT"),0,ssc,0);
+        ProbePrimer p=new ProbePrimer("ID1","AGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGGACTTTTAGAGAGAAAA",Primer._5_,"CT",12,ProbePrimerFactory.generateAddons(12,"CCCAGAGAGAGAGAGAGAGAGAG","CT"),0,ssc,0);
         List seclist=TestSBEPrimer.createdSortedSecStrucList(p.getSecStrucs());
         Iterator it = seclist.iterator();
         ProbeSekStruktur sek = (ProbeSekStruktur) it.next();
