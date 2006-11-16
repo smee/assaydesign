@@ -225,7 +225,7 @@
     </jar>
   	<!-- mische alle benoetigten Jars mit rein und shrink mit proguard-->
   	<antcall target="shrink" >
-  		<param name="mainclassname" value="biochemie.sbe.**"/>
+  		<param name="mainclassname" value="biochemie.sbe.gui.MiniSBEGui"/>
   		<param name="outjarname" value="${dist}/minisbepaper.jar"/>
   		<param name="neededjars" value = "${dist}/minisbepaper-${DSTAMP}.jar
   			                              :${lib}/commons-functor.jar
