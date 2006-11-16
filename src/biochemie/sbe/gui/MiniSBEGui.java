@@ -304,7 +304,9 @@ public class OptimizePLAction extends MyAction {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
                 NuklSelectorPanel nuklPanel=p.getSNPSelectorPanel();
                 resetBorder(nuklPanel);
-                if(nuklPanel.getSelectedNukleotides().length()==0){
+                if(nuklPanel.getSelectedNukleotides().length()==0 && 
+                        (p.getSeq5tf().getText().length()!=0
+                      || p.getSeq3tf().getText().length()!=0)){
                     setErrorBorder(nuklPanel);
                     flag=false;
                 }
