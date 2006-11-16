@@ -70,7 +70,11 @@ private void initTableBruchstellen() {
 	public void addTabelle(String[][] table) {
         int[] tempbruchstellen=new int[table.length];
         for(int i=0;i<table.length;i++) {
-            tempbruchstellen[i]=getIndexOf(Integer.parseInt(table[i][2]));
+            int pl=0;
+            try{
+            pl=Integer.parseInt(table[i][2]);
+            }catch (NumberFormatException e) {}
+            tempbruchstellen[i]=getIndexOf(pl);
         }
         addTabelle(table,tempbruchstellen);
 	}

@@ -126,4 +126,7 @@ public class ProbePrimer extends Primer {
         }
         return res;
     }
+    public String getName(){
+        return id+"_"+getType()+"_"+getAssayType()+"_"+getPrimerSeq().length();
+    }
 }

@@ -77,8 +77,16 @@ public class ShowDiffAction extends MyAction {
         });
         //turn off forbidden massrange
         this.cfg=new SBEConfig(cfg);
-        cfg.setCalcDaltonVerbFrom(new double[0]);
-        cfg.setCalcDaltonVerbTo(new double[0]);
+        final double[] E=ArrayUtils.EMPTY_DOUBLE_ARRAY;
+        cfg.setCalcDaltonVerbFrom(E);
+        cfg.setCalcDaltonVerbTo(E);
+        cfg.setCalcDaltonFrom(E);
+        cfg.setCalcDaltonTo(E);
+        cfg.setCalcDaltonAllowOverlap(true);
+        cfg.setCalcDaltonForbidHalfMasses(false);
+        cfg.setCalcDaltonAllExtensions(false);
+        cfg.setCalcDaltonProductPeaks(new double[]{0, 0, 0});
+        cfg.setCalcDaltonAssayPeaks(new double[]{0, 0, 0});
         this.cd = new CalcDalton(this.cfg);
 
         mids = new TreeSet();

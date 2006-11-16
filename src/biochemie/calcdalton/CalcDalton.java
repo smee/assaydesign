@@ -323,13 +323,19 @@ public class CalcDalton implements Interruptible{
     protected String[] makeColumn(String[] sbe,int bruch) {
 		String[] Tabellendaten= new String[] {"","","","","","","",""};
 		DecimalFormat df= new DecimalFormat("0.00",new DecimalFormatSymbols(Locale.US));
-        double[] sbe_massen=calcSBEMass(sbe,bruch,true);
-		Tabellendaten[0]=
-			sbe[0].substring(0, sbe[0].length() - bruch)
-				+ "[L]"
-				+ sbe[0].substring((sbe[0].length() - bruch) + 1);//das Nukleotid an dieser Stelle wird entfernt!
+        double[] sbe_massen=null;
+        if(findBr){
+            sbe_massen=calcSBEMass(sbe,bruch,true);
+            Tabellendaten[0]=
+                sbe[0].substring(0, sbe[0].length() - bruch)
+                + "[L]"
+                + sbe[0].substring((sbe[0].length() - bruch) + 1);//das Nukleotid an dieser Stelle wird entfernt!
+            Tabellendaten[2]= (new Integer(bruch)).toString();
+        }else{
+            sbe_massen=calcSBEMass(sbe,true);
+            Tabellendaten[0]=sbe[0];
+        }
 		Tabellendaten[1]= df.format(sbe_massen[0]);
-		Tabellendaten[2]= (new Integer(bruch)).toString();
         Tabellendaten[3]="";
 		for (int c= 1; c < sbe.length; c++) {
             boolean useKlammern=sbe[c].charAt(0)=='>';
