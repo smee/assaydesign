@@ -68,6 +68,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
@@ -350,7 +351,7 @@ public class OptimizePLAction extends MyAction {
          */
         private void resetBorder(JComponent panel) {
             Border b=panel.getBorder();
-            if(b instanceof CompoundBorder){
+            if(b instanceof CompoundBorder && ((CompoundBorder)b).getOutsideBorder() instanceof LineBorder){
                 panel.setBorder(((CompoundBorder)b).getInsideBorder());
             }
         }

@@ -206,7 +206,7 @@ public class ProbePrimerFactory extends PrimerFactory {
     private void filterInvalidPrimers(Collection primers) {
         Algorithms.remove(primers.iterator(),new UnaryPredicate(){
             public boolean test(Object obj) {
-                return ((ProbePrimer)obj).getAddonList().size()>0;
+                return ((ProbePrimer)obj).getAddonList().size()==0;
             }            
         });
         
