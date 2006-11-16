@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.functor.Algorithms;
@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import biochemie.calcdalton.CalcDalton;
 import biochemie.domspec.PinpointPrimer;
 import biochemie.domspec.Primer;
-import biochemie.sbe.PrimerFactory.TemperatureDistanceAndHairpinComparator;
 import biochemie.util.Helper;
 
 public class PinpointPrimerFactory extends PrimerFactory {
@@ -55,31 +54,46 @@ public class PinpointPrimerFactory extends PrimerFactory {
         List result=new ArrayList();
         if(primers.size()==0)
             return result;
-        Collections.sort(primers,new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
-        final PinpointPrimer p5=(PinpointPrimer) Algorithms.detect(primers.iterator(),new UnaryPredicate() {
-            public boolean test(Object obj) {
-                Primer p=((Primer)obj);
-                return p.getType().equals(Primer._5_);
-            }
-        },null);
-        final PinpointPrimer p3=(PinpointPrimer) Algorithms.detect(primers.iterator(),new UnaryPredicate() {
-            public boolean test(Object obj) {
-                Primer p=((Primer)obj);
-                return p.getType().equals(Primer._3_);
-            }
-        },null);
-        Algorithms.collect(Algorithms.select(primers.iterator(),new UnaryPredicate() {
-            public boolean test(Object obj) {
-                PinpointPrimer p=((PinpointPrimer)obj);
-                return p5.getPrimerSeq().equals(p.getPrimerSeq()) || p3.getPrimerSeq().equals(p.getPrimerSeq());
-            }
-        }),result);
-        
+        int maxLen=findMaxT(primers);
+        for(int len=0;len<=maxLen;len++){
+            final int newLen=len;
+            List primersOfThisTLenList=(List) Algorithms.collect(Algorithms.select(primers.iterator(),new UnaryPredicate(){
+                public boolean test(Object obj) {
+                    return ((PinpointPrimer)obj).getTTail().length()==newLen;
+                }
+            }),new ArrayList());
+            Collections.sort(primersOfThisTLenList,new TemperatureDistanceAndHairpinComparator(cfg.getOptTemperature()));
+            PinpointPrimer p=(PinpointPrimer) Algorithms.detect(primersOfThisTLenList.iterator(),new UnaryPredicate(){
+                public boolean test(Object obj) {
+                    return ((Primer)obj).getType().equals(Primer._5_);
+                }
+            },null);
+            if(p!=null)
+                result.add(p);
+            p=(PinpointPrimer)Algorithms.detect(primersOfThisTLenList.iterator(),new UnaryPredicate(){
+                public boolean test(Object obj) {
+                    return ((Primer)obj).getType().equals(Primer._3_);
+                }
+            },null);
+            if(p!=null)
+                result.add(p);
+        }        
         return result;
     }
 
 
 
+
+
+    private int findMaxT(List primers) {
+        int max=-1;
+        for (Iterator it = primers.iterator(); it.hasNext();) {
+            PinpointPrimer p = (PinpointPrimer) it.next();
+            if(p.getTTail().length()> max)
+                max=p.getTTail().length();
+        }
+        return max;
+    }
 
 
     protected void createGivenPrimers() {

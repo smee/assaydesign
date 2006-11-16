@@ -215,7 +215,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     }
 
     public double getCalcDaltonMaxMass() {
-        return getDouble("calcdalton.maxmass",30000);
+        return getDouble("calcdalton.maxmass",11000);
     }
 
     public void setCalcDaltonMaxMass(double mass) {

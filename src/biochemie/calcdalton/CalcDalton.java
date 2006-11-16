@@ -146,9 +146,6 @@ public class CalcDalton implements Interruptible{
         return summe;
     }
     
-    public double calcPrimerMasseWithPL(String seq) {
-        return calcPrimerMasse(seq)+plMass;//masse des pl
-    }
 	/**
 	 * Berechnung der Masse einer Sequenz mit angehängtem Nukleotid.
 	 * @param seq
@@ -158,15 +155,16 @@ public class CalcDalton implements Interruptible{
     public double calcPrimerAddonMasse(double mass, String addon) {
         if (null == addon)
             return mass;
-        if(addon.length()>1)
+        if(addon.length()>=1){
             for (int i= 0; i < addon.length()-1; i++) {
                 Character c=new Character(Character.toUpperCase(addon.charAt(i)));
                 if(primerMasses.keySet().contains(c))
                     mass+=((Double)primerMasses.get(c)).doubleValue();
             }
-        Character c=new Character(Character.toUpperCase(addon.charAt(addon.length()-1)));
-        if(addonMasses.keySet().contains(c))
-            mass+=((Double)addonMasses.get(c)).doubleValue();
+            Character c=new Character(Character.toUpperCase(addon.charAt(addon.length()-1)));
+            if(addonMasses.keySet().contains(c))
+                mass+=((Double)addonMasses.get(c)).doubleValue();
+        }
         return mass;//die 18.02 sind schon drauf von calcPrimerMass!
     }
 
@@ -183,6 +181,9 @@ public class CalcDalton implements Interruptible{
 		String temp=p1[0];
 		p1[0]=temp.substring((temp.length() - bruch) + 1);
         double[] res=calcSBEMass(p1,allExtension);
+        for (int i = 0; i < res.length; i++) {
+            res[i]+=plMass;
+        }
         p1[0]=temp;
         return res;
 	}
@@ -190,7 +191,7 @@ public class CalcDalton implements Interruptible{
         if(1 > p1.length)
             return new double[0];
         List masses=new ArrayList();
-        final double m=calcPrimerMasseWithPL(p1[0]);
+        final double m=calcPrimerMasse(p1[0]);
         masses.add( new Double(m));
         for (int i= 1; i < p1.length; i++)
             if(allExtension || p1[i].charAt(0)!='>')

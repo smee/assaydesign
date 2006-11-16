@@ -226,12 +226,7 @@ public class SBEConfigDialog extends JDialog {
         sec.setHairpinWindowsizes(StringUtils.join(ArrayUtils.toObject(getHairpinValuePanel().getFrom()),' '));
         sec.setHomodimerMinbinds(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getTo()),' '));
         sec.setHomodimerWindowsizes(StringUtils.join(ArrayUtils.toObject(getHomodimerValuePanel().getFrom()),' '));
-        double mass=Double.MAX_VALUE;
-        try{
-            mass=Double.parseDouble(getSbePanel().getMaxMassPanel().getText());
-        }catch (NumberFormatException e) {
-        }
-        sbeconfig.setCalcDaltonMaxMass(mass);
+        sbeconfig.setCalcDaltonMaxMass(getSbePanel().getMaxMassPanel().getTextAsDouble(11000));
 	    sbeconfig.setMaxGC(((Number)getSbePanel().getMaxgcSpinner().getValue()).intValue());
 	    sbeconfig.setMinGC(((Number)getSbePanel().getMingcSpinner().getValue()).intValue());
 	    sbeconfig.setMaxPlex(((Number)getSbePanel().getMaxplexSpinner().getValue()).intValue());
