@@ -21,57 +21,112 @@ public class PCRConfig extends GeneralConfig {
 	 */
 	public PCRConfig() {
         super();
+        setDefaults(new String[][]{{"INFILES","test.in"}
+        ,{"OUTFILE",""}
+        ,{"PARAM_GCDIFF_LOWER_BOUND","2000"}
+        ,{"PARAM_GCDIFF_UPPER_BOUND","8000"}
+        ,{"PARAM_REPETETIVE_SEQ","40"}
+        ,{"PARAM_HAIRPIN_WINDOW_SIZE","6"}
+        ,{"PARAM_HAIRPIN_MIN_BINDING","4"}
+        ,{"PARAM_CROSS_WINDOW_SIZE","6"}
+        ,{"PARAM_CROSS_MIN_BINDING","4"}
+        ,{"PARAM_HOMO_WINDOW_SIZE","6"}
+        ,{"PARAM_HOMO_MIN_BINDING","4"}
+        ,{"SCORE_MAXSCORE","100"}
+        ,{"SCORE_BLAT_FOUND_SEQ","100"}
+        ,{"SCORE_BLAT_FOUND_PRIMER","50"}
+        ,{"SCORE_SNP_END","100"}
+        ,{"SCORE_SNP_DISTANCES","50 40 30 20 10"}
+        ,{"SCORE_NO_EXON_INTRON_BETWEEN_PRIMER","100"}
+        ,{"PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED","25"}
+        ,{"MIN_ACCEPTED_MISSPRIMING_PRIMER_DISTANCE","3000"}
+        ,{"PERFORM_BLAT_WITH_BOTH_SIDES_INDEPENDENTLY_IF_PCR_LARGER_THAN","500"}
+        ,{"SNP_LIST",""}
+        ,{"EXONS",""}
+        ,{"REP_SEQ_LIST",""}
+        ,{"PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER","false"}
+        ,{"BLAT_SINGLE","true"}
+        ,{"BLAT_BOTH","true"}
+        ,{"BLAT","true"}
+        ,{"HAIR","true"}
+        ,{"HOMO","true"}
+        ,{"CROSS","true"}
+        ,{"GCDIFF","true"}
+        ,{"DEBUG","false"}
+        ,{"SNP","true"}
+        ,{"REP","true"}
+        ,{"USEPROXY","false"}
+        ,{"PROXYHOST","139.18.233.236"}
+        ,{"PROXYPORT","8080"}
+        ,{"SEQUENCE",""}
+        ,{"PRIMER_NUM_RETURN",""}
+        ,{"PARAM_SNP_OF_INTEREST",""}
+        ,{"OUTPUT_CSV","true"}
+        ,{"ASSEMBLY","hg16"}
+        ,{"BLAT_HASHCODE","-1"}
+        ,{"NUM_OF_SUCCESSFUL_PAIRS","50"}
+        ,{"PRIMER_NUM_RETURN","1000"}
+        ,{"FESTE5SEQ",""}
+        ,{"SEQUENCE_OVERHANG_FOR_PRIMER3",""}
+        ,{"INTERN_SEQ_OFFSET",""}
+        ,{"PRIMER3COMMAND","primer3.exe"}});
 	}
-    protected String[][] getInitializedProperties() {
-        return new String[][]{
-             {"INFILES","test.in"}
-            ,{"OUTFILE",""}
-            ,{"PARAM_GCDIFF_LOWER_BOUND","2000"}
-            ,{"PARAM_GCDIFF_UPPER_BOUND","8000"}
-            ,{"PARAM_REPETETIVE_SEQ","40"}
-            ,{"PARAM_HAIRPIN_WINDOW_SIZE","6"}
-            ,{"PARAM_HAIRPIN_MIN_BINDING","4"}
-            ,{"PARAM_CROSS_WINDOW_SIZE","6"}
-            ,{"PARAM_CROSS_MIN_BINDING","4"}
-            ,{"PARAM_HOMO_WINDOW_SIZE","6"}
-            ,{"PARAM_HOMO_MIN_BINDING","4"}
-            ,{"SCORE_MAXSCORE","100"}
-            ,{"SCORE_BLAT_FOUND_SEQ","100"}
-            ,{"SCORE_BLAT_FOUND_PRIMER","50"}
-            ,{"SCORE_SNP_END","100"}
-            ,{"SCORE_SNP_DISTANCES","50 40 30 20 10"}
-            ,{"SCORE_NO_EXON_INTRON_BETWEEN_PRIMER","100"}
-            ,{"PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED","25"}
-            ,{"MIN_ACCEPTED_MISSPRIMING_PRIMER_DISTANCE","3000"}
-            ,{"PERFORM_BLAT_WITH_BOTH_SIDES_INDEPENDENTLY_IF_PCR_LARGER_THAN","500"}
-            ,{"SNP_LIST",""}
-            ,{"EXONS",""}
-            ,{"REP_SEQ_LIST",""}
-            ,{"PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER","false"}
-            ,{"BLAT_SINGLE","true"}
-            ,{"BLAT_BOTH","true"}
-            ,{"BLAT","true"}
-            ,{"HAIR","true"}
-            ,{"HOMO","true"}
-            ,{"CROSS","true"}
-            ,{"GCDIFF","true"}
-            ,{"DEBUG","false"}
-            ,{"SNP","true"}
-            ,{"REP","true"}
-            ,{"USEPROXY","false"}
-            ,{"PROXYHOST","139.18.233.236"}
-            ,{"PROXYPORT","8080"}
-            ,{"SEQUENCE",""}
-            ,{"PRIMER_NUM_RETURN",""}
-            ,{"PARAM_SNP_OF_INTEREST",""}
-            ,{"OUTPUT_CSV","true"}
-            ,{"ASSEMBLY","hg16"}
-            ,{"BLAT_HASHCODE","-1"}
-            ,{"NUM_OF_SUCCESSFUL_PAIRS","50"}
-            ,{"PRIMER_NUM_RETURN","1000"}
-            ,{"FESTE5SEQ",""}
-            ,{"SEQUENCE_OVERHANG_FOR_PRIMER3",""}
-            ,{"INTERN_SEQ_OFFSET",""}
-            ,{"PRIMER3COMMAND","primer3.exe"}};
+    private void setDefaults(String[][] strings) {
+        for (int i = 0; i < strings.length; i++) {
+            setProperty(strings[i][0],strings[i][1]);
+        }
+        
+    }
+    protected String[] getInitializedProperties() {
+        return new String[]{
+             "INFILES"
+            ,"OUTFILE"
+            ,"PARAM_GCDIFF_LOWER_BOUND"
+            ,"PARAM_GCDIFF_UPPER_BOUND"
+            ,"PARAM_REPETETIVE_SEQ"
+            ,"PARAM_HAIRPIN_WINDOW_SIZE"
+            ,"PARAM_HAIRPIN_MIN_BINDING"
+            ,"PARAM_CROSS_WINDOW_SIZE"
+            ,"PARAM_CROSS_MIN_BINDING"
+            ,"PARAM_HOMO_WINDOW_SIZE"
+            ,"PARAM_HOMO_MIN_BINDING"
+            ,"SCORE_MAXSCORE"
+            ,"SCORE_BLAT_FOUND_SEQ"
+            ,"SCORE_BLAT_FOUND_PRIMER"
+            ,"SCORE_SNP_END"
+            ,"SCORE_SNP_DISTANCES"
+            ,"SCORE_NO_EXON_INTRON_BETWEEN_PRIMER"
+            ,"PARAM_LENTH_OF_5'/3'_SNP_FLANKING_SEQUENCES_TO_BE_AMPLIFIED"
+            ,"MIN_ACCEPTED_MISSPRIMING_PRIMER_DISTANCE"
+            ,"PERFORM_BLAT_WITH_BOTH_SIDES_INDEPENDENTLY_IF_PCR_LARGER_THAN"
+            ,"SNP_LIST"
+            ,"EXONS"
+            ,"REP_SEQ_LIST"
+            ,"PCR_PRODUCT_INCLUDES_EXON_INTRON_BORDER"
+            ,"BLAT_SINGLE"
+            ,"BLAT_BOTH"
+            ,"BLAT"
+            ,"HAIR"
+            ,"HOMO"
+            ,"CROSS"
+            ,"GCDIFF"
+            ,"DEBUG"
+            ,"SNP"
+            ,"REP"
+            ,"USEPROXY"
+            ,"PROXYHOST"
+            ,"PROXYPORT"
+            ,"SEQUENCE"
+            ,"PRIMER_NUM_RETURN"
+            ,"PARAM_SNP_OF_INTEREST"
+            ,"OUTPUT_CSV"
+            ,"ASSEMBLY"
+            ,"BLAT_HASHCODE"
+            ,"NUM_OF_SUCCESSFUL_PAIRS"
+            ,"PRIMER_NUM_RETURN"
+            ,"FESTE5SEQ"
+            ,"SEQUENCE_OVERHANG_FOR_PRIMER3"
+            ,"INTERN_SEQ_OFFSET"
+            ,"PRIMER3COMMAND"};
     }
 }

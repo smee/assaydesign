@@ -50,15 +50,15 @@ public class Primer3Config extends GeneralConfig {
 
 
 
-    protected String[][] getInitializedProperties() {
-	    return new String[][]{
-	             {"SEQUENCE","A"}
-                ,{"PRIMER_NUM_RETURN","1000"}
-                ,{"PRIMER_MAX_POLY_X",""}
-                ,{"PRIMER_PRODUCT_SIZE_RANGE",""}
-                ,{"PRIMER_MISPRIMING_LIBRARY",""}
-                ,{"INFILE","test.in"}
-                ,{"TARGET",""}
+    protected String[] getInitializedProperties() {
+	    return new String[]{
+	             "SEQUENCE"
+                ,"PRIMER_NUM_RETURN"
+                ,"PRIMER_MAX_POLY_X"
+                ,"PRIMER_PRODUCT_SIZE_RANGE"
+                ,"PRIMER_MISPRIMING_LIBRARY"
+                ,"INFILE"
+                ,"TARGET"
                 };
 	}
 

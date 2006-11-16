@@ -34,19 +34,21 @@ public abstract class GeneralConfig extends Observable{
     private final Set keys;
     private boolean isUnmodifiable;
     
-    public GeneralConfig(){
-        prop = new Properties();
-        String[][] s = getInitializedProperties();
+    public GeneralConfig(Properties p){
+        prop = new Properties(p);
+        String[] s = getInitializedProperties();
         
         Set keys = new HashSet();
         
         for (int i = 0; i < s.length; i++) {
-            keys.add(s[i][0]);
-            prop.setProperty(s[i][0],s[i][1]);
+            keys.add(s[i]);
         }
         this.keys=Collections.unmodifiableSet(keys);
         isUnmodifiable = false;
         loadDefault();
+    }
+    public GeneralConfig(){
+        this(null);
     }
 
     /**
@@ -55,7 +57,7 @@ public abstract class GeneralConfig extends Observable{
      * Needs to have 2 columns: key and value
      * @return
      */
-	abstract protected String[][] getInitializedProperties();
+	abstract protected String[] getInitializedProperties();
     public void setUnmodifiable() {
         this.isUnmodifiable=true;        
     }
@@ -153,7 +155,7 @@ public abstract class GeneralConfig extends Observable{
      * @return String, wenn der Schlüssel nicht existiert, wird <code>null</code> geliefert.
      */
     public String getString(String key){
-        return prop.getProperty(key).trim();
+        return prop.getProperty(key);
     }
     public int getInteger(String key) throws WrongValueException{
         String val=getString(key);

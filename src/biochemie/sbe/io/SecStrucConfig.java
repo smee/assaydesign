@@ -5,21 +5,25 @@ import biochemie.util.config.GeneralConfig;
 
 public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     
-    
-
-    protected String[][] getInitializedProperties() {
-        return new String[][]{
-                 {"sbe.hairpin.windowsizes","6 4"}
-                ,{"sbe.hairpin.minbinds","4 4"}
-                ,{"sbe.homodimer.windowsizes","6 4"}
-                ,{"sbe.homodimer.minbinds","4 4"}
-                ,{"sbe.crossdimer.windowsizes","6 4"}
-                ,{"sbe.crossdimer.areallevil","false"}
-                ,{"sbe.crossdimer.minbinds","4 4"}};
+    public SecStrucConfig(){
+        super();
+    }
+    public SecStrucConfig(SecStrucConfig cfg){
+        super(cfg.prop);
+    }
+    protected String[] getInitializedProperties() {
+        return new String[]{
+                 "sbe.hairpin.windowsizes"
+                ,"sbe.hairpin.minbinds"
+                ,"sbe.homodimer.windowsizes"
+                ,"sbe.homodimer.minbinds"
+                ,"sbe.crossdimer.windowsizes"
+                ,"sbe.crossdimer.areallevil"
+                ,"sbe.crossdimer.minbinds"};
     }
     
     public String getHairpinWindowsizes() {
-        return getString("sbe.hairpin.windowsizes","");
+        return getString("sbe.hairpin.windowsizes","6 4");
     }
 
     public void setHairpinWindowsizes(String w) {
@@ -29,7 +33,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     }
 
     public String getHairpinMinbinds() {
-        return getString("sbe.hairpin.minbinds","");
+        return getString("sbe.hairpin.minbinds","4 4");
     }
 
     public void setHairpinMinbinds(String w) {
@@ -39,7 +43,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     }
 
     public String getHomodimerMinbinds() {
-        return getString("sbe.homodimer.minbinds","");
+        return getString("sbe.homodimer.minbinds","4 4");
     }
 
     public void setHomodimerMinbinds(String w) {
@@ -50,7 +54,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     }
 
     public String getHomodimerWindowsizes() {
-        return getString("sbe.homodimer.windowsizes","");
+        return getString("sbe.homodimer.windowsizes","6 4");
     }
 
     public void setHomodimerWindowsizes(String w) {
@@ -60,7 +64,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     }
 
     public String getCrossdimerMinbinds() {
-        return getString("sbe.crossdimer.minbinds","");
+        return getString("sbe.crossdimer.minbinds","4 4");
     }
 
     public void setCrossdimerMinbinds(String w) {
@@ -70,7 +74,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     }
 
     public String getCrossDimerWindowsizes() {
-        return getString("sbe.crossdimer.windowsizes","");
+        return getString("sbe.crossdimer.windowsizes","6 4");
     }
 
     public void setCrossimerWindowsizes(String w) {

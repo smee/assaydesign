@@ -23,32 +23,35 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     public CDOptionsImpl() {
         super();
     }
-
-    protected String[][] getInitializedProperties() {
-        return new String[][]{
-            {"calcdalton.pl","9 8 10 11 12 13 14 15 16"}
-           ,{"calcdalton.from","-152.0 -136.0 -112.0 0.0"}
-           ,{"calcdalton.to","-150.0 -134.0 -110.0 50.0"}
-           ,{"calcdalton.verbfrom","2070.0 2162.0 2248.0 2385.0 2425.0 5000.0"}
-           ,{"calcdalton.verbto","2080.0 2172.0 2258.0 2395.0 2435.0 9.99999999E8"}
-           ,{"calcdalton.maxmass","30000"}
-           ,{"calcdalton.allowoverlap","true"}
-           ,{"calcdalton.assaypeaks","10.0 2000 10.0"}
-           ,{"calcdalton.productpeaks","10.0 2000 10.0"}
-           ,{"calcdalton.extension","false"}
-           ,{"calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}"}
-           ,{"calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}"}
-           ,{"calcdalton.plmass","18.02"}
-           ,{"calcdalton.plmassidx","3"}
-           ,{"calcdalton.showions","true"}
-           ,{"calcdalton.halfmass","true"}
-           ,{"misc.maxcalctime","10"}
-           ,{"misc.debug","false"}
-           ,{"misc.biotin","bio"}
+    public CDOptionsImpl(CDOptionsImpl cdo){
+        super(cdo.prop);
+        
+    }
+    protected String[] getInitializedProperties() {
+        return new String[]{
+            "calcdalton.pl"
+           ,"calcdalton.from"
+           ,"calcdalton.to"
+           ,"calcdalton.verbfrom"
+           ,"calcdalton.verbto"
+           ,"calcdalton.maxmass"
+           ,"calcdalton.allowoverlap"
+           ,"calcdalton.assaypeaks"
+           ,"calcdalton.productpeaks"
+           ,"calcdalton.extension"
+           ,"calcdalton.primermasses"
+           ,"calcdalton.addonmasses"
+           ,"calcdalton.plmass"
+           ,"calcdalton.plmassidx"
+           ,"calcdalton.showions"
+           ,"calcdalton.halfmass"
+           ,"misc.maxcalctime"
+           ,"misc.debug"
+           ,"misc.biotin"
            };
     }
     public int[] getPhotolinkerPositions(){
-        String pl = getString("calcdalton.pl");
+        String pl = getString("calcdalton.pl","9 8 10 11 12 13 14 15 16");
         int[] br=Helper.tokenizeToInt(pl);
         return br;
     }
@@ -57,7 +60,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     }
 
     public double[] getCalcDaltonFrom() {
-        String pl = getString("calcdalton.from");
+        String pl = getString("calcdalton.from","-152.0 -136.0 -112.0 0.0");
         double[] from=Helper.tokenizeToDouble(pl);
         return from;
     }
@@ -67,7 +70,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     }
 
     public double[] getCalcDaltonTo() {
-        String pl = getString("calcdalton.to");
+        String pl = getString("calcdalton.to","-150.0 -134.0 -110.0 50.0");
         double[] to=Helper.tokenizeToDouble(pl);
         return to;
     }
@@ -77,7 +80,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     }
 
     public double[] getCalcDaltonVerbFrom() {
-        String pl = getString("calcdalton.verbfrom");
+        String pl = getString("calcdalton.verbfrom","2070.0 2162.0 2248.0 2385.0 2425.0 5000.0");
         double[] verbfrom=Helper.tokenizeToDouble(pl);
         return verbfrom;
     }
@@ -87,7 +90,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     }
 
     public double[] getCalcDaltonVerbTo() {
-        String pl = getString("calcdalton.verbto");
+        String pl = getString("calcdalton.verbto","2080.0 2172.0 2258.0 2395.0 2435.0 9.99999999E8");
         double[] verbto=Helper.tokenizeToDouble(pl);
         return verbto;
     }
@@ -96,7 +99,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         setProperty("calcdalton.verbto",StringUtils.join(ArrayUtils.toObject(arr),' '));
     }
     public double[] getCalcDaltonAssayPeaks() {
-        String pl = getString("calcdalton.assaypeaks");
+        String pl = getString("calcdalton.assaypeaks","10.0 2000.0 10.0");
         double[] peaks=Helper.tokenizeToDouble(pl);
         return peaks;
     }
@@ -104,7 +107,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         setProperty("calcdalton.assaypeaks",StringUtils.join(ArrayUtils.toObject(vals),' '));
     }
     public double[] getCalcDaltonProductPeaks() {
-        String pl = getString("calcdalton.productpeaks");
+        String pl = getString("calcdalton.productpeaks","10.0 2000.0 10.0");
         double[] peaks=Helper.tokenizeToDouble(pl);
         return peaks;
     }
@@ -147,7 +150,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
         setProperty("misc.maxcalctime",Integer.toString(val));
     }
     public Map getCalcDaltonPrimerMassesMap() {
-        String s=getProperty("calcdalton.primermasses");
+        String s=getString("calcdalton.primermasses","{A=313.2071, C=289.1823, T=304.1937, G=329.2066}");
         Map m=new HashMap();
         StringTokenizer st=new StringTokenizer(s,"{,} ");
         while(st.hasMoreTokens()) {
@@ -164,7 +167,7 @@ public class CDOptionsImpl extends GeneralConfig implements CalcDaltonOptions {
     }
 
     public Map getCalcDaltonAddonMassesMap() {
-        String s=getProperty("calcdalton.addonmasses");
+        String s=getString("calcdalton.addonmasses","{A=297.2072, C=273.1824, T=288.1937, G=313.2066}");
         Map m=new HashMap();
         StringTokenizer st=new StringTokenizer(s,"{,} ");
         while(st.hasMoreTokens()) {

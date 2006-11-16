@@ -284,7 +284,7 @@ public class CalcDalton implements Interruptible{
          // -> fällt weg wegen is nich
          //vgl. sbe1 ohne anhang mit allen sbe2 mit anhang
          for (int i= 1; i < masses2.length; i++) {
-             if(!fitsAllPeakRules(masses1[0],masses2[i],from,to,false) ||
+             if(!fitsAllPeakRules(masses2[i],masses1[0],from,to,false) ||
                 !fitsHalfMassPeakRules(masses1[0],masses2[i]))
                  return false;
          }

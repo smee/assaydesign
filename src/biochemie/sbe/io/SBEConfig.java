@@ -40,19 +40,25 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         cdopt = c;
         secopt=s;
     }
-    protected String[][] getInitializedProperties() {
-        return new String[][]{
-             {"sbe.temperature.min","48"}
-            ,{"sbe.temperature.opt","58"}
-            ,{"sbe.temperature.max","62"}
-            ,{"sbe.gc.min","20"}
-            ,{"sbe.gc.max","80"}
-            ,{"sbe.polyx","5"}
-            ,{"sbe.maxplex","6"}
-            ,{"sbe.mincandlen","18"}
-            ,{"sbe.prodlendiff","0"}
-            ,{"sbe.compHAIRP2Edge","true"}
-            ,{"misc.drawgraph","false"}};
+    public SBEConfig(SBEOptions cfg){//FIXME expecting instances of SBEConfig is pretty bad
+        super(((SBEConfig)cfg).prop);
+        SBEConfig c=(SBEConfig) cfg;
+        cdopt=new CDOptionsImpl((CDOptionsImpl) c.cdopt);
+        secopt=new SecStrucConfig((SecStrucConfig) c.secopt);
+    }
+    protected String[] getInitializedProperties() {
+        return new String[]{
+             "sbe.temperature.min"
+            ,"sbe.temperature.opt"
+            ,"sbe.temperature.max"
+            ,"sbe.gc.min"
+            ,"sbe.gc.max"
+            ,"sbe.polyx"
+            ,"sbe.maxplex"
+            ,"sbe.mincandlen"
+            ,"sbe.prodlendiff"
+            ,"sbe.compHAIRP2Edge"
+            ,"misc.drawgraph"};
     }
 
     //MiniSBE parameter:

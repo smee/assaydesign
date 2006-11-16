@@ -43,6 +43,7 @@ import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
+import biochemie.sbe.io.SBEConfig;
 import biochemie.util.Helper;
 import biochemie.util.MyAction;
 
@@ -63,17 +64,22 @@ public class ShowDiffAction extends MyAction {
     private JTable restable;
     private JTable[] restables;
     private JScrollPane resscrollpane;
-
+    private CalcDalton cd;
+    
     public ShowDiffAction(List sbec, SBEOptions cfg, MiniSBEGui.CalculateAction calcaction) {
         super("Masses / Maldi", "Show mass differences and MALDI previews"
                 ,ShowDiffAction.class.getClassLoader().getResource("images/maldi.gif"), null);
-        this.cfg = cfg;
         sbecfilt = new ArrayList(sbec);
         Algorithms.remove(sbecfilt.iterator(), new UnaryPredicate() {
             public boolean test(Object obj) {
                 return !((PrimerFactory)obj).isFoundValidSeq();
             }
         });
+        //turn off forbidden massrange
+        this.cfg=new SBEConfig(cfg);
+        cfg.setCalcDaltonVerbFrom(new double[0]);
+        cfg.setCalcDaltonVerbTo(new double[0]);
+        this.cd = new CalcDalton(this.cfg);
 
         mids = new TreeSet();
         //suche alle vorhandenen Multiplexids
@@ -135,7 +141,6 @@ public class ShowDiffAction extends MyAction {
         }
         SBETable sbetable = new SBETable(names,cfg.getPhotolinkerPositions());
 
-        CalcDalton cd = new CalcDalton(cfg);
         if(sbec.get(0) instanceof CleavablePrimerFactory)
             cd.calc(paneldata,sbetable,fest);
         else
@@ -161,7 +166,6 @@ public class ShowDiffAction extends MyAction {
         if(sbec.size()==0)
             return new DiffTableModel(new String[0],new double[0][]);
         List mysbec = getFilteredList(id, sbec);
-        CalcDalton cd=new CalcDalton(cfg);
         String[][] params=new String[mysbec.size()][];
         int[] br=cfg.getPhotolinkerPositions();
         int[] fest=new int[mysbec.size()];
