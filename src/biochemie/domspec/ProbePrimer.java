@@ -129,4 +129,10 @@ public class ProbePrimer extends Primer {
     public String getName(){
         return id+"_"+getType()+"_"+getAssayType()+"_"+getPrimerSeq().length();
     }
+    public boolean passtMitKompCD(Primer other) {
+        boolean flag= super.passtMitKompCD(other);
+        if(other instanceof ProbePrimer)
+            flag=flag && passtMitAssayType((ProbePrimer) other);
+        return flag;
+    }
 }
