@@ -18,7 +18,6 @@ import javax.swing.event.ChangeListener;
 
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.gui.StringEntryPanel;
-import biochemie.sbe.MiniSBE;
 /**
  * @author Steffen Dienst
  *

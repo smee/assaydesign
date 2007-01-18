@@ -1,7 +1,5 @@
 package biochemie.util.edges;
 
-import org._3pq.jgrapht.edge.UndirectedEdge;
-import org._3pq.jgrapht.edge.UndirectedEdge;
 
 public class CalcDaltonEdge extends MyUndirectedEdge {
 

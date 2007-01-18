@@ -32,8 +32,6 @@ import org.apache.commons.lang.StringUtils;
 
 import biochemie.calcdalton.CalcDalton;
 import biochemie.calcdalton.CalcDaltonOptions;
-import biochemie.domspec.ProbePrimer;
-import biochemie.util.edges.MyUndirectedEdge;
 
 
 

@@ -5,9 +5,7 @@
 package biochemie.sbe.filter;
 
 import biochemie.domspec.Primer;
-import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
-import biochemie.util.Helper;
 
 /**
  * @author Steffen Dienst

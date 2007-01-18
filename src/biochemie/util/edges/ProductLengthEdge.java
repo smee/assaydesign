@@ -1,6 +1,5 @@
 package biochemie.util.edges;
 
-import org._3pq.jgrapht.edge.UndirectedEdge;
 
 public class ProductLengthEdge extends MyUndirectedEdge {
     private final int prdiff;

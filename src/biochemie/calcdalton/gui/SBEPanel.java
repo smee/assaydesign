@@ -19,7 +19,6 @@ import biochemie.gui.MyPanel;
 import biochemie.gui.PLSelectorPanel;
 import biochemie.sbe.gui.SBESeqInputController;
 import biochemie.sbe.gui.SBESequenceTextField;
-import biochemie.util.Helper;
 
 public class SBEPanel extends MyPanel
 {

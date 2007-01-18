@@ -44,7 +44,6 @@ import biochemie.sbe.SBEOptions;
 import biochemie.sbe.gui.MiniSBEGui;
 import biochemie.sbe.gui.SpektrometerPreviewFrame;
 import biochemie.sbe.io.SBEConfig;
-import biochemie.util.Helper;
 import biochemie.util.MyAction;
 
 

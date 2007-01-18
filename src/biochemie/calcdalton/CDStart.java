@@ -4,13 +4,10 @@
  */
 package biochemie.calcdalton;
 
-import java.util.Date;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import biochemie.calcdalton.gui.SBEGui;
-import biochemie.util.LogStdStreams;
 
 /**
  *

@@ -2,8 +2,6 @@ package biochemie.util.edges;
 
 import java.text.DecimalFormat;
 
-import org._3pq.jgrapht.edge.UndirectedEdge;
-
 public class TMDiffEdge extends MyUndirectedEdge {
 
     private final double tmdiff;

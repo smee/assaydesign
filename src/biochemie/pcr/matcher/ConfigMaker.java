@@ -7,7 +7,6 @@ import biochemie.util.Helper;
 import biochemie.util.config.GeneralConfig;
 
 import com.Ostermiller.util.BadDelimiterException;
-import com.Ostermiller.util.CSVParser;
 import com.Ostermiller.util.ExcelCSVParser;
 
 public class ConfigMaker {

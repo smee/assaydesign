@@ -12,8 +12,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import biochemie.sbe.gui.MiniSBEGui;
-
 /**
  * Singleton, Facade. Liefert vom user ausgewaehlte Datei zurueck. Es wird immer das zuletzt aktuelle Verzeichnis wieder besucht.
  * @author sdienst

@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org._3pq.jgrapht.Edge;
-
 import biochemie.pcr.matcher.MyDefaultEdge;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.multiplex.Multiplexable;

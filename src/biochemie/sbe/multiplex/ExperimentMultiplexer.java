@@ -17,7 +17,6 @@ import org._3pq.jgrapht.UndirectedGraph;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.calculators.ReusableThread;
 import biochemie.sbe.calculators.SBEColorerProxy;
-import biochemie.util.GraphHelper;
 
 /**
  * Geht davon aus, dass jeder SBECandidate genau einen Primer hat, so

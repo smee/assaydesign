@@ -26,10 +26,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import biochemie.calcdalton.CalcDaltonOptions;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
+import biochemie.calcdalton.CalcDaltonOptions;
 public class CDMassesConfigPanel extends JPanel {
 
 	private JLabel jLabel = null;
@@ -46,6 +46,11 @@ public class CDMassesConfigPanel extends JPanel {
     private JTextField wenzelTf = null;
     private JTextField liTf = null;
     private JTextField shceTf = null;
+    private JLabel jLabel1 = null;
+    private JTextField wenzelTagTf = null;
+    private JTextField liTagTf = null;
+    private JTextField ShceTagTf = null;
+    private JTextField CustomTagTf = null;
     /**
      * This is the default constructor
      */
@@ -65,6 +70,31 @@ public class CDMassesConfigPanel extends JPanel {
      * @return void
      */
     private  void initialize() {
+    	GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+    	gridBagConstraints51.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    	gridBagConstraints51.gridy = 4;
+    	gridBagConstraints51.weightx = 1.0;
+    	gridBagConstraints51.gridx = 2;
+    	GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
+    	gridBagConstraints42.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    	gridBagConstraints42.gridy = 3;
+    	gridBagConstraints42.weightx = 1.0;
+    	gridBagConstraints42.gridx = 2;
+    	GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
+    	gridBagConstraints32.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    	gridBagConstraints32.gridy = 2;
+    	gridBagConstraints32.weightx = 1.0;
+    	gridBagConstraints32.gridx = 2;
+    	GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
+    	gridBagConstraints22.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    	gridBagConstraints22.gridy = 1;
+    	gridBagConstraints22.weightx = 1.0;
+    	gridBagConstraints22.gridx = 2;
+    	GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+    	gridBagConstraints12.gridx = 2;
+    	gridBagConstraints12.gridy = 0;
+    	jLabel1 = new JLabel();
+    	jLabel1.setText("5' tag");
     	GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
     	gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
     	gridBagConstraints5.gridy = 3;
@@ -120,27 +150,28 @@ public class CDMassesConfigPanel extends JPanel {
     	gridBagConstraints4.weightx = 1.0;
     	gridBagConstraints4.weighty = 1.0;
     	gridBagConstraints4.fill = java.awt.GridBagConstraints.BOTH;
-    	gridBagConstraints4.gridwidth = 2;
+    	gridBagConstraints4.gridwidth = 3;
     	gridBagConstraints4.insets = new java.awt.Insets(10,10,0,10);
     	gridBagConstraints8.gridx = 0;
     	gridBagConstraints8.gridy = 7;
     	gridBagConstraints8.weightx = 1.0;
     	gridBagConstraints8.weighty = 1.0;
     	gridBagConstraints8.fill = java.awt.GridBagConstraints.BOTH;
-    	gridBagConstraints8.gridwidth = 2;
+    	gridBagConstraints8.gridwidth = 3;
     	gridBagConstraints8.insets = new java.awt.Insets(10,10,0,10);
     	this.add(jLabel, gridBagConstraints2);
     	this.add(getPrimerMassesMapTable(), gridBagConstraints4);
-    	this.add(getAddonMassesMapTable(), gridBagConstraints8);
         ButtonGroup bg=new ButtonGroup();
         bg.add(getJRadioButton());
         bg.add(getJRadioButton1());
         bg.add(getJRadioButton2());
         bg.add(getJRadioButton3());
+        this.add(getAddonMassesMapTable(), gridBagConstraints8);
         ItemListener l=new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JRadioButton btn=(JRadioButton) e.getSource();
                 getCustomPlTf().setEnabled(btn==getJRadioButton3());
+                getCustomTagTf().setEnabled(btn==getJRadioButton3());
             }
         };
         getJRadioButton().addItemListener(l);
@@ -156,6 +187,11 @@ public class CDMassesConfigPanel extends JPanel {
     	this.add(getWenzelTf(), gridBagConstraints31);
     	this.add(getLiTf(), gridBagConstraints41);
     	this.add(getShceTf(), gridBagConstraints5);
+    	this.add(jLabel1, gridBagConstraints12);
+    	this.add(getWenzelTagTf(), gridBagConstraints22);
+    	this.add(getLiTagTf(), gridBagConstraints32);
+    	this.add(getShceTagTf(), gridBagConstraints42);
+    	this.add(getCustomTagTf(), gridBagConstraints51);
         String wenzelTip="<html>Wenzel T, Elssner T, Fahr K, Bimmler J, Richter S, Thomas I, Kostrzewa M,2003:Genosnip: SNP<br>" + 
                 "genotyping by MALDI-TOF MS using photocleavable oligonucleotides.<br>" + 
                 "Nucleosides Nucleotides Nucleic Acids. 2003 May-Aug;22(5-8):1579-81)<br></html";
@@ -288,6 +324,54 @@ public class CDMassesConfigPanel extends JPanel {
         }
         return shceTf;
     }
+    /**
+     * This method initializes jTextField	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getWenzelTagTf() {
+        if (wenzelTagTf == null) {
+            wenzelTagTf = new JTextField("bio");
+            wenzelTagTf.setEnabled(false);
+        }
+        return wenzelTagTf;
+    }
+    /**
+     * This method initializes jTextField1	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getLiTagTf() {
+        if (liTagTf == null) {
+            liTagTf = new JTextField("bio");
+            liTagTf.setEnabled(false);
+        }
+        return liTagTf;
+    }
+    /**
+     * This method initializes jTextField2	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getShceTagTf() {
+        if (ShceTagTf == null) {
+            ShceTagTf = new JTextField("");
+            ShceTagTf.setEnabled(false);
+        }
+        return ShceTagTf;
+    }
+    /**
+     * This method initializes jTextField3	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getCustomTagTf() {
+        if (CustomTagTf == null) {
+            CustomTagTf = new JTextField("bio");
+            CustomTagTf.setEnabled(false);
+        }
+        return CustomTagTf;
+    }
     public static void main(String[] args) {
         JFrame f=new JFrame();
         Map primerMap=new HashMap();
@@ -322,6 +406,7 @@ public class CDMassesConfigPanel extends JPanel {
         case 3:
             getJRadioButton3().setSelected(true);
             getCustomPlTf().setText(""+cfg.getCalcDaltonPLMass());
+            getCustomTagTf().setText(cfg.getBiotinString());
             break;
         default:
             break;
@@ -332,6 +417,7 @@ public class CDMassesConfigPanel extends JPanel {
         cfg.setCalcDaltonAddonMassesMap(getAddonMassesMapTable().getMap());
         cfg.setCalcDaltonPrimerMassesMap(getPrimerMassesMapTable().getMap());
         cfg.setCalcDaltonPLMass(Double.parseDouble(getCustomPlTf().getText()));
+        cfg.setBiotinString(getCustomTagTf().getText());
         if(getJRadioButton().isSelected())
             cfg.setCalcDaltonSelectedPLMass(0);
         if(getJRadioButton1().isSelected())

@@ -1,7 +1,6 @@
 package biochemie.calcdalton.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -26,7 +25,6 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,13 +38,11 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import biochemie.calcdalton.BerechnungsProgress;
 import biochemie.calcdalton.tf_seqDocListener;
 import biochemie.gui.InfiniteProgressPanel;
-import biochemie.sbe.gui.SBECandidatePanel;
 import biochemie.util.FileSelector;
 import biochemie.util.Helper;
 import biochemie.util.MyAction;

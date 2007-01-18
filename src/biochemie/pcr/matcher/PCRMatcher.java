@@ -17,19 +17,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.StringTokenizer;
-
-import com.Ostermiller.util.BadDelimiterException;
 
 import biochemie.domspec.Primer;
 import biochemie.pcr.PrimerPair;
-import biochemie.pcr.modules.CrossDimerAnalysis;
-import biochemie.sbe.WrongValueException;
 import biochemie.sbe.io.MultiKnoten;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 import biochemie.util.config.GeneralConfig;
+
+import com.Ostermiller.util.BadDelimiterException;
 
 /**
  * @author Steffen Dienst

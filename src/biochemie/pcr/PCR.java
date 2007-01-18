@@ -1,5 +1,4 @@
 package biochemie.pcr;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 import biochemie.pcr.io.PCRConfig;
 import biochemie.pcr.io.Primer3Manager;

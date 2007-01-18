@@ -5,11 +5,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import biochemie.calcdalton.CalcDaltonOptions;
 import biochemie.calcdalton.gui.PBSequenceField;
-import biochemie.sbe.SBEOptions;
 
 public class CalcTimePanel extends MyPanel {
 

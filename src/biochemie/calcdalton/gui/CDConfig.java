@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import biochemie.calcdalton.CalcDaltonOptions;
-import biochemie.calcdalton.gui.CDConfigPanel.OkayAction;
 import biochemie.gui.CalcTimePanel;
 
 

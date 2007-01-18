@@ -8,10 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import biochemie.domspec.CleavablePrimer;
 import biochemie.domspec.PinpointPrimer;
 import biochemie.domspec.Primer;
 import biochemie.domspec.ProbePrimer;
-import biochemie.domspec.CleavablePrimer;
 import biochemie.sbe.SBEOptions;
 
 /**

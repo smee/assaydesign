@@ -2,13 +2,10 @@ package biochemie.sbe.gui;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,7 +15,6 @@ import javax.swing.JTable;
 import netprimer.DisplayStructureIcon;
 import netprimer.cal_Dimers;
 import netprimer.cal_Hairpins;
-
 import biochemie.domspec.SekStruktur;
 import biochemie.sbe.CleavablePrimerFactory;
 import biochemie.sbe.gui.MiniSBEGui.OptimizePLAction;

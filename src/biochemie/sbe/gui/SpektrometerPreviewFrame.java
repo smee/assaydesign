@@ -9,7 +9,6 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.ToolTipManager;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

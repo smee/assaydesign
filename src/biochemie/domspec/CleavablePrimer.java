@@ -21,7 +21,6 @@ import biochemie.sbe.SBEOptions;
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 import biochemie.util.edges.CalcDaltonEdge;
-import biochemie.util.edges.ProductLengthEdge;
 import biochemie.util.edges.SecStructureEdge;
 
 

@@ -38,7 +38,11 @@ public class ColorerStrategy implements MatcherStrategy {
 
     public Collection getBestPCRPrimerSet(List pcrpairs, final Multiplexable needed) {
         System.out.println("Creating graph... (Might take a while!)");
-        UndirectedGraph g=GraphHelper.createIncompGraph(pcrpairs,true,GraphWriter.TGF, Collections.EMPTY_SET);
+        List foo=new ArrayList(pcrpairs.size()+1);
+        foo.addAll(pcrpairs);
+        if(needed.realSize()>0)
+            foo.add(needed);
+        UndirectedGraph g=GraphHelper.createIncompGraph(foo,true,GraphWriter.TGF, Collections.EMPTY_SET);
 
         System.out.println("Graph has "+g.edgeSet().size()+" edges.");
 
@@ -47,8 +51,11 @@ public class ColorerStrategy implements MatcherStrategy {
 
         System.out.println("Time for Coloring: "+seconds+" s");
         System.out.println("Starting coloring search...");
-
-        SBEColorerProxy scp=new SBEColorerProxy(g,new HashSet(),maxplex,true);
+        
+        Set init=new HashSet();
+        if(needed.realSize()>0)
+            init.add(needed);
+        SBEColorerProxy scp=new SBEColorerProxy(g,init,maxplex,true);
         rt.setInterruptableJob(scp);
         List result=new ArrayList((Collection)rt.getResult());
 
@@ -70,16 +77,28 @@ public class ColorerStrategy implements MatcherStrategy {
         };
 
         Collections.sort(result,resultcomp);
-        System.out.println("Found "+result.size()+" working multiplexes:\n" +
+        System.out.println("Found "+result.size()+" working multiplexes (just showing size>1):\n" +
         		                          "------------------------------------------------------------");
         for (Iterator it = result.iterator(); it.hasNext();) {
             Set s = (Set) it.next();
-            System.out.println("Size: " + s.size()+", avg. pos = " + getAvg(s));
+            int num=getNumOfPrimers(s);
+            if(num>1)
+                System.out.println("Size: " + num+", avg. pos = " + getAvg(s));
         }
-
-        return (Collection) result.get(0);
+        Set col=(Set) result.get(0);
+        if(getNumOfPrimers(col)==1)
+            return Collections.EMPTY_LIST;
+        return col;
 
     }
+    private int getNumOfPrimers(Set s) {
+        int count=0;
+        for (Iterator it = s.iterator(); it.hasNext();) {
+            count+=((Multiplexable)it.next()).realSize();
+        }
+        return count;
+    }
+
     private double getAvg(Set s){
         double avg1=0;
         for (Iterator it = s.iterator(); it.hasNext();) {

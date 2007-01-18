@@ -6,8 +6,6 @@ import info.clearthought.layout.TableLayoutConstants;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import biochemie.calcdalton.CalcDaltonOptions;
-
 public class PeakInputPanel extends JPanel {
     private final static double p=TableLayoutConstants.PREFERRED;
     private final static double f=TableLayoutConstants.FILL;
