@@ -90,7 +90,8 @@ public class MaximumCliqueFinder implements Interruptible{
         final Map m=new HashMap();
         for (Iterator it = graphes.iterator(); it.hasNext();) {
             UndirectedGraph g = (UndirectedGraph) it.next();
-            m.put(g,new Integer(findFastColoring(g)));
+            //m.put(g,new Integer(findFastColoring(g)));
+            m.put(g,new Integer(calcGraphSize(g)));
         }
         Collections.sort(graphes,new Comparator() {
             public int compare(Object o1, Object o2) {
@@ -111,6 +112,15 @@ public class MaximumCliqueFinder implements Interruptible{
         return graphes;
     }
 
+    private int calcGraphSize(UndirectedGraph g) {
+        Set vertices=g.vertexSet();
+        int cnt=0;
+        for (Iterator it = vertices.iterator(); it.hasNext();) {
+            Multiplexable m = (Multiplexable) it.next();
+            cnt+=m.realSize();
+        }
+        return cnt;
+    }
     /**
      * @param admatrix
      * @return
