@@ -106,7 +106,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
                 String ltool=seq.length()==0?INSERT_TT:left.getText();
                 setToolTipAndBorder(ltool,false);
                 plpanel.setEnabled(true);
-                plpanel.setSelectedPL(-1);//auto
+                plpanel.setSelectedValue(-1);//auto
                 left.setEnabled(true);
                 fixedcb.setSelected(false);
                 fixedcb.setEnabled(false);
@@ -123,7 +123,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
                     String tooltip = seq.substring(0,pos)+"[L]"+seq.substring(pos+1);
                     setToolTipAndBorder(tooltip,false);
                     fixedcb.setEnabled(true);
-                    plpanel.setSelectedPL(br);
+                    plpanel.setSelectedValue(br);
                     return;
                 }else {//L an der falschen Position!
                     plpanel.setEnabled(false);

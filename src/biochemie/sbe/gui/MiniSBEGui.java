@@ -191,11 +191,11 @@ public class OptimizePLAction extends MyAction {
             if(cand.getType().equals(CleavablePrimer._5_)) {
                 panel.getSeq3tf().setText("");
                 if(setPL)
-                    panel.getPlpanel5().setSelectedPL(cand.getBruchstelle());
+                    panel.getPlpanel5().setSelectedValue(cand.getBruchstelle());
             }else {
                 panel.getSeq5tf().setText("");
                 if(setPL)
-                    panel.getPlpanel3().setSelectedPL(cand.getBruchstelle());
+                    panel.getPlpanel3().setSelectedValue(cand.getBruchstelle());
             }
         }
 

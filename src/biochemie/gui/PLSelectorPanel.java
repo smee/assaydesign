@@ -32,11 +32,11 @@ public class PLSelectorPanel extends MyPanel {
 	 */
 	public PLSelectorPanel() {
 		super();
-		setPLPositions(new int[]{9,8,10,11,12,13,14,15});
+		setValues(new int[]{9,8,10,11,12,13,14,15});
 		initialize();
 	}
 
-	public void setPLPositions(int[] br){
+	public void setValues(int[] br){
         dirty();
         MutableComboBoxModel m = ((MutableComboBoxModel)getComboPL().getModel());
         int sel=getComboPL().getSelectedIndex();
@@ -67,7 +67,7 @@ public int getMaxSelectablePl() {
     }
     return max;
 }
-	public int getSelectedPL(){
+	public int getSelectedValue(){
 		Object val=getComboPL().getModel().getSelectedItem();
 		if(val instanceof Integer)
 			return ((Integer)val).intValue();
@@ -78,7 +78,7 @@ public int getMaxSelectablePl() {
      * @param pl
      * @return
 	 */
-	public void setSelectedPL(int pl){
+	public void setSelectedValue(int pl){
         dirty();
         if(pl <= 0) {
             getComboPL().getModel().setSelectedItem("auto");

@@ -78,8 +78,8 @@ public class SBECandidatePanel extends MyPanel {
     private ISeqInputController inputcontrollerL = null;
     
     private PLSelectorPanel plpanel3 = null;
-    private StringEntryPanel pinpoint5;
-    private StringEntryPanel pinpoint3;
+    private PLSelectorPanel pinpoint5;
+    private PLSelectorPanel pinpoint3;
     private ProbeTypeSelectorPanel probePanel5;
     private ProbeTypeSelectorPanel probePanel3;
     /**
@@ -356,22 +356,37 @@ public class SBECandidatePanel extends MyPanel {
         }
         return plpanel5;
     }
-    protected StringEntryPanel getPinpointAddonPanel5() {
+    protected PLSelectorPanel getPinpointAddonPanel5() {
         if (pinpoint5 == null) {
-            pinpoint5 = new StringEntryPanel("Length of dT 3'");
-            pinpoint5.setValidChars("-0123456789");
-            pinpoint5.setUniqueChars("-");
-            pinpoint5.setColumns(5);
+//            pinpoint5 = new StringEntryPanel("Length of dT 3'");
+//            pinpoint5.setValidChars("-0123456789");
+//            pinpoint5.setUniqueChars("-");
+//            pinpoint5.setColumns(5);
+            pinpoint5=new PLSelectorPanel();
+            pinpoint5.setTitle("Length of dT 3\'");
+            int[] vals=new int[100];
+            for (int i = 0; i < vals.length; i++) {
+                vals[i]=i;
+            }
+            pinpoint5.setValues(vals);
             pinpoint5.setPreferredSize(new java.awt.Dimension(90,56));
         }
         return pinpoint5;
     }
-    protected StringEntryPanel getPinpointAddonPanel3() {
+    protected PLSelectorPanel getPinpointAddonPanel3() {
         if (pinpoint3 == null) {
-            pinpoint3 = new StringEntryPanel("Length of dT 3'");
-            pinpoint3.setValidChars("-0123456789");
-            pinpoint3.setUniqueChars("-");
-            pinpoint3.setColumns(5);
+//            pinpoint3 = new StringEntryPanel("Length of dT 3'");
+//            pinpoint3.setValidChars("-0123456789");
+//            pinpoint3.setUniqueChars("-");
+//            pinpoint3.setColumns(5);
+//            pinpoint3.setPreferredSize(new java.awt.Dimension(90,56));
+            pinpoint3=new PLSelectorPanel();
+            pinpoint3.setTitle("Length of dT 5\'");
+            int[] vals=new int[100];
+            for (int i = 0; i < vals.length; i++) {
+                vals[i]=i;
+            }
+            pinpoint3.setValues(vals);
             pinpoint3.setPreferredSize(new java.awt.Dimension(90,56));
         }
         return pinpoint3;
@@ -496,10 +511,10 @@ public class SBECandidatePanel extends MyPanel {
         sb.append(';');
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
-            sb.append(getPlpanel5().getSelectedPL());
+            sb.append(getPlpanel5().getSelectedValue());
             break;
         case MiniSBE.PINPOINT:
-            sb.append(getPinpointAddonPanel5().getTextAsInt(-1));
+            sb.append(getPinpointAddonPanel5().getSelectedValue());
             break;
         case MiniSBE.PROBE:
             sb.append(getProbePanel5().getSelectedType());
@@ -507,12 +522,12 @@ public class SBECandidatePanel extends MyPanel {
         case MiniSBE.PROBE_CLEAVABLE:
             sb.append(getProbePanel5().getSelectedType());
             sb.append(";");
-            sb.append(getPlpanel5().getSelectedPL());
+            sb.append(getPlpanel5().getSelectedValue());
             break;
         case MiniSBE.PROBE_PINPOINT:
             sb.append(getProbePanel5().getSelectedType());
             sb.append(";");
-            sb.append(getPinpointAddonPanel5().getTextAsInt(-1));
+            sb.append(getPinpointAddonPanel5().getSelectedValue());
             break;
         default:
             throw new IllegalArgumentException("unknown assaytype '"+assayType+"', don't know how to save it!");
@@ -526,10 +541,10 @@ public class SBECandidatePanel extends MyPanel {
         sb.append(';');
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
-            sb.append(getPlpanel3().getSelectedPL());
+            sb.append(getPlpanel3().getSelectedValue());
             break;
         case MiniSBE.PINPOINT:
-            sb.append(getPinpointAddonPanel3().getTextAsInt(-1));
+            sb.append(getPinpointAddonPanel3().getSelectedValue());
             break;
         case MiniSBE.PROBE:
             sb.append(getProbePanel3().getSelectedType());
@@ -537,12 +552,12 @@ public class SBECandidatePanel extends MyPanel {
         case MiniSBE.PROBE_CLEAVABLE:
             sb.append(getProbePanel3().getSelectedType());
             sb.append(";");
-            sb.append(getPlpanel3().getSelectedPL());
+            sb.append(getPlpanel3().getSelectedValue());
             break;
         case MiniSBE.PROBE_PINPOINT:
             sb.append(getProbePanel3().getSelectedType());
             sb.append(";");
-            sb.append(getPinpointAddonPanel3().getTextAsInt(-1));
+            sb.append(getPinpointAddonPanel3().getSelectedValue());
             break;
         default:
             throw new IllegalArgumentException("unknown assaytype '"+assayType+"', don't know how to save it!");
@@ -567,9 +582,9 @@ public class SBECandidatePanel extends MyPanel {
             return null;
         }
         seq5=((SBESeqInputController) this.inputcontrollerL).getSequenceWOL();
-        int pl5=getPlpanel5().getSelectedPL();
+        int pl5=getPlpanel5().getSelectedValue();
         seq3=((SBESeqInputController) this.inputcontrollerR).getSequenceWOL();
-        int pl3=getPlpanel3().getSelectedPL();
+        int pl3=getPlpanel3().getSelectedValue();
         if(seq5.length() == 0 && seq3.length()==0) //keine primer da
             return null;
         
@@ -577,8 +592,8 @@ public class SBECandidatePanel extends MyPanel {
         return s;
     }
     private PrimerFactory getPinpointPrimerFactory(SBEOptions cfg, boolean b, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven) {
-        int tCount5=getPinpointAddonPanel5().getTextAsInt(-1);
-        int tCount3=getPinpointAddonPanel3().getTextAsInt(-1);
+        int tCount5=getPinpointAddonPanel5().getSelectedValue();
+        int tCount3=getPinpointAddonPanel3().getSelectedValue();
         return new PinpointPrimerFactory(cfg,id,seq5,snp,seq3,bautein5,bautein3,tCount5,tCount3,pcrlen,multiplexid,unwanted,userGiven,b);
     }
     private PrimerFactory getProbePrimerFactory(SBEOptions cfg, boolean b, String id, String seq5, String seq3, String snp, String bautein5, String bautein3, int pcrlen, String multiplexid, String unwanted, boolean userGiven) {
@@ -593,8 +608,8 @@ public class SBECandidatePanel extends MyPanel {
     public void refreshData(SBEOptions cfg) {
         switch (assayType) {
             case MiniSBE.CLEAVABLE:
-                getPlpanel5().setPLPositions(cfg.getPhotolinkerPositions());
-                getPlpanel3().setPLPositions(cfg.getPhotolinkerPositions());
+                getPlpanel5().setValues(cfg.getPhotolinkerPositions());
+                getPlpanel3().setValues(cfg.getPhotolinkerPositions());
             break;
             case MiniSBE.PINPOINT:
                 break;
@@ -660,12 +675,12 @@ public class SBECandidatePanel extends MyPanel {
         getPcrLenPanel().setText(Integer.toString(productlen));
         switch (assayType) {
         case MiniSBE.CLEAVABLE:
-            getPlpanel5().setSelectedPL(assay5);
-            getPlpanel3().setSelectedPL(assay3);
+            getPlpanel5().setSelectedValue(assay5);
+            getPlpanel3().setSelectedValue(assay3);
             break;
         case MiniSBE.PINPOINT:
-            getPinpointAddonPanel5().setText(Integer.toString(assay5));
-            getPinpointAddonPanel3().setText(Integer.toString(assay3));
+            getPinpointAddonPanel5().setSelectedValue(assay5);
+            getPinpointAddonPanel3().setSelectedValue(assay3);
             break;
         case MiniSBE.PROBE:
             getProbePanel5().setSelectedType(assay5);
@@ -674,14 +689,14 @@ public class SBECandidatePanel extends MyPanel {
         case MiniSBE.PROBE_CLEAVABLE:
             getProbePanel5().setSelectedType(assay5);
             getProbePanel3().setSelectedType(assay3);
-            getPlpanel5().setSelectedPL(assay5_1);
-            getPlpanel3().setSelectedPL(assay3_1);
+            getPlpanel5().setSelectedValue(assay5_1);
+            getPlpanel3().setSelectedValue(assay3_1);
             break;
         case MiniSBE.PROBE_PINPOINT:
             getProbePanel5().setSelectedType(assay5);
             getProbePanel3().setSelectedType(assay3);
-            getPinpointAddonPanel5().setText(Integer.toString(assay5_1));
-            getPinpointAddonPanel3().setText(Integer.toString(assay3_1));
+            getPinpointAddonPanel5().setSelectedValue(assay5_1);
+            getPinpointAddonPanel3().setSelectedValue(assay3_1);
             break;
         default:
             break;
@@ -724,10 +739,10 @@ public class SBECandidatePanel extends MyPanel {
                 getSeq5tf().setText(seq);
                 switch (assayType) {
                 case MiniSBE.CLEAVABLE:
-                    getPlpanel5().setSelectedPL(assay1);
+                    getPlpanel5().setSelectedValue(assay1);
                     break;
                 case MiniSBE.PINPOINT:
-                    getPinpointAddonPanel5().setText(Integer.toString(assay1));
+                    getPinpointAddonPanel5().setSelectedValue(assay1);
                     break;
                 case MiniSBE.PROBE:
                     getProbePanel5().setSelectedType(assay1);
@@ -735,12 +750,12 @@ public class SBECandidatePanel extends MyPanel {
                     break;
                 case MiniSBE.PROBE_CLEAVABLE:
                     getProbePanel5().setSelectedType(assay1);
-                    getPlpanel5().setSelectedPL(assay2);
+                    getPlpanel5().setSelectedValue(assay2);
                     getSeq3tf().setText(otherseq);
                     break;
                 case MiniSBE.PROBE_PINPOINT:
                     getProbePanel5().setSelectedType(assay1);
-                    getPinpointAddonPanel5().setText(Integer.toString(assay2));
+                    getPinpointAddonPanel5().setSelectedValue(assay2);
                     getSeq3tf().setText(otherseq);
                     break;
                 default:
@@ -751,22 +766,22 @@ public class SBECandidatePanel extends MyPanel {
                 snp=Helper.complPrimer(snp);
                 switch (assayType) {
                 case MiniSBE.CLEAVABLE:
-                    getPlpanel3().setSelectedPL(assay1);
+                    getPlpanel3().setSelectedValue(assay1);
                     break;
                 case MiniSBE.PINPOINT:
-                    getPinpointAddonPanel3().setText(Integer.toString(assay1));
+                    getPinpointAddonPanel3().setSelectedValue(assay1);
                     break;
                 case MiniSBE.PROBE:
                     getProbePanel3().setSelectedType(assay1);
                     getSeq5tf().setText(otherseq);
                     break;
                 case MiniSBE.PROBE_CLEAVABLE:
-                    getPlpanel3().setSelectedPL(assay2);
+                    getPlpanel3().setSelectedValue(assay2);
                     getSeq5tf().setText(otherseq);
                     break;
                 case MiniSBE.PROBE_PINPOINT:
                     getProbePanel3().setSelectedType(assay1);
-                    getPinpointAddonPanel3().setText(Integer.toString(assay2));
+                    getPinpointAddonPanel3().setSelectedValue(assay2);
                     getSeq5tf().setText(otherseq);
                     break;
                 default:

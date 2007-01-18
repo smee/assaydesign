@@ -279,7 +279,7 @@ public class SBEGui extends JFrame{
                         String p=(String) lines.get(i);
                         SBEPanel panel=((SBEPanel)sbePanelList.get(i));
                         if(Helper.isSBEPrimer(p)) {//nur ein primer in der Zeile
-                            panel.plpanel.setSelectedPL(-1);
+                            panel.plpanel.setSelectedValue(-1);
                             panel.tfSequence.setText(p);
                             panel.tfName.setText("");
                         }else {//minisbe-ein/ausgabefile

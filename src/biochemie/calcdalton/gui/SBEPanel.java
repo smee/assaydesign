@@ -127,7 +127,7 @@ public class SBEPanel extends MyPanel
         //nr. 3
         double[][] spaltSize={{p,30},{p}};
         plpanel=new PLSelectorPanel();
-        plpanel.setPLPositions(CDConfig.getInstance().getBruchStellenArray());
+        plpanel.setValues(CDConfig.getInstance().getBruchStellenArray());
         plpanel.setRekTooltip("Specify position of the cleavable linkers, auto means the value should be choosen by the program.");
 
         add(plpanel,"5,1,C,C");
@@ -196,7 +196,7 @@ public class SBEPanel extends MyPanel
      * @return SpaltstelleIndex wenn gewählt,<0 sonst
      */
     public int getFestenAnhangIndex() {
-        return ArrayUtils.indexOf(CDConfig.getInstance().getBruchStellenArray(),plpanel.getSelectedPL());
+        return ArrayUtils.indexOf(CDConfig.getInstance().getBruchStellenArray(),plpanel.getSelectedValue());
     }
 
     public String getName() {
@@ -206,9 +206,9 @@ public class SBEPanel extends MyPanel
      * liest die comboboxen für feste bruchstellen neu ein.
      */
     public void refreshData() {
-        plpanel.setPLPositions(CDConfig.getInstance().getBruchStellenArray());
+        plpanel.setValues(CDConfig.getInstance().getBruchStellenArray());
     }
     public void setSelectedPL(int pl) {
-        plpanel.setSelectedPL(pl);
+        plpanel.setSelectedValue(pl);
     }
 }
