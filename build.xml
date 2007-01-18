@@ -352,6 +352,11 @@
 	            <method/>
 	            <field/>
 	         </keep>
+	         <keep name="com.jgoodies.**">
+	            <constructor/>
+	            <method/>
+	            <field/>
+	         </keep>
 	    </proguard>
 	</target>
 	  <!--**********************************************************-->
