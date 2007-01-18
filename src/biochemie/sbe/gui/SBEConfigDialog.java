@@ -122,7 +122,7 @@ public class SBEConfigDialog extends JDialog {
         getCdPanel().showCL(assayType==MiniSBE.CLEAVABLE || assayType==MiniSBE.PROBE_CLEAVABLE);
         //getCdPanel().showProductPeaks(assayType==MiniSBE.PROBE || assayType==MiniSBE.PROBE_CLEAVABLE || assayType==MiniSBE.PROBE_PINPOINT);
         //getCdPanel().showMaxMass(assayType==MiniSBE.PINPOINT || assayType==MiniSBE.PROBE_PINPOINT);
-        getSbePanel().getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT);
+        getSbePanel().getMaxMassPanel().setVisible(assayType==MiniSBE.PINPOINT || assayType==MiniSBE.PROBE_PINPOINT);
     }
 	/**
 	 * This method initializes this

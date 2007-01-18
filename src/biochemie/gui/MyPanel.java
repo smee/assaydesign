@@ -88,4 +88,12 @@ public class MyPanel extends JPanel implements ChangeWatcher{
     protected void dirty() {
         dirtyFlag=true;
     }
+//    public void setVisible(boolean b){
+//        super.setVisible(b);
+//        if(!b){
+//        System.out.println("setting visible: "+b);
+//        new Exception().printStackTrace();
+//        }
+//        
+//    }
 }

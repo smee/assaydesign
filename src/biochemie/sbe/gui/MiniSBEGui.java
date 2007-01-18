@@ -706,6 +706,7 @@ public class OptimizePLAction extends MyAction {
                     if(assayType==MiniSBE.UNKNOWN)
                         return false;
                     MiniSBEGui.this.assayType=assayType;
+                    setCurrentTitle();
                     getConfigDialog().setAssayType(assayType);
 	                while((line=br.readLine())!=null) {
 	                    primerlines.add(Helper.clearEmptyCSVEntries(line));
