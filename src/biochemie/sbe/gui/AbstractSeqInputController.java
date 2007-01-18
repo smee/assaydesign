@@ -45,7 +45,7 @@ public abstract class AbstractSeqInputController implements ISeqInputController,
     }
 
     public boolean isOkay() {
-        return false;
+        return isOkay;
     }
 
     public void setOtherController(ISeqInputController o) {

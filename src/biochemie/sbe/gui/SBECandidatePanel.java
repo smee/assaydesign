@@ -11,7 +11,6 @@ import java.util.StringTokenizer;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -31,7 +30,6 @@ import biochemie.sbe.MiniSBE;
 import biochemie.sbe.PinpointPrimerFactory;
 import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.ProbePrimerFactory;
-import biochemie.sbe.ProbePrimerFactoryTest;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.util.Helper;
