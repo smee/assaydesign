@@ -72,7 +72,7 @@ public class TestProbePrimer extends TestCase {
         assertTrue(sek.isIncompatible());
         //assertEquals(55,sek.getPosFrom3());
     }
-    public void testCompHairpins(){
+    public void testIncompHairpins2(){
         SecStrucOptions ssc=new SecStrucConfig();
         ProbePrimer p=new ProbePrimer("ID1","AGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGGACTTTTAGAGAGAAAA",Primer._5_,"CT",12,ProbePrimerFactory.generateAddons(12,"CCCAGAGAGAGAGAGAGAGAGAG","CT"),0,ssc,0);
         List seclist=TestSBEPrimer.createdSortedSecStrucList(p.getSecStrucs());
