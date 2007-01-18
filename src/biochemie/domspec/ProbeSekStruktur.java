@@ -21,7 +21,7 @@ public class ProbeSekStruktur extends SekStruktur {
     }
 
     private void init(){
-        String seq=type==CROSSDIMER?other.getPrimerSeq():p.getPrimerSeq();
+        String seq=type==CROSSDIMER?other.getCompletePrimerSeq():p.getCompletePrimerSeq();
         String unbindingPart=Helper.revcomplPrimer(seq.substring(0,seq.length()-pos));
         List addons=ProbePrimerFactory.generateAddons(((ProbePrimer)p).getAssayType(),
                 unbindingPart.substring(1),
@@ -45,11 +45,11 @@ public class ProbeSekStruktur extends SekStruktur {
     public String getAsciiArt() {
         switch (type) {
         case HAIRPIN:
-            return Helper.outputHairpin(p.getPrimerSeq(),pos-1,p.getPrimerSeq().length(), getEnthalpy());
+            return Helper.outputHairpin(p.getCompletePrimerSeq(),pos-1,p.getCompletePrimerSeq().length(), getEnthalpy());
         case HOMODIMER:
-            return Helper.outputXDimer(p.getPrimerSeq(),p.getPrimerSeq(),p.getPrimerSeq().length() - pos,p.getPrimerSeq().length(), getEnthalpy());
+            return Helper.outputXDimer(p.getCompletePrimerSeq(),p.getCompletePrimerSeq(),p.getCompletePrimerSeq().length() - pos,p.getCompletePrimerSeq().length(), getEnthalpy());
         case CROSSDIMER:
-            return Helper.outputXDimer(p.getPrimerSeq(),other.getPrimerSeq(),p.getPrimerSeq().length() - pos,Math.min(p.getPrimerSeq().length(),other.getPrimerSeq().length()), getEnthalpy());
+            return Helper.outputXDimer(p.getCompletePrimerSeq(),other.getCompletePrimerSeq(),p.getCompletePrimerSeq().length() - pos,Math.min(p.getCompletePrimerSeq().length(),other.getCompletePrimerSeq().length()), getEnthalpy());
 
         default:
             return "unknown type of sec.struk encountered.";
@@ -60,13 +60,13 @@ public class ProbeSekStruktur extends SekStruktur {
         String match=null;
         switch (getType()) {
         case HAIRPIN:
-            match=getBindingSeq(getPrimer().getPrimerSeq(),Helper.revcomplPrimer(getPrimer().getPrimerSeq()),getPosFrom3());
+            match=getBindingSeq(getPrimer().getCompletePrimerSeq(),Helper.revcomplPrimer(getPrimer().getCompletePrimerSeq()),getPosFrom3());
             return Helper.cal_dG_secondaryStruct(match)+Helper.LoopEnergy(getLoopLength(getPosFrom3(),match.length()))-1;
         case HOMODIMER:
-            match=getBindingSeq(getPrimer().getPrimerSeq(),Helper.revcomplPrimer(getPrimer().getPrimerSeq()),getPosFrom3());
+            match=getBindingSeq(getPrimer().getCompletePrimerSeq(),Helper.revcomplPrimer(getPrimer().getCompletePrimerSeq()),getPosFrom3());
             return Helper.cal_dG_secondaryStruct(match)-1;
         case CROSSDIMER:
-            match=getBindingSeq(getPrimer().getPrimerSeq(), Helper.revcomplPrimer(getCDPrimer().getPrimerSeq()),getPosFrom3());
+            match=getBindingSeq(getPrimer().getCompletePrimerSeq(), Helper.revcomplPrimer(getCDPrimer().getCompletePrimerSeq()),getPosFrom3());
             return Helper.cal_dG_secondaryStruct(Helper.complPrimer(match))-1;
         default:
             return 0;
