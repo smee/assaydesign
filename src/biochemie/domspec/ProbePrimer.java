@@ -26,7 +26,7 @@ public class ProbePrimer extends Primer {
         this.addonList=addons;
     }
     public ProbePrimer(Primer p, int assayType, List addon){
-        super(p.id,p.getCompletePrimerSeq(),p.getType(),p.getSNP(), p.getProductLength(), p.cfg, p.mindiff);
+        super(p.id,p.getPrimerSeq(),p.getType(),p.getSNP(), p.getProductLength(), p.cfg, p.mindiff);
         this.assayType=assayType;
         this.p=p;
         this.addonList=addon;

@@ -1323,7 +1323,6 @@ public class OptimizePLAction extends MyAction {
     }
 
  	public static void main(String[] args) {
-        System.out.println(System.getProperty("java.vm.version"));
  		try {
 			UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {

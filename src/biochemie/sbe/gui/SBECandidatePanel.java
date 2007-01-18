@@ -706,7 +706,7 @@ public class SBECandidatePanel extends MyPanel {
     public void setValuesFromCSVOutputLine(String line) {
         dirty();
         StringTokenizer st=new StringTokenizer(line,";\"");
-        st.nextToken();//mid
+        String mid=st.nextToken();//mid
         String id=st.nextToken();
         st.nextToken();//seq. bio....
         String snp=st.nextToken();
@@ -731,8 +731,9 @@ public class SBECandidatePanel extends MyPanel {
         boolean is5Seq=st.nextToken().trim().equals(CleavablePrimer._5_);
         String prodlen=st.nextToken();
         String seq=st.nextToken();        
-        String otherseq=line.substring(line.lastIndexOf(';'));
+        String otherseq=line.substring(line.lastIndexOf(';')+1);
         getTfId().setText(id);
+        getMultiplexidPanel().setText(mid);
         if(is5Seq) {
             getSeq5tf().setText(seq);
             switch (assayType) {

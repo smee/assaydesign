@@ -160,9 +160,9 @@ public class SBEPrimerReader {
                 return MiniSBE.PROBE_PINPOINT;
             return MiniSBE.PROBE;
         }else if(header.indexOf("Cleavable")>-1)
-            return MiniSBE.PROBE_CLEAVABLE;
+            return MiniSBE.CLEAVABLE;
         else if(header.indexOf("Pinpoint")>-1)
-            return MiniSBE.PROBE_PINPOINT;
+            return MiniSBE.PINPOINT;
         else
             return MiniSBE.UNKNOWN;
     }
