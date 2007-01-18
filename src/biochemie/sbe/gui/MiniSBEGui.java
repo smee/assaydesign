@@ -650,7 +650,7 @@ public class OptimizePLAction extends MyAction {
             getSbepanelsPanel().revalidate();
             getSbepanelsPanel().repaint();
             assayType=MiniSBE.CLEAVABLE;
-            //askForAssayType();
+            askForAssayType();
         }
     }
 	private class LoadPrimerAction extends MyAction {
@@ -885,7 +885,7 @@ public class OptimizePLAction extends MyAction {
 
 		askForAssaySize();
         this.assayType=MiniSBE.CLEAVABLE;
-        //askForAssayType();
+        askForAssayType();
 		initialize();
 		int windowX = prefs.getInt(WINDOW_X_KEY, DEFAULT_WINDOW_X);
 		int windowY = prefs.getInt(WINDOW_Y_KEY, DEFAULT_WINDOW_Y);

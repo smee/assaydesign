@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.functor.Algorithms;
@@ -148,26 +149,34 @@ public class ProbePrimerFactory extends PrimerFactory {
     }
     
     protected List findBestPrimers(List liste) {
-        
-        List l=new ArrayList();
+        List result=new LinkedList();
         for (int i = 0; i < PROBEASSAYTYPES.length; i++) {
             final int var=i;
-            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
+            List thisAssayPrimers=(List) Algorithms.collect(Algorithms.select(liste.iterator(),new UnaryPredicate() {
                 public boolean test(Object obj) {
                     ProbePrimer p=((ProbePrimer)obj);
-                    return p.getAssayType() == var && p.getType().equals(Primer._5_);
+                    return p.getAssayType() == var;
+                }
+            }), new LinkedList());
+            if(otherFactory!=null)
+                thisAssayPrimers=otherFactory.findBestPrimers(thisAssayPrimers);
+            
+            result.add(Algorithms.detect(thisAssayPrimers.iterator(),new UnaryPredicate() {
+                public boolean test(Object obj) {
+                    ProbePrimer p=((ProbePrimer)obj);
+                    return p.getType().equals(Primer._5_);
                 }
             },null));
-            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
+            result.add(Algorithms.detect(thisAssayPrimers.iterator(),new UnaryPredicate() {
                 public boolean test(Object obj) {
                     ProbePrimer p=((ProbePrimer)obj);
-                    return p.getAssayType() == var && p.getType().equals(Primer._3_);
+                    return p.getType().equals(Primer._3_);
                 }
             },null));
         }
-        Algorithms.remove(l.iterator(),IsNull.instance());
+        Algorithms.remove(result.iterator(),IsNull.instance());
         chosen=null;
-        return l;
+        return result;
         
     }
     
