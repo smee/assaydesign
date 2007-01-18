@@ -9,10 +9,10 @@
 <arguments></arguments>
 <embeddedJar>true</embeddedJar>
 <executableName>../dist/MiniSBEpaper.exe</executableName>
-<initialMemoryHeap>-1</initialMemoryHeap>
+<initialMemoryHeap></initialMemoryHeap>
 <jarLocation>../dist/minisbepaper.jar</jarLocation>
 <mainClassName>biochemie.sbe.gui.MiniSBEGui</mainClassName>
-<maximumMemoryHeap>-1</maximumMemoryHeap>
+<maximumMemoryHeap>256M</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
 <minimumVersion>1.4.0</minimumVersion>
 <skeletonName>Windowed Wrapper</skeletonName>
