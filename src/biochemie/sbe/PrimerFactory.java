@@ -86,7 +86,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
     protected Primer chosen;
     protected String givenMultiplexID;
     private final String unwanted;
-    protected StringBuffer invalidreason3,invalidreason5;
+    protected StringBuffer invalidreason3=new StringBuffer(),invalidreason5=new StringBuffer();
     protected final List primercandidates;
     private boolean rememberOutput;
     private boolean userGiven;
