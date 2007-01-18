@@ -11,11 +11,11 @@
 <executableName>../dist/MiniSBEpaper.exe</executableName>
 <initialMemoryHeap>-1</initialMemoryHeap>
 <jarLocation>../dist/minisbepaper.jar</jarLocation>
-<mainClassName>biochemie.sbe.bui.MiniSBEGui</mainClassName>
+<mainClassName>biochemie.sbe.gui.MiniSBEGui</mainClassName>
 <maximumMemoryHeap>-1</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
 <minimumVersion>1.4.0</minimumVersion>
-<skeletonName>Console Wrapper</skeletonName>
+<skeletonName>Windowed Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>
 <value>Java has not been found on your computer. Do you want to download it?</value>

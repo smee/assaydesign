@@ -358,6 +358,11 @@
 	            <method/>
 	            <field/>
 	         </keep>
+	         <keep name="org.jfree.**">
+	            <constructor/>
+	            <method/>
+	            <field/>
+	         </keep>
 	    </proguard>
 	</target>
 	  <!--**********************************************************-->
