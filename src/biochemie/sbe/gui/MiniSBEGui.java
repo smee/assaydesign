@@ -917,6 +917,7 @@ public class OptimizePLAction extends MyAction {
 	    String selected=(String) JOptionPane.showInputDialog(this,"Please choose the assay type:","Assay type",JOptionPane.QUESTION_MESSAGE,null,MiniSBE.assayTypes,MiniSBE.assayTypes[0]);
         this.assayType=ArrayUtils.indexOf(MiniSBE.assayTypes,selected);
         getConfigDialog().setAssayType(assayType);
+        setCurrentTitle();
     }
     private void exitApp() {
 //		 Save the state of the window as preferences
@@ -942,8 +943,14 @@ public class OptimizePLAction extends MyAction {
 		this.setSize(707, 337);
 		this.setContentPane(getJContentPane());
         this.setGlassPane(getInfiniteProgressPanel());
-        setTitle("PrimExtend $$$DATE$$$");//wird von ant durch aktuelles Datum ersetzt.
+        setCurrentTitle();
 	}
+    /**
+     * 
+     */
+    private void setCurrentTitle() {
+        setTitle("PrimExtend $$$DATE$$$ ("+MiniSBE.assayTypes[assayType]+")");//wird von ant durch aktuelles Datum ersetzt.
+    }
 	private InfiniteProgressPanel getInfiniteProgressPanel() {
 	    if(infinitePP==null) {
             infinitePP=new InfiniteProgressPanel();
@@ -1311,6 +1318,7 @@ public class OptimizePLAction extends MyAction {
     }
 
  	public static void main(String[] args) {
+        System.out.println(System.getProperty("java.vm.version"));
  		try {
 			UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
