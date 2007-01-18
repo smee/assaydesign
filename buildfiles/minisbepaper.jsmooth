@@ -9,7 +9,7 @@
 <arguments></arguments>
 <embeddedJar>true</embeddedJar>
 <executableName>../dist/MiniSBEpaper.exe</executableName>
-<initialMemoryHeap></initialMemoryHeap>
+<initialMemoryHeap>-1</initialMemoryHeap>
 <jarLocation>../dist/minisbepaper.jar</jarLocation>
 <mainClassName>biochemie.sbe.gui.MiniSBEGui</mainClassName>
 <maximumMemoryHeap>256M</maximumMemoryHeap>
