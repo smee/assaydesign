@@ -147,14 +147,24 @@ public class SBEPrimerReader {
 
     public static int getAssayTypeFromHeader(String header){
         for (int i = 0; i < MiniSBE.assayTypes.length; i++) {
-            if(header.equals(getCSVInputHeader(i)) || header.equals(getCSVOutputHeader(i)))
+            if(header.equals(getCSVInputHeader(i)))
                 return i;
         }
-        return MiniSBE.UNKNOWN;   
+        return getAssayTypeFromOutputHeader(header);   
     }
-    public static String getCSVOutputHeader(int i) {
-        // TODO Auto-generated method stub
-        return null;
+    public static int getAssayTypeFromOutputHeader(String header) {
+        if(header.indexOf("Probe")>-1){
+            if(header.indexOf("Cleavable")>-1)
+                return MiniSBE.PROBE_CLEAVABLE;
+            if(header.indexOf("Pinpoint")>-1)
+                return MiniSBE.PROBE_PINPOINT;
+            return MiniSBE.PROBE;
+        }else if(header.indexOf("Cleavable")>-1)
+            return MiniSBE.PROBE_CLEAVABLE;
+        else if(header.indexOf("Pinpoint")>-1)
+            return MiniSBE.PROBE_PINPOINT;
+        else
+            return MiniSBE.UNKNOWN;
     }
     public static String getCSVInputHeader(int assayType){
         switch (assayType) {

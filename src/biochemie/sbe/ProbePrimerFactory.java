@@ -4,9 +4,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.UnaryPredicate;
@@ -158,9 +162,9 @@ public class ProbePrimerFactory extends PrimerFactory {
                     return p.getAssayType() == var;
                 }
             }), new LinkedList());
-            if(otherFactory!=null)
-                thisAssayPrimers=otherFactory.findBestPrimers(thisAssayPrimers);
-            
+            if(otherFactory!=null){
+                findBestPrimersIncluded(thisAssayPrimers);                
+            }
             result.add(Algorithms.detect(thisAssayPrimers.iterator(),new UnaryPredicate() {
                 public boolean test(Object obj) {
                     ProbePrimer p=((ProbePrimer)obj);
@@ -180,6 +184,21 @@ public class ProbePrimerFactory extends PrimerFactory {
         
     }
     
+    private void findBestPrimersIncluded(List probePrimers) {
+        List includedPrimers=new ArrayList(probePrimers.size());
+        for (Iterator it = probePrimers.iterator(); it.hasNext();) {
+            ProbePrimer pp = (ProbePrimer) it.next();
+            Primer inc=(Primer) pp.getIncludedPrimer();
+            includedPrimers.add(inc);
+        }
+        Set includedPrimersSet=new HashSet(otherFactory.findBestPrimers(includedPrimers));
+        for (Iterator it = probePrimers.iterator(); it.hasNext();) {
+            ProbePrimer pp = (ProbePrimer) it.next();
+            if(!includedPrimersSet.contains(pp.getIncludedPrimer()))
+                it.remove();
+        }
+    }
+
     public Collection createPossiblePrimers(String seq, String type) {
         Collection result=new ArrayList();
         String snp=this.snp;
@@ -281,7 +300,7 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(';');
         sb.append(getId());
         sb.append(';');
-        sb.append(chosen.getCompletePrimerSeq());
+        sb.append(chosen.getCompletePrimerSeq()+((ProbePrimer)chosen).getAddonList());
         sb.append(';');
         sb.append(chosen.getSNP());
         sb.append(';');
@@ -308,6 +327,8 @@ public class ProbePrimerFactory extends PrimerFactory {
         sb.append(chosen.getPrimerSeq());
         sb.append(';');
         sb.append(chosen.getCSVSekStructuresSeparatedBy(";"));
+        sb.append(';');
+        sb.append(chosen.getType().equals(Primer._5_)?seq3:seq5);
         return sb.toString();
     }
     public String getFilter() {
@@ -315,8 +336,8 @@ public class ProbePrimerFactory extends PrimerFactory {
         return chosen.getType()+"_*_"+((ProbePrimer)chosen).getAssayType();
     }
     
-    protected static final String CSV_OUTPUT_HEADER1 = 
-        "PROBE Multiplex ID;"
+    protected static final String CSV_OUTPUT_HEADER1 =        
+        " Multiplex ID;"
         +"SBE-Primer ID;"
         +"Sequence;"
         +"SNP allele;"
@@ -332,10 +353,14 @@ public class ProbePrimerFactory extends PrimerFactory {
         +"Actual sequence;"
         +"Sec.struc.: position (3\');"
         +"Sec.struc.: incorporated nucleotide;"
-        +"Sec.struc.: class";
+        +"Sec.struc.: class"
+        +"Other side seq";
     
     public String getCsvheader() {
-        String header=CSV_OUTPUT_HEADER1;
+        String header = this.getAssayTypeName();
+        if(otherFactory!=null)
+            header+=otherFactory.getAssayTypeName();
+        header+=CSV_OUTPUT_HEADER1;
         if(otherFactory!=null){
             header += otherFactory.getCsvheader().split(";")[4]+";";//XXX dirty, uses knowledge of header
         }
@@ -345,7 +370,10 @@ public class ProbePrimerFactory extends PrimerFactory {
     protected void choose(Primer struct) {
         super.choose(struct);
         if(otherFactory!=null){
-            otherFactory.choose(((ProbePrimer)struct).getIncludedPrimer());
+            otherFactory.choose((Primer) ((ProbePrimer)struct).getIncludedPrimer());
         }
+    }
+    public String getAssayTypeName(){
+        return "Probe";
     }
 }

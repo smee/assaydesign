@@ -18,7 +18,7 @@ import biochemie.util.Helper;
 
 public class PinpointPrimerFactory extends PrimerFactory {
     static public final String CSV_OUTPUT_HEADER = 
-                    "PINPOINT Multiplex ID;"
+                    " Multiplex ID;"
                     +"SBE-Primer ID;"
                     +"Sequence incl. 5’tag;"
                     +"SNP allele;"
@@ -173,7 +173,9 @@ public class PinpointPrimerFactory extends PrimerFactory {
 
 
     public String getCsvheader() {
-        return CSV_OUTPUT_HEADER;
+        return this.getAssayTypeName()+CSV_OUTPUT_HEADER;
     }
-
+    public String getAssayTypeName(){
+        return "Pinpoint";
+    }
 }

@@ -260,6 +260,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
      * @return
      */
     protected List filterPrimerList(List liste, boolean sec, String type) {
+        System.out.println("Got "+liste.size()+" primers to filter...");
         int allcount = liste.size();
         if(type.equals(Primer._5_))
             invalidreason5=new StringBuffer();
@@ -305,6 +306,7 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
             invalidreason3.insert(0,prefix);
             invalidreason3.delete(invalidreason3.length()-2,invalidreason3.length());
         }
+        System.out.println("returning "+erg.size()+" primers.");
         return erg;
     }
 
@@ -402,4 +404,5 @@ public abstract class PrimerFactory  implements  MultiplexableFactory,Observer, 
     }
     public abstract String getFilter();
 
+    public abstract String getAssayTypeName();
 }

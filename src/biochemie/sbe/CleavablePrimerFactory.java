@@ -34,7 +34,7 @@ import biochemie.util.Helper;
 public class CleavablePrimerFactory extends PrimerFactory {
 
     public static final String CSV_OUTPUT_HEADER = 
-                    "CLEAVABLE Multiplex ID;"
+                    " Multiplex ID;"
                     +"SBE-Primer ID;"
                     +"Sequence incl. L;"
                     +"SNP allele;"
@@ -159,13 +159,13 @@ public class CleavablePrimerFactory extends PrimerFactory {
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
                         CleavablePrimer p=((CleavablePrimer)obj);
-                        return p.getBruchstelle()== b && p.getType().equals(CleavablePrimer._5_);
+                        return p.getBruchstelle()== b && p.getType().equals(Primer._5_);
                     }
                 },null));
            l.add(Algorithms.detect(liste.iterator(),new UnaryPredicate() {
                     public boolean test(Object obj) {
                         CleavablePrimer p=((CleavablePrimer)obj);
-                        return p.getBruchstelle()== b && p.getType().equals(CleavablePrimer._3_);
+                        return p.getBruchstelle()== b && p.getType().equals(Primer._3_);
                     }
                 },null));
         }
@@ -491,6 +491,9 @@ public class CleavablePrimerFactory extends PrimerFactory {
     }
 
     public String getCsvheader() {
-        return CSV_OUTPUT_HEADER;
+        return this.getAssayTypeName()+CSV_OUTPUT_HEADER;
+    }
+    public String getAssayTypeName(){
+        return "Cleavable";
     }
 }

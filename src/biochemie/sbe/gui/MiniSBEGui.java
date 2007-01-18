@@ -494,8 +494,10 @@ public class OptimizePLAction extends MyAction {
             toolbar.add(showexplanation);
             JButton optimize=new JButton(new OptimizePLAction(sbec));
             toolbar.add(optimize);
-            JButton showSekStrucs=new JButton(new ShowSekStrucsAction(table,sbec));
-            toolbar.add(showSekStrucs);
+            if(System.getProperties().containsKey("SUPERHERO")){
+                JButton showSekStrucs=new JButton(new ShowSekStrucsAction(table,sbec));
+                toolbar.add(showSekStrucs);
+            }
             ToolTipManager.sharedInstance().setDismissDelay(100000);
             frame.pack();
             frame.setVisible(true);
@@ -914,6 +916,8 @@ public class OptimizePLAction extends MyAction {
 		}
     }
 	private void askForAssayType() {
+        if(!System.getProperties().containsKey("SUPERHERO"))
+            return;
 	    String selected=(String) JOptionPane.showInputDialog(this,"Please choose the assay type:","Assay type",JOptionPane.QUESTION_MESSAGE,null,MiniSBE.assayTypes,MiniSBE.assayTypes[0]);
         this.assayType=ArrayUtils.indexOf(MiniSBE.assayTypes,selected);
         getConfigDialog().setAssayType(assayType);

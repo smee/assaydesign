@@ -132,7 +132,7 @@ public class SBEPanel extends MyPanel
 
         add(plpanel,"5,1,C,C");
         
-        controller=new SBESeqInputController(tfSequence,plpanel,null,0,true);
+        controller=new SBESeqInputController(tfSequence,plpanel,new JCheckBox(),0,true);
         setUnchanged();
     }
     public String getSequenceWOL() {

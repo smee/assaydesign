@@ -115,6 +115,10 @@ public class StringEntryPanel extends MyPanel {
 	public void setValidChars(String chars){
 	    getPBSequenceField().setValidChars(chars);   
     }
+    public void setUniqueChars(String s){
+        getPBSequenceField().setUniqueChars(s);
+    }
+
     public String getValidChars(){
         return getPBSequenceField().getValidChars();
     }

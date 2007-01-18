@@ -1,5 +1,6 @@
 package biochemie.domspec;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -78,9 +79,15 @@ public class ProbePrimer extends Primer {
 //        return seq+addonList;
         return seq;
     }
+    /* (non-Javadoc)
+     * @see biochemie.domspec.IProbePrimer#getAssayType()
+     */
     public int getAssayType(){
         return assayType;
     }
+    /* (non-Javadoc)
+     * @see biochemie.domspec.IProbePrimer#getAddonList()
+     */
     public List getAddonList(){
         return Collections.unmodifiableList(addonList);
     }
@@ -115,6 +122,7 @@ public class ProbePrimer extends Primer {
            append(getAssayType()).
            toHashCode();
 }
+
     public Primer getIncludedPrimer() {
         return p;
     }

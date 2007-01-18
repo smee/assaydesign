@@ -18,6 +18,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import biochemie.calcdalton.gui.PBSequenceField;
 import biochemie.domspec.CleavablePrimer;
 import biochemie.gui.MyPanel;
@@ -29,6 +31,7 @@ import biochemie.sbe.MiniSBE;
 import biochemie.sbe.PinpointPrimerFactory;
 import biochemie.sbe.PrimerFactory;
 import biochemie.sbe.ProbePrimerFactory;
+import biochemie.sbe.ProbePrimerFactoryTest;
 import biochemie.sbe.SBEOptions;
 import biochemie.sbe.io.SBEPrimerReader;
 import biochemie.util.Helper;
@@ -52,7 +55,6 @@ public class SBECandidatePanel extends MyPanel {
     private HairpinSelectionPanel hairpin3SelectionPanel = null;
     private StringEntryPanel multiplexidPanel = null;
     private StringEntryPanel pcrLenPanel = null;
-    private SBESeqInputController inputcontrollerL = null;
     
     private boolean isExpertMode;
     private StringEntryPanel filtersPanel = null;
@@ -72,7 +74,8 @@ public class SBECandidatePanel extends MyPanel {
         }    
     };
     private MyChangeListener cl=new MyChangeListener();
-    private SBESeqInputController inputcontrollerR;
+    private ISeqInputController inputcontrollerR;
+    private ISeqInputController inputcontrollerL = null;
     
     private PLSelectorPanel plpanel3 = null;
     private StringEntryPanel pinpoint5;
@@ -189,8 +192,13 @@ public class SBECandidatePanel extends MyPanel {
         gridBagConstraints6.insets = new java.awt.Insets(0,10,0,0);
         this.add(getTfId(), gridBagConstraints31);
         this.add(jLabel, gridBagConstraints1);
-        inputcontrollerL = new SBESeqInputController(this,minlen,true);
-        inputcontrollerR = new SBESeqInputController(this,minlen,false);
+        if(assayType==MiniSBE.CLEAVABLE || assayType==MiniSBE.PROBE_CLEAVABLE){
+            inputcontrollerL = new SBESeqInputController(this,minlen,true);
+            inputcontrollerR = new SBESeqInputController(this,minlen,false);
+        }else{
+            inputcontrollerL = new GeneralSeqInputController(this, minlen, true);
+            inputcontrollerR = new GeneralSeqInputController(this, minlen, false);
+        }
         inputcontrollerL.setOtherController(inputcontrollerR);
         inputcontrollerR.setOtherController(inputcontrollerL);
         
@@ -351,7 +359,8 @@ public class SBECandidatePanel extends MyPanel {
     protected StringEntryPanel getPinpointAddonPanel5() {
         if (pinpoint5 == null) {
             pinpoint5 = new StringEntryPanel("Length of dT 3'");
-            pinpoint5.setValidChars("0123456789");
+            pinpoint5.setValidChars("-0123456789");
+            pinpoint5.setUniqueChars("-");
             pinpoint5.setColumns(5);
             pinpoint5.setPreferredSize(new java.awt.Dimension(90,56));
         }
@@ -360,7 +369,8 @@ public class SBECandidatePanel extends MyPanel {
     protected StringEntryPanel getPinpointAddonPanel3() {
         if (pinpoint3 == null) {
             pinpoint3 = new StringEntryPanel("Length of dT 3'");
-            pinpoint3.setValidChars("0123456789");
+            pinpoint3.setValidChars("-0123456789");
+            pinpoint3.setUniqueChars("-");
             pinpoint3.setColumns(5);
             pinpoint3.setPreferredSize(new java.awt.Dimension(90,56));
         }
@@ -468,10 +478,10 @@ public class SBECandidatePanel extends MyPanel {
         String id=getTfId().getText();
         String seq5=getSeq5tf().getText();
         if(assayType==MiniSBE.CLEAVABLE || assayType==MiniSBE.PROBE_CLEAVABLE)
-            seq5=inputcontrollerL.getSequenceWOL();
+            seq5=((SBESeqInputController) inputcontrollerL).getSequenceWOL();
         String seq3=getSeq3tf().getText();
         if(assayType==MiniSBE.CLEAVABLE || assayType==MiniSBE.PROBE_CLEAVABLE)
-            seq3=inputcontrollerR.getSequenceWOL();
+            seq3=((SBESeqInputController) inputcontrollerR).getSequenceWOL();
         String bautein5=getHairpin5SelectionPanel().getSelectedNukleotides();
         String bautein3=getHairpin3SelectionPanel().getSelectedNukleotides();
         String multiplexid = getMultiplexidPanel().getText();
@@ -556,9 +566,9 @@ public class SBECandidatePanel extends MyPanel {
         if(!inputcontrollerL.isOkay()) {
             return null;
         }
-        seq5=this.inputcontrollerL.getSequenceWOL();
+        seq5=((SBESeqInputController) this.inputcontrollerL).getSequenceWOL();
         int pl5=getPlpanel5().getSelectedPL();
-        seq3=this.inputcontrollerR.getSequenceWOL();
+        seq3=((SBESeqInputController) this.inputcontrollerR).getSequenceWOL();
         int pl3=getPlpanel3().getSelectedPL();
         if(seq5.length() == 0 && seq3.length()==0) //keine primer da
             return null;
@@ -689,74 +699,85 @@ public class SBECandidatePanel extends MyPanel {
         String snp=st.nextToken();
         int assay1=-1,assay2=-1;
         try {
-            assay1=Integer.parseInt(st.nextToken());
+            String val=st.nextToken();
+            if(assayType==MiniSBE.PROBE || assayType==MiniSBE.PROBE_CLEAVABLE ||assayType==MiniSBE.PROBE_PINPOINT)
+                assay1=ArrayUtils.indexOf(ProbePrimerFactory.ASSAYTYPES_DESC,val);
+            else
+                assay1=Integer.parseInt(val);
         }catch (NumberFormatException e) {
         }
-        if(assayType==MiniSBE.PROBE || assayType==MiniSBE.PROBE_CLEAVABLE ||assayType==MiniSBE.PROBE_PINPOINT)
+        if(assayType==MiniSBE.PROBE_CLEAVABLE ||assayType==MiniSBE.PROBE_PINPOINT)
             try {
-                assay2=Integer.parseInt(st.nextToken());//FIXME ist jetzt ein string mit den nukl.!
+                assay2=Integer.parseInt(st.nextToken());
+                
             }catch (NumberFormatException e) {
             }
             
-        for(int i=0;i<5;i++)
-            st.nextToken();
-        boolean is5Seq=st.nextToken().trim().equals(CleavablePrimer._5_);
-        String seq=st.nextToken();
-        String prodlen=st.nextToken();
-        
-        getTfId().setText(id);
-        if(is5Seq) {
-            getSeq5tf().setText(seq);
-            switch (assayType) {
-            case MiniSBE.CLEAVABLE:
-                getPlpanel5().setSelectedPL(assay1);
-                break;
-            case MiniSBE.PINPOINT:
-                getPinpointAddonPanel5().setText(Integer.toString(assay1));
-                break;
-            case MiniSBE.PROBE:
-                getProbePanel5().setSelectedType(assay1);
-                break;
-            case MiniSBE.PROBE_CLEAVABLE:
-                getProbePanel5().setSelectedType(assay1);
-                getPlpanel5().setSelectedPL(assay2);
-                break;
-            case MiniSBE.PROBE_PINPOINT:
-                getProbePanel5().setSelectedType(assay1);
-                getPinpointAddonPanel5().setText(Integer.toString(assay2));
-                break;
-            default:
-                break;
+            for(int i=0;i<5;i++)
+                st.nextToken();
+            boolean is5Seq=st.nextToken().trim().equals(CleavablePrimer._5_);
+            String prodlen=st.nextToken();
+            String seq=st.nextToken();        
+            String otherseq=line.substring(line.lastIndexOf(';'));
+            getTfId().setText(id);
+            if(is5Seq) {
+                getSeq5tf().setText(seq);
+                switch (assayType) {
+                case MiniSBE.CLEAVABLE:
+                    getPlpanel5().setSelectedPL(assay1);
+                    break;
+                case MiniSBE.PINPOINT:
+                    getPinpointAddonPanel5().setText(Integer.toString(assay1));
+                    break;
+                case MiniSBE.PROBE:
+                    getProbePanel5().setSelectedType(assay1);
+                    getSeq3tf().setText(otherseq);
+                    break;
+                case MiniSBE.PROBE_CLEAVABLE:
+                    getProbePanel5().setSelectedType(assay1);
+                    getPlpanel5().setSelectedPL(assay2);
+                    getSeq3tf().setText(otherseq);
+                    break;
+                case MiniSBE.PROBE_PINPOINT:
+                    getProbePanel5().setSelectedType(assay1);
+                    getPinpointAddonPanel5().setText(Integer.toString(assay2));
+                    getSeq3tf().setText(otherseq);
+                    break;
+                default:
+                    break;
+                }
+            }else {
+                getSeq3tf().setText(Helper.revcomplPrimer(seq));
+                snp=Helper.complPrimer(snp);
+                switch (assayType) {
+                case MiniSBE.CLEAVABLE:
+                    getPlpanel3().setSelectedPL(assay1);
+                    break;
+                case MiniSBE.PINPOINT:
+                    getPinpointAddonPanel3().setText(Integer.toString(assay1));
+                    break;
+                case MiniSBE.PROBE:
+                    getProbePanel3().setSelectedType(assay1);
+                    getSeq5tf().setText(otherseq);
+                    break;
+                case MiniSBE.PROBE_CLEAVABLE:
+                    getPlpanel3().setSelectedPL(assay2);
+                    getSeq5tf().setText(otherseq);
+                    break;
+                case MiniSBE.PROBE_PINPOINT:
+                    getProbePanel3().setSelectedType(assay1);
+                    getPinpointAddonPanel3().setText(Integer.toString(assay2));
+                    getSeq5tf().setText(otherseq);
+                    break;
+                default:
+                    break;
+                }
             }
-        }else {
-            getSeq3tf().setText(Helper.revcomplPrimer(seq));
-            snp=Helper.complPrimer(snp);
-            switch (assayType) {
-            case MiniSBE.CLEAVABLE:
-                getPlpanel3().setSelectedPL(assay1);
-                break;
-            case MiniSBE.PINPOINT:
-                getPinpointAddonPanel3().setText(Integer.toString(assay1));
-                break;
-            case MiniSBE.PROBE:
-                getProbePanel3().setSelectedType(assay1);
-                break;
-            case MiniSBE.PROBE_CLEAVABLE:
-                getPlpanel3().setSelectedPL(assay2);
-                break;
-            case MiniSBE.PROBE_PINPOINT:
-                getProbePanel3().setSelectedType(assay1);
-                getPinpointAddonPanel3().setText(Integer.toString(assay2));
-                break;
-            default:
-                break;
-            }
-        }
-        getSNPSelectorPanel().setSelectedNukleotides(snp);
-        getPcrLenPanel().setText(prodlen);
-        getMultiplexidPanel().setText("");
-        getFiltersPanel().setText("");
-        getFixedPrimerCB().setSelected(true);
+            getSNPSelectorPanel().setSelectedNukleotides(snp);
+            getPcrLenPanel().setText(prodlen);
+            getMultiplexidPanel().setText("");
+            getFiltersPanel().setText("");
+            getFixedPrimerCB().setSelected(true);
     }
     /**
      * This method initializes stringEntryPanel
@@ -846,6 +867,8 @@ public class SBECandidatePanel extends MyPanel {
     }
     
     public PrimerFactory createPrimerFactory(SBEOptions cfg, boolean rememberOutput) {
+        if(!this.inputcontrollerL.isOkay() || !this.inputcontrollerR.isOkay())
+            return null;
         String seq5=getSeq5tf().getText();
         String seq3=getSeq3tf().getText();
         if(seq5.length() == 0 && seq3.length()==0) //keine primer da
