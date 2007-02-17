@@ -256,7 +256,8 @@ public class ShowDiffAction extends MyAction {
                 int pos = idlist.getSelectedIndex();//XXX sollte da nich drauf zugreifen
                 index=(pos+mid.length)%mid.length;
                 difftable.setModel(diffmodels[index]);
-                cdtable.setModel(cdmodels[index]);
+                if(cdmodels[index]!=null)
+                    cdtable.setModel(cdmodels[index]);
                 resscrollpane.setViewportView(restables[index]);
                 frame.repaint();
             }
