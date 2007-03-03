@@ -46,6 +46,11 @@ public class ExperimentMultiplexer extends Multiplexer {
         SBEColorerProxy itrp=new SBEColorerProxy(g,new HashSet(), cfg.getMaxPlex(),debug);
         rt.setInterruptableJob(itrp);
         List colors=(List) rt.getResult();
+        if(colors==null){
+            if(debug)
+                System.out.println("Interrupted....");
+            return;
+        }
         Collections.sort(colors,new Comparator() {//sortieren nach Groesse
             public int compare(Object arg0, Object arg1) {
                 return ((Collection)arg1).size()-((Collection)arg0).size();
