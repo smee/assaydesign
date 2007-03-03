@@ -78,8 +78,7 @@ public class MiniSBE {
         UndirectedGraph oldGraph=null;
         
         Helper.createAndRememberCalcDaltonFrom(cfg);//XXX unsauber, muss anders gehen. 
-        Multiplexer m1=new ExperimentMultiplexer(cfg);
-        Multiplexer m2=new BestellMultiplexer(cfg);
+        Multiplexer m=null;
         while(true) {
             Set structs=new HashSet();
             boolean allgiven=true;
@@ -90,16 +89,17 @@ public class MiniSBE {
                 structs.addAll(l);
             }
             if(0 == structs.size()) break; //s gibbet nix zu multiplexen
-
+            
             if(Thread.currentThread().isInterrupted())
                 return;
             if(allgiven){//wenn alle Primer vorgegeben sind, muss ich Experimente finden
-                oldGraph=createGraphAndMultiplex(structs,oldGraph,cfg,m1,filter);
-            }else{
-	            if(cfg.getSecStrucOptions().getAllCrossdimersAreEvil() == false)
-	                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
-	            oldGraph=createGraphAndMultiplex(structs,oldGraph,cfg,m2,filter);
-            }
+                m=new ExperimentMultiplexer(cfg);
+            }else
+                m=new BestellMultiplexer(cfg);
+            if(cfg.getSecStrucOptions().getAllCrossdimersAreEvil() == false)
+                structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
+            oldGraph=createGraphAndMultiplex(structs,oldGraph,cfg,m,filter);
+            
         }
     }
 

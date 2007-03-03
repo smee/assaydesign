@@ -53,7 +53,14 @@ public class ExperimentMultiplexer extends Multiplexer {
         }
         Collections.sort(colors,new Comparator() {//sortieren nach Groesse
             public int compare(Object arg0, Object arg1) {
-                return ((Collection)arg1).size()-((Collection)arg0).size();
+                return countMultiplexables(((Collection)arg1).iterator())-countMultiplexables(((Collection)arg0).iterator());
+            }
+
+            private int countMultiplexables(Iterator it) {
+                int sum=0;
+                while(it.hasNext())
+                    sum+=((Multiplexable)it.next()).realSize();
+                return sum;
             }
         });
         if (debug) {

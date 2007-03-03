@@ -57,15 +57,17 @@ public abstract class Multiplexer {
 
     /**
      * Tags the multiplexables with an unique identifier.
-     * @param maxclique
+     * @param multi
      */
-    protected void giveMultiplexIDTo(Set maxclique) {
+    protected void giveMultiplexIDTo(Set multi) {
         String plexid=getNextMultiplexID();
         if(debug) System.out.println("New multiplex "+plexid+" for :");
-        for (Iterator iter = maxclique.iterator(); iter.hasNext();) {
+        for (Iterator iter = multi.iterator(); iter.hasNext();) {
             Multiplexable struc = (Multiplexable) iter.next();
             if(debug) System.out.println(struc);
-            struc.setPlexID(plexid);
+            String crntPlexID=struc.getPlexID();
+            if(crntPlexID==null || crntPlexID.length()==0)
+                struc.setPlexID(plexid);
         }
     }
     /**
@@ -200,8 +202,8 @@ public abstract class Multiplexer {
             for (Iterator it = othermultis.iterator(); it.hasNext();) {
                 Primer primer = (Primer) it.next();
                 if(!passenWirMit(primer)) {
-                    edgecol.clear();
-                    edgecol.add(new IncompCDEinbauEdge(this,other));
+//                    edgecol.clear();
+//                    edgecol.add(new IncompCDEinbauEdge(this,other));
                     return false;
                 }
             }
@@ -254,6 +256,17 @@ public abstract class Multiplexer {
         public Collection getLastEdges() {
             return new HashSet(edgecol);
         }
+        public String getPlexID() {
+            for (Iterator it = p1.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                return m.getPlexID();
+            }
+            for (Iterator it = p2.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                return m.getPlexID();
+            }
+            return null;
+        }
 
     }
     public synchronized static void stop(boolean s) {
@@ -268,7 +281,7 @@ public abstract class Multiplexer {
             super(sourceVertex, targetVertex);
         }
         public String toString() {
-            return "incomp._CD_nucleotide";
+            return "comp._CD_nucleotide";
         }
         public String matchString() {
             return getSource().toString()+this.toString()+getTarget().toString();

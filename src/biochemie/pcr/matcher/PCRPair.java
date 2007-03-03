@@ -5,26 +5,25 @@
 package biochemie.pcr.matcher;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
-import org._3pq.jgrapht.Edge;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.config.GeneralConfig;
-import biochemie.util.edges.MyUndirectedEdge;
 
 
 class PCRPair implements Multiplexable{
     PCRPrimer leftp, rightp;
     int maxplex;
-    private Edge edge;
+    private Collection edgecol;
     PCRPair(PCRPrimer leftp, PCRPrimer rightp, int maxplex){
         this.leftp=leftp;
         this.rightp=rightp;
         this.maxplex=maxplex;
-        edge=null;
+        edgecol=null;
     }
     public void setPlexID(String s) {
         leftp.setPlexID(s);
@@ -45,15 +44,16 @@ class PCRPair implements Multiplexable{
      * @see biochemie.sbe.multiplex.Multiplexable#passtMit(biochemie.sbe.multiplex.Multiplexable)
      */
     public boolean passtMit(Multiplexable other) {
+        edgecol=new LinkedList();
         if(other instanceof PCRPrimer){
             boolean b=leftp.passtMit(other);
             if(!b){
-                edge=new MyDefaultEdge(this,other);
+                edgecol.add(new MyDefaultEdge(this,other));
                 return false;
             }
             b=rightp.passtMit(other);
             if(!b){
-                edge=new MyDefaultEdge(this,other);
+                edgecol.add(new MyDefaultEdge(this,other));
                 return false;
             }
             return true;
@@ -63,18 +63,21 @@ class PCRPair implements Multiplexable{
                 boolean b= leftp.passtMit(p.leftp)
                 && leftp.passtMit(p.rightp);
                 if(!b){
-                    edge=new MyDefaultEdge(this,other);
+                    edgecol.add(new MyDefaultEdge(this,other));
                     return false;
                 }
                 b= rightp.passtMit(p.leftp)
                 && rightp.passtMit(p.rightp);
                 if(!b){
-                    edge=new MyDefaultEdge(this,other);
+                    edgecol.add(new MyDefaultEdge(this,other));
                     return false;
                 }
                 return true;
-            }else
-                return other.passtMit(this);//kenn ich nicht
+            }else {
+                boolean ret=other.passtMit(this);//kenn ich nicht
+                edgecol=other.getLastEdges();
+                return ret;
+            }
     }
 
     public String toString(){
@@ -89,12 +92,13 @@ class PCRPair implements Multiplexable{
     }
     public List getIncludedElements() {
         List result= new ArrayList(2);
-        result.add(leftp);
-        result.add(rightp);
+//        result.add(leftp);
+//        result.add(rightp);
+        result.add(this);
         return result;
     }
-    public Edge getLastEdge() {
-        return edge;
+    public Collection getLastEdges() {
+        return edgecol;
     }
     public boolean equals(Object other) {
         if(other instanceof PCRPair) {
@@ -105,5 +109,8 @@ class PCRPair implements Multiplexable{
     }
     public int hashCode() {
         return new HashCodeBuilder(33,451).append(leftp).append(rightp).toHashCode();
+    }
+    public String getPlexID() {
+        return leftp.getPlexID();
     }
 }

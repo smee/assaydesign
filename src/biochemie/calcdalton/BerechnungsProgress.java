@@ -564,6 +564,10 @@ public class BerechnungsProgress extends JFrame{
             l.add(edge);
             return l;
         }
+
+        public String getPlexID() {
+            return plexid;
+        }
     }
 
 }

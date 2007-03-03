@@ -151,4 +151,11 @@ public class MultiKnoten implements MultiplexableFactory, Multiplexable{
         public String getCsvheader() {
             return null;
         }
+        public String getPlexID() {
+            for (Iterator it = multiplexables.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                return m.getPlexID();
+            }
+            return null;
+        }
     }

@@ -68,7 +68,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         this.cfg=cfg;
         temp=biochemie.util.Helper.calcTM(seq);
         gcgehalt=biochemie.util.Helper.getXGehalt(seq,"GgCc");
-        plexid="";
+        plexid=null;
     }
     
     
