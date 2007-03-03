@@ -166,18 +166,32 @@ public abstract class Multiplexer {
     		this.einbau=einbau;
     	}
 		public String toString() {
-      return "SBEPrimerproxy: "+p1+" and "+p2;      
+      return "[SBEPrimerproxy: "+p1+" and "+p2+"]";      
         }
         public void setPlexID(String s) {
-            for (Iterator it = p1.iterator(); it.hasNext();) {
+            Set set=new HashSet(p1);
+            set.addAll(p2);
+            for (Iterator it = set.iterator(); it.hasNext();) {
                 Multiplexable m = (Multiplexable) it.next();
-                m.setPlexID(s);
-            }
-            for (Iterator it = p2.iterator(); it.hasNext();) {
-                Multiplexable m = (Multiplexable) it.next();
-                m.setPlexID(s);
+                String crntPlexID=m.getPlexID();
+                if(crntPlexID==null || crntPlexID.length()==0)
+                    m.setPlexID(s);
             }
 		}
+        public String getPlexID() {
+            Set set=new HashSet(p1);
+            set.addAll(p2);
+            String result=null;
+            for (Iterator it = set.iterator(); it.hasNext();) {
+                Multiplexable m = (Multiplexable) it.next();
+                String crnt=m.getPlexID();
+                if(crnt==null || crnt.length()==0)//min. 1 hat noch keine plexID, dirty, muss eigentlich nochmal optimieren, wie ich die multiplexe nutze!
+                    return null;
+                else
+                    result=crnt;
+            }
+            return result;
+        }
 		public String getName() {
             StringBuffer sb = new StringBuffer();
             for (Iterator it = p1.iterator(); it.hasNext();) {
@@ -241,6 +255,7 @@ public abstract class Multiplexer {
             String snp=p.getSNP();
             for (int i = 0; i < einbau.length(); i++) {
                 if(snp.indexOf(einbau.charAt(i))!=-1){//inkompatibel mit diesem Primer
+                    edgecol.add(new IncompCDEinbauEdge(this,p));
                     return false;
                 }
             }
@@ -256,18 +271,6 @@ public abstract class Multiplexer {
         public Collection getLastEdges() {
             return new HashSet(edgecol);
         }
-        public String getPlexID() {
-            for (Iterator it = p1.iterator(); it.hasNext();) {
-                Multiplexable m = (Multiplexable) it.next();
-                return m.getPlexID();
-            }
-            for (Iterator it = p2.iterator(); it.hasNext();) {
-                Multiplexable m = (Multiplexable) it.next();
-                return m.getPlexID();
-            }
-            return null;
-        }
-
     }
     public synchronized static void stop(boolean s) {
         stopped=s;
