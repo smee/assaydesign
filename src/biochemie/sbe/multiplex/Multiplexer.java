@@ -90,7 +90,7 @@ public abstract class Multiplexer {
             List primers1=getAllPrimers(mults[i]);
 			for (int j =i+1; j < mults.length; j++) {
 			    List primers2=getAllPrimers(mults[j]);
-                if(!passtMitKompatiblenCD(primers1, primers2))
+                if(!passenMiteinander(primers1, primers2))
 					continue;//passt eh aus anderen gruenden nicht miteinander
 				Collection sekstruks=getCrossdimersOf(primers1, primers2,SekStrukturFactory.getCrossDimerAnalysisInstance(cfg.getSecStrucOptions()));
 				
@@ -141,7 +141,7 @@ public abstract class Multiplexer {
         }
         return crossdimers;
     }
-    private static boolean passtMitKompatiblenCD(List p1, List p2) {
+    private static boolean passenMiteinander(List p1, List p2) {
         for(int i=0; i < p1.size(); i++) {
             Primer p=(Primer)p1.get(i);
             for(int j=0; j < p2.size(); j++) {

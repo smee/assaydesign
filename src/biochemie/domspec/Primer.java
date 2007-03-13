@@ -325,7 +325,9 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         Set cross=SekStrukturFactory.getCrossdimer(me,other,cfg);
         for (Iterator it = cross.iterator(); it.hasNext();) {
             SekStruktur s = (SekStruktur) it.next();
-            if(cfg.isAllCrossdimersAreEvil() || s.isIncompatible()) {
+            if(cfg.isAllCrossdimersAreEvil() || 
+                    !cfg.isIgnoreCompCrossdimers() || 
+                    s.isIncompatible()) {
                 edgecol.add(new SecStructureEdge(me,other,s));
                 return false;
             }

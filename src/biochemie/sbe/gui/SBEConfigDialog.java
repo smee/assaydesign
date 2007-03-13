@@ -240,7 +240,7 @@ public class SBEConfigDialog extends JDialog {
 	    sbeconfig.setOptTemperature(((Number)getSbePanel().getOptTspinner().getValue()).intValue());
         sbeconfig.setSecStrucEdgeCreating( getAvoidHairpinsCB().isSelected() );
 	    sbeconfig.setDrawGraphes(getDrawGraphesCheckbox().isSelected());
-	    sec.setIgnoreIncompCrossdimers(getIgnoreIncompCrossdimerCheckBox().isSelected());
+	    sec.setIgnoreCompCrossdimers(getIgnoreIncompCrossdimerCheckBox().isSelected());
         sec.setAllCrossdimersAreEvil(getJAllCrossdimersEvilCB().isSelected());
 	    sbeconfig.setPolyX(((Number)getSbePanel().getPolyxSpinner().getValue()).intValue());
         sbeconfig.setDebug(getDebugCheckBox().isSelected());
@@ -603,7 +603,7 @@ public class SBEConfigDialog extends JDialog {
         //setze expertenoptionen
         IntegerValueIntervallPanel ip=getHairpinValuePanel();
         SecStrucOptions sec=c.getSecStrucOptions();
-        getIgnoreIncompCrossdimerCheckBox().setSelected(sec.isIgnoreIncompCrossdimers());
+        getIgnoreIncompCrossdimerCheckBox().setSelected(sec.isIgnoreCompCrossdimers());
         ip.loadFromString(sec.getHairpinWindowsizes(),sec.getHairpinMinbinds());
         ip=getHomodimerValuePanel();
         ip.loadFromString(sec.getHomodimerWindowsizes(),sec.getHomodimerMinbinds());
