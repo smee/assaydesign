@@ -575,7 +575,7 @@ public class SBEConfigDialog extends JDialog {
 	private JCheckBox getIgnoreIncompCrossdimerCheckBox() {
 		if (ignoreImcompCrossdimerCheckBox == null) {
 			ignoreImcompCrossdimerCheckBox = new JCheckBox();
-			ignoreImcompCrossdimerCheckBox.setText("ignore comp. crossdimers");
+			ignoreImcompCrossdimerCheckBox.setText("separate incompatible crossdimers only");
 			ignoreImcompCrossdimerCheckBox.setToolTipText("Predicts only incompatible crossdimers.");
 		}
 		return ignoreImcompCrossdimerCheckBox;
@@ -780,7 +780,7 @@ public class SBEConfigDialog extends JDialog {
     private JCheckBox getAvoidHairpinsCB() {
         if (jAvoidHairpins == null) {
             jAvoidHairpins = new JCheckBox();
-            jAvoidHairpins.setText("ignore irrelevant sec. structures");
+            jAvoidHairpins.setText("create Multiplexes with preventable sec.strucs only");
             jAvoidHairpins.setToolTipText("<html>By checking this option a primer with a predicted hairpin<br>" +
                                                 "of a certain nucleotide will not be combined in the same mutliplex<br>" +
                                                 "with SBE-primers that need this certain nucleotide for SNP detection.<br>" +
@@ -799,7 +799,7 @@ public class SBEConfigDialog extends JDialog {
     private JCheckBox getJAllCrossdimersEvilCB() {
         if (jAllCrossdimersEvilCB == null) {
             jAllCrossdimersEvilCB = new JCheckBox();
-            jAllCrossdimersEvilCB.setText("alle CD machen Kanten");
+            jAllCrossdimersEvilCB.setText("separate any compatible and incompatible crossdimers");
             jAllCrossdimersEvilCB.addChangeListener(new ChangeListener(){
                 public void stateChanged(ChangeEvent e) {
                     boolean sel=jAllCrossdimersEvilCB.isSelected();
