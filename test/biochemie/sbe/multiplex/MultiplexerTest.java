@@ -38,12 +38,13 @@ public class MultiplexerTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		cfg=new SBEConfig();
+        System.out.println(cfg.getCalcDaltonAssayPeaks()[2]);
 		cfg.getSecStrucOptions().setCrossimerWindowsizes("5");
 		cfg.getSecStrucOptions().setCrossdimerMinbinds("5");
         Helper.createAndRememberCalcDaltonFrom(cfg);
 		//alle passen eigentlich miteinander, aber wenn a und b zusammen sind, bauen sie ein G ein, sind dann also nicht mehr mit c kompatibel
-		primerA=new CleavablePrimer(cfg,"primerA","AAATGTLGTGTGTGTGT","AT",CleavablePrimer._5_,"",1,true);
-		primerB=new CleavablePrimer(cfg,"primerB","AAAACALCACACACACA","AT",CleavablePrimer._5_,"",1,true);
+		primerA=new CleavablePrimer(cfg,"primerA","AAAATGTLGTGTGTGTGT","AT",CleavablePrimer._5_,"",1,true);
+		primerB=new CleavablePrimer(cfg,"primerB","AAAAACALCACACACACA","AT",CleavablePrimer._5_,"",1,true);
 		primerC=new CleavablePrimer(cfg,"primerC","TTTTTTLTTTTTTTTTTTT","CG",CleavablePrimer._5_,"",1,true);
 		primers=new HashSet();
 		primers.add(primerA);
@@ -56,10 +57,7 @@ public class MultiplexerTest extends TestCase {
 	}
 	public void testEnhancePrimerList(){
         cfg.getSecStrucOptions().setAllCrossdimersAreEvil(false);//sollte keine Auswirkungen haben
-		assertTrue(primerA.passtMitKompCD(primerB));
-		assertTrue(primerA.passtMitKompCD(primerC));
-		assertTrue(primerB.passtMitKompCD(primerC));
-		assertFalse(primerA.passtMit(primerB));
+		assertTrue(primerA.passtMit(primerB));
 		assertTrue(primerA.passtMit(primerC));
 		assertTrue(primerB.passtMit(primerC));
 
