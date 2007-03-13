@@ -106,7 +106,7 @@ public abstract class Multiplexer {
 						Character c = (Character) it.next();
 						bautein+=c.charValue();
 					}
-					result.add(new SBEPrimerProxy(primers1, primers2,bautein));
+					result.add(new SBEPrimerProxy(primers1, primers2,bautein,cfg));
 				}
 			}
 		}
@@ -159,11 +159,13 @@ public abstract class Multiplexer {
     	private List p2;
 		private final Collection edgecol=new HashSet();
 		private String einbau="";
+        private SBEOptions cfg;
 		
-		public SBEPrimerProxy(List p1, List p2, String einbau){
+		public SBEPrimerProxy(List p1, List p2, String einbau, SBEOptions cfg){
     		this.p1=p1;
     		this.p2=p2;
     		this.einbau=einbau;
+            this.cfg=cfg;
     	}
 		public String toString() {
       return "[SBEPrimerproxy: "+p1+" and "+p2+"]";      
@@ -229,7 +231,7 @@ public abstract class Multiplexer {
          * @return
          */
         private boolean passenWirMit(Primer other) {
-            if(passenEinbautenMit(other)==false)
+            if(cfg.isSecStrucEdgeCreating() && passenEinbautenMit(other)==false)
                 return false;
             for (Iterator it = p1.iterator(); it.hasNext();) {
                 Primer p = (Primer) it.next();
