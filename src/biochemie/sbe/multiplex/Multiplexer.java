@@ -146,7 +146,7 @@ public abstract class Multiplexer {
             Primer p=(Primer)p1.get(i);
             for(int j=0; j < p2.size(); j++) {
                 Primer q=(Primer)p2.get(j);
-                if(!p.passtMitKompCD(q))
+                if(!p.passtMit(q))
                     return false;
             }
         }

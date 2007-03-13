@@ -90,7 +90,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
             flag=flag&&temp;
             temp= this.passtMitProductLength(other);
             flag=flag&&temp;
-            temp=this.passtMitCrossdimern(other,true);
+            temp=this.passtMitIncompCrossdimern(other);
             flag=flag&&temp;
             temp=passtMitCalcDalton(other);
             flag=flag&&temp;
@@ -315,22 +315,17 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
      * @param evilcd true, jeder CD ist Ausschlusskriterium, false heisst, nur inkompatible.
      * @return
      */
-    protected boolean passtMitCrossdimern(Primer other, boolean evilcd) {
-        return passtMitCDRec(this,other,evilcd) && passtMitCDRec(other,this,evilcd);//damit der crossdimer auch dem richtigen primer zugeordnet werden kann
+    protected boolean passtMitIncompCrossdimern(Primer other) {
+        return passtMitCDRec(this,other) && passtMitCDRec(other,this);//damit der crossdimer auch dem richtigen primer zugeordnet werden kann
     }
     
     
     
-    protected boolean passtMitCDRec(Primer me, Primer other, boolean evilcd) {
+    protected boolean passtMitCDRec(Primer me, Primer other) {
         Set cross=SekStrukturFactory.getCrossdimer(me,other,cfg);
         for (Iterator it = cross.iterator(); it.hasNext();) {
             SekStruktur s = (SekStruktur) it.next();
-            if(!evilcd) {
-                if(s.isIncompatible()) {
-                    edgecol.add(new SecStructureEdge(me,other,s));
-                    return false;
-                }
-            }else {
+            if(s.isIncompatible()) {
                 edgecol.add(new SecStructureEdge(me,other,s));
                 return false;
             }
@@ -423,23 +418,6 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
             }
         }
         return positions+sep+nucl+sep+clazz;
-    }
-    /**
-     * Testet, ob dieser Primer mit other passt, wobei nur inkompatible Crossdimer beruecksichtigt werden.
-     * @param other
-     * @return
-     */
-    public boolean passtMitKompCD(Primer other) {
-        edgecol.clear();
-        boolean flag=true, temp=true;
-        flag= passtMitID(other);
-        temp= passtMitSekStrucs(other) ;
-        flag=flag&&temp;
-        temp= passtMitCrossdimern(other,false) ;
-        flag=flag&&temp;
-        temp= passtMitCalcDalton(other);
-        flag=flag&&temp;
-        return flag;
     }
     
     public String toString() {
