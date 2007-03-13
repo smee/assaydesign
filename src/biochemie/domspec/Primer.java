@@ -288,6 +288,8 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
     
     
     protected boolean passtMitSekStrucs(Primer other) {
+        if(!cfg.isSecStrucEdgeCreating())
+            return true;
         //Inkompatible Sekundärstrukturen?
         String snp1=getSNP();
         String snp2=other.getSNP();

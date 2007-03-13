@@ -96,7 +96,9 @@ public class MiniSBE {
                 m=new ExperimentMultiplexer(cfg);
             }else
                 m=new BestellMultiplexer(cfg);
-            if(!cfg.getSecStrucOptions().isAllCrossdimersAreEvil() && cfg.getSecStrucOptions().isIgnoreCompCrossdimers() == false)
+            if(!cfg.getSecStrucOptions().isAllCrossdimersAreEvil() 
+                    && !cfg.getSecStrucOptions().isIgnoreCompCrossdimers()
+                    && cfg.getSecStrucOptions().isSecStrucEdgeCreating())
                 structs=Multiplexer.getEnhancedPrimerList(structs,cfg);
             oldGraph=createGraphAndMultiplex(structs,oldGraph,cfg,m,filter);
             

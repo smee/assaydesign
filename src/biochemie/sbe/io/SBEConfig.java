@@ -56,7 +56,6 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
             ,"sbe.maxplex"
             ,"sbe.mincandlen"
             ,"sbe.prodlendiff"
-            ,"sbe.compHAIRP2Edge"
             ,"misc.drawgraph"};
     }
 
@@ -310,12 +309,5 @@ public class SBEConfig extends GeneralConfig implements SBEOptions{
         
     }
 
-    public boolean isSecStrucEdgeCreating() {
-        return getBoolean("sbe.compHAIRP2Edge",true);
-    }
-
-    public void setSecStrucEdgeCreating(boolean val) {
-        setProperty("sbe.compHAIRP2Edge",Boolean.toString(val));
-    }
 
  }

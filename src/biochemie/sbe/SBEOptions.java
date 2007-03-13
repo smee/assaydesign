@@ -81,6 +81,4 @@ public interface SBEOptions extends CalcDaltonOptions {
     public SecStrucOptions getSecStrucOptions();
     public void setSecStrucOptions(SecStrucOptions opt);
     
-    public boolean isSecStrucEdgeCreating();
-    public void setSecStrucEdgeCreating(boolean val);
 }

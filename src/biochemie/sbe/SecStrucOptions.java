@@ -52,4 +52,7 @@ public interface SecStrucOptions {
     
     public boolean isAllCrossdimersAreEvil(); 
     public void setAllCrossdimersAreEvil(boolean val); 
+    
+    public boolean isSecStrucEdgeCreating();
+    public void setSecStrucEdgeCreating(boolean val);
 }

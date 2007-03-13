@@ -20,6 +20,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
                 ,"sbe.crossdimer.windowsizes"
                 ,"sbe.crossdimer.areallevil"
                 ,"sbe.crossdimer.ignorecomp"
+                ,"sbe.compHAIRP2Edge"
                 ,"sbe.crossdimer.minbinds"};
     }
     
@@ -96,5 +97,12 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
     }
     public void setAllCrossdimersAreEvil(boolean val) {
         setProperty("sbe.crossdimer.areallevil",Boolean.toString(val));
+    }
+    public boolean isSecStrucEdgeCreating() {
+        return getBoolean("sbe.compHAIRP2Edge",true);
+    }
+
+    public void setSecStrucEdgeCreating(boolean val) {
+        setProperty("sbe.compHAIRP2Edge",Boolean.toString(val));
     }
 }

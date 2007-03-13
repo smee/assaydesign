@@ -248,7 +248,7 @@ public abstract class Multiplexer {
          * @return
          */
         private boolean passenWirMit(Primer other) {
-            if(cfg.isSecStrucEdgeCreating() && passenEinbautenMit(other)==false)
+            if(cfg.getSecStrucOptions().isSecStrucEdgeCreating() && passenEinbautenMit(other)==false)
                 return false;
             for (Iterator it = p1.iterator(); it.hasNext();) {
                 Primer p = (Primer) it.next();

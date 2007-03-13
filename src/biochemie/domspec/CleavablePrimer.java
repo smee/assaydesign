@@ -250,7 +250,7 @@ public class CleavablePrimer extends Primer{
     }
 
     protected boolean passtMitSekStrucs(Primer other) {
-        if(!cfg.isSecStrucEdgeCreating())
+        if(!cfg.getSecStrucOptions().isSecStrucEdgeCreating())
             return true;
         //Inkompatible Sekundärstrukturen?
         String snp1=getSNP();

@@ -238,8 +238,8 @@ public class SBEConfigDialog extends JDialog {
 	    sbeconfig.setMinTemperature(((Number)getSbePanel().getMinTspinner().getValue()).intValue());
 	    sbeconfig.setMaxTemperature(((Number)getSbePanel().getMaxTspinner().getValue()).intValue());
 	    sbeconfig.setOptTemperature(((Number)getSbePanel().getOptTspinner().getValue()).intValue());
-        sbeconfig.setSecStrucEdgeCreating( getAvoidHairpinsCB().isSelected() );
 	    sbeconfig.setDrawGraphes(getDrawGraphesCheckbox().isSelected());
+	    sec.setSecStrucEdgeCreating( getAvoidHairpinsCB().isSelected() );
 	    sec.setIgnoreCompCrossdimers(getIgnoreIncompCrossdimerCheckBox().isSelected());
         sec.setAllCrossdimersAreEvil(getJAllCrossdimersEvilCB().isSelected());
 	    sbeconfig.setPolyX(((Number)getSbePanel().getPolyxSpinner().getValue()).intValue());
@@ -611,7 +611,7 @@ public class SBEConfigDialog extends JDialog {
         ip.loadFromString(sec.getCrossDimerWindowsizes(),sec.getCrossdimerMinbinds());
         getDrawGraphesCheckbox().setSelected(c.isDrawGraphes());
         getDebugCheckBox().setSelected(c.isDebug());
-        getAvoidHairpinsCB().setSelected(c.isSecStrucEdgeCreating());
+        getAvoidHairpinsCB().setSelected(sec.isSecStrucEdgeCreating());
         getJAllCrossdimersEvilCB().setSelected(c.getSecStrucOptions().isAllCrossdimersAreEvil());
     }
 
