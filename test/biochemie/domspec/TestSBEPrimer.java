@@ -78,18 +78,14 @@ public class TestSBEPrimer extends TestCase {
     }
 
     public void testNonBadCrossdimers() {
-        cfg.getSecStrucOptions().setAllCrossdimersAreEvil(false);
+        cfg.getSecStrucOptions().setIgnoreCompCrossdimers(true);
         cfg.getSecStrucOptions().setCrossdimerMinbinds("5");
         cfg.getSecStrucOptions().setCrossimerWindowsizes("6");
         //pl jeweils 12
         CleavablePrimer p1= new CleavablePrimer(cfg,"330ctla4","agctagctagctagctLgctaaaaaggt","AG",CleavablePrimer._5_,"",0,true);
         CleavablePrimer p2= new CleavablePrimer(cfg,"331ctla4","ttggttggttggtLggttggttttt","CT",CleavablePrimer._5_,"",0,true);
 
-        assertTrue(p1.passtMitIncompCrossdimern(p2));
-        //TODO an neue Funktionalitaet von allCDAreEvil anpassen! --------------------------------------------------
-        //cfg.setAllCrossdimersAreEvil(true);
-        //assertFalse(p1.passtMitCrossdimern(p2));
-
+        assertTrue(p1.passtMitCrossdimern(p2));
     }
 
     public void testCalcDaltonPasst() {

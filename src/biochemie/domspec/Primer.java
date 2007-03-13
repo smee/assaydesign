@@ -90,7 +90,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
             flag=flag&&temp;
             temp= this.passtMitProductLength(other);
             flag=flag&&temp;
-            temp=this.passtMitIncompCrossdimern(other);
+            temp=this.passtMitCrossdimern(other);
             flag=flag&&temp;
             temp=passtMitCalcDalton(other);
             flag=flag&&temp;
@@ -315,7 +315,7 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
      * @param evilcd true, jeder CD ist Ausschlusskriterium, false heisst, nur inkompatible.
      * @return
      */
-    protected boolean passtMitIncompCrossdimern(Primer other) {
+    protected boolean passtMitCrossdimern(Primer other) {
         return passtMitCDRec(this,other) && passtMitCDRec(other,this);//damit der crossdimer auch dem richtigen primer zugeordnet werden kann
     }
     

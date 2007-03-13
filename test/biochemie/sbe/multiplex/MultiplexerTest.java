@@ -56,7 +56,7 @@ public class MultiplexerTest extends TestCase {
 		};
 	}
 	public void testEnhancePrimerList(){
-        cfg.getSecStrucOptions().setAllCrossdimersAreEvil(false);//sollte keine Auswirkungen haben
+        cfg.getSecStrucOptions().setIgnoreCompCrossdimers(true);//sollte keine Auswirkungen haben
 		assertTrue(primerA.passtMit(primerB));
 		assertTrue(primerA.passtMit(primerC));
 		assertTrue(primerB.passtMit(primerC));
