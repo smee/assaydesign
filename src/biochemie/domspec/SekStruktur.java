@@ -82,8 +82,8 @@ public class SekStruktur  implements Cloneable{
             break;
         case CROSSDIMER:
             //es sind zwei SNPs beteiligt, gegen die getestet werden muss.
-            incomp=isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),p.getSNP(),bautAn)
-                          || isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),other.getSNP(),bautAn);
+            incomp=isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),p.getSNP(),bautAn);
+                          //|| isInkompatibleSekStruktur(other.getCompletePrimerSeq(),getPosFrom3(),other.getSNP(),bautAn);
             break;
         default :
             throw new IllegalArgumentException("invalid secondary strucure type given!");
