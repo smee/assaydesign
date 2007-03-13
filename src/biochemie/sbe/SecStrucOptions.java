@@ -47,6 +47,9 @@ public interface SecStrucOptions {
      * as such.
      * @return
      */
-    public boolean getAllCrossdimersAreEvil();
-    public void setAllCrossdimersAreEvil(boolean val);
+    public boolean isIgnoreIncompCrossdimers();
+    public void setIgnoreIncompCrossdimers(boolean val);
+    
+    public boolean isAllCrossdimersAreEvil(); 
+    public void setAllCrossdimersAreEvil(boolean val); 
 }

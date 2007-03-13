@@ -19,6 +19,7 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
                 ,"sbe.homodimer.minbinds"
                 ,"sbe.crossdimer.windowsizes"
                 ,"sbe.crossdimer.areallevil"
+                ,"sbe.crossdimer.ignoreincomp"
                 ,"sbe.crossdimer.minbinds"};
     }
     
@@ -83,10 +84,16 @@ public class SecStrucConfig extends GeneralConfig implements SecStrucOptions{
             }
     }
 
-    public boolean getAllCrossdimersAreEvil() {
-        return getBoolean("sbe.crossdimer.areallevil",false);
+    public boolean isIgnoreIncompCrossdimers() {
+        return getBoolean("sbe.crossdimer.ignoreincomp",false);
     }
 
+    public void setIgnoreIncompCrossdimers(boolean val) {
+        setProperty("sbe.crossdimer.ignoreincomp",Boolean.toString(val));
+    }
+    public boolean isAllCrossdimersAreEvil() {
+        return getBoolean("sbe.crossdimer.areallevil",false);
+    }
     public void setAllCrossdimersAreEvil(boolean val) {
         setProperty("sbe.crossdimer.areallevil",Boolean.toString(val));
     }

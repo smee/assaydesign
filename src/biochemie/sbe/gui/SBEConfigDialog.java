@@ -34,6 +34,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -81,7 +83,7 @@ public class SBEConfigDialog extends JDialog {
 	private JPanel candlenpanel = null;
 	private JLabel jLabel1 = null;
 	private JSpinner candlenSpinner = null;
-	private JCheckBox evilCrossdimerCheckBox = null;
+	private JCheckBox ignoreImcompCrossdimerCheckBox = null;
 
 	private JCheckBox drawGraphesCheckbox = null;
 	private JCheckBox debugCheckBox = null;
@@ -103,6 +105,8 @@ public class SBEConfigDialog extends JDialog {
     };
 
     private JCheckBox jAvoidHairpins = null;
+
+    private JCheckBox jAllCrossdimersEvilCB = null;
     /**
 	 * @param gui
 	 */
@@ -236,7 +240,8 @@ public class SBEConfigDialog extends JDialog {
 	    sbeconfig.setOptTemperature(((Number)getSbePanel().getOptTspinner().getValue()).intValue());
         sbeconfig.setSecStrucEdgeCreating( getAvoidHairpinsCB().isSelected() );
 	    sbeconfig.setDrawGraphes(getDrawGraphesCheckbox().isSelected());
-	    sec.setAllCrossdimersAreEvil(getEvilCrossdimerCheckBox().isSelected());
+	    sec.setIgnoreIncompCrossdimers(getIgnoreIncompCrossdimerCheckBox().isSelected());
+        sec.setAllCrossdimersAreEvil(getJAllCrossdimersEvilCB().isSelected());
 	    sbeconfig.setPolyX(((Number)getSbePanel().getPolyxSpinner().getValue()).intValue());
         sbeconfig.setDebug(getDebugCheckBox().isSelected());
 	    return sbeconfig;
@@ -401,6 +406,10 @@ public class SBEConfigDialog extends JDialog {
 	 */
 	private JPanel getAdvSettingsPanel() {
 		if (advSettingsPanel == null) {
+			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			gridBagConstraints4.gridx = 1;
+			gridBagConstraints4.insets = new java.awt.Insets(10,10,10,0);
+			gridBagConstraints4.gridy = 1;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 1;
 			gridBagConstraints3.anchor = java.awt.GridBagConstraints.CENTER;
@@ -408,7 +417,7 @@ public class SBEConfigDialog extends JDialog {
 			gridBagConstraints3.fill = java.awt.GridBagConstraints.NONE;
 			gridBagConstraints3.ipadx = 0;
 			gridBagConstraints3.weightx = 0.0;
-			gridBagConstraints3.gridy = 2;
+			gridBagConstraints3.gridy = 3;
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
@@ -419,16 +428,16 @@ public class SBEConfigDialog extends JDialog {
 			advSettingsPanel = new JPanel();
 			advSettingsPanel.setLayout(new GridBagLayout());
 			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.gridy = 5;
+			gridBagConstraints11.gridy = 6;
 			gridBagConstraints11.gridwidth = 2;
 			gridBagConstraints11.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints11.insets = new java.awt.Insets(20,0,0,0);
 			gridBagConstraints1.gridx = 1;
-			gridBagConstraints1.gridy = 6;
+			gridBagConstraints1.gridy = 7;
 			gridBagConstraints1.insets = new java.awt.Insets(10,0,0,0);
 			gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints2.gridx = 1;
-			gridBagConstraints2.gridy = 7;
+			gridBagConstraints2.gridy = 8;
 			gridBagConstraints2.insets = new java.awt.Insets(10,0,10,0);
 			gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints41.gridx = 1;
@@ -439,23 +448,24 @@ public class SBEConfigDialog extends JDialog {
 			gridBagConstraints91.weightx = 0.0;
 			gridBagConstraints91.ipadx = 0;
 			gridBagConstraints91.anchor = java.awt.GridBagConstraints.CENTER;
-			gridBagConstraints91.gridy = 1;
+			gridBagConstraints91.gridy = 2;
 			gridBagConstraints12.insets = new java.awt.Insets(10,10,9,10);
 			gridBagConstraints12.anchor = java.awt.GridBagConstraints.CENTER;
 			gridBagConstraints12.gridx = 1;
-			gridBagConstraints12.gridy = 3;
+			gridBagConstraints12.gridy = 4;
 			gridBagConstraints13.gridx = 1;
 			gridBagConstraints13.anchor = java.awt.GridBagConstraints.CENTER;
-			gridBagConstraints13.gridy = 4;
+			gridBagConstraints13.gridy = 5;
 			gridBagConstraints13.insets = new java.awt.Insets(10,10,10,10);
 			advSettingsPanel.add(getCandlenpanel(), gridBagConstraints41);
-			advSettingsPanel.add(getEvilCrossdimerCheckBox(), gridBagConstraints91);
+			advSettingsPanel.add(getIgnoreIncompCrossdimerCheckBox(), gridBagConstraints91);
 			advSettingsPanel.add(getDrawGraphesCheckbox(), gridBagConstraints12);
 			advSettingsPanel.add(getDebugCheckBox(), gridBagConstraints13);
 			advSettingsPanel.add(getHairpinValuePanel(), gridBagConstraints11);
 			advSettingsPanel.add(getHomodimerValuePanel(), gridBagConstraints1);
 			advSettingsPanel.add(getCrossdimerValuePanel(), gridBagConstraints2);
 			advSettingsPanel.add(getAvoidHairpinsCB(), gridBagConstraints3);
+			advSettingsPanel.add(getJAllCrossdimersEvilCB(), gridBagConstraints4);
 			advSettingsPanel.setVisible(false);
 		}
 		return advSettingsPanel;
@@ -562,13 +572,13 @@ public class SBEConfigDialog extends JDialog {
 	 *
 	 * @return javax.swing.JCheckBox
 	 */
-	private JCheckBox getEvilCrossdimerCheckBox() {
-		if (evilCrossdimerCheckBox == null) {
-			evilCrossdimerCheckBox = new JCheckBox();
-			evilCrossdimerCheckBox.setText("incomp. Crossdimers only");
-			evilCrossdimerCheckBox.setToolTipText("Predicts only incompatible crossdimers.");
+	private JCheckBox getIgnoreIncompCrossdimerCheckBox() {
+		if (ignoreImcompCrossdimerCheckBox == null) {
+			ignoreImcompCrossdimerCheckBox = new JCheckBox();
+			ignoreImcompCrossdimerCheckBox.setText("ignore comp. crossdimers");
+			ignoreImcompCrossdimerCheckBox.setToolTipText("Predicts only incompatible crossdimers.");
 		}
-		return evilCrossdimerCheckBox;
+		return ignoreImcompCrossdimerCheckBox;
 	}
     protected void setPropertiesFrom(SBEOptions c) {
         //setze Calcdalton-Optionen
@@ -593,7 +603,7 @@ public class SBEConfigDialog extends JDialog {
         //setze expertenoptionen
         IntegerValueIntervallPanel ip=getHairpinValuePanel();
         SecStrucOptions sec=c.getSecStrucOptions();
-        getEvilCrossdimerCheckBox().setSelected(sec.getAllCrossdimersAreEvil());
+        getIgnoreIncompCrossdimerCheckBox().setSelected(sec.isIgnoreIncompCrossdimers());
         ip.loadFromString(sec.getHairpinWindowsizes(),sec.getHairpinMinbinds());
         ip=getHomodimerValuePanel();
         ip.loadFromString(sec.getHomodimerWindowsizes(),sec.getHomodimerMinbinds());
@@ -602,6 +612,7 @@ public class SBEConfigDialog extends JDialog {
         getDrawGraphesCheckbox().setSelected(c.isDrawGraphes());
         getDebugCheckBox().setSelected(c.isDebug());
         getAvoidHairpinsCB().setSelected(c.isSecStrucEdgeCreating());
+        getJAllCrossdimersEvilCB().setSelected(c.getSecStrucOptions().isAllCrossdimersAreEvil());
     }
 
 
@@ -769,7 +780,7 @@ public class SBEConfigDialog extends JDialog {
     private JCheckBox getAvoidHairpinsCB() {
         if (jAvoidHairpins == null) {
             jAvoidHairpins = new JCheckBox();
-            jAvoidHairpins.setText("avoid compatible sec. structures");
+            jAvoidHairpins.setText("ignore irrelevant sec. structures");
             jAvoidHairpins.setToolTipText("<html>By checking this option a primer with a predicted hairpin<br>" +
                                                 "of a certain nucleotide will not be combined in the same mutliplex<br>" +
                                                 "with SBE-primers that need this certain nucleotide for SNP detection.<br>" +
@@ -778,5 +789,29 @@ public class SBEConfigDialog extends JDialog {
                                                 "this might result in a higher number of multiplexes.</html>");
         }
         return jAvoidHairpins;
+    }
+
+    /**
+     * This method initializes jAllCrossdimersEvilCB	
+     * 	
+     * @return javax.swing.JCheckBox	
+     */
+    private JCheckBox getJAllCrossdimersEvilCB() {
+        if (jAllCrossdimersEvilCB == null) {
+            jAllCrossdimersEvilCB = new JCheckBox();
+            jAllCrossdimersEvilCB.setText("alle CD machen Kanten");
+            jAllCrossdimersEvilCB.addChangeListener(new ChangeListener(){
+                public void stateChanged(ChangeEvent e) {
+                    boolean sel=jAllCrossdimersEvilCB.isSelected();
+                    if(sel){
+                        getIgnoreIncompCrossdimerCheckBox().setSelected(false);
+                        getIgnoreIncompCrossdimerCheckBox().setEnabled(false);
+                    }else
+                        getIgnoreIncompCrossdimerCheckBox().setEnabled(true);
+                        
+                }
+            });
+        }
+        return jAllCrossdimersEvilCB;
     }
   }  //  @jve:decl-index=0:visual-constraint="10,10"
