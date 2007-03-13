@@ -12,7 +12,7 @@ public class GeneralSeqInputController extends AbstractSeqInputController{
 
     protected void handleSeqChange() {
         String text=left.getText();
-        if(text.length()==0 || text.length()>=minlen){
+        if(text.length()>=minlen){
             fixedcb.setEnabled(true);
             setToolTipAndBorder(text,false);
         }else{

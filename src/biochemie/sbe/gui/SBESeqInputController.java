@@ -176,7 +176,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
                 }
             }
         }finally {
-            IamModifying = true;
+            //IamModifying = true;
             left.setText(isRight?Helper.revPrimer(newseq):newseq);
             IamModifying=false;
         }
