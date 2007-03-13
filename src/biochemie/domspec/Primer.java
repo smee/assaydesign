@@ -26,6 +26,7 @@ import biochemie.sbe.multiplex.Multiplexable;
 import biochemie.util.Helper;
 import biochemie.util.edges.CalcDaltonEdge;
 import biochemie.util.edges.IdendityEdge;
+import biochemie.util.edges.MyUndirectedEdge;
 import biochemie.util.edges.ProductLengthEdge;
 import biochemie.util.edges.SecStructureEdge;
 
@@ -428,5 +429,21 @@ public abstract class Primer extends Observable implements Multiplexable, Clonea
         sb.append(", GC=").append(Helper.format(getGCGehalt())).append("%, Tm=").append(Helper.format(getTemperature())).append("°, hairpins=");
         sb.append(getHairpinPositions()).append(", homodimer=").append(getHomodimerPositions());
         return sb.toString();
+    }
+    public boolean passtMitKompCrossdimern(Primer q) {
+        boolean passt=this.passtMit(q);
+        
+        for (Iterator it = edgecol.iterator(); it.hasNext();) {
+            MyUndirectedEdge edge = (MyUndirectedEdge) it.next();
+            if(! (edge instanceof SecStructureEdge)){
+                return passt;
+            }else{
+                SecStructureEdge se=(SecStructureEdge) edge;
+                if(se.getSecStruc().isIncompatible()){
+                    return passt;
+                }
+            }
+        }
+        return true;
     }
 }

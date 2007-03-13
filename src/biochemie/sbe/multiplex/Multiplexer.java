@@ -163,7 +163,7 @@ public abstract class Multiplexer {
             Primer p=(Primer)p1.get(i);
             for(int j=0; j < p2.size(); j++) {
                 Primer q=(Primer)p2.get(j);
-                if(!p.passtMit(q))
+                if(!p.passtMitKompCrossdimern(q))
                     return false;
             }
         }
