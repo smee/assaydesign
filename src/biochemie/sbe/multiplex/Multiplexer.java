@@ -106,7 +106,8 @@ public abstract class Multiplexer {
 						Character c = (Character) it.next();
 						bautein+=c.charValue();
 					}
-					result.add(new SBEPrimerProxy(primers1, primers2,bautein,cfg));
+                    if(!snpsIncludeAnyOf(bautein, primers1,primers2))
+                        result.add(new SBEPrimerProxy(primers1, primers2,bautein,cfg));
 				}
 			}
 		}
@@ -115,6 +116,22 @@ public abstract class Multiplexer {
     	return result;
     }
     
+    private static boolean snpsIncludeAnyOf(String bautein, List primers1, List primers2) {
+        List l=new ArrayList(primers1.size()+primers2.size());
+        l.addAll(primers1);
+        l.addAll(primers2);
+        Set snpchars=new HashSet();
+        for (Iterator it = l.iterator(); it.hasNext();) {
+            Primer p = (Primer) it.next();
+            String snp=p.getSNP();
+            for(int i=0;i<snp.length();i++)
+                snpchars.add(new Character(Character.toUpperCase(snp.charAt(i))));
+        }
+        for(int i=0;i<bautein.length();i++)
+            if(snpchars.contains(new Character(Character.toUpperCase(bautein.charAt(i)))))
+                return true;
+        return false;
+    }
     public static List getAllPrimers(Multiplexable m) {
         List result=new LinkedList();
         LinkedList queue=new LinkedList();
