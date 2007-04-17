@@ -45,7 +45,8 @@ public abstract class GeneralConfig extends Observable{
         }
         this.keys=Collections.unmodifiableSet(keys);
         isUnmodifiable = false;
-        loadDefault();
+        if(p==null)
+            loadDefault();
     }
     public GeneralConfig(){
         this(null);
