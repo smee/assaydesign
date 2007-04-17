@@ -7,8 +7,11 @@ package biochemie.sbe.filter;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import biochemie.domspec.Primer;
 import biochemie.sbe.SBEOptions;
+import biochemie.util.Helper;
 
 /**
  *
@@ -21,7 +24,8 @@ public class LaengenFilter extends AbstractKandidatenFilter {
     
     public LaengenFilter(SBEOptions cfg){
     	super(cfg);
-        this.len=cfg.getMinCandidateLen();
+        int maxpl=Helper.findMaxIn(cfg.getPhotolinkerPositions());
+        this.len=Math.max(cfg.getMinCandidateLen(),maxpl);
         reason="primer too short: ";
     }
     /**
