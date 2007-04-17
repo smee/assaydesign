@@ -38,16 +38,27 @@ public class GraphHelper {
         List vert=new ArrayList(g.vertexSet());
         result.addAllVertices(vert);
         for (int i = 0; i < vert.size(); i++) {
-            Object v1=vert.get(i);
+            Multiplexable v1=(Multiplexable) vert.get(i);
 //          System.out.println("v1="+v1);
 //          System.out.println("v2="+v1);
 //          System.out.println("edges for v1: "+g.edgesOf(v1));
-            for (int j = i+1; j < vert.size(); j++) {
-                Object v2=vert.get(j);
-                if(!g.containsEdge(v1,v2)) {
-                    result.addEdge(v1,v2);
-                    if(writeGraph)
-                        gw.addArc(i,j,"");
+            List included1=v1.getIncludedElements();
+            for (Iterator it = included1.iterator(); it.hasNext();) {
+                Multiplexable m1 = (Multiplexable) it.next();
+                
+                for (int j = i+1; j < vert.size(); j++) {
+                    Multiplexable v2=(Multiplexable) vert.get(j);
+                    List included2=v2.getIncludedElements();
+                    for (Iterator it2 = included2.iterator(); it2.hasNext();) {
+                        Multiplexable m2 = (Multiplexable) it2.next();
+                        //TODO SBEPrimerProxy kommt nicht als source/target vor, sondern nur enthaltene primer...
+                        
+                        if(!m1.equals(m2) && !g.containsEdge(m1,m2)) {
+                            result.addEdge(m1,m2);
+                            if(writeGraph)
+                                gw.addArc(i,j,"");
+                        }
+                    }
                 }
             }
         }

@@ -160,17 +160,27 @@ public class MaximumCliqueFinder implements Interruptible{
         calcThread=Thread.currentThread();
         maxclique=new HashSet();
         int ub=Integer.MAX_VALUE;
+        int crntBestSize=0;
         oldbest = 0;
         for (Iterator it = graphes.iterator(); it.hasNext();) {
             UndirectedSubgraph sg = (UndirectedSubgraph) it.next();
-            if(sg.edgeSet().size()<maxclique.size()) continue;   //kann keine groessere Clique enthalten
-            Set s=findMaxClique(sg,new HashSet(),maxclique,ub, 0);
+            if(sg.vertexSet().size()<=crntBestSize) continue;   //kann keine groessere Clique enthalten
+            Set s=findMaxClique(sg,new HashSet(),maxclique,ub, crntBestSize);
             if(s.size()>maxclique.size()) {
                 maxclique=s;
+                crntBestSize=calcCliqueSize(maxclique);
             }
         }
     }
 
+    private int calcCliqueSize(Set set) {
+        int cnt=0;
+        for (Iterator it = set.iterator(); it.hasNext();) {
+            Multiplexable m = (Multiplexable) it.next();
+            cnt+=m.realSize();
+        }
+        return cnt;
+    }
     public int maxCliqueSize() {
         if(null == maxclique) {
             startSearch();
@@ -224,7 +234,7 @@ public class MaximumCliqueFinder implements Interruptible{
          * also kann er entfernt werden. Regel B
          */
         //Algorithm.remove geht leider nicht, weil g.vertexSet() ein UnmodifieableSet liefert
-        RuleB rb=new RuleB(best.size()-c.size(),g);
+        RuleB rb=new RuleB(Math.abs(best.size()-c.size()),g);
         Algorithms.foreach(g.vertexSet().iterator(),rb);
         rb.doIt();
         if(g.vertexSet().isEmpty()) {//sonst geht Collections.max kaputt

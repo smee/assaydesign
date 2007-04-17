@@ -46,6 +46,9 @@ public class BestellMultiplexer extends Multiplexer {
 	    rt.setInterruptableJob(new MaximumCliqueFinder(grev,maxplexnr,debug));
 	    Set maxclique=(Set)rt.getResult();	    
 	    
+        if(Thread.currentThread().isInterrupted())
+            return;
+        
 	    if(debug) {
 	        System.out.println("Maxclique found: ");
 	        System.out.println("Size: "+maxclique.size());
