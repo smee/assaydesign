@@ -91,7 +91,9 @@ public class SBESeqInputController extends AbstractSeqInputController implements
 //          sind die eingegebenen seq. lang genug?
             int maxpl = Math.max(plpanel.getMaxSelectablePl(),minlen);        
             if(seq.length() < maxpl && seq.length() != 0) {
-                String TOOSHORT="Sequence is too short, please enter at least "+maxpl+" characters!";
+                String TOOSHORT="<html>Sequence too short! Enter at least "+minlen+" characters. <br><br>" +
+                                      "(Min. length of primers might be larger than input or highest <br>" +
+                                      "photolinker positions is larger than sequence length)</html>";
                 plpanel.setEnabled(false);
                 setToolTipAndBorder(TOOSHORT,true);
                 return;

@@ -59,7 +59,7 @@ public class ShowSekStrucsAction extends MyAction {
         for (Iterator iter = sbec.iterator(); iter.hasNext();) {
             CleavablePrimerFactory s = (CleavablePrimerFactory) iter.next();
             if(s.getId().equals(id))
-                return s.getFavSeq();
+                return s.getFavPrimer().getPrimerSeq();
         }
         return null;
     }
