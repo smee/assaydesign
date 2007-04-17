@@ -303,6 +303,7 @@ public class OptimizePLAction extends MyAction {
             boolean flag=true;
             for (Iterator it = sbepanels.iterator(); it.hasNext();) {
                 SBECandidatePanel p = (SBECandidatePanel) it.next();
+                
                 NuklSelectorPanel nuklPanel=p.getSNPSelectorPanel();
                 resetBorder(nuklPanel);
                 if(nuklPanel.getSelectedNukleotides().length()==0 && 
@@ -311,6 +312,12 @@ public class OptimizePLAction extends MyAction {
                     setErrorBorder(nuklPanel);
                     flag=false;
                 }
+                
+//                if(p.getFixedPrimerCB().isSelected()){
+//                    if(p.getSeq5tf().getText().length()>0 && p.get)
+//                }
+                //TODO wenn wieder bezahlt: checken, ob fixed Button selected sein darf oder nicht
+                
                 String filter=p.getFiltersPanel().getText();
                 StringTokenizer st=new StringTokenizer(filter);
                 resetBorder(p.getFiltersPanel().getPBSequenceField());

@@ -71,7 +71,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
         this.isRight=!isLeft;
         this.fixedcb=(fix==null)?new JCheckBox():fix;
         fixedcb.setSelected(false);
-        fixedcb.setEnabled(false);
+        //fixedcb.setEnabled(false);
 
         plpanel.addPhotolinkerListListener(this);
         plpanel.addItemListener(this);
@@ -107,7 +107,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
                 plpanel.setSelectedValue(-1);//auto
                 left.setEnabled(true);
                 fixedcb.setSelected(false);
-                fixedcb.setEnabled(false);
+                //fixedcb.setEnabled(false);
                 if(other!=null)
                     other.setEnabled(true);
                 return;
@@ -128,7 +128,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
                     //plpanel.setSelectedPL(-1);
                     setToolTipAndBorder("Cleavable linker out of bounds!",true);
                     fixedcb.setSelected(false);
-                    fixedcb.setEnabled(false);
+                    //fixedcb.setEnabled(false);
                 }
             }
         }finally {
