@@ -611,6 +611,7 @@ public class OptimizePLAction extends MyAction {
         public void actionPerformed(ActionEvent e) {
             try {
                 saveFile = File.createTempFile("__set",".csv");
+                System.out.println("saving to "+saveFile);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -618,6 +619,7 @@ public class OptimizePLAction extends MyAction {
             getConfigDialog().setVisible(true);
         }
         public void update(Observable o, Object arg) {
+            System.out.println("loading from "+saveFile);
             getLoadPrimerAction().loadFromFile(saveFile);
         }
     }
@@ -870,7 +872,7 @@ public class OptimizePLAction extends MyAction {
     private LoadPrimerAction loadPrimerAction;
     private SavePrimerAction savePrimerAction;
     private CalculateAction calcAction;
-    private Action prefAction;
+    private PreferencesAction prefAction;
 
     private JMenuItem newDesignMenuItem;
     protected boolean expertmode;
@@ -1015,7 +1017,7 @@ public class OptimizePLAction extends MyAction {
      */
     private JMenuItem getPreferencesMenuItem() {
         if(prefMenuItem == null) {
-            prefMenuItem = new JMenuItem(new PreferencesAction());
+            prefMenuItem = new JMenuItem(getPrefAction());
         }
         return prefMenuItem;
     }
@@ -1084,6 +1086,7 @@ public class OptimizePLAction extends MyAction {
         }
         return loadPrimerAction;
     }
+
     /**
 	 * This method initializes jMenuItem2
 	 *
@@ -1176,7 +1179,7 @@ public class OptimizePLAction extends MyAction {
 	 *
 	 * @return javax.swing.JButton
 	 */
-	private Action getPrefAction() {
+	private PreferencesAction getPrefAction() {
 		if (prefAction == null) {
             prefAction = new PreferencesAction();
 		}
