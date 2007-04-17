@@ -98,7 +98,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
             }
             int pos=seq.indexOf('L');
             if(pos == -1 )  {      //kein L in der Eingabe
-                //replacedNukl = 0;
+                replacedNukl = 0;
                 String ltool=seq.length()==0?INSERT_TT:left.getText();
                 setToolTipAndBorder(ltool,false);
                 plpanel.setEnabled(true);
@@ -176,7 +176,7 @@ public class SBESeqInputController extends AbstractSeqInputController implements
                 }
             }
         }finally {
-            //IamModifying = true;
+            IamModifying = true;
             left.setText(isRight?Helper.revPrimer(newseq):newseq);
             IamModifying=false;
         }
