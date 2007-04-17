@@ -275,7 +275,6 @@ public class MaximumCliqueFinder implements Interruptible{
         vertices=new HashSet(g.vertexSet());
         vertices.remove(v);
         g1=new UndirectedSubgraph(g,vertices,null);
-        assert g.edgeSet().size() > g1.edgeSet().size();
         return findMaxClique(g1,c,best,ub, plexsize);
     }
     
