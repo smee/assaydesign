@@ -461,12 +461,14 @@ public class CleavablePrimerFactory extends PrimerFactory {
         int[] br=cfg.getPhotolinkerPositions();
         int pl=-1;
         String bautEin=null;
+        String snp=this.snp;
         if(type.equals(Primer._5_)){
             pl=pl5;
             bautEin=bautEin5;
         }else{
             pl=pl3;
             bautEin=bautEin3;
+            snp=Helper.revcomplPrimer(this.snp);
         }
         if(pl !=  -1) {
             br=new int[] {pl};//vorgegebener pl
