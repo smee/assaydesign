@@ -56,7 +56,8 @@ public class CalcDalton implements Interruptible{
     final private double plMass;
     final private boolean allExtension;
     final private boolean halfMassForbidden;
-    private boolean findBr;    
+    private boolean findBr;
+	private String biotin;    
 
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
 					, double[] assaypeaks
@@ -67,7 +68,7 @@ public class CalcDalton implements Interruptible{
                     , boolean halfMassForbidden
                     , Map primerMasses
                     , Map addonMasses
-                    , double plMass){
+                    , double plMass, String biotin){
         this.primerMasses=primerMasses;
         this.addonMasses=addonMasses;
         this.plMass=plMass;
@@ -96,6 +97,7 @@ public class CalcDalton implements Interruptible{
             throw new IllegalArgumentException("array for assaypeaks needs to have exactly 3 values!");
         this.assaypeaks=assaypeaks;
 		this.productpeaks=productpeaks;
+		this.biotin=biotin;
 		this.overlap=overlap;
 		this.halfMassForbidden=halfMassForbidden;
         this.allExtension=allExtensions;
@@ -119,7 +121,8 @@ public class CalcDalton implements Interruptible{
                 ,c.isCalcDaltonForbidHalfMasses()
                 ,c.getCalcDaltonPrimerMassesMap()
                 ,c.getCalcDaltonAddonMassesMap()
-                ,c.getCalcDaltonPLMass());
+                ,c.getCalcDaltonPLMass(),
+                c.getBiotinString());
     }
 
     public double[] getMasses(Primer primer) {
@@ -326,7 +329,7 @@ public class CalcDalton implements Interruptible{
         double[] sbe_massen=null;
         if(findBr){
             sbe_massen=calcSBEMass(sbe,bruch,true);
-            Tabellendaten[0]=
+            Tabellendaten[0]= biotin +
                 sbe[0].substring(0, sbe[0].length() - bruch)
                 + "[L]"
                 + sbe[0].substring((sbe[0].length() - bruch) + 1);//das Nukleotid an dieser Stelle wird entfernt!

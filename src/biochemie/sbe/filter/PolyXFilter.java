@@ -32,11 +32,13 @@ public class PolyXFilter extends AbstractKandidatenFilter {
         for (Iterator it= cand.iterator(); it.hasNext();) {
             Primer p= (Primer) it.next();
             String seq=p.getPrimerSeq();
-            int counter=0;
+            int counter=0, max=0;
             char c=0;
             boolean tracingrun=false;
             for(int i=0;i<seq.length();i++){
                 if(!tracingrun){
+                	if(counter>max)
+                		max=counter;
                     c=seq.charAt(i);
                     tracingrun=true;
                     counter=1;
@@ -49,11 +51,11 @@ public class PolyXFilter extends AbstractKandidatenFilter {
                     }
                 }
             }
-            if(counter>polyX){
+            if(max>polyX){
                 it.remove();
                 count++;                        	
                 sb.append(getPrimerDescription(p)).append(", ");
-                sb.append(markRed("polyX="+counter));
+                sb.append(markRed("polyX="+max));
                 sb.append("\n");
             }              
         }
