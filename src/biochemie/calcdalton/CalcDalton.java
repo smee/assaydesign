@@ -57,7 +57,7 @@ public class CalcDalton implements Interruptible{
     final private boolean allExtension;
     final private boolean halfMassForbidden;
     private boolean findBr;
-	private String biotin;    
+	private String biotin;
 
 	public CalcDalton(int[] br, double[] abstaendeFrom, double[] abstaendeTo
 					, double[] assaypeaks
@@ -284,7 +284,7 @@ public class CalcDalton implements Interruptible{
         return true;
     }
     protected boolean isDiffOverlapOkay(double[] masses1,double[] masses2) {
-         //vgl. sbe ohne anhang miteineander
+         //vgl. sbe ohne anhang miteinander
          // -> fällt weg wegen is nich
          //vgl. sbe1 ohne anhang mit allen sbe2 mit anhang
          for (int i= 1; i < masses2.length; i++) {
