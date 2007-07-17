@@ -37,7 +37,7 @@ public class CalcDalton implements Interruptible{
     protected double[] from;
 	protected double[] toAbs;
 	protected double[] fromAbs;
-    
+
 	private double[] verbMasseTo;
 	private double[] verbMasseFrom;
     protected int[] br;
@@ -48,7 +48,7 @@ public class CalcDalton implements Interruptible{
     protected int maxreacheddepth=0;
     private double[][][] massenList;
     int anzahl_sbe=0;
-    
+
     Thread calcThread;
     private Object result;
     final private Map primerMasses;
@@ -92,7 +92,7 @@ public class CalcDalton implements Interruptible{
 			}
 		}
 		this.verbMasseFrom=Helper.clone(verbMasseFrom);
-		this.verbMasseTo=Helper.clone(verbMasseTo);		
+		this.verbMasseTo=Helper.clone(verbMasseTo);
 		if(assaypeaks==null || assaypeaks.length<3)
             throw new IllegalArgumentException("array for assaypeaks needs to have exactly 3 values!");
         this.assaypeaks=assaypeaks;
@@ -103,7 +103,7 @@ public class CalcDalton implements Interruptible{
         this.allExtension=allExtensions;
 		solutionSize=Integer.MAX_VALUE;
 		assert verbMasseFrom.length==verbMasseTo.length;
-		assert abstaendeFrom.length==abstaendeTo.length;		
+		assert abstaendeFrom.length==abstaendeTo.length;
 	}
     /**
      * @param cfg
@@ -148,7 +148,7 @@ public class CalcDalton implements Interruptible{
         }
         return summe;
     }
-    
+
 	/**
 	 * Berechnung der Masse einer Sequenz mit angehängtem Nukleotid.
 	 * @param seq
@@ -211,7 +211,7 @@ public class CalcDalton implements Interruptible{
                 return true;
         }
         return false;
-        
+
     }
     public boolean invalidMassesIn(double[] massen){
         int start=overlap?1:0;//wenn overlap an ist darf der primer in die verbotenen massebereiche fallen
@@ -220,7 +220,7 @@ public class CalcDalton implements Interruptible{
                 return true;
 //            if(halfMassForbidden) //halbe massen fallen nicht in die verbotenen massebereiche
 //                if(isMassForbidden(massen[j]/2.0d))
-//                    return true;                    
+//                    return true;
         }
         return false;
     }
@@ -235,18 +235,18 @@ public class CalcDalton implements Interruptible{
         }
         return false;
     }
-    
+
     private boolean fitsAllPeakRules(double m1,double m2, double[] massesFrom, double[] massesTo, boolean useAbsDiff){
         double peak = getCurrentPeak(m1,m2,assaypeaks);
         double diff=m1 - m2;
         if(useAbsDiff)
             diff=Math.abs(diff);
-        
+
         //forbidden peakdiffs
         for(int k=0;k<massesFrom.length;k++)
             if(diff>=massesFrom[k] && diff<=massesTo[k])
                 return false;
-        
+
         //min. peakdiff
         if(Math.abs(diff)<peak){
             return false;
@@ -264,7 +264,7 @@ public class CalcDalton implements Interruptible{
         else
             return true;
     }
-    
+
 	/**
 	 * Test, ob berechnete SBEGewichte nach allen geforderten Kriterien unterschiedlich sind.
 	 * Testet, ob keine in Config verlangten Abstände verletzt sind.
@@ -295,7 +295,7 @@ public class CalcDalton implements Interruptible{
         //vgl. sbe2 ohne anhang mit allen sbe1 mit anhang
          for (int i= 1; i < masses1.length; i++) {
              if(!fitsAllPeakRules(masses1[i],masses2[0],from,to,false) ||
-                     !fitsHalfMassPeakRules(masses1[i],masses2[0]))
+                     !fitsHalfMassPeakRules(masses2[i],masses1[0]))
                  return false;
          }
         //vgl. den rest miteinander
@@ -344,28 +344,28 @@ public class CalcDalton implements Interruptible{
             boolean useKlammern=sbe[c].charAt(0)=='>';
 			switch (sbe[c].charAt(sbe[c].length() - 1)) {
 				case 'A' :
-                case 'a' :  
-					Tabellendaten[4]= df.format(sbe_massen[c]);                  
+                case 'a' :
+					Tabellendaten[4]= df.format(sbe_massen[c]);
                     if(useKlammern)
-                        Tabellendaten[4]= "["+Tabellendaten[4]+"]";                  
+                        Tabellendaten[4]= "["+Tabellendaten[4]+"]";
 					break;
-				case 'C' : 
-				case 'c' : 
+				case 'C' :
+				case 'c' :
 					Tabellendaten[5]= df.format(sbe_massen[c]);
 					if(useKlammern)
-					    Tabellendaten[5]= "["+Tabellendaten[5]+"]";                  
+					    Tabellendaten[5]= "["+Tabellendaten[5]+"]";
 					break;
-				case 'G' : 
-				case 'g' : 
+				case 'G' :
+				case 'g' :
 					Tabellendaten[6]= df.format(sbe_massen[c]);
 					if(useKlammern)
-					    Tabellendaten[6]= "["+Tabellendaten[6]+"]";                  
+					    Tabellendaten[6]= "["+Tabellendaten[6]+"]";
 					break;
-				case 'T' : 
-				case 't' : 
+				case 'T' :
+				case 't' :
 					Tabellendaten[7]= df.format(sbe_massen[c]);
 					if(useKlammern)
-					    Tabellendaten[7]= "["+Tabellendaten[7]+"]";                  
+					    Tabellendaten[7]= "["+Tabellendaten[7]+"]";
 					break;
 			}
         }
@@ -388,7 +388,7 @@ public class CalcDalton implements Interruptible{
             }
             sbeTable.addTabelle(temptable);
         }
-        return sbeTable;   
+        return sbeTable;
     }
     public void calc(String[][] sbeData, SBETable sbetable, boolean findCleavableLinker) {
         int[] fest=new int[sbeData.length];
@@ -405,7 +405,7 @@ public class CalcDalton implements Interruptible{
     }
     /**
 	 * Berechnung.
-	 * @param paneldata Jede Zeile enthält Sequenz, Anhang1, Anhang 2... 
+	 * @param paneldata Jede Zeile enthält Sequenz, Anhang1, Anhang 2...
 	 * @param sbetable tablemodel fuer ergebnisse
      * @param fest array mit indizes der festen bruchstellen, wenn egal, dann -1
 	 */
@@ -413,7 +413,7 @@ public class CalcDalton implements Interruptible{
         if(sbeData.length == 0 || fest.length != sbeData.length)
             return new int[0][];
         calcThread = Thread.currentThread();
-        
+
         List erglist=new ArrayList();
         boolean[] brIstFest=new boolean[fest.length]; //Feld fuer feste Bruchstellen
         solutionSize=Integer.MAX_VALUE;
@@ -423,9 +423,10 @@ public class CalcDalton implements Interruptible{
         /*Workaround für feste Bruchstelle:
          * ich muss sicherstellen, dass bei fester gewählter Bruchstelle die jeweilige
          * Schleife jeweils nur genau einmal durchlaufen wird. Deshalb wird flags[i] auf false
-         * gesetzt, wenn die jeweilige Bruchstelle fest sein soll. Dann wird die zugehörige 
+         * gesetzt, wenn die jeweilige Bruchstelle fest sein soll. Dann wird die zugehörige
          * Schleife jeweils nur genau einmal durchlaufen.
          */
+        boolean allFest=true;
         for (int i= 0; i < brIstFest.length; i++) {
             if(-1 < fest[i]) {
                 brIstFest[i]=true;
@@ -434,7 +435,6 @@ public class CalcDalton implements Interruptible{
                 brIstFest[i]=false;
                 fest[i]=0;//sonst ist die noch auf -1, also falscher Index
             }
-            
         }
         /*-------------------------- hier gehts los------------------------------*/
         maxreacheddepth=-1;
@@ -468,7 +468,7 @@ public class CalcDalton implements Interruptible{
                         okay=false;
                     }
                 }
-                
+
             }
             if(okay) {//passt alles bisher
                 maxreacheddepth=(ptr>maxreacheddepth)?ptr:maxreacheddepth;
@@ -478,7 +478,7 @@ public class CalcDalton implements Interruptible{
                         if(sum<solutionSize)
                             erglist.clear();
                         setSolutionSize();
-                        if(CalcDalton.debug){ 
+                        if(CalcDalton.debug){
                             System.out.print("Lsg. new: "+biochemie.util.Helper.toString(laufvar));
                             System.out.println();
                         }
@@ -508,7 +508,7 @@ public class CalcDalton implements Interruptible{
         return erg;
     }
     /**
-     * 
+     *
      */
     protected void setSolutionSize() {
         solutionSize=sum( laufvar.length-1);
@@ -548,7 +548,7 @@ public class CalcDalton implements Interruptible{
                 }
                 massenList[i][j]=massenArray;
             }
-        }   
+        }
     }
 
     protected double[] getMassenArray(int ptr, int i) {
@@ -568,11 +568,11 @@ public class CalcDalton implements Interruptible{
             aktuellerWert*=brlen;
             aktuellerWert+=(laufvar[i]);
         }
-        return aktuellerWert;       
+        return aktuellerWert;
     }
     public int getMax() {
         int aktuellerWert=1;
-        
+
         for(int i=0;i<anzahlVarsNeeded;i++) {
             aktuellerWert*=brlen;
             aktuellerWert+=brlen;
@@ -597,13 +597,13 @@ public class CalcDalton implements Interruptible{
     public void setParameter(String [][] sbeData, int[] fest) {
         this.sbeTable=null;
         this.sbeData=sbeData;
-        this.fest=fest;        
+        this.fest=fest;
     }
     /* (non-Javadoc)
      * @see biochemie.sbe.calculators.Interruptible#start()
      */
     public void start() {
-        if(sbeTable == null) 
+        if(sbeTable == null)
             result = calc(sbeData,fest);
         else
             result = calc(sbeData,sbeTable,fest);
